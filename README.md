@@ -1,14 +1,8 @@
-# Sistema desarrollado para optimizar el control de los diversos materiales que manejan las diferentes sucursales de Punto Giro.
+# Sistema desarrollado para optimizar el control de los diversos afiliados que manejan las diferentes sucursales de SUTEPA.
 
 | Secciones | Implementada |
 | ----------- | ----------- |
 | Dashboard | ✅ |
-| Solicitudes | ✅ |
-| Stock por Sucursal | ✅ |
-| Ingreso de Material | ✅ |
-| Categorias | ✅ |
-| Materiales | ✅ |
-| Unidades | ✅ |
+| Afiliados | ✅ |
 | Usuarios | ✅ |
-| Personas | ✅ |
-| Sucursales | ✅ |# Sutepa-Front
+| Roles | ✅ |
