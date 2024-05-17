@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux"
-import { giroApi } from "../api";
+import { sutepaApi } from "../api";
 import { handleUser, onAddNewUser, onDeleteUser, onUpdateUser } from "../store/user";
 import { toast } from "react-toastify";
 import { hadleShowModal } from "../store/layout";
@@ -11,7 +11,7 @@ export const useUserStore = () => {
 
     const startLoadingUsers = async() => {
         try {
-            const { data } = await giroApi.get('/auth');
+            const { data } = await sutepaApi.get('/auth');
             dispatch( handleUser( data.usuarios ) );
         } catch (error) {
             console.log(error)
@@ -20,7 +20,7 @@ export const useUserStore = () => {
 
     const startSavingUser = async({ nombre, username, password, sucursalId }) => {
         try {
-            const { data } = await giroApi.post('/auth/new', { nombre, username, password, sucursalId });
+            const { data } = await sutepaApi.post('/auth/new', { nombre, username, password, sucursalId });
             dispatch( onAddNewUser( data.usuario ) );
 
             toast.success('Usuario agregado con exito', {
@@ -51,7 +51,7 @@ export const useUserStore = () => {
     const startDeleteUser = async() => {
         try {
             const id = activeUser.id;
-            const { data } = await giroApi.delete(`/auth/delete/${id}`);
+            const { data } = await sutepaApi.delete(`/auth/delete/${id}`);
             dispatch( onDeleteUser( data.usuario ) );
 
             toast.success('Usuario desactivado con exito', {
@@ -82,7 +82,7 @@ export const useUserStore = () => {
     const startUpdateUser = async({ nombre, username, password, sucursalId }) => {
         try {
             const id = activeUser.id;
-            const { data } = await giroApi.put(`/auth/update/${id}`, { nombre, username, password, sucursalId });
+            const { data } = await sutepaApi.put(`/auth/update/${id}`, { nombre, username, password, sucursalId });
             dispatch( onUpdateUser( data.usuario ) );
             dispatch( hadleShowModal( false ) );
 

@@ -1,1 +1,1 @@
-export { default as giroApi } from './giroApi';
+export { default as sutepaApi } from './sutepaApi';

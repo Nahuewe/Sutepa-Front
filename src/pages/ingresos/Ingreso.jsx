@@ -17,7 +17,6 @@ import { useNavigate } from "react-router-dom";
 import { ShowIngreso } from "@/components/giro/tables/ShowIngreso";
 import { DeleteModal } from "@/components/giro/forms/DeleteModal";
 import { hadleShowDeleteModal } from "@/store/layout";
-import HomeBredCurbs from "@/components/ui/HomeBredCurbs";
 import { useUserStore } from "../../helpers";
 
 const Afiliados = [
@@ -213,11 +212,11 @@ export const Ingreso = ({ title = "Lista de Afiliados" }) => {
     const { ingresos, activeIngreso, startLoadingIngreso, startDeleteIngreso } = useIngresoStore();
     const dispatch = useDispatch();
     const [idIngreso, setIdIngreso] = useState()
-    const { selectDateReport, startDownloadReport } = useIngresoStore();
+    // const { selectDateReport, startDownloadReport } = useIngresoStore();
 
-    const onDownloadReport = () => {
-        startDownloadReport();
-    };
+    // const onDownloadReport = () => {
+    //     startDownloadReport();
+    // };
 
     const columns = useMemo(() => (sucursal === 1) ? COLUMNS : COLUMNSUC, []);
     const data = useMemo(() => ingresos, [ingresos]);
@@ -290,13 +289,10 @@ export const Ingreso = ({ title = "Lista de Afiliados" }) => {
                             <div className="md:flex justify-between items-center mb-6">
                                 <h4 className="card-title">{title}</h4>
                                 <div className="flex flex-wrap gap-4">
-                                    <div className="flex mt-2 md:mt-0 justify-between">
+                                    <div className="flex mt-4 md:mt-0 justify-between">
                                         {sucursal === 1 && (
                                             <div className="flex items-center">
-                                                <div className="inline-block mr-4 bg-slate-300 dark:bg-slate-900 items-center text-center rounded-lg">
-                                                    <HomeBredCurbs fnReport={selectDateReport} />
-                                                </div>
-                                                <button onClick={onDownloadReport} className="bg-slate-300 dark:bg-slate-900 inline-block text-center px-6 py-2 rounded-lg">
+                                                <button className="bg-slate-300 dark:bg-slate-900 inline-block text-center px-6 py-2 rounded-lg">
                                                     Exportar
                                                 </button>
                                             </div>

@@ -23,6 +23,12 @@ const RevenueBarChart = ({ height = 400 }) => {
       data: [35, 41, 36, 26, 45, 48, 52, 53, 41],
     },
   ];
+
+  // Calculamos la suma de los datos
+  const totalData = series.reduce((acc, curr) => {
+    return acc.map((val, index) => val + curr.data[index]);
+  }, Array(series[0].data.length).fill(0));
+
   const options = {
     chart: {
       toolbar: {
@@ -61,7 +67,6 @@ const RevenueBarChart = ({ height = 400 }) => {
     title: {
       text: "Afiliados Activos Por Seccional",
       align: "left",
-
       offsetX: isRtl ? "0%" : 0,
       offsetY: 13,
       floating: false,
@@ -114,7 +119,6 @@ const RevenueBarChart = ({ height = 400 }) => {
         show: false,
       },
     },
-
     fill: {
       opacity: 1,
     },
@@ -165,10 +169,13 @@ const RevenueBarChart = ({ height = 400 }) => {
 
   return (
     <Card>
+      <div className="flex justify-end">
+        <button className="btn btn-dark" onClick={downloadChart}>Descargar</button>
+      </div>
       <div ref={chartRef}>
         <Chart options={options} series={series} type="bar" height={height} />
+        <div className="btn btn-dark" style={{ textAlign: 'center', marginTop: '10px' }}>Total: {totalData.reduce((acc, val) => acc + val, 0)}</div>
       </div>
-      <button className="btn btn-dark" onClick={downloadChart}>Descargar</button>
     </Card>
   );
 };

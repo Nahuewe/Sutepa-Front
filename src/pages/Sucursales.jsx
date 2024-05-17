@@ -130,7 +130,7 @@ export const Sucursales = ({ title = "Listado de Roles" }) => {
       <Card>
         <div className="md:flex justify-between items-center mb-6">
           <h4 className="card-title">{title}</h4>
-          <div className="flex gap-4">
+          <div className="flex flex-wrap gap-4 mt-4 md:mt-0">
             <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
 
             <Modal
@@ -147,8 +147,7 @@ export const Sucursales = ({ title = "Listado de Roles" }) => {
               title="Agregar Rol"
               uncontrol
               label="Agregar"
-              labelClass="bg-red-600 text-white items-center text-center px-6 rounded-lg flex"
-              btnIcon="plus"
+              labelClass="bg-red-600 text-white items-center text-center py-2 px-6 rounded-lg"
             />
 
             <EditModal

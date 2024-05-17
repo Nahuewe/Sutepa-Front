@@ -84,23 +84,6 @@
     //   @apply stroke-black-200 dark:stroke-slate-700;
     // }
   }
-  .input-field {
-    /* Agrega las clases de Tailwind que desees para el estilo de TextInput */
-    border: 1px solid #e5e7eb;
-    padding: 0.5rem;
-    font-size: 1rem;
-    border-radius: 0.375rem;
-    line-height: 1.5;
-    width: 100%;
-}
-
-.input-field:focus {
-    /* Estilos cuando el input está enfocado */
-    border-color: #2563eb;
-    outline: 0;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
-}
-
 }
 
 @layer components {
@@ -132,4 +115,14 @@
   @import "components/print.scss";
 }
 @layer utilities {
+}
+
+.obligatorio {
+  color: #f53333;
+  user-select: none;
+  margin-left: 0.1em;
+}
+
+textarea {
+  field-sizing: content;
 }

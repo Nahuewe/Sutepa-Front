@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from "react-redux";
-import { giroApi } from "../api";
+import { sutepaApi } from "../api";
 import { toast } from "react-toastify";
 import { hadleShowModal } from "../store/layout";
 import { handlePersona, onUpdatePersona } from "../store/persona";
@@ -11,7 +11,7 @@ export const usePersonaStore = () => {
 
     const startLoadingPersonas = async() => {
         try {
-            const { data } = await giroApi.get('/personas');
+            const { data } = await sutepaApi.get('/personas');
             dispatch( handlePersona( data.personas ) ); 
         } catch (error) {
             console.log(error)
@@ -21,7 +21,7 @@ export const usePersonaStore = () => {
     const startUpdatePersona = async(persona) => {
         try {
             const id = activePersona.id;
-            const { data } = await giroApi.put(`/personas/update/${id}`, { ...persona });
+            const { data } = await sutepaApi.put(`/personas/update/${id}`, { ...persona });
             dispatch( onUpdatePersona(data.persona) );
             dispatch( hadleShowModal(false) );
 

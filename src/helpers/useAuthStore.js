@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux"
 import { clearErrorMessage, handleLogin, handleLogout, onChecking } from "../store/auth";
-import { giroApi } from "../api";
+import { sutepaApi } from "../api";
 import { toast } from "react-toastify";
 
 export const useAuthStore = () => {
@@ -14,7 +14,7 @@ export const useAuthStore = () => {
         const message = 'Credenciales incorrectas.'
 
         try {
-            const { data } = await giroApi.post('/auth', { username, password });
+            const { data } = await sutepaApi.post('/auth', { username, password });
 
             if (data.ok) {
                 localStorage.setItem('token', data.token);
@@ -56,7 +56,7 @@ export const useAuthStore = () => {
         if ( !token ) return dispatch( handleLogout() );
 
         try {
-            const { data } = await giroApi.get('/auth/renew');
+            const { data } = await sutepaApi.get('/auth/renew');
 
             localStorage.setItem('token', data.token);
             dispatch( handleLogin({ uid: data.uid, nombre: data.nombre, sucursal: data.sucursal }) );

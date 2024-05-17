@@ -75,7 +75,7 @@ const DonutChart = ({ height = 350 }) => {
     <Card>
       <h4>Total de afiliados</h4>
       <p className="mt-2">Cantidad:</p>
-      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px", marginTop: "8px" }}>
+      <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", marginBottom: "8px", marginTop: "8px" }}>
         <button className={`btn btn-${chartType === "active" ? "primary" : "primary"}`} onClick={() => setChartType("active")}>Afiliados activos</button>
         <button className={`btn btn-${chartType === "inactive" ? "danger" : "danger"}`} onClick={() => setChartType("inactive")}>Afiliados dados de baja</button>
       </div>

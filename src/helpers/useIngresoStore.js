@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from "react-redux";
-import { giroApi } from "../api";
+import { sutepaApi } from "../api";
 import { toast } from "react-toastify";
 import { handleIngreso, onUpdateIngreso, onAddNewIngreso, onDeleteIngreso } from "../store/ingreso";
 import { useState } from "react";
@@ -13,7 +13,7 @@ export const useIngresoStore = () => {
 
     const startSavingIngreso = async(form) => {
         try {
-            const {data} = await giroApi.post('/ingresos/create', {...form, usuarioId: uid, sucursalId: sucursal})
+            const {data} = await sutepaApi.post('/ingresos/create', {...form, usuarioId: uid, sucursalId: sucursal})
 
             if (data.ok) {
                 dispatch( onAddNewIngreso( data.ingreso ) );   
@@ -56,7 +56,7 @@ export const useIngresoStore = () => {
     }
     const startLoadingIngreso = async() => {
         try {
-            const { data } = await giroApi.get('/ingresos');
+            const { data } = await sutepaApi.get('/ingresos');
             dispatch( handleIngreso( data.ingresos ) );
         } catch (error) {
             console.log(error)
@@ -66,7 +66,7 @@ export const useIngresoStore = () => {
     const startUpdateIngreso = async(form) => {
         try {
             const {id} = activeIngreso;
-            const { data } = await giroApi.put(`/ingresos/update/${id}`, {...form, usuarioId: uid, sucursalId: sucursal});
+            const { data } = await sutepaApi.put(`/ingresos/update/${id}`, {...form, usuarioId: uid, sucursalId: sucursal});
 
             if (data.ok) {
                 dispatch( onUpdateIngreso(data.ingreso) );  
@@ -110,7 +110,7 @@ export const useIngresoStore = () => {
 
     const startDeleteIngreso = async(id) => {
         try {
-            const { data } = await giroApi.delete(`/ingresos/delete/${id}`);
+            const { data } = await sutepaApi.delete(`/ingresos/delete/${id}`);
             dispatch( onDeleteIngreso(parseInt(id)) );
     
             if (data.ok) {

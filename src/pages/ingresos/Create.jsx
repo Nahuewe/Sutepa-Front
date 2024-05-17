@@ -1,26 +1,16 @@
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import Textinput from "@/components/ui/Textinput";
 import * as yup from "yup";
-import { SelectForm } from "@/components/giro/forms";
-import Textarea from "@/components/ui/Textarea";
-import Card from "@/components/ui/Card";
 import { useNavigate } from "react-router-dom";
 import { useIngresoStore } from "@/helpers";
-
-const FormValidationSchema = yup
-    .object({
-        sexo: yup.string().notOneOf([""], "Debe seleccionar un sexo"),
-        dni: yup.string().required("El DNI es requerido"),
-        nombre: yup.string().required("El nombre es requerido"),
-        apellido: yup.string().required("El apellido es requerido"),
-        telefono: yup.string().required("El telefono es requerido"),
-        institucion: yup.string().notOneOf([""], "Debe seleccionar una institución"),
-        transporte: yup.string().notOneOf([""], "Debe seleccionar un transporte"),
-        ecocanje: yup.string().notOneOf([""], "Debe seleccionar un ecocanje"),
-        observaciones: yup.string().nullable(true),
-    })
-    .required();
+import DatosPersonalesData from "../../components/forms/DatosPersonalesData";
+import AfiliadoDomicilioData from "../../components/forms/AfiliadoDomicilioData";
+import { useEffect } from "react";
+import InformacionLaboralData from "../../components/forms/InformacionLaboralData";
+import ObraSocialAfiliadoData from "../../components/forms/ObraSocialAfiliadoData";
+import FamiliarAcargoData from "../../components/forms/FamiliarAcargoData";
+import DocumentacionAdicionalData from "../../components/forms/DocumentacionAdicionalData";
+import SubsidioData from "../../components/forms/SubsidioData";
 
 const sexo = [
     {
@@ -60,37 +50,45 @@ const estadoCivil = [
     },
 ]
 
-const transporte = [
+const nacionalidad = [
     {
-        id: 'Caminando',
-        nombre: 'Caminando'
+        id: 'ARGENTINO',
+        nombre: 'ARGENTINO'
     },
     {
-        id: 'Auto',
-        nombre: 'Auto'
+        id: 'CHILENO',
+        nombre: 'CHILENO'
     },
     {
-        id: 'Moto',
-        nombre: 'Moto'
+        id: 'BOLIVIANO',
+        nombre: 'BOLIVIANO'
     },
     {
-        id: 'Camioneta',
-        nombre: 'Camioneta'
+        id: 'PERUANO',
+        nombre: 'PERUANO'
     },
     {
-        id: 'Camion',
-        nombre: 'Camion'
+        id: 'PARAGUAYO',
+        nombre: 'PARAGUAYO'
     }
 ]
 
-const ecocanje = [
+const tipoDocumento = [
     {
-        id: 'Realizado',
-        nombre: 'Realizado'
+        id: 'DNI',
+        nombre: 'DNI'
     },
     {
-        id: 'No Realizado',
-        nombre: 'No Realizado'
+        id: 'LIBRETA DE ENROLAMIENTO',
+        nombre: 'LIBRETA DE ENROLAMIENTO'
+    },
+    {
+        id: 'LIBRETA CIVICA',
+        nombre: 'LIBRETA CIVICA'
+    },
+    {
+        id: 'PASAPORTE',
+        nombre: 'PASAPORTE'
     }
 ]
 
@@ -98,12 +96,29 @@ const ecocanje = [
 export const Create = () => {
     const navigate = useNavigate()
     const { activeIngreso, startSavingIngreso, startUpdateIngreso } = useIngresoStore()
+    const FormValidationSchema = yup
+        .object().shape({
+            nombre: yup.string().required("El nombre es requerido"),
+            apellido: yup.string().required("El apellido es requerido"),
+            legajo: yup.string().required("El legajo es requerido"),
+            fechaAfiliacion: yup.string().required('La fecha de afiliacion es requerida'),
+            nacionalidad: yup.string().required('La nacionalidad es requerida'),
+            tipoDocumento: yup.string().notOneOf([""], "Debe seleccionar un tipo de documento"),
+            dni: yup.string().required('El DNI es requerido'),
+            provincia: yup.string().required("La provincia es requerida"),
+            localidad: yup.string().required("La localidad es requerida"),
+            nombreFamiliar: yup.string().required("El nombre y apellido es requerido"),
+            fechaNacimiento: yup.string().notOneOf([""], 'La fecha de nacimiento es requerida'),
+            parentesco: yup.string().notOneOf([""], 'El parentesco es requerido'),
+            tipoSubsidio: yup.string().notOneOf([""], 'El tipo de subsidio es requerido'),
+            fechaSolicitud: yup.string().notOneOf([""], 'La fecha de la solicitud es requerida'),
+        })
 
     const {
         register,
         formState: { errors },
         handleSubmit,
-        reset,
+        reset
     } = useForm({
         resolver: yupResolver(FormValidationSchema),
     });
@@ -120,112 +135,37 @@ export const Create = () => {
         navigate('/ingresos')
     };
 
+    useEffect(() => {
+        if (activeIngreso) {
+            Object.entries(activeIngreso).forEach(([key, value]) => {
+                setValue(key, value)
+            })
+        }
+    }, [])
+
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 ">
-            <Card>
-                <div className="md:flex justify-between items-center mb-6">
-                    <h4 className="card-title">Datos Personales</h4>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
 
-                    <Textinput
-                        name="legajo"
-                        label="Legajo"
-                        type="text"
-                        register={register}
-                        placeholder="Legajo"
-                        error={errors.legajo}
-                    />
+            <DatosPersonalesData register={register} errors={errors}></DatosPersonalesData>
 
-                    <Textinput
-                        label="Fecha de Afiliación"
-                        register={register}
-                        id='fechaAfiliacion'
-                        placeholder='Fecha de Afiliación'
-                        type='date'
-                        error={errors.fechaAfiliacion}
-                    />
+            <AfiliadoDomicilioData register={register} errors={errors}></AfiliadoDomicilioData>
 
-                    <Textinput
-                        name="nombre"
-                        label="Nombre"
-                        type="text"
-                        register={register}
-                        placeholder="Nombre"
-                        error={errors.nombre}
-                    />
+            <InformacionLaboralData register={register} errors={errors}></InformacionLaboralData>
 
-                    <Textinput
-                        name="apellido"
-                        label="Apellido"
-                        type="text"
-                        register={register}
-                        placeholder="Apellido"
-                        error={errors.apellido}
-                    />
+            <ObraSocialAfiliadoData register={register} errors={errors}></ObraSocialAfiliadoData>
 
-                    <SelectForm
-                        register={register("sexo")}
-                        title={'Sexo'}
-                        options={sexo}
-                        error={errors.sexo}
-                    />
+            <FamiliarAcargoData register={register} errors={errors}></FamiliarAcargoData>
 
-                    <Textinput
-                        label="Fecha de Nacimiento"
-                        register={register}
-                        id='fechaNacimiento'
-                        placeholder='Fecha de Nacimiento'
-                        type='date'
-                        error={errors.fechaNacimiento}
-                    />
+            <DocumentacionAdicionalData register={register} errors={errors}></DocumentacionAdicionalData>
 
-                    <SelectForm
-                        register={register("estadoCivil")}
-                        title={'Estado Civil'}
-                        options={estadoCivil}
-                        error={errors.estadoCivil}
-                    />
-
-                    <SelectForm
-                        register={register("transporte")}
-                        title={'Tipo de Transporte'}
-                        options={transporte}
-                        error={errors.transporte}
-                    />
-
-                    <Textinput
-                        name="matricula"
-                        label="Matrícula del transporte"
-                        type="text"
-                        register={register}
-                        placeholder="Matrícula"
-                        error={errors.matricula}
-                    />
-
-                    <SelectForm
-                        register={register("ecocanje")}
-                        title={'Ecocanje'}
-                        options={ecocanje}
-                        error={errors.ecocanje}
-                    />
-
-                    <Textarea
-                        name="observaciones"
-                        label="Observaciones"
-                        register={register}
-                        placeholder="Observaciones"
-                        error={errors.observaciones}
-                    />
-                </div>
-            </Card>
+            <SubsidioData register={register} errors={errors}></SubsidioData>
 
             <div className="flex justify-end gap-4 mt-8">
                 <div className="ltr:text-right rtl:text-left">
                     <button className="btn-danger items-center text-center py-2 px-6 rounded-lg" onClick={() => navigate('/ingresos')}>Volver</button>
                 </div>
                 <div className="ltr:text-right rtl:text-left">
-                    <button type="submit" className="btn-dark items-center text-center py-2 px-6 rounded-lg">Guardar</button>
+                    <button type="submit" className="btn-success items-center text-center py-2 px-6 rounded-lg">Guardar</button>
                 </div>
             </div>
         </form>
