@@ -1,6 +1,9 @@
 module.exports = {
   root: true,
-  env: { browser: true, es2020: true },
+  env: {
+    browser: true,
+    es2020: true
+  },
   extends: [
     'eslint:recommended',
     'plugin:react/recommended',
@@ -10,14 +13,21 @@ module.exports = {
     'standard-jsx'
   ],
   ignorePatterns: ['dist', '.eslintrc.cjs'],
-  parserOptions: { ecmaVersion: 'latest', sourceType: 'module' },
-  settings: { react: { version: '18.2' } },
+  parserOptions: {
+    ecmaVersion: 2020,
+    sourceType: 'module'
+  },
+  settings: {
+    react: {
+      version: 'detect'
+    }
+  },
   plugins: ['react-refresh'],
   rules: {
     'react-refresh/only-export-components': [
       'warn',
-      { allowConstantExport: true },
+      { allowConstantExport: true }
     ],
-    "react/prop-types": "off", // Evita que muestre error en las props
-  },
-}
+    'react/prop-types': 'off' // Evita que muestre error en las props
+  }
+};

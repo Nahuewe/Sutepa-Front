@@ -1,19 +1,16 @@
-import axios from "axios";
-import { getEnvVariables } from "../helpers";
-
-const { VITE_API_URL } = getEnvVariables();
+import axios from 'axios'
 
 const sutepaApi = axios.create({
-    baseURL: VITE_API_URL,
-});
+  baseURL: `${import.meta.env.VITE_API_URL}`
+})
 
-sutepaApi.interceptors.request.use( config => {
-    config.headers = {
-        ...config.headers,
-        'x-token': localStorage.getItem('token')
-    }
+sutepaApi.interceptors.request.use(config => {
+  config.headers = {
+    ...config.headers,
+    'x-token': localStorage.getItem('token')
+  }
 
-    return config;
-});
+  return config
+})
 
-export default sutepaApi;
+export default sutepaApi

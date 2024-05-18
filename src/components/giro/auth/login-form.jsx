@@ -3,15 +3,8 @@ import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 import { useNavigate } from 'react-router-dom'
-import { useAuthStore } from "@/helpers";
-import Textinput from "@/components/ui/Textinput";
-
-const usuarioHardcodeado = {
-  uid: 1,
-  username: "nsoria",
-  password: "123456",
-  sucursal: 1
-};
+import { useAuthStore } from '@/helpers'
+import Textinput from '@/components/ui/Textinput'
 
 const schema = yup
   .object({
@@ -33,14 +26,14 @@ function LoginForm () {
   })
   const navigate = useNavigate()
 
-  const onSubmit = async () => {
+  const onSubmit = async (data) => {
     try {
-      await startLogin(usuarioHardcodeado);
-      navigate('/');
+      await startLogin(data)
+      navigate('/')
     } catch (error) {
-      console.error('Error al iniciar sesión:', error);
+      console.error('Error al iniciar sesión:', error)
     }
-  };
+  }
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword)
@@ -52,8 +45,8 @@ function LoginForm () {
         name='username'
         label='usuario'
         autoComplete='username'
-        className="h-[48px]"
-        style={{ backgroundColor: 'white', color: 'gray', border: 'none'}}
+        className='h-[48px]'
+        style={{ backgroundColor: 'white', color: 'gray', border: 'none' }}
         placeholder='Usuario'
         register={register}
         onChange={(e) => {
@@ -68,10 +61,9 @@ function LoginForm () {
         type={showPassword ? 'text' : 'password'}
         autoComplete='current-password'
         style={{ backgroundColor: 'white', color: 'gray', border: 'none' }}
-        className="h-[48px]"
+        className='h-[48px]'
         placeholder='Contraseña'
         register={register}
-
         onChange={(e) => {
           setValue('password', e.target.value)
         }}
@@ -105,7 +97,7 @@ function LoginForm () {
             )}
       </button>
 
-      <button className="btn btn-dark block w-full text-center mt-4">Iniciar Sesión</button>
+      <button className='btn btn-dark block w-full text-center mt-4'>Iniciar Sesión</button>
     </form>
   )
 }

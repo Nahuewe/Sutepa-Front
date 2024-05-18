@@ -1,198 +1,90 @@
-import { useSelector, useDispatch } from "react-redux";
-import { sutepaApi } from "../api";
-import { toast } from "react-toastify";
-import { handleIngreso, onUpdateIngreso, onAddNewIngreso, onDeleteIngreso } from "../store/ingreso";
-import { useState } from "react";
-import { getEnvVariables } from "./getEnvVariables";
+import { useSelector, useDispatch } from 'react-redux'
+import { sutepaApi } from '../api'
+import { toast } from 'react-toastify'
+import { handleIngreso, onAddNewIngreso, onDeleteIngreso } from '../store/ingreso'
 
 export const useIngresoStore = () => {
-    const dispatch = useDispatch();
-    const [date, setDate] = useState({});
-    const { ingresos, activeIngreso } = useSelector( state => state.ingreso );
-    const { user: { uid, sucursal } } = useSelector( state => state.auth ); // Id de sucursal del usuario
+  const dispatch = useDispatch()
+  const { ingresos, activeIngreso } = useSelector(state => state.ingreso)
+  const { user: { uid, sucursal } } = useSelector(state => state.auth) // Id de sucursal del usuario
 
-    const startSavingIngreso = async(form) => {
-        try {
-            const {data} = await sutepaApi.post('/ingresos/create', {...form, usuarioId: uid, sucursalId: sucursal})
+  // const startSavingIngreso = async (form) => {
+  //   try {
+  //     const { data } = await sutepaApi.post('/ingresos/create', { ...form, usuarioId: uid, sucursalId: sucursal })
 
-            if (data.ok) {
-                dispatch( onAddNewIngreso( data.ingreso ) );   
+  //     if (data.ok) {
+  //       dispatch(onAddNewIngreso(data.ingreso))
 
-                toast.success('Ingreso creado con exito', {
-                    position: "top-right",
-                    autoClose: 1500,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                });
-            } else {
-                toast.error(data.message, {
-                    position: "top-right",
-                    autoClose: 1500,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                });  
-            }
+  //       toast.success('Afiliado creado con exito')
+  //     } else {
+  //       toast.error(data.message)
+  //     }
+  //   } catch (error) {
+  //     toast.error('No se pudo agregar los datos')
+  //   }
+  // }
 
-        } catch (error) {
-            toast.error('No se pudo agregar los datos', {
-                position: "top-right",
-                autoClose: 1500,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-            }); 
-        }
+  const startSavingIngreso = async (data) => {
+    try {
+      const afiliado = {
+        ...data
+      }
+
+      console.log(afiliado)
+      // dispatch(onUpdateIngreso())
+
+      toast.success('Afiliado Creado con exito')
+    } catch (error) {
+      toast.error('No se pudo modificar los datos')
     }
-    const startLoadingIngreso = async() => {
-        try {
-            const { data } = await sutepaApi.get('/ingresos');
-            dispatch( handleIngreso( data.ingresos ) );
-        } catch (error) {
-            console.log(error)
-        }
+  }
+
+  const startLoadingIngreso = async () => {
+    try {
+      const { data } = await sutepaApi.get('/ingresos')
+      dispatch(handleIngreso(data.ingresos))
+    } catch (error) {
+      console.log(error)
     }
+  }
 
-    const startUpdateIngreso = async(form) => {
-        try {
-            const {id} = activeIngreso;
-            const { data } = await sutepaApi.put(`/ingresos/update/${id}`, {...form, usuarioId: uid, sucursalId: sucursal});
+  const startUpdateIngreso = async (data) => {
+    try {
+      const afiliado = {
+        ...data
+      }
 
-            if (data.ok) {
-                dispatch( onUpdateIngreso(data.ingreso) );  
+      console.log(afiliado)
+      // dispatch(onUpdateIngreso())
 
-                toast.success('Ingreso actualizado con exito', {
-                    position: "top-right",
-                    autoClose: 1500,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                }); 
-            } else {
-                toast.error(data.message, {
-                    position: "top-right",
-                    autoClose: 1500,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                });  
-            }
-
-        } catch (error) {
-            toast.error('No se pudo modificar los datos', {
-                position: "top-right",
-                autoClose: 1500,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-            }); 
-        }
+      toast.success('Afiliado actualizado con exito')
+    } catch (error) {
+      toast.error('No se pudo modificar los datos')
     }
+  }
 
-    const startDeleteIngreso = async(id) => {
-        try {
-            const { data } = await sutepaApi.delete(`/ingresos/delete/${id}`);
-            dispatch( onDeleteIngreso(parseInt(id)) );
-    
-            if (data.ok) {
-                toast.success('Ingreso eliminado con exito', {
-                    position: "top-right",
-                    autoClose: 1500,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                }); 
-            }
-            
-        } catch (error) {
-            toast.error('No se pudo modificar los datos', {
-                position: "top-right",
-                autoClose: 1500,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-            }); 
-        }
+  const startDeleteIngreso = async (id) => {
+    try {
+      const { data } = await sutepaApi.delete(`/ingresos/delete/${id}`)
+      dispatch(onDeleteIngreso(parseInt(id)))
+
+      if (data.ok) {
+        toast.success('Afiliadoo eliminado con exito')
+      }
+    } catch (error) {
+      toast.error('No se pudo modificar los datos')
     }
+  }
 
-    const startDownloadReport = async() => {
-        try {
-            const { startDate, endDate } = date;
+  return {
+    //* Propiedades
+    ingresos,
+    activeIngreso,
 
-            if (startDate === undefined || endDate === undefined) {
-
-                toast.error('Debe seleccionar un rango de fechas.', {
-                    position: "top-right",
-                    autoClose: 1500,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                }); 
-
-            } else {
-
-                const { VITE_API_URL } = getEnvVariables();
-                window.open( `${ VITE_API_URL }/reportes/downloadExcelIngresos?startDate=${startDate}&endDate=${endDate}` );  
-                
-            }
-        } catch (error) {
-
-            toast.error('Error. No se pudo descargar el archivo', {
-                position: "top-right",
-                autoClose: 1500,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-            }); 
-        }
-    }
-
-    const selectDateReport = (newDate) => {
-        setDate(newDate);
-    }
-
-    return {
-        //* Propiedades
-        ingresos,
-        activeIngreso,
-
-        //* Metodos
-        startLoadingIngreso,
-        startSavingIngreso,
-        startUpdateIngreso,
-        startDeleteIngreso,
-        startDownloadReport,
-        selectDateReport,
-    }
+    //* Metodos
+    startLoadingIngreso,
+    startSavingIngreso,
+    startUpdateIngreso,
+    startDeleteIngreso
+  }
 }

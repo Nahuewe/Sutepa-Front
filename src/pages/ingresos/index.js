@@ -1,2 +1,2 @@
-export * from "./Create"
-export * from "./Ingreso"
+export * from './Create'
+export * from './Ingreso'

@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+    "lint": "eslint . --ext js,jsx,ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -31,13 +31,16 @@
     "cleave.js": "^1.6.0",
     "d3-array": "^3.2.2",
     "dayjs": "^1.11.7",
+    "eslint-config-standard": "^17.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^6.1.1",
+    "eslint-plugin-react-refresh": "^0.4.7",
     "flowbite-react": "^0.9.0",
     "framer-motion": "^10.12.12",
     "html-to-image": "^1.11.11",
-    "leaflet": "^1.9.3",
     "localforage": "^1.10.0",
     "match-sorter": "^6.3.1",
-    "meilisearch": "^0.33.0",
     "primereact": "^9.6.0",
     "react": "^18.2.0",
     "react-apexcharts": "^1.4.0",
@@ -77,8 +80,10 @@
     "autoprefixer": "^10.4.13",
     "eslint": "^8.57.0",
     "eslint-plugin-react": "^7.34.1",
+    "eslint-plugin-react-hooks": "^4.6.2",
     "globals": "^15.2.0",
     "postcss": "^8.4.19",
+    "standard": "^17.1.0",
     "tailwindcss": "^3.2.4",
     "vite": "^3.2.3"
   }
