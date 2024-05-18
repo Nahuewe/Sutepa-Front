@@ -89,7 +89,6 @@ function AfiliadoDomicilioData ({ register, errors, setValue }) {
           <div>
             <label htmlFor='default-picker' className='form-label'>
               Codigo Postal
-              <strong className='obligatorio'>(*)</strong>
             </label>
             <Numberinput
               register={register}

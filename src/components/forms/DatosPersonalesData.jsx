@@ -68,22 +68,10 @@ const nacionalidad = [
 ]
 
 const tipoDocumento = [
-  {
-    id: 'DNI',
-    nombre: 'DNI'
-  },
-  {
-    id: 'LIBRETA DE ENROLAMIENTO',
-    nombre: 'LIBRETA DE ENROLAMIENTO'
-  },
-  {
-    id: 'LIBRETA CIVICA',
-    nombre: 'LIBRETA CIVICA'
-  },
-  {
-    id: 'PASAPORTE',
-    nombre: 'PASAPORTE'
-  }
+  { id: 'DNI', nombre: 'DNI' },
+  { id: 'LIBRETA_DE_ENROLAMIENTO', nombre: 'Libreta de Enrolamiento' },
+  { id: 'LIBRETA_CIVICA', nombre: 'Libreta Civica' },
+  { id: 'PASAPORTE', nombre: 'Pasaporte' }
 ]
 
 const flatpickrOptions = {

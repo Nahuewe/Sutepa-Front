@@ -6,9 +6,13 @@ import 'flatpickr/dist/themes/material_red.css'
 import { useState, useEffect } from 'react'
 
 const tiposSubsidio = [
-  { id: 'TIPO_1', nombre: 'Tipo 1' },
-  { id: 'TIPO_2', nombre: 'Tipo 2' },
-  { id: 'TIPO_3', nombre: 'Tipo 3' }
+  { id: 'APOYO_ESCOLAR', nombre: 'Apoyo Escolar' },
+  { id: 'APOYO_SECUNDARIO', nombre: 'Apoyo Secundario' },
+  { id: 'APOYO_TRABAJADOR_UNIVERISITARIO', nombre: 'Apoyo Trabajador/Universitario' },
+  { id: 'CASAMIENTO', nombre: 'Casamiento' },
+  { id: 'FALLECIMIENTO_DE_FAMILIAR_DIRECTO', nombre: 'Fallecimiento de Familiar Directo' },
+  { id: 'FALLECIMIENTO_DEL_TITULAR', nombre: 'Fallecimiento del Titular' },
+  { id: 'NACIMIENTO', nombre: 'Nacimiento' }
 ]
 
 const flatpickrOptions = {

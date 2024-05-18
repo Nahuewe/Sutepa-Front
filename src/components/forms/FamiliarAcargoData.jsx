@@ -7,9 +7,23 @@ import 'flatpickr/dist/themes/material_red.css'
 import { useState, useEffect } from 'react'
 
 const parentescoOptions = [
+  { id: 'ABUELE', nombre: 'Abuele' },
+  { id: 'AHIJADE', nombre: 'Ahijade' },
   { id: 'CONCUBINE', nombre: 'Concubine' },
-  { id: 'MADRE', nombre: 'Madre' }
-  // Añadir más opciones según sea necesario
+  { id: 'CONYUGE', nombre: 'Conyuge' },
+  { id: 'HERMANE', nombre: 'Hermane' },
+  { id: 'HIJE', nombre: 'Hije' },
+  { id: 'MADRE', nombre: 'Madre' },
+  { id: 'NIETE', nombre: 'Niete' },
+  { id: 'PADRE', nombre: 'Padre' },
+  { id: 'SOBRINE', nombre: 'Sobrine' }
+]
+
+const tipoDocumento = [
+  { id: 'DNI', nombre: 'DNI' },
+  { id: 'LIBRETA_DE_ENROLAMIENTO', nombre: 'Libreta de Enrolamiento' },
+  { id: 'LIBRETA_CIVICA', nombre: 'Libreta Civica' },
+  { id: 'PASAPORTE', nombre: 'Pasaporte' }
 ]
 
 const flatpickrOptions = {
@@ -96,7 +110,7 @@ function FamiliarAcargoData ({ register, setValue, errors }) {
 
     setDni(formattedDni)
     setValue('documentoFamiliar', formattedDni)
-    setFormData({ ...formData, documento: formattedDni })
+    setFormData({ ...formData, documentoFamiliar: formattedDni })
   }
 
   const agregarFamiliar = () => {
@@ -104,7 +118,7 @@ function FamiliarAcargoData ({ register, setValue, errors }) {
     setFormData({
       nombreFamiliar: '',
       fechaNacimiento: '',
-      tipoDocumento: '',
+      tipoDocumentoFamiliar: '',
       documentoFamiliar: '',
       parentesco: ''
     })
@@ -161,14 +175,10 @@ function FamiliarAcargoData ({ register, setValue, errors }) {
           <SelectForm
             register={register('tipoDocumento')}
             title='Tipo de Documento'
-            options={[
-              { id: 'DNI', nombre: 'DNI' },
-              { id: 'LIBRETA_DE_ENROLAMIENTO', nombre: 'Libreta de Enrolamiento' }
-              // Añadir más opciones según sea necesario
-            ]}
-            error={errors.tipoDocumento}
-            value={formData.tipoDocumento}
-            onChange={(e) => setFormData({ ...formData, tipoDocumento: e.target.value })}
+            options={tipoDocumento}
+            error={errors.tipoDocumentoFamiliar}
+            value={formData.tipoDocumentoFamiliar}
+            onChange={(e) => setFormData({ ...formData, tipoDocumentoFamiliar: e.target.value })}
           />
 
           <Numberinput
@@ -177,7 +187,7 @@ function FamiliarAcargoData ({ register, setValue, errors }) {
             id='documentoFamiliar'
             placeholder='Documento'
             value={dni}
-            error={errors.DNI}
+            error={errors.documentoFamiliar}
             onChange={handleDniChange}
           />
 

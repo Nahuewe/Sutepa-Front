@@ -4,7 +4,7 @@ import Illustration from '@/assets/images/logo/favicon-sutepa.png'
 function Error () {
   return (
     <div className='min-h-screen flex flex-col justify-center items-center text-center py-20 dark:bg-slate-900'>
-      <img src={Illustration} alt='' />
+      <img src={Illustration} alt='' className='pointer-events-none' />
       <div className='max-w-[546px] mx-auto w-full mt-12'>
         <h4 className='text-slate-900 mb-4'>
           Página no encontrada

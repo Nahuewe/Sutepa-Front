@@ -6,7 +6,7 @@ import Flatpickr from 'react-flatpickr'
 import 'flatpickr/dist/themes/material_red.css'
 import { useState, useEffect } from 'react'
 
-const sexo = [
+const tipoContrato = [
   {
     id: 'PLANTA PERMANENTE',
     nombre: 'PLANTA PERMANENTE'
@@ -15,6 +15,21 @@ const sexo = [
     id: 'CONTRATO',
     nombre: 'CONTRATO'
   }
+]
+
+const agrupamiento = [
+  { id: 'ADMINISTRATIVO', nombre: 'Administrativo' },
+  { id: 'CONTRATADO', nombre: 'Contratado' },
+  { id: 'PROFESIONAL', nombre: 'Profesional' },
+  { id: 'SERVICIOS_GENERALES', nombre: 'Servicios Generales' },
+  { id: 'TECNICO', nombre: 'Tecnico' }
+]
+
+const tramo = [
+  { id: 'A', nombre: 'A' },
+  { id: 'B', nombre: 'B' },
+  { id: 'C', nombre: 'C' },
+  { id: 'D', nombre: 'D' }
 ]
 
 const flatpickrOptions = {
@@ -113,19 +128,19 @@ function InformacionLaboralData ({ register, setValue, errors }) {
           <SelectForm
             register={register('tipoContrato')}
             title='Tipo de Contrato'
-            options={sexo}
+            options={tipoContrato}
           />
 
           <SelectForm
             register={register('ugl')}
             title='UGL'
-            options={sexo}
+            options={agrupamiento}
           />
 
           <SelectForm
             register={register('lugarTrabajo')}
             title='Lugar de Trabajo'
-            options={sexo}
+            options={agrupamiento}
           />
 
           <div>
@@ -143,19 +158,19 @@ function InformacionLaboralData ({ register, setValue, errors }) {
           <SelectForm
             register={register('seccional')}
             title='Seccional SUTEPA'
-            options={sexo}
+            options={agrupamiento}
           />
 
           <SelectForm
             register={register('agrupamiento')}
             title='Agrupamiento'
-            options={sexo}
+            options={agrupamiento}
           />
 
           <SelectForm
             register={register('tramo')}
             title='Tramo'
-            options={sexo}
+            options={tramo}
           />
 
           <div>
