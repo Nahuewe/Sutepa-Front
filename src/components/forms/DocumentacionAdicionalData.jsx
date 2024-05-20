@@ -1,5 +1,5 @@
 import Card from '@/components/ui/Card'
-import { SelectForm } from '@/components/giro/forms'
+import { SelectForm } from '@/components/sutepa/forms'
 import { useState } from 'react'
 
 const tipoArchivo = [

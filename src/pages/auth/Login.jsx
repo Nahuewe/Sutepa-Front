@@ -1,5 +1,5 @@
 import React from 'react'
-import LoginForm from '@/components/giro/auth/login-form'
+import LoginForm from '@/components/sutepa/auth/login-form'
 import { ToastContainer } from 'react-toastify'
 import Illustration from '@/assets/images/auth/imagen-login.jpg'
 import LogoSutepa from '@/assets/images/logo/favicon-sutepa.png'

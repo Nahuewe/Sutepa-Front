@@ -1,7 +1,7 @@
 import Card from '@/components/ui/Card'
 import Textinput from '@/components/ui/Textinput'
 import Numberinput from '@/components/ui/Numberinput'
-import { SelectForm } from '@/components/giro/forms'
+import { SelectForm } from '@/components/sutepa/forms'
 import Flatpickr from 'react-flatpickr'
 import { useState, useEffect } from 'react'
 import 'flatpickr/dist/themes/material_red.css'

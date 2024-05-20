@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import Card from '@/components/ui/Card'
 import Textinput from '@/components/ui/Textinput'
-import { SelectForm } from '@/components/giro/forms'
+import { SelectForm } from '@/components/sutepa/forms'
 
 const tipoObraSocial = [
   { id: 'SINDICAL', nombre: 'SINDICAL' },

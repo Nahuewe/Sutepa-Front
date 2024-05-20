@@ -10,13 +10,13 @@ import {
   useGlobalFilter,
   usePagination
 } from 'react-table'
-import GlobalFilter from '@/components/giro/tables/GlobalFilter'
+import GlobalFilter from '@/components/sutepa/tables/GlobalFilter'
 import Modal from '@/components/ui/Modal'
 import { useSucursalStore } from '../helpers/useSucursalStore'
-import { DeleteModal, SucursalForm } from '../components/giro/forms'
+import { DeleteModal, SucursalForm } from '../components/sutepa/forms'
 import { hadleShowDeleteModal, hadleShowModal } from '../store/layout'
 import { setActiveSucursal } from '../store/sucursal'
-import EditModal from '../components/giro/forms/EditModal'
+import EditModal from '../components/sutepa/forms/EditModal'
 
 const roles = [
   {

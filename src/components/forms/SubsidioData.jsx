@@ -1,6 +1,6 @@
 import Card from '@/components/ui/Card'
 import Textarea from '@/components/ui/Textarea'
-import { SelectForm } from '@/components/giro/forms'
+import { SelectForm } from '@/components/sutepa/forms'
 import Flatpickr from 'react-flatpickr'
 import 'flatpickr/dist/themes/material_red.css'
 import { useState, useEffect } from 'react'

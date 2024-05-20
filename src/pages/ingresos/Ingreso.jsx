@@ -10,12 +10,12 @@ import {
   useGlobalFilter,
   usePagination
 } from 'react-table'
-import GlobalFilter from '@/components/giro/tables/GlobalFilter'
+import GlobalFilter from '@/components/sutepa/tables/GlobalFilter'
 import { useAuthStore, useIngresoStore } from '@/helpers'
 import { setActiveIngreso } from '@/store/ingreso'
 import { useNavigate } from 'react-router-dom'
-import { ShowIngreso } from '@/components/giro/tables/ShowIngreso'
-import { DeleteModal } from '@/components/giro/forms/DeleteModal'
+import { ShowIngreso } from '@/components/sutepa/tables/ShowIngreso'
+import { DeleteModal } from '@/components/sutepa/forms/DeleteModal'
 import { hadleShowDeleteModal } from '@/store/layout'
 import { useUserStore } from '../../helpers'
 

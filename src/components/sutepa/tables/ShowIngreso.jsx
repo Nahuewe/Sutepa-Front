@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Textinput from "@/components/ui/Textinput";
 import * as yup from "yup";
-import { SelectForm } from "@/components/giro/forms";
+import { SelectForm } from "@/components/sutepa/forms";
 import makeAnimated from 'react-select/animated';
 import Textarea from "@/components/ui/Textarea";
 import Card from "@/components/ui/Card";

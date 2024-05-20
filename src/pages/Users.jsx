@@ -9,15 +9,15 @@ import {
   useGlobalFilter,
   usePagination
 } from 'react-table'
-import GlobalFilter from '@/components/giro/tables/GlobalFilter'
+import GlobalFilter from '@/components/sutepa/tables/GlobalFilter'
 import Modal from '@/components/ui/Modal'
-import { UserForm } from '@/components/giro/forms'
+import { UserForm } from '@/components/sutepa/forms'
 import { useUserStore, useAuthStore, useIngresoStore } from '../helpers'
-import { DeleteModal } from '../components/giro/forms'
+import { DeleteModal } from '../components/sutepa/forms'
 import { useDispatch } from 'react-redux'
 import { hadleShowDeleteModal, hadleShowModal } from '../store/layout'
 import { setActiveUser } from '../store/user'
-import EditModal from '../components/giro/forms/EditModal'
+import EditModal from '../components/sutepa/forms/EditModal'
 import EstadisticasUsuario from '@/components/partials/widget/chart/EstadisticasUsuario'
 
 const usuarios = [
