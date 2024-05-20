@@ -1,11 +1,10 @@
-import React, { useState } from "react";
-import Cleave from "cleave.js/react";
-import "cleave.js/dist/addons/cleave-phone.us";
+import React from 'react'
+import 'cleave.js/dist/addons/cleave-phone.us'
 
 const NumberInput = ({
   label,
-  placeholder = "Add placeholder",
-  className = "",
+  placeholder = 'Add placeholder',
+  className = '',
   register,
   name,
   error,
@@ -14,32 +13,31 @@ const NumberInput = ({
   defaultValue,
   ...rest
 }) => {
-
   return (
-    <div className={`fromGroup  ${error ? "has-error" : ""}`}>
+    <div className={`fromGroup  ${error ? 'has-error' : ''}`}>
       {label && (
-        <label htmlFor={id} className="block capitalize form-label">
+        <label htmlFor={id} className='block capitalize form-label'>
           {label}
         </label>
       )}
-      <div className="relative">
+      <div className='relative'>
         <input
-          type="text"
+          type='text'
           {...rest}
-          className={`form-control py-2 ${error ? "has-error" : ""} ${className}`}
+          className={`form-control py-2 ${error ? 'has-error' : ''} ${className} dark:text-white dark:placeholder-white placeholder-black-900`}
           placeholder={placeholder}
           id={id}
           onChange={onChange}
         />
       </div>
-      {/* error message*/}
+      {/* error message */}
       {error && (
-        <div className="mt-2 text-danger-500 text-sm">
+        <div className='mt-2 text-danger-500 text-sm'>
           {error.message}
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default NumberInput;
+export default NumberInput

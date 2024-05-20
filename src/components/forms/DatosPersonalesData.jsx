@@ -123,7 +123,7 @@ const flatpickrOptions = {
   }
 }
 
-function DatosPersonalesData ({ register, setValue, errors }) {
+function DatosPersonalesData ({ register, setValue, errors, disabled }) {
   const [picker, setPicker] = useState(null)
   const [picker2, setPicker2] = useState(null)
   const [cuil, setCuil] = useState('')
@@ -234,8 +234,9 @@ function DatosPersonalesData ({ register, setValue, errors }) {
               type='number'
               value={legajo}
               onChange={handleLegajoChange}
-              placeholder='Legajo'
+              placeholder='Ingrese el número de legajo'
               error={errors.legajo}
+              disabled={disabled}
             />
           </div>
 
@@ -246,12 +247,13 @@ function DatosPersonalesData ({ register, setValue, errors }) {
             </label>
             <Flatpickr
               options={flatpickrOptions}
-              className='form-control py-2 flatPickrBG dark:flatPickrBGDark'
+              className='form-control py-2 flatPickrBG dark:flatPickrBGDark dark:placeholder-white placeholder-black-500'
               value={picker}
               id='fechaAfiliacion'
-              placeholder='Fecha de Afiliacion'
+              placeholder='Seleccione la fecha de afiliación'
               error={errors.fechaAfiliacion}
               onChange={(date) => handleDateChange(date, 'fechaAfiliacion')}
+              disabled={disabled}
             />
             <input type='hidden' {...register('fechaAfiliacion')} />
           </div>
@@ -265,8 +267,9 @@ function DatosPersonalesData ({ register, setValue, errors }) {
               name='nombre'
               type='text'
               register={register}
-              placeholder='Nombre'
+              placeholder='Ingrese el nombre'
               error={errors.nombre}
+              disabled={disabled}
             />
           </div>
 
@@ -279,8 +282,9 @@ function DatosPersonalesData ({ register, setValue, errors }) {
               name='apellido'
               type='text'
               register={register}
-              placeholder='Apellido'
+              placeholder='Ingrese el apellido'
               error={errors.apellido}
+              disabled={disabled}
             />
           </div>
 
@@ -289,6 +293,7 @@ function DatosPersonalesData ({ register, setValue, errors }) {
             title='Sexo'
             options={sexo}
             error={errors.sexo}
+            disabled={disabled}
           />
 
           <div>
@@ -297,14 +302,15 @@ function DatosPersonalesData ({ register, setValue, errors }) {
             </label>
             <Flatpickr
               options={flatpickrOptions}
-              className='form-control py-2 flatPickrBG dark:flatPickrBGDark'
+              className='form-control py-2 flatPickrBG dark:flatPickrBGDark dark:placeholder-white placeholder-black-500'
               value={picker2}
               id='fechaNacimiento'
-              placeholder='Fecha de Nacimiento'
+              placeholder='Seleccione la fecha de nacimiento'
               error={errors.fechaNacimiento}
               onChange={(date) => handleDateChange(date, 'fechaNacimiento')}
+              disabled={disabled}
             />
-            <input type='hidden' {...register('fecha Nacimiento')} />
+            <input type='hidden' {...register('fechaNacimiento')} />
           </div>
 
           <SelectForm
@@ -312,6 +318,7 @@ function DatosPersonalesData ({ register, setValue, errors }) {
             title='Estado Civil'
             options={estadoCivil}
             error={errors.estadoCivil}
+            disabled={disabled}
           />
 
           <div>
@@ -323,6 +330,7 @@ function DatosPersonalesData ({ register, setValue, errors }) {
               register={register('nacionalidad')}
               options={nacionalidad}
               error={errors.nacionalidad}
+              disabled={disabled}
             />
           </div>
 
@@ -335,6 +343,7 @@ function DatosPersonalesData ({ register, setValue, errors }) {
               register={register('tipoDocumento')}
               options={tipoDocumento}
               error={errors.tipoDocumento}
+              disabled={disabled}
             />
           </div>
 
@@ -346,10 +355,11 @@ function DatosPersonalesData ({ register, setValue, errors }) {
             <Numberinput
               register={register}
               id='dni'
-              placeholder='Documento'
+              placeholder='Ingrese el número de documento'
               value={dni}
               error={errors.DNI}
               onChange={handleDniChange}
+              disabled={disabled}
             />
           </div>
 
@@ -357,20 +367,22 @@ function DatosPersonalesData ({ register, setValue, errors }) {
             label='CUIL'
             register={register}
             id='cuil'
-            placeholder='CUIL'
+            placeholder='Ingrese el CUIL'
             error={errors.cuil}
             value={cuil}
             onChange={handleCuilChange}
+            disabled={disabled}
           />
 
           <Textinput
             label='Correo Electrónico'
             register={register}
             id='correoElectronico'
-            placeholder='Correo Electrónico'
+            placeholder='Ingrese el correo electrónico'
             error={errors.correoElectronico}
             value={correoElectronico}
             onChange={handleCorreoElectronicoChange}
+            disabled={disabled}
           />
 
           <Numberinput
@@ -378,10 +390,11 @@ function DatosPersonalesData ({ register, setValue, errors }) {
             register={register}
             id='telefono'
             type='number'
-            placeholder='Teléfono'
+            placeholder='Ingrese el número de teléfono'
             error={errors.telefono}
             value={telefono}
             onChange={handleTelefonoChange}
+            disabled={disabled}
           />
         </div>
       </Card>

@@ -42,7 +42,7 @@ const flatpickrOptions = {
   }
 }
 
-function SubsidioData ({ register, setValue, errors }) {
+function SubsidioData ({ register, setValue, errors, disabled }) {
   const [picker, setPicker] = useState(null)
   const [picker2, setPicker2] = useState(null)
 
@@ -79,6 +79,7 @@ function SubsidioData ({ register, setValue, errors }) {
               register={register('tipoSubsidio')}
               options={tiposSubsidio}
               error={errors.tipoSubsidio}
+              disabled={disabled}
             />
           </div>
 
@@ -89,12 +90,13 @@ function SubsidioData ({ register, setValue, errors }) {
             </label>
             <Flatpickr
               options={flatpickrOptions}
-              className='form-control py-2 flatPickrBG dark:flatPickrBGDark'
+              className='form-control py-2 flatPickrBG dark:flatPickrBGDark dark:placeholder-white placeholder-black-500'
               value={picker}
               id='fechaSolicitud'
-              placeholder='Fecha de Solicitud'
+              placeholder='Ingrese la fecha de solicitud'
               error={errors.fechaSolicitud}
               onChange={(date) => handleDateChange(date, 'fechaSolicitud')}
+              disabled={disabled}
             />
             <input type='hidden' {...register('fechaSolicitud')} />
           </div>
@@ -105,11 +107,12 @@ function SubsidioData ({ register, setValue, errors }) {
             </label>
             <Flatpickr
               options={flatpickrOptions}
-              className='form-control py-2 flatPickrBG dark:flatPickrBGDark'
+              className='form-control py-2 flatPickrBG dark:flatPickrBGDark dark:placeholder-white placeholder-black-500'
               value={picker2}
               id='fechaOtorgamiento'
-              placeholder='Fecha de Otorgamiento'
+              placeholder='Ingese la fecha de otorgamiento'
               onChange={(date) => handleDateChange(date, 'fechaOtorgamiento')}
+              disabled={disabled}
             />
             <input type='hidden' {...register('fechaOtorgamiento')} />
           </div>
@@ -121,7 +124,8 @@ function SubsidioData ({ register, setValue, errors }) {
             <Textarea
               name='observaciones'
               register={register}
-              placeholder='Observaciones'
+              placeholder='Ingrese algunas observaciones'
+              disabled={disabled}
             />
           </div>
         </div>

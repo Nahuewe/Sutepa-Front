@@ -15,7 +15,7 @@ const tipoDocumento = [
   }
 ]
 
-function AfiliadoDomicilioData ({ register, errors, setValue }) {
+function AfiliadoDomicilioData ({ register, errors, setValue, disabled }) {
   const [codigoPostal, setCodigoPostal] = useState('')
 
   const handleCodigoPostalChange = (e) => {
@@ -58,8 +58,9 @@ function AfiliadoDomicilioData ({ register, errors, setValue }) {
             name='domicilio'
             label='Domicilio'
             register={register}
-            placeholder='Domicilio'
+            placeholder='Ingrese el domicilio'
             error={errors.domicilio}
+            disabled={disabled}
           />
 
           <div>
@@ -71,6 +72,7 @@ function AfiliadoDomicilioData ({ register, errors, setValue }) {
               register={register('provincia')}
               options={tipoDocumento}
               error={errors.provincia}
+              disabled={disabled}
             />
           </div>
 
@@ -83,6 +85,7 @@ function AfiliadoDomicilioData ({ register, errors, setValue }) {
               register={register('localidad')}
               options={tipoDocumento}
               error={errors.localidad}
+              disabled={disabled}
             />
           </div>
 
@@ -93,10 +96,11 @@ function AfiliadoDomicilioData ({ register, errors, setValue }) {
             <Numberinput
               register={register}
               id='codigoPostal'
-              placeholder='Codigo Postal'
+              placeholder='Ingrese el código postal'
               value={codigoPostal}
               error={errors.codigoPostal}
               onChange={handleCodigoPostalChange}
+              disabled={disabled}
             />
           </div>
         </div>

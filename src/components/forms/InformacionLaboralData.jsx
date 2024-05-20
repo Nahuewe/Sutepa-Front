@@ -81,7 +81,7 @@ const flatpickrOptions = {
   }
 }
 
-function InformacionLaboralData ({ register, setValue, errors }) {
+function InformacionLaboralData ({ register, setValue, errors, disabled }) {
   const [picker, setPicker] = useState(null)
   const [cargaHoraria, setCargaHoraria] = useState('')
   const [correoElectronicoLaboral, setCorreoElectronicoLaboral] = useState('')
@@ -129,18 +129,21 @@ function InformacionLaboralData ({ register, setValue, errors }) {
             register={register('tipoContrato')}
             title='Tipo de Contrato'
             options={tipoContrato}
+            disabled={disabled}
           />
 
           <SelectForm
             register={register('ugl')}
             title='UGL'
             options={agrupamiento}
+            disabled={disabled}
           />
 
           <SelectForm
             register={register('lugarTrabajo')}
             title='Lugar de Trabajo'
             options={agrupamiento}
+            disabled={disabled}
           />
 
           <div>
@@ -151,7 +154,8 @@ function InformacionLaboralData ({ register, setValue, errors }) {
               name='domicilioTrabajo'
               type='text'
               register={register}
-              placeholder='Domicilio de Trabajo'
+              placeholder='Ingrese el domicilio de trabajo'
+              disabled={disabled}
             />
           </div>
 
@@ -159,18 +163,21 @@ function InformacionLaboralData ({ register, setValue, errors }) {
             register={register('seccional')}
             title='Seccional SUTEPA'
             options={agrupamiento}
+            disabled={disabled}
           />
 
           <SelectForm
             register={register('agrupamiento')}
             title='Agrupamiento'
             options={agrupamiento}
+            disabled={disabled}
           />
 
           <SelectForm
             register={register('tramo')}
             title='Tramo'
             options={tramo}
+            disabled={disabled}
           />
 
           <div>
@@ -180,9 +187,10 @@ function InformacionLaboralData ({ register, setValue, errors }) {
             <Numberinput
               name='cargaHoraria'
               register={register}
-              placeholder='Carga horaria'
+              placeholder='Ingrese la carga horaria'
               value={cargaHoraria}
               onChange={handleCargaHorarioChange}
+              disabled={disabled}
             />
           </div>
 
@@ -193,11 +201,12 @@ function InformacionLaboralData ({ register, setValue, errors }) {
 
             <Flatpickr
               options={flatpickrOptions}
-              className='form-control py-2 flatPickrBG dark:flatPickrBGDark'
+              className='form-control py-2 flatPickrBG dark:flatPickrBGDark dark:placeholder-white placeholder-black-500'
               value={picker}
               id='fechaIngreso'
-              placeholder='Fecha de Ingreso'
+              placeholder='Ingese la fecha de ingreso'
               onChange={handleDateChange}
+              disabled={disabled}
             />
             <input type='hidden' {...register('fechaIngreso')} />
           </div>
@@ -206,20 +215,22 @@ function InformacionLaboralData ({ register, setValue, errors }) {
             label='Correo Electrónico Laboral'
             register={register}
             id='correoElectronicoLaboral'
-            placeholder='Correo Electrónico Laboral'
+            placeholder='Ingrese el correo electrónico laboral'
             value={correoElectronicoLaboral}
             onChange={handleCorreoElectronicoChange}
             error={errors.correoElectronicoLaboral}
+            disabled={disabled}
           />
 
           <Numberinput
             label='Teléfono Laboral'
             register={register}
             id='telefonoLaboral'
-            placeholder='Teléfono Laboral'
+            placeholder='Ingrese el teléfono laboral'
             value={telefonoLaboral}
             onChange={handleTelefonoLaboralChange}
             error={errors.telefonoLaboral}
+            disabled={disabled}
           />
         </div>
       </Card>

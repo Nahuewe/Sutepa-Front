@@ -9,7 +9,7 @@ const tipoObraSocial = [
   { id: 'OTRA', nombre: 'OTRA' }
 ]
 
-function ObraSocialAfiliadoData ({ register }) {
+function ObraSocialAfiliadoData ({ register, disabled }) {
   const [tipoSeleccionado, setTipoSeleccionado] = useState('')
 
   const handleTipoChange = (event) => {
@@ -31,6 +31,7 @@ function ObraSocialAfiliadoData ({ register }) {
               register={register('tipoObraSocial')}
               options={tipoObraSocial}
               onChange={handleTipoChange}
+              disabled={disabled}
             />
           </div>
 
@@ -39,7 +40,8 @@ function ObraSocialAfiliadoData ({ register }) {
               name='obraSocial'
               label='Obra Social'
               register={register}
-              placeholder='Obra Social'
+              placeholder='Especifique la obra social'
+              disabled={disabled}
             />
           )}
 
@@ -49,6 +51,7 @@ function ObraSocialAfiliadoData ({ register }) {
               label='Otra Obra Social'
               register={register}
               placeholder='Especificar otra obra social'
+              disabled={disabled}
             />
           )}
         </div>

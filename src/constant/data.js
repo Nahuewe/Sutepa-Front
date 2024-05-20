@@ -26,7 +26,7 @@ export const menuItems = [
   {
     title: 'Afiliados',
     icon: 'heroicons-outline:user-plus',
-    link: 'ingresos'
+    link: 'afiliados'
   },
 
   {
@@ -38,7 +38,7 @@ export const menuItems = [
   {
     title: 'Roles',
     icon: 'heroicons-outline:key',
-    link: 'sucursales'
+    link: 'roles'
   }
 ]
 
@@ -57,7 +57,7 @@ export const menuNormal = [
   {
     title: 'Afiliados',
     icon: 'heroicons-outline:user-plus',
-    link: 'ingresos'
+    link: 'afiliados'
   }
 
 ]

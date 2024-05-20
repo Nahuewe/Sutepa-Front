@@ -88,7 +88,6 @@
 
 @layer components {
   @import "components/table.scss";
-  @import "components/map.scss";
   @import "components/progress";
   @import "components/tippy";
   @import "components/swiper";
@@ -125,4 +124,37 @@
 
 textarea {
   field-sizing: content;
+}
+
+/* Para navegadores webkit (Chrome, Safari, Opera) */
+::placeholder {
+  color: black; /* Color del texto en modo normal */
+}
+
+/* Para navegadores mozilla (Firefox) */
+:-moz-placeholder {
+  color: black; /* Color del texto en modo normal */
+}
+
+/* Para navegadores que usan el motor de Internet Explorer */
+::-ms-input-placeholder {
+  color: black; /* Color del texto en modo normal */
+}
+
+/* Para el modo oscuro */
+@media (prefers-color-scheme: dark) {
+  /* Para navegadores webkit (Chrome, Safari, Opera) */
+  ::placeholder {
+    color: white; /* Color del texto en modo oscuro */
+  }
+
+  /* Para navegadores mozilla (Firefox) */
+  :-moz-placeholder {
+    color: white; /* Color del texto en modo oscuro */
+  }
+
+  /* Para navegadores que usan el motor de Internet Explorer */
+  ::-ms-input-placeholder {
+    color: white; /* Color del texto en modo oscuro */
+  }
 }

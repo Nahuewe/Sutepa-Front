@@ -1,6 +1,9 @@
 import Card from '@/components/ui/Card'
 import { SelectForm } from '@/components/sutepa/forms'
 import { useState } from 'react'
+import { Icon } from '@iconify/react/dist/iconify.js'
+import Tooltip from '@/components/ui/Tooltip'
+import { toast } from 'react-toastify'
 
 const tipoArchivo = [
   { id: 'ACTA_DEFUNCION', nombre: 'Acta de Defuncion' },
@@ -12,7 +15,7 @@ const tipoArchivo = [
   { id: 'TELEGRAMA_DE_BAJA', nombre: 'Telegrama de Baja' }
 ]
 
-function DocumentacionAdicionalData ({ register, errors }) {
+function DocumentacionAdicionalData ({ register, errors, disabled }) {
   const [documentos, setDocumentos] = useState([])
   const [formData, setFormData] = useState({
     tipoArchivo: '',
@@ -29,7 +32,7 @@ function DocumentacionAdicionalData ({ register, errors }) {
 
   const agregarDocumento = () => {
     if (!formData.tipoArchivo || !formData.archivo) {
-      // Validar que los campos estén completos antes de agregar
+      toast.error('Por favor, complete todos los campos obligatorios.')
       return
     }
 
@@ -61,6 +64,7 @@ function DocumentacionAdicionalData ({ register, errors }) {
             options={tipoArchivo}
             value={formData.tipoArchivo}
             onChange={(e) => setFormData({ ...formData, tipoArchivo: e.target.value })}
+            disabled={disabled}
           />
           <div>
             <label htmlFor='archivo' className='form-label'>Archivo</label>
@@ -70,11 +74,19 @@ function DocumentacionAdicionalData ({ register, errors }) {
               className='form-control'
               name='archivo'
               onChange={handleInputChange}
+              disabled={disabled}
             />
           </div>
         </div>
         <div className='flex justify-end mt-4'>
-          <button type='button' className='btn btn-primary' onClick={agregarDocumento}>Agregar</button>
+          <button
+            type='button'
+            className='btn btn-primary'
+            onClick={agregarDocumento}
+            disabled={disabled}
+          >
+            Agregar
+          </button>
         </div>
       </Card>
 
@@ -100,7 +112,11 @@ function DocumentacionAdicionalData ({ register, errors }) {
                     </a>
                   </td>
                   <td className='px-4 py-2 text-center dark:text-white'>
-                    <button className='btn btn-danger' onClick={() => eliminarDocumento(index)}>Eliminar</button>
+                    <Tooltip content='Eliminar'>
+                      <button className='btn btn-danger' onClick={() => eliminarDocumento(index)} disabled={disabled}>
+                        <Icon icon='heroicons:trash' />
+                      </button>
+                    </Tooltip>
                   </td>
                 </tr>
               ))}

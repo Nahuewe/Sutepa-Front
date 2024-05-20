@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-key */
 import React, { useMemo, useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import Card from '@/components/ui/Card'
@@ -17,7 +18,6 @@ import { useNavigate } from 'react-router-dom'
 import { ShowIngreso } from '@/components/sutepa/tables/ShowIngreso'
 import { DeleteModal } from '@/components/sutepa/forms/DeleteModal'
 import { hadleShowDeleteModal } from '@/store/layout'
-import { useUserStore } from '../../helpers'
 
 const Afiliados = [
   {
@@ -103,6 +103,12 @@ export const Ingreso = ({ title = 'Lista de Afiliados' }) => {
       Cell: (row) => {
         return (
           <div className='flex space-x-3 rtl:space-x-reverse'>
+
+            <Tooltip content='Ver' placement='top' arrow animation='shift-away'>
+              <button id={row?.cell?.value} className='action-btn' type='button' onClick={() => { row.showIngreso(row?.cell?.value) }}>
+                <Icon icon='heroicons:eye' />
+              </button>
+            </Tooltip>
 
             <Tooltip content='Editar' placement='top' arrow animation='shift-away'>
               <button className='action-btn' type='button' onClick={() => { row.editIngreso(row?.cell?.value) }}>

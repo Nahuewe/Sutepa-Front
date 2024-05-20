@@ -44,10 +44,10 @@ function App () {
 
                   {/* Nuevas Rutas */}
                   <Route path='usuarios' element={<Users />} />
-                  <Route path='sucursales' element={<Sucursales />} />
+                  <Route path='roles' element={<Sucursales />} />
 
                   {/* Ingresos */}
-                  <Route path='ingresos' element={<Ingreso />} />
+                  <Route path='afiliados' element={<Ingreso />} />
                   <Route path='ingresos/crear' element={<Create />} />
                   <Route path='ingresos/editar/:id' element={<Create />} />
                 </Route>

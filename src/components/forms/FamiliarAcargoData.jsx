@@ -5,6 +5,9 @@ import { SelectForm } from '@/components/sutepa/forms'
 import Flatpickr from 'react-flatpickr'
 import 'flatpickr/dist/themes/material_red.css'
 import { useState, useEffect } from 'react'
+import Tooltip from '@/components/ui/Tooltip'
+import { Icon } from '@iconify/react/dist/iconify.js'
+import { toast } from 'react-toastify'
 
 const parentescoOptions = [
   { id: 'ABUELE', nombre: 'Abuele' },
@@ -55,7 +58,7 @@ const flatpickrOptions = {
   }
 }
 
-function FamiliarAcargoData ({ register, setValue, errors }) {
+function FamiliarAcargoData ({ register, setValue, errors, disabled }) {
   const [picker, setPicker] = useState(null)
   const [familiares, setFamiliares] = useState([])
   const [dni, setDni] = useState('')
@@ -114,6 +117,15 @@ function FamiliarAcargoData ({ register, setValue, errors }) {
   }
 
   const agregarFamiliar = () => {
+    if (
+      formData.nombreFamiliar === '' ||
+      formData.fechaNacimiento === '' ||
+      formData.parentesco === ''
+    ) {
+      toast.error('Por favor, complete todos los campos obligatorios.')
+      return
+    }
+
     setFamiliares([...familiares, formData])
     setFormData({
       nombreFamiliar: '',
@@ -148,10 +160,11 @@ function FamiliarAcargoData ({ register, setValue, errors }) {
               name='nombreFamiliar'
               type='text'
               register={register}
-              placeholder='Nombre y Apellido'
+              placeholder='Ingrese el nombre y apellido'
               error={errors.nombreFamiliar}
               value={formData.nombreFamiliar}
               onChange={handleInputChange}
+              disabled={disabled}
             />
           </div>
 
@@ -162,12 +175,13 @@ function FamiliarAcargoData ({ register, setValue, errors }) {
             </label>
             <Flatpickr
               options={flatpickrOptions}
-              className='form-control py-2 flatPickrBG dark:flatPickrBGDark'
+              className='form-control py-2 flatPickrBG dark:flatPickrBGDark dark:placeholder-white placeholder-black-500'
               value={picker}
               id='fechaNacimiento'
-              placeholder='Fecha de Nacimiento'
+              placeholder='Ingrese la fecha de nacimiento'
               error={errors.fechaNacimiento}
               onChange={handleDateChange}
+              disabled={disabled}
             />
             <input type='hidden' {...register('fechaNacimiento')} />
           </div>
@@ -179,16 +193,18 @@ function FamiliarAcargoData ({ register, setValue, errors }) {
             error={errors.tipoDocumentoFamiliar}
             value={formData.tipoDocumentoFamiliar}
             onChange={(e) => setFormData({ ...formData, tipoDocumentoFamiliar: e.target.value })}
+            disabled={disabled}
           />
 
           <Numberinput
             label='Documento'
             register={register}
             id='documentoFamiliar'
-            placeholder='Documento'
+            placeholder='Ingrese el documento'
             value={dni}
             error={errors.documentoFamiliar}
             onChange={handleDniChange}
+            disabled={disabled}
           />
 
           <div>
@@ -202,11 +218,17 @@ function FamiliarAcargoData ({ register, setValue, errors }) {
               error={errors.parentesco}
               value={formData.parentesco}
               onChange={(e) => setFormData({ ...formData, parentesco: e.target.value })}
+              disabled={disabled}
             />
           </div>
         </div>
         <div className='flex justify-end mt-4'>
-          <button type='button' className='btn btn-primary' onClick={agregarFamiliar}>
+          <button
+            type='button'
+            className='btn btn-primary'
+            onClick={agregarFamiliar}
+            disabled={disabled}
+          >
             Agregar
           </button>
         </div>
@@ -236,7 +258,11 @@ function FamiliarAcargoData ({ register, setValue, errors }) {
                   <td className='px-4 py-2 text-center dark:text-white'>{familiar.documento}</td>
                   <td className='px-4 py-2 text-center dark:text-white'>{familiar.parentesco}</td>
                   <td className='px-4 py-2 text-center dark:text-white'>
-                    <button className='btn btn-danger' onClick={() => eliminarFamiliar(index)}>Eliminar</button>
+                    <Tooltip content='Eliminar'>
+                      <button className='btn btn-danger' onClick={() => eliminarFamiliar(index)} disabled={disabled}>
+                        <Icon icon='heroicons:trash' />
+                      </button>
+                    </Tooltip>
                   </td>
                 </tr>
               ))}
