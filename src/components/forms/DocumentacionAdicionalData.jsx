@@ -4,18 +4,19 @@ import { useState } from 'react'
 import { Icon } from '@iconify/react/dist/iconify.js'
 import Tooltip from '@/components/ui/Tooltip'
 import { toast } from 'react-toastify'
+import { FileInput } from 'flowbite-react'
 
 const tipoArchivo = [
-  { id: 'ACTA_DEFUNCION', nombre: 'Acta de Defuncion' },
-  { id: 'CERTIFICADO_DE_MATRIMONIO', nombre: 'Certificado de Matrimonio' },
-  { id: 'CERTIFICADO_DE_NACIMIENTO', nombre: 'Certificado de Nacimiento' },
-  { id: 'CONSTANCIA_DE_ALUMNO_REGULAR', nombre: 'Constancia de Alumno Regular' },
-  { id: 'FORMULARIO_DE_ALTA', nombre: 'Formulario de Alta' },
-  { id: 'FOTOCOPIA_DEL_DNI', nombre: 'Fotocopia del DNI' },
-  { id: 'TELEGRAMA_DE_BAJA', nombre: 'Telegrama de Baja' }
+  { id: 'ACTA_DEFUNCION', nombre: 'ACTA DE DEFUNCION' },
+  { id: 'CERTIFICADO_DE_MATRIMONIO', nombre: 'CERTIFICADO DE MATRIMONIO' },
+  { id: 'CERTIFICADO_DE_NACIMIENTO', nombre: 'CERTIFICADO DE NACIMIENTO' },
+  { id: 'CONSTANCIA_DE_ALUMNO_REGULAR', nombre: 'CONSTANCIA DE ALUMNO REGULAR' },
+  { id: 'FORMULARIO_DE_ALTA', nombre: 'FORMULARIO DE ALTA' },
+  { id: 'FOTOCOPIA_DEL_DNI', nombre: 'FOTOCOPIA DEL DNI' },
+  { id: 'TELEGRAMA_DE_BAJA', nombre: 'TELEGRAMA DE BAJA' }
 ]
 
-function DocumentacionAdicionalData ({ register, errors, disabled }) {
+function DocumentacionAdicionalData ({ register, disabled  }) {
   const [documentos, setDocumentos] = useState([])
   const [formData, setFormData] = useState({
     tipoArchivo: '',
@@ -31,19 +32,20 @@ function DocumentacionAdicionalData ({ register, errors, disabled }) {
   }
 
   const agregarDocumento = () => {
-    if (!formData.tipoArchivo || !formData.archivo) {
-      toast.error('Por favor, complete todos los campos obligatorios.')
-      return
+    // Verificar si ambos campos están llenos
+    if (formData.tipoArchivo && formData.archivo) {
+      const nuevoDocumento = {
+        tipoArchivo: formData.tipoArchivo,
+        archivo: formData.archivo,
+        url: URL.createObjectURL(formData.archivo)
+      };
+      setDocumentos([...documentos, nuevoDocumento]);
+      setFormData({ tipoArchivo: '', archivo: null });
+    } else {
+      toast.error('Selecciona un tipo de archivo y subí un documento')
     }
-
-    const nuevoDocumento = {
-      tipoArchivo: formData.tipoArchivo,
-      archivo: formData.archivo,
-      url: URL.createObjectURL(formData.archivo)
-    }
-    setDocumentos([...documentos, nuevoDocumento])
-    setFormData({ tipoArchivo: '', archivo: null })
-  }
+  };
+  
 
   const eliminarDocumento = (index) => {
     const nuevosDocumentos = documentos.filter((_, i) => i !== index)
@@ -68,10 +70,9 @@ function DocumentacionAdicionalData ({ register, errors, disabled }) {
           />
           <div>
             <label htmlFor='archivo' className='form-label'>Archivo</label>
-            <input
+            <FileInput
               type='file'
               id='archivo'
-              className='form-control'
               name='archivo'
               onChange={handleInputChange}
               disabled={disabled}

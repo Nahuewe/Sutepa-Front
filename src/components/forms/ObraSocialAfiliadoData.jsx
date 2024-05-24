@@ -6,16 +6,9 @@ import { SelectForm } from '@/components/sutepa/forms'
 const tipoObraSocial = [
   { id: 'SINDICAL', nombre: 'SINDICAL' },
   { id: 'PREPAGA', nombre: 'PREPAGA' },
-  { id: 'OTRA', nombre: 'OTRA' }
 ]
 
 function ObraSocialAfiliadoData ({ register, disabled }) {
-  const [tipoSeleccionado, setTipoSeleccionado] = useState('')
-
-  const handleTipoChange = (event) => {
-    setTipoSeleccionado(event.target.value)
-  }
-
   return (
     <>
       <h4 className='card-title text-center bg-red-500 dark:bg-gray-700 text-white rounded-md p-2'>
@@ -28,32 +21,19 @@ function ObraSocialAfiliadoData ({ register, disabled }) {
               Tipo de Obra Social
             </label>
             <SelectForm
-              register={register('tipoObraSocial')}
+              register={register('tipo_obra')}
               options={tipoObraSocial}
-              onChange={handleTipoChange}
               disabled={disabled}
             />
           </div>
 
-          {tipoSeleccionado !== 'OTRA' && (
             <Textinput
-              name='obraSocial'
+              name='obra_social'
               label='Obra Social'
               register={register}
               placeholder='Especifique la obra social'
               disabled={disabled}
             />
-          )}
-
-          {tipoSeleccionado === 'OTRA' && (
-            <Textinput
-              name='otraObraSocial'
-              label='Otra Obra Social'
-              register={register}
-              placeholder='Especificar otra obra social'
-              disabled={disabled}
-            />
-          )}
         </div>
       </Card>
     </>

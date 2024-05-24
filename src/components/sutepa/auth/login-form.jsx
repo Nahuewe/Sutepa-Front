@@ -46,7 +46,7 @@ function LoginForm () {
         label='usuario'
         autoComplete='username'
         className='h-[48px]'
-        style={{ backgroundColor: 'white', color: 'gray', border: 'none' }}
+        style={{ color: 'gray', border: 'none' }}
         placeholder='Usuario'
         register={register}
         onChange={(e) => {
@@ -60,7 +60,7 @@ function LoginForm () {
         label='Contraseña'
         type={showPassword ? 'text' : 'password'}
         autoComplete='current-password'
-        style={{ backgroundColor: 'white', color: 'gray', border: 'none' }}
+        style={{ color: 'gray', border: 'none' }}
         className='h-[48px]'
         placeholder='Contraseña'
         register={register}
@@ -79,14 +79,14 @@ function LoginForm () {
       >
         {showPassword
           ? (
-            <svg xmlns='http://www.w3.org/2000/svg' className='icon icon-tabler icon-tabler-eye' width='24' height='24' viewBox='0 0 24 24' strokeWidth='1' stroke='#000000' fill='none' strokeLinecap='round' strokeLinejoin='round'>
+            <svg xmlns='http://www.w3.org/2000/svg' className='icon icon-tabler icon-tabler-eye dark:stroke-white'  width='24' height='24' viewBox='0 0 24 24' strokeWidth='1' stroke='#000000' fill='none' strokeLinecap='round' strokeLinejoin='round' >
               <path stroke='none' d='M0 0h24v24H0z' fill='none' />
               <path d='M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0' />
               <path d='M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6' />
             </svg>
             )
           : (
-            <svg xmlns='http://www.w3.org/2000/svg' className='icon icon-tabler icon-tabler-eye-closed' width='24' height='24' viewBox='0 0 24 24' strokeWidth='1' stroke='#000000' fill='none' strokeLinecap='round' strokeLinejoin='round'>
+            <svg xmlns='http://www.w3.org/2000/svg' className='icon icon-tabler icon-tabler-eye-closed dark:stroke-white' width='24' height='24' viewBox='0 0 24 24' strokeWidth='1' stroke='#000000' fill='none' strokeLinecap='round' strokeLinejoin='round'>
               <path stroke='none' d='M0 0h24v24H0z' fill='none' />
               <path d='M21 9c-2.4 2.667 -5.4 4 -9 4c-3.6 0 -6.6 -1.333 -9 -4' />
               <path d='M3 15l2.5 -3.8' />

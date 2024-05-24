@@ -18,11 +18,11 @@ const tipoContrato = [
 ]
 
 const agrupamiento = [
-  { id: 'ADMINISTRATIVO', nombre: 'Administrativo' },
-  { id: 'CONTRATADO', nombre: 'Contratado' },
-  { id: 'PROFESIONAL', nombre: 'Profesional' },
-  { id: 'SERVICIOS_GENERALES', nombre: 'Servicios Generales' },
-  { id: 'TECNICO', nombre: 'Tecnico' }
+  { id: 'ADMINISTRATIVO', nombre: 'ADMINISTRATIVO' },
+  { id: 'CONTRATADO', nombre: 'CONTRATADO' },
+  { id: 'PROFESIONAL', nombre: 'PROFESIONAL' },
+  { id: 'SERVICIOS_GENERALES', nombre: 'SERVICIOS GENERALES' },
+  { id: 'TECNICO', nombre: 'TECNICO' }
 ]
 
 const tramo = [
@@ -81,40 +81,40 @@ const flatpickrOptions = {
   }
 }
 
-function InformacionLaboralData ({ register, setValue, errors, disabled }) {
+function InformacionLaboralData ({ register, setValue, disabled }) {
   const [picker, setPicker] = useState(null)
   const [cargaHoraria, setCargaHoraria] = useState('')
   const [correoElectronicoLaboral, setCorreoElectronicoLaboral] = useState('')
   const [telefonoLaboral, setTelefonoLaboral] = useState('')
 
   useEffect(() => {
-    register('fechaIngreso')
-    register('cargaHoraria')
-    register('correoElectronicoLaboral')
-    register('telefonoLaboral')
+    register('fecha_ingreso')
+    register('carga_horaria')
+    register('email_laboral')
+    register('telefono_laboral')
   }, [register])
 
   const handleDateChange = (date) => {
     setPicker(date)
-    setValue('fechaIngreso', date[0])
+    setValue('fecha_ingreso', date[0])
   }
 
   const handleCargaHorarioChange = (e) => {
     const value = e.target.value
     setCargaHoraria(value)
-    setValue('cargaHoraria', value)
+    setValue('carga_horaria', value)
   }
 
   const handleCorreoElectronicoChange = (e) => {
     const value = e.target.value
     setCorreoElectronicoLaboral(value)
-    setValue('correoElectronicoLaboral', value)
+    setValue('email_laboral', value)
   }
 
   const handleTelefonoLaboralChange = (e) => {
     const value = e.target.value
     setTelefonoLaboral(value)
-    setValue('telefonoLaboral', value)
+    setValue('telefono_laboral', value)
   }
 
   return (
@@ -126,22 +126,22 @@ function InformacionLaboralData ({ register, setValue, errors, disabled }) {
       <Card>
         <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
           <SelectForm
-            register={register('tipoContrato')}
+            register={register('tipo_contrato')}
             title='Tipo de Contrato'
             options={tipoContrato}
             disabled={disabled}
           />
 
           <SelectForm
-            register={register('ugl')}
+            register={register('ugl_id')}
             title='UGL'
             options={agrupamiento}
             disabled={disabled}
           />
 
           <SelectForm
-            register={register('lugarTrabajo')}
-            title='Lugar de Trabajo'
+            register={register('agencia_id')}
+            title='Agencia'
             options={agrupamiento}
             disabled={disabled}
           />
@@ -160,7 +160,7 @@ function InformacionLaboralData ({ register, setValue, errors, disabled }) {
           </div>
 
           <SelectForm
-            register={register('seccional')}
+            register={register('seccional_id')}
             title='Seccional SUTEPA'
             options={agrupamiento}
             disabled={disabled}
@@ -185,7 +185,7 @@ function InformacionLaboralData ({ register, setValue, errors, disabled }) {
               Carga Horaria
             </label>
             <Numberinput
-              name='cargaHoraria'
+              name='carga_horaria'
               register={register}
               placeholder='Ingrese la carga horaria'
               value={cargaHoraria}
@@ -203,33 +203,31 @@ function InformacionLaboralData ({ register, setValue, errors, disabled }) {
               options={flatpickrOptions}
               className='form-control py-2 flatPickrBG dark:flatPickrBGDark dark:placeholder-white placeholder-black-500'
               value={picker}
-              id='fechaIngreso'
+              id='fecha_ingreso'
               placeholder='Ingese la fecha de ingreso'
               onChange={handleDateChange}
               disabled={disabled}
             />
-            <input type='hidden' {...register('fechaIngreso')} />
+            <input type='hidden' {...register('fecha_ingreso')} />
           </div>
 
           <Textinput
             label='Correo Electrónico Laboral'
             register={register}
-            id='correoElectronicoLaboral'
+            id='email_laboral'
             placeholder='Ingrese el correo electrónico laboral'
             value={correoElectronicoLaboral}
             onChange={handleCorreoElectronicoChange}
-            error={errors.correoElectronicoLaboral}
             disabled={disabled}
           />
 
           <Numberinput
             label='Teléfono Laboral'
             register={register}
-            id='telefonoLaboral'
+            id='telefono_laboral'
             placeholder='Ingrese el teléfono laboral'
             value={telefonoLaboral}
             onChange={handleTelefonoLaboralChange}
-            error={errors.telefonoLaboral}
             disabled={disabled}
           />
         </div>

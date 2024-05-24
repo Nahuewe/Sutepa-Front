@@ -19,13 +19,13 @@ export const Create = () => {
     .object().shape({
       nombre: yup.string().required('El nombre es requerido'),
       apellido: yup.string().required('El apellido es requerido'),
-      legajo: yup.string().required('El legajo es requerido'),
-      fechaAfiliacion: yup.string().required('La fecha de afiliacion es requerida'),
-      nacionalidad: yup.string().required('La nacionalidad es requerida'),
-      tipoDocumento: yup.string().notOneOf([''], 'Debe seleccionar un tipo de documento'),
-      DNI: yup.string().required('El DNI es requerido'),
-      provincia: yup.string().required('La provincia es requerida'),
-      localidad: yup.string().required('La localidad es requerida')
+      legajo: yup.string().required('El legajo es requerido')
+      // fechaAfiliacion: yup.string().required('La fecha de afiliacion es requerida'),
+      // nacionalidad: yup.string().required('La nacionalidad es requerida'),
+      // tipoDocumento: yup.string().notOneOf([''], 'Debe seleccionar un tipo de documento'),
+      // DNI: yup.string().required('El DNI es requerido'),
+      // provincia: yup.string().required('La provincia es requerida'),
+      // localidad: yup.string().required('La localidad es requerida'),
       // nombreFamiliar: yup.string().required('El nombre y apellido es requerido'),
       // fechaNacimiento: yup.string().notOneOf([''], 'La fecha de nacimiento es requerida'),
       // parentesco: yup.string().notOneOf([''], 'El parentesco es requerido'),
@@ -51,7 +51,7 @@ export const Create = () => {
     }
 
     reset()
-    navigate('/ingresos')
+    navigate('/afiliados')
   }
 
   useEffect(() => {
@@ -81,7 +81,7 @@ export const Create = () => {
 
       <div className='flex justify-end gap-4 mt-8'>
         <div className='ltr:text-right rtl:text-left'>
-          <button className='btn-danger items-center text-center py-2 px-6 rounded-lg' onClick={() => navigate('/ingresos')}>Volver</button>
+          <button className='btn-danger items-center text-center py-2 px-6 rounded-lg' onClick={() => navigate('/afiliados')}>Volver</button>
         </div>
         <div className='ltr:text-right rtl:text-left'>
           <button type='submit' className='btn-success items-center text-center py-2 px-6 rounded-lg'>Guardar</button>

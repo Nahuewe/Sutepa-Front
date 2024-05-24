@@ -65,6 +65,7 @@ const Textinput = ({
             disabled={disabled}
             id={id}
             onChange={onChange}
+            style={{ textTransform: 'uppercase' }} // Fuerza mayúsculas
           />
         )}
         {!name && !isMask && (
@@ -77,6 +78,7 @@ const Textinput = ({
             defaultValue={defaultValue}
             onChange={onChange}
             id={id}
+            style={{ textTransform: 'uppercase' }} // Fuerza mayúsculas
           />
         )}
         {name && isMask && (
@@ -91,6 +93,7 @@ const Textinput = ({
             readOnly={readonly}
             disabled={disabled}
             onChange={onChange}
+            style={{ textTransform: 'uppercase' }} // Fuerza mayúsculas
           />
         )}
         {!name && isMask && (
@@ -103,6 +106,7 @@ const Textinput = ({
             readOnly={readonly}
             disabled={disabled}
             onChange={onChange}
+            style={{ textTransform: 'uppercase' }} // Fuerza mayúsculas
           />
         )}
         {/* icon */}

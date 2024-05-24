@@ -15,35 +15,27 @@ const tipoDocumento = [
   }
 ]
 
-function AfiliadoDomicilioData ({ register, errors, setValue, disabled }) {
+function AfiliadoDomicilioData ({ register, disabled, setValue }) {
   const [codigoPostal, setCodigoPostal] = useState('')
 
   const handleCodigoPostalChange = (e) => {
     const value = e.target.value
     const cleanedValue = value.replace(/[^\d]/g, '')
-    const codigoPostalFormat = /^(\d{0,4})$/
-    let formattedCodigoPostal = ''
-
-    if (cleanedValue.length > 4) {
+    const maxLength = 4
+    
+    if (cleanedValue.length > maxLength) {
       return
     }
-
-    if (cleanedValue.length > 0) {
-      formattedCodigoPostal = cleanedValue.replace(codigoPostalFormat, '$1')
-    } else {
-      formattedCodigoPostal = cleanedValue
-    }
-
-    setCodigoPostal(formattedCodigoPostal)
-    setCodigoPostal(value)
-    setValue('codigoPostal', value)
+    
+    setCodigoPostal(cleanedValue)
+    setValue('codigo_postal', cleanedValue)
   }
 
   useEffect(() => {
     register('domicilio')
-    register('provincia')
-    register('localidad')
-    register('codigoPostal')
+    register('provincia_id')
+    register('localidad_id')
+    register('codigo_postal')
   }, [register])
 
   return (
@@ -59,19 +51,16 @@ function AfiliadoDomicilioData ({ register, errors, setValue, disabled }) {
             label='Domicilio'
             register={register}
             placeholder='Ingrese el domicilio'
-            error={errors.domicilio}
             disabled={disabled}
           />
 
           <div>
             <label htmlFor='default-picker' className='form-label'>
               Provincia
-              <strong className='obligatorio'>(*)</strong>
             </label>
             <SelectForm
-              register={register('provincia')}
+              register={register('provincia_id')}
               options={tipoDocumento}
-              error={errors.provincia}
               disabled={disabled}
             />
           </div>
@@ -79,12 +68,10 @@ function AfiliadoDomicilioData ({ register, errors, setValue, disabled }) {
           <div>
             <label htmlFor='default-picker' className='form-label'>
               Localidad
-              <strong className='obligatorio'>(*)</strong>
             </label>
             <SelectForm
-              register={register('localidad')}
+              register={register('localidad_id')}
               options={tipoDocumento}
-              error={errors.localidad}
               disabled={disabled}
             />
           </div>
@@ -95,10 +82,9 @@ function AfiliadoDomicilioData ({ register, errors, setValue, disabled }) {
             </label>
             <Numberinput
               register={register}
-              id='codigoPostal'
+              id='codigo_postal'
               placeholder='Ingrese el código postal'
               value={codigoPostal}
-              error={errors.codigoPostal}
               onChange={handleCodigoPostalChange}
               disabled={disabled}
             />

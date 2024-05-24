@@ -7,25 +7,22 @@ import 'flatpickr/dist/themes/material_red.css'
 import { useState, useEffect } from 'react'
 import Tooltip from '@/components/ui/Tooltip'
 import { Icon } from '@iconify/react/dist/iconify.js'
-import { toast } from 'react-toastify'
 
 const parentescoOptions = [
-  { id: 'ABUELE', nombre: 'Abuele' },
-  { id: 'AHIJADE', nombre: 'Ahijade' },
-  { id: 'CONCUBINE', nombre: 'Concubine' },
-  { id: 'CONYUGE', nombre: 'Conyuge' },
-  { id: 'HERMANE', nombre: 'Hermane' },
-  { id: 'HIJE', nombre: 'Hije' },
-  { id: 'MADRE', nombre: 'Madre' },
-  { id: 'NIETE', nombre: 'Niete' },
-  { id: 'PADRE', nombre: 'Padre' },
-  { id: 'SOBRINE', nombre: 'Sobrine' }
+  { id: 'ABUELO', nombre: 'ABUELO' },
+  { id: 'AHIJADO', nombre: 'AHIJADO' },
+  { id: 'CONCUBINO', nombre: 'CONCUBINO' },
+  { id: 'CONYUGE', nombre: 'CONYUGE' },
+  { id: 'HERMANO', nombre: 'HERMANO' },
+  { id: 'HIJO', nombre: 'HIJO' },
+  { id: 'MADRE', nombre: 'MADRE' },
+  { id: 'NIETO', nombre: 'NIETO' },
+  { id: 'PADRE', nombre: 'PADRE' },
+  { id: 'SOBRINO', nombre: 'SOBRINO' }
 ]
 
 const tipoDocumento = [
   { id: 'DNI', nombre: 'DNI' },
-  { id: 'LIBRETA_DE_ENROLAMIENTO', nombre: 'Libreta de Enrolamiento' },
-  { id: 'LIBRETA_CIVICA', nombre: 'Libreta Civica' },
   { id: 'PASAPORTE', nombre: 'Pasaporte' }
 ]
 
@@ -58,42 +55,42 @@ const flatpickrOptions = {
   }
 }
 
-function FamiliarAcargoData ({ register, setValue, errors, disabled }) {
+function FamiliarAcargoData ({ register, setValue, disabled }) {
   const [picker, setPicker] = useState(null)
   const [familiares, setFamiliares] = useState([])
   const [dni, setDni] = useState('')
   const [formData, setFormData] = useState({
-    nombre: '',
-    apellido: '',
-    fechaNacimiento: '',
-    tipoDocumento: '',
-    documento: '',
+    nombreFamiliar: '',
+    apellidoFamiliar: '',
+    fecha_nacimiento: '',
+    tipoDocumentoFamiliar: '',
+    documentoFamiliar: '',
     parentesco: ''
   })
 
   useEffect(() => {
-    register('fechaNacimiento')
-    register('DNI')
-    register('nombreFamiliar')
+    register('fecha_nacimiento')
+    register('tipoDocumentoFamiliar')
     register('documentoFamiliar')
+    register('nombreFamiliar')
+    register('parentesco')
   }, [register])
 
   const handleDateChange = (date) => {
     setPicker(date)
     const formattedDate = date[0].toLocaleDateString('es-ES')
-    setValue('fechaNacimiento', formattedDate)
-    setFormData({ ...formData, fechaNacimiento: formattedDate })
+    setFormData((prevData) => ({ ...prevData, fecha_nacimiento: formattedDate }))
   }
 
   const handleInputChange = (e) => {
     const { name, value } = e.target
-    setFormData({ ...formData, [name]: value })
+    setFormData((prevData) => ({ ...prevData, [name]: value }))
   }
 
   const handleDniChange = (e) => {
     const value = e.target.value
     const cleanedValue = value.replace(/[^\d]/g, '')
-    const dniFormat = /^(\d{1,2})(\d{3})(\d{3})$/ // Actualización de la expresión regular
+    const dniFormat = /^(\d{1,2})(\d{3})(\d{3})$/
     let formattedDni = ''
     const maxLength = 8
 
@@ -112,24 +109,15 @@ function FamiliarAcargoData ({ register, setValue, errors, disabled }) {
     }
 
     setDni(formattedDni)
-    setValue('documentoFamiliar', formattedDni)
-    setFormData({ ...formData, documentoFamiliar: formattedDni })
+    setFormData((prevData) => ({ ...prevData, documentoFamiliar: formattedDni }))
   }
 
   const agregarFamiliar = () => {
-    if (
-      formData.nombreFamiliar === '' ||
-      formData.fechaNacimiento === '' ||
-      formData.parentesco === ''
-    ) {
-      toast.error('Por favor, complete todos los campos obligatorios.')
-      return
-    }
-
-    setFamiliares([...familiares, formData])
+    setFamiliares([...familiares, { ...formData }])
     setFormData({
       nombreFamiliar: '',
-      fechaNacimiento: '',
+      apellidoFamiliar: '',
+      fecha_nacimiento: '',
       tipoDocumentoFamiliar: '',
       documentoFamiliar: '',
       parentesco: ''
@@ -152,16 +140,14 @@ function FamiliarAcargoData ({ register, setValue, errors, disabled }) {
       <Card>
         <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
           <div>
-            <label htmlFor='nombre' className='form-label'>
+            <label htmlFor='nombreFamiliar' className='form-label'>
               Nombre y Apellido
-              <strong className='obligatorio'>(*)</strong>
             </label>
             <Textinput
               name='nombreFamiliar'
               type='text'
               register={register}
               placeholder='Ingrese el nombre y apellido'
-              error={errors.nombreFamiliar}
               value={formData.nombreFamiliar}
               onChange={handleInputChange}
               disabled={disabled}
@@ -169,28 +155,25 @@ function FamiliarAcargoData ({ register, setValue, errors, disabled }) {
           </div>
 
           <div>
-            <label htmlFor='fechaNacimiento' className='form-label'>
+            <label htmlFor='fecha_nacimiento' className='form-label'>
               Fecha de Nacimiento
-              <strong className='obligatorio'>(*)</strong>
             </label>
             <Flatpickr
               options={flatpickrOptions}
               className='form-control py-2 flatPickrBG dark:flatPickrBGDark dark:placeholder-white placeholder-black-500'
               value={picker}
-              id='fechaNacimiento'
+              id='fecha_nacimiento'
               placeholder='Ingrese la fecha de nacimiento'
-              error={errors.fechaNacimiento}
               onChange={handleDateChange}
               disabled={disabled}
             />
-            <input type='hidden' {...register('fechaNacimiento')} />
+            <input type='hidden' {...register('fecha_nacimiento')} />
           </div>
 
           <SelectForm
-            register={register('tipoDocumento')}
+            register={register('tipoDocumentoFamiliar')}
             title='Tipo de Documento'
             options={tipoDocumento}
-            error={errors.tipoDocumentoFamiliar}
             value={formData.tipoDocumentoFamiliar}
             onChange={(e) => setFormData({ ...formData, tipoDocumentoFamiliar: e.target.value })}
             disabled={disabled}
@@ -202,20 +185,17 @@ function FamiliarAcargoData ({ register, setValue, errors, disabled }) {
             id='documentoFamiliar'
             placeholder='Ingrese el documento'
             value={dni}
-            error={errors.documentoFamiliar}
             onChange={handleDniChange}
             disabled={disabled}
           />
 
           <div>
             <label htmlFor='parentesco' className='form-label'>
-              Tipo de Parentesco
-              <strong className='obligatorio'>(*)</strong>
+              Parentesco
             </label>
             <SelectForm
               register={register('parentesco')}
               options={parentescoOptions}
-              error={errors.parentesco}
               value={formData.parentesco}
               onChange={(e) => setFormData({ ...formData, parentesco: e.target.value })}
               disabled={disabled}
@@ -253,9 +233,9 @@ function FamiliarAcargoData ({ register, setValue, errors, disabled }) {
                   <td className='px-4 py-2 whitespace-nowrap font-medium text-gray-900 dark:text-white text-center'>
                     {familiar.nombreFamiliar}
                   </td>
-                  <td className='px-4 py-2 text-center dark:text-white'>{familiar.fechaNacimiento}</td>
-                  <td className='px-4 py-2 text-center dark:text-white'>{familiar.tipoDocumento}</td>
-                  <td className='px-4 py-2 text-center dark:text-white'>{familiar.documento}</td>
+                  <td className='px-4 py-2 text-center dark:text-white'>{familiar.fecha_nacimiento}</td>
+                  <td className='px-4 py-2 text-center dark:text-white'>{familiar.tipoDocumentoFamiliar}</td>
+                  <td className='px-4 py-2 text-center dark:text-white'>{familiar.documentoFamiliar}</td>
                   <td className='px-4 py-2 text-center dark:text-white'>{familiar.parentesco}</td>
                   <td className='px-4 py-2 text-center dark:text-white'>
                     <Tooltip content='Eliminar'>

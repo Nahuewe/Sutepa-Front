@@ -6,13 +6,13 @@ import 'flatpickr/dist/themes/material_red.css'
 import { useState, useEffect } from 'react'
 
 const tiposSubsidio = [
-  { id: 'APOYO_ESCOLAR', nombre: 'Apoyo Escolar' },
-  { id: 'APOYO_SECUNDARIO', nombre: 'Apoyo Secundario' },
-  { id: 'APOYO_TRABAJADOR_UNIVERISITARIO', nombre: 'Apoyo Trabajador/Universitario' },
-  { id: 'CASAMIENTO', nombre: 'Casamiento' },
-  { id: 'FALLECIMIENTO_DE_FAMILIAR_DIRECTO', nombre: 'Fallecimiento de Familiar Directo' },
-  { id: 'FALLECIMIENTO_DEL_TITULAR', nombre: 'Fallecimiento del Titular' },
-  { id: 'NACIMIENTO', nombre: 'Nacimiento' }
+  { id: 'APOYO_ESCOLAR', nombre: 'APOYO ESCOLAR' },
+  { id: 'APOYO_SECUNDARIO', nombre: 'APOYO SECUNDARIO' },
+  { id: 'APOYO_TRABAJADOR_UNIVERISITARIO', nombre: 'APOYO TRABAJADOR/UNIVERSITARIO' },
+  { id: 'CASAMIENTO', nombre: 'CASAMIENTO' },
+  { id: 'FALLECIMIENTO_DE_FAMILIAR_DIRECTO', nombre: 'FALLECIMIENTO DE FAMILIAR DIRECTO' },
+  { id: 'FALLECIMIENTO_DEL_TITULAR', nombre: 'FALLECIMIENTO DEL TITULAR' },
+  { id: 'NACIMIENTO', nombre: 'NACIMIENTO' }
 ]
 
 const flatpickrOptions = {
@@ -42,7 +42,7 @@ const flatpickrOptions = {
   }
 }
 
-function SubsidioData ({ register, setValue, errors, disabled }) {
+function SubsidioData ({ register, setValue, disabled }) {
   const [picker, setPicker] = useState(null)
   const [picker2, setPicker2] = useState(null)
 
@@ -78,7 +78,6 @@ function SubsidioData ({ register, setValue, errors, disabled }) {
             <SelectForm
               register={register('tipoSubsidio')}
               options={tiposSubsidio}
-              error={errors.tipoSubsidio}
               disabled={disabled}
             />
           </div>
@@ -94,7 +93,6 @@ function SubsidioData ({ register, setValue, errors, disabled }) {
               value={picker}
               id='fechaSolicitud'
               placeholder='Ingrese la fecha de solicitud'
-              error={errors.fechaSolicitud}
               onChange={(date) => handleDateChange(date, 'fechaSolicitud')}
               disabled={disabled}
             />

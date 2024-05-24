@@ -23,24 +23,24 @@ const sexo = [
 
 const estadoCivil = [
   {
-    id: 'CASADE',
-    nombre: 'CASADE'
+    id: 'CASADO',
+    nombre: 'CASADO'
   },
   {
-    id: 'CONCUBINE',
-    nombre: 'CONCUBINE'
+    id: 'CONCUBINO',
+    nombre: 'CONCUBINO'
   },
   {
-    id: 'DIVORCIADE',
-    nombre: 'DIVORCIADE'
+    id: 'DIVORCIADO',
+    nombre: 'DIVORCIADO'
   },
   {
-    id: 'SOLTERE',
-    nombre: 'SOLTERE'
+    id: 'SOLTERO',
+    nombre: 'SOLTERO'
   },
   {
-    id: 'VIUDE',
-    nombre: 'VIUDE'
+    id: 'VIUDO',
+    nombre: 'VIUDO'
   }
 ]
 
@@ -64,13 +64,19 @@ const nacionalidad = [
   {
     id: 'PARAGUAYO',
     nombre: 'PARAGUAYO'
+  },
+  {
+    id: 'URUGUAYO',
+    nombre: 'URUGUAYO'
+  },
+  {
+    id: 'BRASILEÑO',
+    nombre: 'BRASILEÑO'
   }
 ]
 
 const tipoDocumento = [
   { id: 'DNI', nombre: 'DNI' },
-  { id: 'LIBRETA_DE_ENROLAMIENTO', nombre: 'Libreta de Enrolamiento' },
-  { id: 'LIBRETA_CIVICA', nombre: 'Libreta Civica' },
   { id: 'PASAPORTE', nombre: 'Pasaporte' }
 ]
 
@@ -133,20 +139,20 @@ function DatosPersonalesData ({ register, setValue, errors, disabled }) {
   const [telefono, setTelefono] = useState('')
 
   useEffect(() => {
-    register('fechaAfiliacion')
-    register('fechaNacimiento')
-    register('DNI')
-    register('CUIL')
+    register('fecha_afiliacion')
+    register('fecha_nacimiento')
+    register('dni')
+    register('cuil')
     register('legajo')
-    register('correoElectronico')
+    register('email')
     register('telefono')
   }, [register])
 
   const handleDateChange = (date, field) => {
-    if (field === 'fechaAfiliacion') {
+    if (field === 'fecha_afiliacion') {
       setPicker(date)
       setValue(field, date[0])
-    } else if (field === 'fechaNacimiento') {
+    } else if (field === 'fecha_nacimiento') {
       setPicker2(date)
       setValue(field, date[0])
     }
@@ -170,7 +176,7 @@ function DatosPersonalesData ({ register, setValue, errors, disabled }) {
     }
 
     setCuil(formattedCuil)
-    setValue('CUIL', formattedCuil)
+    setValue('cuil', formattedCuil)
   }
 
   const handleDniChange = (e) => {
@@ -195,19 +201,27 @@ function DatosPersonalesData ({ register, setValue, errors, disabled }) {
     }
 
     setDni(formattedDni)
-    setValue('DNI', formattedDni)
+    setValue('dni', formattedDni)
   }
 
   const handleLegajoChange = (e) => {
     const value = e.target.value
-    setLegajo(value)
-    setValue('legajo', value)
+    const cleanedValue = value.replace(/[^\d]/g, '')
+    const maxLength = 5
+    
+    if (cleanedValue.length > maxLength) {
+      return
+    }
+    
+    setLegajo(cleanedValue)
+    setValue('legajo', cleanedValue)
   }
+  
 
   const handleCorreoElectronicoChange = (e) => {
     const value = e.target.value
     setCorreoElectronico(value)
-    setValue('correoElectronico', value)
+    setValue('email', value)
   }
 
   const handleTelefonoChange = (e) => {
@@ -231,7 +245,7 @@ function DatosPersonalesData ({ register, setValue, errors, disabled }) {
             </label>
             <Numberinput
               name='legajo'
-              type='number'
+              type='text'
               value={legajo}
               onChange={handleLegajoChange}
               placeholder='Ingrese el número de legajo'
@@ -243,19 +257,17 @@ function DatosPersonalesData ({ register, setValue, errors, disabled }) {
           <div>
             <label htmlFor='default-picker' className='form-label'>
               Fecha de Afiliacion
-              <strong className='obligatorio'>(*)</strong>
             </label>
             <Flatpickr
               options={flatpickrOptions}
               className='form-control py-2 flatPickrBG dark:flatPickrBGDark dark:placeholder-white placeholder-black-500'
               value={picker}
-              id='fechaAfiliacion'
+              id='fecha_afiliacion'
               placeholder='Seleccione la fecha de afiliación'
-              error={errors.fechaAfiliacion}
-              onChange={(date) => handleDateChange(date, 'fechaAfiliacion')}
+              onChange={(date) => handleDateChange(date, 'fecha_afiliacion')}
               disabled={disabled}
             />
-            <input type='hidden' {...register('fechaAfiliacion')} />
+            <input type='hidden' {...register('fecha_afiliacion')} />
           </div>
 
           <div>
@@ -292,7 +304,6 @@ function DatosPersonalesData ({ register, setValue, errors, disabled }) {
             register={register('sexo')}
             title='Sexo'
             options={sexo}
-            error={errors.sexo}
             disabled={disabled}
           />
 
@@ -304,32 +315,28 @@ function DatosPersonalesData ({ register, setValue, errors, disabled }) {
               options={flatpickrOptions}
               className='form-control py-2 flatPickrBG dark:flatPickrBGDark dark:placeholder-white placeholder-black-500'
               value={picker2}
-              id='fechaNacimiento'
+              id='fecha_nacimiento'
               placeholder='Seleccione la fecha de nacimiento'
-              error={errors.fechaNacimiento}
-              onChange={(date) => handleDateChange(date, 'fechaNacimiento')}
+              onChange={(date) => handleDateChange(date, 'fecha_nacimiento')}
               disabled={disabled}
             />
-            <input type='hidden' {...register('fechaNacimiento')} />
+            <input type='hidden' {...register('fecha_nacimiento')} />
           </div>
 
           <SelectForm
-            register={register('estadoCivil')}
+            register={register('estado_civil')}
             title='Estado Civil'
             options={estadoCivil}
-            error={errors.estadoCivil}
             disabled={disabled}
           />
 
           <div>
             <label htmlFor='default-picker' className='form-label'>
               Nacionalidad
-              <strong className='obligatorio'>(*)</strong>
             </label>
             <SelectForm
-              register={register('nacionalidad')}
+              register={register('nacionalidad_id')}
               options={nacionalidad}
-              error={errors.nacionalidad}
               disabled={disabled}
             />
           </div>
@@ -337,12 +344,10 @@ function DatosPersonalesData ({ register, setValue, errors, disabled }) {
           <div>
             <label htmlFor='default-picker' className='form-label'>
               Tipo de Documento
-              <strong className='obligatorio'>(*)</strong>
             </label>
             <SelectForm
-              register={register('tipoDocumento')}
+              register={register('tipo_documento')}
               options={tipoDocumento}
-              error={errors.tipoDocumento}
               disabled={disabled}
             />
           </div>
@@ -350,14 +355,12 @@ function DatosPersonalesData ({ register, setValue, errors, disabled }) {
           <div>
             <label htmlFor='default-picker' className='form-label'>
               Documento
-              <strong className='obligatorio'>(*)</strong>
             </label>
             <Numberinput
               register={register}
               id='dni'
               placeholder='Ingrese el número de documento'
               value={dni}
-              error={errors.DNI}
               onChange={handleDniChange}
               disabled={disabled}
             />
@@ -368,7 +371,6 @@ function DatosPersonalesData ({ register, setValue, errors, disabled }) {
             register={register}
             id='cuil'
             placeholder='Ingrese el CUIL'
-            error={errors.cuil}
             value={cuil}
             onChange={handleCuilChange}
             disabled={disabled}
@@ -379,7 +381,7 @@ function DatosPersonalesData ({ register, setValue, errors, disabled }) {
             register={register}
             id='correoElectronico'
             placeholder='Ingrese el correo electrónico'
-            error={errors.correoElectronico}
+            className="minuscula"
             value={correoElectronico}
             onChange={handleCorreoElectronicoChange}
             disabled={disabled}
@@ -391,7 +393,6 @@ function DatosPersonalesData ({ register, setValue, errors, disabled }) {
             id='telefono'
             type='number'
             placeholder='Ingrese el número de teléfono'
-            error={errors.telefono}
             value={telefono}
             onChange={handleTelefonoChange}
             disabled={disabled}
