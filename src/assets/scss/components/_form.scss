@@ -33,7 +33,7 @@
 }
 
 .form-control[readonly] {
-  @apply bg-slate-200 text-slate-400 dark:bg-slate-600 cursor-pointer placeholder:text-slate-400;
+  @apply bg-slate-100 text-slate-800 dark:bg-slate-700 cursor-pointer;
 }
 
 .form-control[disabled] {
@@ -72,9 +72,10 @@
 }
 
 .flatPickrBG {
-  background-color: #ffffff !important; 
+  background-color: #ffffff !important;
 }
 
 .flatPickrBGDark {
-  background-color: #0f172a !important; 
+  background-color: #0f172a !important;
+  color: #ffffff !important;
 }

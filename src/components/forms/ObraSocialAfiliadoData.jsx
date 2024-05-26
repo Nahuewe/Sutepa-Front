@@ -1,11 +1,11 @@
-import React, { useState } from 'react'
+import React from 'react'
 import Card from '@/components/ui/Card'
 import Textinput from '@/components/ui/Textinput'
 import { SelectForm } from '@/components/sutepa/forms'
 
 const tipoObraSocial = [
   { id: 'SINDICAL', nombre: 'SINDICAL' },
-  { id: 'PREPAGA', nombre: 'PREPAGA' },
+  { id: 'PREPAGA', nombre: 'PREPAGA' }
 ]
 
 function ObraSocialAfiliadoData ({ register, disabled }) {
@@ -27,13 +27,13 @@ function ObraSocialAfiliadoData ({ register, disabled }) {
             />
           </div>
 
-            <Textinput
-              name='obra_social'
-              label='Obra Social'
-              register={register}
-              placeholder='Especifique la obra social'
-              disabled={disabled}
-            />
+          <Textinput
+            name='obra_social'
+            label='Obra Social'
+            register={register}
+            placeholder='Especifique la obra social'
+            disabled={disabled}
+          />
         </div>
       </Card>
     </>

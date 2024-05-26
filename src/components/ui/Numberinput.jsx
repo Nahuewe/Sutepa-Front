@@ -28,7 +28,6 @@ const NumberInput = ({
           placeholder={placeholder}
           id={id}
           onChange={onChange}
-          style={{ textTransform: 'uppercase' }} // Fuerza mayúsculas
         />
       </div>
       {/* error message */}

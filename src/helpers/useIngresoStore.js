@@ -1,16 +1,16 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { sutepaApi } from '../api'
 import { toast } from 'react-toastify'
-import { handleIngreso, onAddNewIngreso, onDeleteIngreso } from '../store/ingreso'
+import { cleanIngreso, handleIngreso, onDeleteIngreso } from '../store/ingreso'
 
 export const useIngresoStore = () => {
   const dispatch = useDispatch()
-  const { ingresos, activeIngreso } = useSelector(state => state.ingreso)
-  const { user: { uid, sucursal } } = useSelector(state => state.auth) // Id de sucursal del usuario
+  const { ingresos, familiares, documentos, subsidios, activeIngreso } = useSelector(state => state.ingreso)
+  // const { user: { uid, seccional } } = useSelector(state => state.auth) // Id de seccional del usuario
 
   // const startSavingIngreso = async (form) => {
   //   try {
-  //     const { data } = await sutepaApi.post('/ingresos/create', { ...form, usuarioId: uid, sucursalId: sucursal })
+  //     const { data } = await sutepaApi.post('/ingresos/create', { ...form, usuarioId: uid, seccionalId: seccional })
 
   //     if (data.ok) {
   //       dispatch(onAddNewIngreso(data.ingreso))
@@ -27,11 +27,14 @@ export const useIngresoStore = () => {
   const startSavingIngreso = async (data) => {
     try {
       const afiliado = {
-        ...data
+        ...data,
+        familiares,
+        documentos,
+        subsidios
       }
 
       console.log(afiliado)
-      // dispatch(onUpdateIngreso())
+      dispatch(cleanIngreso())
 
       toast.success('Afiliado Creado con exito')
     } catch (error) {

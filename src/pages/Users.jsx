@@ -12,13 +12,12 @@ import {
 import GlobalFilter from '@/components/sutepa/tables/GlobalFilter'
 import Modal from '@/components/ui/Modal'
 import { UserForm } from '@/components/sutepa/forms'
-import { useUserStore, useAuthStore, useIngresoStore } from '../helpers'
+import { useUserStore, useAuthStore } from '../helpers'
 import { DeleteModal } from '../components/sutepa/forms'
 import { useDispatch } from 'react-redux'
 import { hadleShowDeleteModal, hadleShowModal } from '../store/layout'
 import { setActiveUser } from '../store/user'
 import EditModal from '../components/sutepa/forms/EditModal'
-import EstadisticasUsuario from '@/components/partials/widget/chart/EstadisticasUsuario'
 
 const usuarios = [
   {
@@ -126,8 +125,6 @@ export const Users = ({ title = 'Listado de Usuarios' }) => {
   const { users, activeUser, startLoadingUsers, startSavingUser, startDeleteUser, startUpdateUser } = useUserStore()
   const dispatch = useDispatch()
   const { user: { sucursal } } = useAuthStore()
-  const { ingresos } = useIngresoStore()
-  const gridColumns = sucursal !== 1 ? 'md:grid-cols-4' : 'md:grid-cols-4'
 
   const columns = useMemo(() => COLUMNS, [])
   const data = useMemo(() => users, [users])
@@ -184,9 +181,6 @@ export const Users = ({ title = 'Listado de Usuarios' }) => {
   const { globalFilter, pageIndex, pageSize } = state
   return (
     <>
-      <div className={`mt-4 mb-4 grid ${gridColumns} sm:grid-cols-2 grid-cols-1 gap-4`}>
-        <EstadisticasUsuario ingresos={ingresos} />
-      </div>
 
       <Card>
         <div className='md:flex justify-between items-center mb-6'>

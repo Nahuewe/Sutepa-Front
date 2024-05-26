@@ -22,11 +22,11 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
     const value = e.target.value
     const cleanedValue = value.replace(/[^\d]/g, '')
     const maxLength = 4
-    
+
     if (cleanedValue.length > maxLength) {
       return
     }
-    
+
     setCodigoPostal(cleanedValue)
     setValue('codigo_postal', cleanedValue)
   }

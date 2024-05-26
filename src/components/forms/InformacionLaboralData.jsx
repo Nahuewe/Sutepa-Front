@@ -7,14 +7,8 @@ import 'flatpickr/dist/themes/material_red.css'
 import { useState, useEffect } from 'react'
 
 const tipoContrato = [
-  {
-    id: 'PLANTA PERMANENTE',
-    nombre: 'PLANTA PERMANENTE'
-  },
-  {
-    id: 'CONTRATO',
-    nombre: 'CONTRATO'
-  }
+  { id: 'PLANTA PERMANENTE', nombre: 'PLANTA PERMANENTE' },
+  { id: 'CONTRATO', nombre: 'CONTRATO' }
 ]
 
 const agrupamiento = [
@@ -26,11 +20,18 @@ const agrupamiento = [
 ]
 
 const tramo = [
-  { id: 'A', nombre: 'A' },
-  { id: 'B', nombre: 'B' },
-  { id: 'C', nombre: 'C' },
-  { id: 'D', nombre: 'D' }
+  { id: 'A', nombre: 'A' }, // Equivale a 45Hs
+  { id: 'B', nombre: 'B' }, // Equivale a 40Hs
+  { id: 'C', nombre: 'C' }, // Equivale a 35Hs
+  { id: 'D', nombre: 'D' } // Equivale a 35Hs
 ]
+
+const tramoHoras = {
+  A: 45,
+  B: 40,
+  C: 35,
+  D: 35
+}
 
 const flatpickrOptions = {
   dateFormat: 'd-m-Y',
@@ -39,43 +40,15 @@ const flatpickrOptions = {
     weekdays: {
       shorthand: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
       longhand: [
-        'Domingo',
-        'Lunes',
-        'Martes',
-        'Miércoles',
-        'Jueves',
-        'Viernes',
-        'Sábado'
+        'Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'
       ]
     },
     months: {
       shorthand: [
-        'Ene',
-        'Feb',
-        'Mar',
-        'Abr',
-        'May',
-        'Jun',
-        'Jul',
-        'Ago',
-        'Sep',
-        'Oct',
-        'Nov',
-        'Dic'
+        'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'
       ],
       longhand: [
-        'Enero',
-        'Febrero',
-        'Marzo',
-        'Abril',
-        'Mayo',
-        'Junio',
-        'Julio',
-        'Agosto',
-        'Septiembre',
-        'Octubre',
-        'Noviembre',
-        'Diciembre'
+        'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
       ]
     }
   }
@@ -117,6 +90,13 @@ function InformacionLaboralData ({ register, setValue, disabled }) {
     setValue('telefono_laboral', value)
   }
 
+  const handleTramoChange = (e) => {
+    const selectedTramo = e.target.value
+    const horas = tramoHoras[selectedTramo] || ''
+    setCargaHoraria(horas)
+    setValue('carga_horaria', horas)
+  }
+
   return (
     <>
       <h4 className='card-title text-center bg-red-500 dark:bg-gray-700 text-white rounded-md p-2'>
@@ -151,11 +131,12 @@ function InformacionLaboralData ({ register, setValue, disabled }) {
               Domicilio de Trabajo
             </label>
             <Textinput
-              name='domicilioTrabajo'
+              name='domicilio_trabajo'
               type='text'
               register={register}
               placeholder='Ingrese el domicilio de trabajo'
               disabled={disabled}
+              readonly
             />
           </div>
 
@@ -177,6 +158,7 @@ function InformacionLaboralData ({ register, setValue, disabled }) {
             register={register('tramo')}
             title='Tramo'
             options={tramo}
+            onChange={handleTramoChange}
             disabled={disabled}
           />
 
@@ -191,6 +173,7 @@ function InformacionLaboralData ({ register, setValue, disabled }) {
               value={cargaHoraria}
               onChange={handleCargaHorarioChange}
               disabled={disabled}
+              readOnly
             />
           </div>
 
@@ -229,6 +212,7 @@ function InformacionLaboralData ({ register, setValue, disabled }) {
             value={telefonoLaboral}
             onChange={handleTelefonoLaboralChange}
             disabled={disabled}
+            readOnly
           />
         </div>
       </Card>

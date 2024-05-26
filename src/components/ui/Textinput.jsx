@@ -6,7 +6,7 @@ import 'cleave.js/dist/addons/cleave-phone.us'
 const Textinput = ({
   type,
   label,
-  placeholder = 'Add placeholder', // Se establece el placeholder predeterminado
+  placeholder = 'Add placeholder',
   classLabel = 'form-label',
   className = '',
   classGroup = '',
@@ -40,14 +40,12 @@ const Textinput = ({
 
   return (
     <div
-      className={`fromGroup  ${error ? 'has-error' : ''}  ${horizontal ? 'flex' : ''
-        }  ${validate ? 'is-valid' : ''} `}
+      className={`fromGroup ${error ? 'has-error' : ''} ${horizontal ? 'flex' : ''} ${validate ? 'is-valid' : ''}`}
     >
       {label && (
         <label
           htmlFor={id}
-          className={`block capitalize ${classLabel}  ${horizontal ? 'flex-0 mr-6 md:w-[100px] w-[60px] break-words' : ''
-            }`}
+          className={`block capitalize ${classLabel} ${horizontal ? 'flex-0 mr-6 md:w-[100px] w-[60px] break-words' : ''}`}
         >
           {label}
         </label>
@@ -55,62 +53,62 @@ const Textinput = ({
       <div className={`relative ${horizontal ? 'flex-1' : ''}`}>
         {name && !isMask && (
           <input
-            type={isPasswordInput && !showPassword ? 'password' : 'text'} //  "text" a type
+            type={isPasswordInput && !showPassword ? 'password' : 'text'} // "text" a type
             {...register(name)}
             {...rest}
-            className={`${error ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600'} ${error ? 'has-error' : ''} form-control py-2 ${className} dark:text-white dark:placeholder-white placeholder-black-900`}
-            placeholder={placeholder} // Aquí se establece el placeholder
+            className={`${error ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600'} ${error ? 'has-error' : ''} form-control py-2 ${className} dark:text-white dark:placeholder-white placeholder-black-900 lowercase-placeholder`}
+            placeholder={placeholder}
             readOnly={readonly}
             defaultValue={defaultValue}
             disabled={disabled}
             id={id}
             onChange={onChange}
-            style={{ textTransform: 'uppercase' }} // Fuerza mayúsculas
+            style={{ textTransform: 'uppercase' }}
           />
         )}
         {!name && !isMask && (
           <input
             type={isPasswordInput && !showPassword ? 'password' : 'text'}
-            className={`${error ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600'} ${error ? 'has-error' : ''} form-control py-2 ${className} dark:text-white dark:placeholder-white placeholder-black-900`}
-            placeholder={placeholder} // Aquí se establece el placeholder
+            className={`${error ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600'} ${error ? 'has-error' : ''} form-control py-2 ${className} dark:text-white dark:placeholder-white placeholder-black-900 lowercase-placeholder`}
+            placeholder={placeholder}
             readOnly={readonly}
             disabled={disabled}
             defaultValue={defaultValue}
             onChange={onChange}
             id={id}
-            style={{ textTransform: 'uppercase' }} // Fuerza mayúsculas
+            style={{ textTransform: 'uppercase' }}
           />
         )}
         {name && isMask && (
           <Cleave
             {...register(name)}
             {...rest}
-            placeholder={placeholder} // Aquí se establece el placeholder
+            placeholder={placeholder}
             options={options}
-            className={`${error ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600'} ${error ? 'has-error' : ''} form-control py-2 ${className} dark:text-white dark:placeholder-white placeholder-black-900`}
+            className={`${error ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600'} ${error ? 'has-error' : ''} form-control py-2 ${className} dark:text-white dark:placeholder-white placeholder-black-900 lowercase-placeholder`}
             onFocus={onFocus}
             id={id}
             readOnly={readonly}
             disabled={disabled}
             onChange={onChange}
-            style={{ textTransform: 'uppercase' }} // Fuerza mayúsculas
+            style={{ textTransform: 'uppercase' }}
           />
         )}
         {!name && isMask && (
           <Cleave
-            placeholder={placeholder} // Aquí se establece el placeholder
+            placeholder={placeholder}
             options={options}
-            className={`${error ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600'} ${error ? 'has-error' : ''} form-control py-2 ${className} dark:text-white dark:placeholder-white placeholder-black-900`}
+            className={`${error ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600'} ${error ? 'has-error' : ''} form-control py-2 ${className} dark:text-white dark:placeholder-white placeholder-black-900 lowercase-placeholder`}
             onFocus={onFocus}
             id={id}
             readOnly={readonly}
             disabled={disabled}
             onChange={onChange}
-            style={{ textTransform: 'uppercase' }} // Fuerza mayúsculas
+            style={{ textTransform: 'uppercase' }}
           />
         )}
         {/* icon */}
-        <div className='flex text-xl absolute ltr:right-[14px] rtl:left-[14px] top-1/2 -translate-y-1/2  space-x-1 rtl:space-x-reverse'>
+        <div className='flex text-xl absolute ltr:right-[14px] rtl:left-[14px] top-1/2 -translate-y-1/2 space-x-1 rtl:space-x-reverse'>
           {hasicon && (
             <span
               className='cursor-pointer text-secondary-500'
@@ -141,10 +139,7 @@ const Textinput = ({
       {/* error and success message */}
       {error && (
         <div
-          className={` mt-2 ${msgTooltip
-              ? ' inline-block bg-danger-500 text-white text-[10px] px-2 py-1 rounded'
-              : ' text-danger-500 block text-sm'
-            }`}
+          className={`mt-2 ${msgTooltip ? 'inline-block bg-danger-500 text-white text-[10px] px-2 py-1 rounded' : 'text-danger-500 block text-sm'}`}
         >
           {error.message}
         </div>
@@ -152,16 +147,12 @@ const Textinput = ({
       {/* validated and success message */}
       {validate && (
         <div
-          className={` mt-2 ${msgTooltip
-              ? ' inline-block bg-success-500 text-white text-[10px] px-2 py-1 rounded'
-              : ' text-success-500 block text-sm'
-            }`}
+          className={`mt-2 ${msgTooltip ? 'inline-block bg-success-500 text-white text-[10px] px-2 py-1 rounded' : 'text-success-500 block text-sm'}`}
         >
           {validate}
         </div>
       )}
       {description && <span className='input-description'>{description}</span>}
-
     </div>
   )
 }

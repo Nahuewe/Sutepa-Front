@@ -162,3 +162,9 @@ textarea {
 .minuscula {
   text-transform: lowercase !important;
 }
+
+/* Textinput.css */
+.lowercase-placeholder::placeholder {
+  text-transform: none; /* Para mantener el placeholder en minúsculas */
+  color: inherit; /* Para heredar el color del placeholder en diferentes temas */
+}

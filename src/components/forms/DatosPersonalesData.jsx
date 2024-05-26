@@ -87,43 +87,15 @@ const flatpickrOptions = {
     weekdays: {
       shorthand: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
       longhand: [
-        'Domingo',
-        'Lunes',
-        'Martes',
-        'Miércoles',
-        'Jueves',
-        'Viernes',
-        'Sábado'
+        'Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'
       ]
     },
     months: {
       shorthand: [
-        'Ene',
-        'Feb',
-        'Mar',
-        'Abr',
-        'May',
-        'Jun',
-        'Jul',
-        'Ago',
-        'Sep',
-        'Oct',
-        'Nov',
-        'Dic'
+        'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'
       ],
       longhand: [
-        'Enero',
-        'Febrero',
-        'Marzo',
-        'Abril',
-        'Mayo',
-        'Junio',
-        'Julio',
-        'Agosto',
-        'Septiembre',
-        'Octubre',
-        'Noviembre',
-        'Diciembre'
+        'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
       ]
     }
   }
@@ -208,15 +180,14 @@ function DatosPersonalesData ({ register, setValue, errors, disabled }) {
     const value = e.target.value
     const cleanedValue = value.replace(/[^\d]/g, '')
     const maxLength = 5
-    
+
     if (cleanedValue.length > maxLength) {
       return
     }
-    
+
     setLegajo(cleanedValue)
     setValue('legajo', cleanedValue)
   }
-  
 
   const handleCorreoElectronicoChange = (e) => {
     const value = e.target.value
@@ -379,9 +350,8 @@ function DatosPersonalesData ({ register, setValue, errors, disabled }) {
           <Textinput
             label='Correo Electrónico'
             register={register}
-            id='correoElectronico'
+            id='email'
             placeholder='Ingrese el correo electrónico'
-            className="minuscula"
             value={correoElectronico}
             onChange={handleCorreoElectronicoChange}
             disabled={disabled}

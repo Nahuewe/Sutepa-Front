@@ -31,7 +31,9 @@ export const UserForm = ({ activeUser = null, startFn }) => {
     register,
     formState: { errors },
     handleSubmit,
-    reset
+    reset,
+    watch,
+    setValue
   } = useForm({
     defaultValues: {
       nombre: activeUser?.nombre || '',
@@ -45,6 +47,20 @@ export const UserForm = ({ activeUser = null, startFn }) => {
     startFn(data)
     reset({ username: '', nombre: '', password: '', sucursalId: '' })
   }
+
+  // Watch the 'nombre' field and update 'username' accordingly
+  useEffect(() => {
+    const subscription = watch((value, { name }) => {
+      if (name === 'nombre' && value.nombre) {
+        const parts = value.nombre.trim().toLowerCase().split(' ')
+        if (parts.length > 1) {
+          const username = `${parts[0][0]}${parts.slice(1).join('')}`
+          setValue('username', username)
+        }
+      }
+    })
+    return () => subscription.unsubscribe()
+  }, [watch, setValue])
 
   useEffect(() => {
     startLoadingSucursales()
