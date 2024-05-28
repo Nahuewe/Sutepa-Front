@@ -1,6 +1,6 @@
 import Card from '@/components/ui/Card'
 import { SelectForm } from '@/components/sutepa/forms'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Icon } from '@iconify/react/dist/iconify.js'
 import Tooltip from '@/components/ui/Tooltip'
 import { toast } from 'react-toastify'
@@ -9,20 +9,19 @@ import { onAddDocumento, onDeleteDocumento } from '../../store/ingreso'
 import { useDispatch, useSelector } from 'react-redux'
 
 const initialForm = {
-  id: null,
   tipo_archivo: '',
   archivo: null,
   url: null
 }
 
 const tipoArchivo = [
-  { id: 'ACTA_DEFUNCION', nombre: 'ACTA DE DEFUNCION' },
-  { id: 'CERTIFICADO_DE_MATRIMONIO', nombre: 'CERTIFICADO DE MATRIMONIO' },
-  { id: 'CERTIFICADO_DE_NACIMIENTO', nombre: 'CERTIFICADO DE NACIMIENTO' },
-  { id: 'CONSTANCIA_DE_ALUMNO_REGULAR', nombre: 'CONSTANCIA DE ALUMNO REGULAR' },
-  { id: 'FORMULARIO_DE_ALTA', nombre: 'FORMULARIO DE ALTA' },
-  { id: 'FOTOCOPIA_DEL_DNI', nombre: 'FOTOCOPIA DEL DNI' },
-  { id: 'TELEGRAMA_DE_BAJA', nombre: 'TELEGRAMA DE BAJA' }
+  { id: 1, nombre: 'ACTA DE DEFUNCION' },
+  { id: 2, nombre: 'CERTIFICADO DE MATRIMONIO' },
+  { id: 3, nombre: 'CERTIFICADO DE NACIMIENTO' },
+  { id: 4, nombre: 'CONSTANCIA DE ALUMNO REGULAR' },
+  { id: 5, nombre: 'FORMULARIO DE ALTA' },
+  { id: 6, nombre: 'FOTOCOPIA DEL DNI' },
+  { id: 7, nombre: 'TELEGRAMA DE BAJA' }
 ]
 
 function DocumentacionAdicionalData ({ register, disabled }) {
@@ -30,6 +29,7 @@ function DocumentacionAdicionalData ({ register, disabled }) {
   const [documentos, setDocumentos] = useState([])
   const { user } = useSelector(state => state.auth)
   const [formData, setFormData] = useState(initialForm)
+  const formRef = useRef()
 
   const handleInputChange = (e) => {
     const { name, value, files } = e.target
@@ -39,16 +39,18 @@ function DocumentacionAdicionalData ({ register, disabled }) {
     })
   }
 
-  function onReset () {
-    setFormData(initialForm)
+  const onReset = () => {
+    formRef.current.reset()
   }
 
   const agregarDocumento = (documento) => {
     // Verificar si ambos campos están llenos
+    const tipoArchivoData = tipoArchivo.find(ts => ts.id === Number(formData.tipo_archivo))?.nombre || ''
     if (formData.tipo_archivo && formData.archivo) {
       const nuevoDocumento = {
         ...formData,
         id: Date.now(),
+        tipo_archivo: tipoArchivoData,
         fecha_carga: new Date().toLocaleDateString('es-ES'),
         url: URL.createObjectURL(formData.archivo)
       }
@@ -79,36 +81,38 @@ function DocumentacionAdicionalData ({ register, disabled }) {
       </h4>
 
       <Card>
-        <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-          <SelectForm
-            register={register('tipo_archivo')}
-            title='Tipo de Archivo'
-            options={tipoArchivo}
-            value={formData.tipo_archivo}
-            onChange={(e) => setFormData({ ...formData, tipo_archivo: e.target.value })}
-            disabled={disabled}
-          />
-          <div>
-            <label htmlFor='archivo' className='form-label'>Archivo</label>
-            <FileInput
-              type='file'
-              id='archivo'
-              name='archivo'
-              onChange={handleInputChange}
+        <form ref={formRef}>
+          <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+            <SelectForm
+              register={register('tipo_archivo')}
+              title='Tipo de Archivo'
+              options={tipoArchivo}
+              value={formData.tipo_archivo}
+              onChange={(e) => setFormData({ ...formData, tipo_archivo: e.target.value })}
               disabled={disabled}
             />
+            <div>
+              <label htmlFor='archivo' className='form-label'>Archivo</label>
+              <FileInput
+                type='file'
+                id='archivo'
+                name='archivo'
+                onChange={handleInputChange}
+                disabled={disabled}
+              />
+            </div>
           </div>
-        </div>
-        <div className='flex justify-end mt-4'>
-          <button
-            type='button'
-            className='btn btn-primary rounded-lg'
-            onClick={agregarDocumento}
-            disabled={disabled}
-          >
-            Agregar Documento
-          </button>
-        </div>
+          <div className='flex justify-end mt-4 gap-4'>
+            <button
+              type='button'
+              className='btn btn-primary rounded-lg'
+              onClick={agregarDocumento}
+              disabled={disabled}
+            >
+              Agregar Documento
+            </button>
+          </div>
+        </form>
       </Card>
 
       {documentos.length > 0 && (

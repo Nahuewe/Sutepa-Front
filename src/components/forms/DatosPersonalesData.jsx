@@ -1,83 +1,85 @@
+import React, { useState, useEffect } from 'react'
+import { useDispatch } from 'react-redux'
 import Card from '@/components/ui/Card'
 import Textinput from '@/components/ui/Textinput'
 import Numberinput from '@/components/ui/Numberinput'
 import { SelectForm } from '@/components/sutepa/forms'
 import Flatpickr from 'react-flatpickr'
-import { useState, useEffect } from 'react'
 import 'flatpickr/dist/themes/material_red.css'
+import { updatePersona } from '../../store/ingreso'
 
 const sexo = [
   {
-    id: 'HOMBRE',
+    id: 1,
     nombre: 'HOMBRE'
   },
   {
-    id: 'MUJER',
+    id: 2,
     nombre: 'MUJER'
   },
   {
-    id: 'NO INFORMA',
+    id: 3,
     nombre: 'NO INFORMA'
   }
 ]
 
 const estadoCivil = [
   {
-    id: 'CASADO',
+    id: 1,
     nombre: 'CASADO'
   },
   {
-    id: 'CONCUBINO',
+    id: 2,
     nombre: 'CONCUBINO'
   },
   {
-    id: 'DIVORCIADO',
+    id: 3,
     nombre: 'DIVORCIADO'
   },
   {
-    id: 'SOLTERO',
+    id: 4,
     nombre: 'SOLTERO'
   },
   {
-    id: 'VIUDO',
+    id: 5,
     nombre: 'VIUDO'
   }
 ]
 
 const nacionalidad = [
   {
-    id: 'ARGENTINO',
+    id: 1,
     nombre: 'ARGENTINO'
   },
   {
-    id: 'CHILENO',
+    id: 2,
     nombre: 'CHILENO'
   },
   {
-    id: 'BOLIVIANO',
+    id: 3,
     nombre: 'BOLIVIANO'
   },
   {
-    id: 'PERUANO',
+    id: 4,
     nombre: 'PERUANO'
   },
   {
-    id: 'PARAGUAYO',
+    id: 5,
     nombre: 'PARAGUAYO'
   },
   {
-    id: 'URUGUAYO',
+    id: 6,
     nombre: 'URUGUAYO'
   },
   {
-    id: 'BRASILEÑO',
+    id: 7,
     nombre: 'BRASILEÑO'
   }
 ]
 
 const tipoDocumento = [
   { id: 'DNI', nombre: 'DNI' },
-  { id: 'PASAPORTE', nombre: 'Pasaporte' }
+  { id: 'PASAPORTE', nombre: 'PASAPORTE' }
 ]
 
 const flatpickrOptions = {
@@ -86,22 +88,16 @@ const flatpickrOptions = {
     firstDayOfWeek: 1,
     weekdays: {
       shorthand: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
-      longhand: [
-        'Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'
-      ]
+      longhand: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado']
     },
     months: {
-      shorthand: [
-        'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'
-      ],
-      longhand: [
-        'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
-      ]
+      shorthand: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+      longhand: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
     }
   }
 }
 
-function DatosPersonalesData ({ register, setValue, errors, disabled }) {
+function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
   const [picker, setPicker] = useState(null)
   const [picker2, setPicker2] = useState(null)
   const [cuil, setCuil] = useState('')
@@ -109,16 +105,27 @@ function DatosPersonalesData ({ register, setValue, errors, disabled }) {
   const [legajo, setLegajo] = useState('')
   const [correoElectronico, setCorreoElectronico] = useState('')
   const [telefono, setTelefono] = useState('')
+  const dispatch = useDispatch()
 
   useEffect(() => {
-    register('fecha_afiliacion')
-    register('fecha_nacimiento')
-    register('dni')
-    register('cuil')
-    register('legajo')
-    register('email')
-    register('telefono')
-  }, [register])
+    const personaData = {
+      fecha_afiliacion: picker,
+      fecha_nacimiento: picker2,
+      dni,
+      cuil,
+      legajo,
+      email: correoElectronico,
+      telefono,
+      nombre: watch('nombre'),
+      apellido: watch('apellido'),
+      sexo: watch('sexo'),
+      estado_civil_id: watch('estado_civil_id'),
+      nacionalidad_id: watch('nacionalidad_id'),
+      tipo_documento: watch('tipo_documento')
+    }
+
+    dispatch(updatePersona(personaData))
+  }, [picker, picker2, cuil, dni, legajo, correoElectronico, telefono, dispatch])
 
   const handleDateChange = (date, field) => {
     if (field === 'fecha_afiliacion') {
@@ -295,7 +302,7 @@ function DatosPersonalesData ({ register, setValue, errors, disabled }) {
           </div>
 
           <SelectForm
-            register={register('estado_civil')}
+            register={register('estado_civil_id')}
             title='Estado Civil'
             options={estadoCivil}
             disabled={disabled}
@@ -351,6 +358,7 @@ function DatosPersonalesData ({ register, setValue, errors, disabled }) {
             label='Correo Electrónico'
             register={register}
             id='email'
+            className='minuscula'
             placeholder='Ingrese el correo electrónico'
             value={correoElectronico}
             onChange={handleCorreoElectronicoChange}

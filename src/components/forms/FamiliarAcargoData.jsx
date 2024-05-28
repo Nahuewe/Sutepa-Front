@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import Card from '@/components/ui/Card'
 import Textinput from '@/components/ui/Textinput'
 import Numberinput from '@/components/ui/Numberinput'
@@ -15,26 +15,26 @@ const initialForm = {
   nombre_familiar: '',
   fecha_nacimiento: '',
   tipo_documento_familiar: '',
-  documentoFamiliar: '',
+  documento: '',
   parentesco: ''
 }
 
 const parentescoOptions = [
-  { id: 'ABUELO', nombre: 'ABUELO' },
-  { id: 'AHIJADO', nombre: 'AHIJADO' },
-  { id: 'CONCUBINO', nombre: 'CONCUBINO' },
-  { id: 'CONYUGE', nombre: 'CONYUGE' },
-  { id: 'HERMANO', nombre: 'HERMANO' },
-  { id: 'HIJO', nombre: 'HIJO' },
-  { id: 'MADRE', nombre: 'MADRE' },
-  { id: 'NIETO', nombre: 'NIETO' },
-  { id: 'PADRE', nombre: 'PADRE' },
-  { id: 'SOBRINO', nombre: 'SOBRINO' }
+  { id: 1, nombre: 'ABUELO' },
+  { id: 2, nombre: 'AHIJADO' },
+  { id: 3, nombre: 'CONCUBINO' },
+  { id: 4, nombre: 'CONYUGE' },
+  { id: 5, nombre: 'HERMANO' },
+  { id: 6, nombre: 'HIJO' },
+  { id: 7, nombre: 'MADRE' },
+  { id: 8, nombre: 'NIETO' },
+  { id: 9, nombre: 'PADRE' },
+  { id: 10, nombre: 'SOBRINO' }
 ]
 
 const tipoDocumento = [
   { id: 'DNI', nombre: 'DNI' },
-  { id: 'PASAPORTE', nombre: 'Pasaporte' }
+  { id: 'PASAPORTE', nombre: 'PASAPORTE' }
 ]
 
 const flatpickrOptions = {
@@ -65,21 +65,25 @@ function FamiliarAcargoData ({ register, disabled }) {
   const [picker, setPicker] = useState(null)
   const [dni, setDni] = useState('')
   const [formData, setFormData] = useState(initialForm)
+  const formRef = useRef()
 
   function onDelete (id) {
     dispatch(onDeleteFamiliar(id))
   }
 
-  function onReset () {
-    setFormData(initialForm)
-    setPicker(null)
+  const onReset = () => {
+    formRef.current.reset()
     setDni('')
+    setPicker(null)
+    setFormData(initialForm)
   }
 
   const addFamiliar = () => {
+    const parentescoNombre = parentescoOptions.find(ts => ts.id === Number(formData.parentesco))?.nombre || ''
     const newFamiliar = {
       ...formData,
       id: Date.now(),
+      parentesco: parentescoNombre,
       fecha_carga: new Date().toLocaleDateString('es-ES')
     }
     dispatch(onAddFamiliar(newFamiliar))
@@ -119,7 +123,7 @@ function FamiliarAcargoData ({ register, disabled }) {
     }
 
     setDni(formattedDni)
-    setFormData((prevData) => ({ ...prevData, documentoFamiliar: formattedDni }))
+    setFormData((prevData) => ({ ...prevData, documento: formattedDni }))
   }
 
   return (
@@ -129,80 +133,82 @@ function FamiliarAcargoData ({ register, disabled }) {
       </h4>
 
       <Card>
-        <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-          <div>
-            <label htmlFor='nombre_familiar' className='form-label'>
-              Nombre y Apellido
-            </label>
-            <Textinput
-              name='nombre_familiar'
-              type='text'
-              register={register}
-              placeholder='Ingrese el nombre y apellido'
-              value={formData.nombre_familiar}
-              onChange={handleInputChange}
-              disabled={disabled}
-            />
-          </div>
+        <form ref={formRef}>
+          <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+            <div>
+              <label htmlFor='nombre' className='form-label'>
+                Nombre y Apellido
+              </label>
+              <Textinput
+                name='nombre_familiar'
+                type='text'
+                register={register}
+                placeholder='Ingrese el nombre y apellido'
+                value={formData.nombre_familiar}
+                onChange={handleInputChange}
+                disabled={disabled}
+              />
+            </div>
 
-          <div>
-            <label htmlFor='fecha_nacimiento' className='form-label'>
-              Fecha de Nacimiento
-            </label>
-            <Flatpickr
-              options={flatpickrOptions}
-              className='form-control py-2 flatPickrBG dark:flatPickrBGDark dark:placeholder-white placeholder-black-500'
-              value={picker}
-              id='fecha_nacimiento'
-              placeholder='Ingrese la fecha de nacimiento'
-              onChange={handleDateChange}
-              disabled={disabled}
-            />
-            <input type='hidden' {...register('fecha_nacimiento')} />
-          </div>
+            <div>
+              <label htmlFor='fecha_nacimiento' className='form-label'>
+                Fecha de Nacimiento
+              </label>
+              <Flatpickr
+                options={flatpickrOptions}
+                className='form-control py-2 flatPickrBG dark:flatPickrBGDark dark:placeholder-white placeholder-black-500'
+                value={picker}
+                id='fecha_nacimiento'
+                placeholder='Ingrese la fecha de nacimiento'
+                onChange={handleDateChange}
+                disabled={disabled}
+              />
+              <input type='hidden' {...register('fecha_nacimiento')} />
+            </div>
 
-          <SelectForm
-            register={register('tipo_documento_familiar')}
-            title='Tipo de Documento'
-            options={tipoDocumento}
-            value={formData.tipo_documento_familiar}
-            onChange={(e) => setFormData({ ...formData, tipo_documento_familiar: e.target.value })}
-            disabled={disabled}
-          />
-
-          <Numberinput
-            label='Documento'
-            register={register}
-            id='documentoFamiliar'
-            placeholder='Ingrese el documento'
-            value={dni}
-            onChange={handleDniChange}
-            disabled={disabled}
-          />
-
-          <div>
-            <label htmlFor='parentesco' className='form-label'>
-              Parentesco
-            </label>
             <SelectForm
-              register={register('parentesco')}
-              options={parentescoOptions}
-              value={formData.parentesco}
-              onChange={(e) => setFormData({ ...formData, parentesco: e.target.value })}
+              register={register('tipo_documento_familiar')}
+              title='Tipo de Documento'
+              options={tipoDocumento}
+              value={formData.tipo_documento_familiar}
+              onChange={(e) => setFormData({ ...formData, tipo_documento_familiar: e.target.value })}
               disabled={disabled}
             />
+
+            <Numberinput
+              label='Documento'
+              register={register}
+              id='documento'
+              placeholder='Ingrese el documento'
+              value={dni}
+              onChange={handleDniChange}
+              disabled={disabled}
+            />
+
+            <div>
+              <label htmlFor='parentesco' className='form-label'>
+                Parentesco
+              </label>
+              <SelectForm
+                register={register('parentesco')}
+                options={parentescoOptions}
+                value={formData.parentesco}
+                onChange={(e) => setFormData({ ...formData, parentesco: e.target.value })}
+                disabled={disabled}
+              />
+            </div>
           </div>
-        </div>
-        <div className='flex justify-end mt-4'>
-          <button
-            type='button'
-            className='btn btn-primary rounded-lg'
-            onClick={addFamiliar}
-            disabled={disabled}
-          >
-            Agregar Familiar
-          </button>
-        </div>
+          <div className='flex justify-end mt-4 gap-4'>
+            <button
+              type='button'
+              className='btn btn-primary rounded-lg'
+              onClick={addFamiliar}
+              disabled={disabled}
+            >
+              Agregar Familiar
+            </button>
+          </div>
+        </form>
       </Card>
 
       {
@@ -228,7 +234,7 @@ function FamiliarAcargoData ({ register, disabled }) {
                     <td className='px-4 py-2 text-center dark:text-white'>{fam.nombre_familiar}</td>
                     <td className='px-4 py-2 text-center dark:text-white'>{fam.fecha_nacimiento}</td>
                     <td className='px-4 py-2 text-center dark:text-white'>{fam.tipo_documento_familiar}</td>
-                    <td className='px-4 py-2 text-center dark:text-white'>{fam.documentoFamiliar}</td>
+                    <td className='px-4 py-2 text-center dark:text-white'>{fam.documento}</td>
                     <td className='px-4 py-2 text-center dark:text-white'>{fam.parentesco}</td>
                     <td className='px-4 py-2 text-center dark:text-white'>{user.nombre}</td>
                     <td className='text-center py-2'>

@@ -3,6 +3,10 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
   ingresos: [],
+  personas: {},
+  domicilio: {},
+  datos_laborales: {},
+  obra_social: {},
   familiares: [],
   documentos: [],
   subsidios: [],
@@ -19,6 +23,13 @@ export const ingresoSlice = createSlice({
     },
     onAddNewIngreso: (state, { payload }) => {
       state.ingresos.push(payload)
+      state.activeIngreso = null
+    },
+    onUpdateIngreso: (state, { payload }) => {
+      state.ingresos = state.ingresos.map((ingreso) => {
+        if (ingreso.id == payload.id) { return payload }
+        return ingreso
+      })
       state.activeIngreso = null
     },
     onAddFamiliar: (state, { payload }) => {
@@ -48,12 +59,17 @@ export const ingresoSlice = createSlice({
     onDeleteSubsidio: (state, { payload }) => {
       state.subsidios = state.subsidios.filter((subsidio) => subsidio.id !== payload)
     },
-    onUpdateIngreso: (state, { payload }) => {
-      state.ingresos = state.ingresos.map((ingreso) => {
-        if (ingreso.id == payload.id) { return payload }
-        return ingreso
-      })
-      state.activeIngreso = null
+    updateDomicilio: (state, { payload }) => {
+      state.domicilio = payload
+    },
+    updateObraSocial: (state, { payload }) => {
+      state.obra_social = payload
+    },
+    updatePersona: (state, { payload }) => {
+      state.personas = payload
+    },
+    updateDatosLaborales: (state, { payload }) => {
+      state.datos_laborales = payload
     },
     setActiveIngreso: (state, { payload }) => {
       state.activeIngreso = state.ingresos.find((ingreso) => ingreso.id === payload)
@@ -65,9 +81,14 @@ export const ingresoSlice = createSlice({
       state.activeIngreso = null
     },
     cleanIngreso: (state) => {
-      state.documentos = []
-      state.familiares = []
       state.ingresos = []
+      state.personas = []
+      state.domicilio = []
+      state.datos_laborales = []
+      state.obra_social = []
+      state.familiares = []
+      state.documentos = []
+      state.subsidios = []
     }
   }
 })
@@ -75,6 +96,10 @@ export const ingresoSlice = createSlice({
 export const {
   handleIngreso,
   onAddNewIngreso,
+  updateDomicilio,
+  updateObraSocial,
+  updatePersona,
+  updateDatosLaborales,
   onUpdateIngreso,
   onDeleteIngreso,
   onAddFamiliar,

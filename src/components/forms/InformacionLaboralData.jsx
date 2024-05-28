@@ -5,6 +5,8 @@ import { SelectForm } from '@/components/sutepa/forms'
 import Flatpickr from 'react-flatpickr'
 import 'flatpickr/dist/themes/material_red.css'
 import { useState, useEffect } from 'react'
+import { useDispatch } from 'react-redux'
+import { updateDatosLaborales } from '../../store/ingreso'
 
 const tipoContrato = [
   { id: 'PLANTA PERMANENTE', nombre: 'PLANTA PERMANENTE' },
@@ -12,11 +14,73 @@ const tipoContrato = [
 ]
 
 const agrupamiento = [
-  { id: 'ADMINISTRATIVO', nombre: 'ADMINISTRATIVO' },
-  { id: 'CONTRATADO', nombre: 'CONTRATADO' },
-  { id: 'PROFESIONAL', nombre: 'PROFESIONAL' },
-  { id: 'SERVICIOS_GENERALES', nombre: 'SERVICIOS GENERALES' },
-  { id: 'TECNICO', nombre: 'TECNICO' }
+  { id: 1, nombre: 'ADMINISTRATIVO' },
+  { id: 2, nombre: 'CONTRATADO' },
+  { id: 3, nombre: 'PROFESIONAL' },
+  { id: 4, nombre: 'SERVICIOS GENERALES' },
+  { id: 5, nombre: 'TECNICO' }
+]
+
+const seccional = [
+  { id: 1, nombre: 'LANUS' },
+  { id: 2, nombre: 'BAHIA BLANCA' },
+  { id: 3, nombre: 'CAPITAL FEDERAL' },
+  { id: 4, nombre: 'CORDOBA' },
+  { id: 5, nombre: 'CORRIENTES' },
+  { id: 6, nombre: 'CHUBUT' },
+  { id: 7, nombre: 'DAMNPYP' },
+  { id: 8, nombre: 'ENTRE RIOS' },
+  { id: 9, nombre: 'LA PLATA' },
+  { id: 10, nombre: 'LA PAMPA' },
+  { id: 11, nombre: 'LUJAN' },
+  { id: 12, nombre: 'MENDOZA' },
+  { id: 13, nombre: 'MILSTEIN' },
+  { id: 14, nombre: 'MISIONES' },
+  { id: 15, nombre: 'ROSARIO' },
+  { id: 16, nombre: 'SALTA' },
+  { id: 17, nombre: 'SAN JUSTO' },
+  { id: 18, nombre: 'SAN JUAN' },
+  { id: 19, nombre: 'TUCUMAN' },
+  { id: 20, nombre: 'CHIVILCOY' },
+  { id: 21, nombre: 'AZUL' },
+  { id: 22, nombre: 'NACIONAL' },
+  { id: 23, nombre: 'CATAMARCA' },
+  { id: 24, nombre: 'CHACO' },
+  { id: 25, nombre: 'TIERRA DEL FUEGO' }
+]
+
+const ugl = [
+  { id: 1, nombre: 'LANUS' },
+  { id: 2, nombre: 'MAR DEL PLATA' },
+  { id: 3, nombre: 'SALTA' },
+  { id: 4, nombre: 'CHACO' },
+  { id: 5, nombre: 'ENTRE RIOS' },
+  { id: 6, nombre: 'SANTA FE' },
+  { id: 7, nombre: 'NEUQUEN' },
+  { id: 8, nombre: 'CHUBUT' },
+  { id: 9, nombre: 'MISIONES' },
+  { id: 10, nombre: 'SANTIAGO DEL ESTERO' },
+  { id: 11, nombre: 'LA PAMPA' },
+  { id: 12, nombre: 'SAN JUAN' },
+  { id: 13, nombre: 'JUJUY' },
+  { id: 14, nombre: 'FORMOSA' },
+  { id: 15, nombre: 'CATAMARCA' },
+  { id: 16, nombre: 'LA RIOJA' },
+  { id: 17, nombre: 'SAN LUIS' },
+  { id: 18, nombre: 'RIO NEGRO' },
+  { id: 19, nombre: 'SANTA CRUZ' },
+  { id: 20, nombre: 'MORON' },
+  { id: 21, nombre: 'AZUL' },
+  { id: 22, nombre: 'JUNIN' },
+  { id: 23, nombre: 'LUJAN' },
+  { id: 24, nombre: 'TIERRA DEL FUEGO' },
+  { id: 25, nombre: 'CONCORDIA' },
+  { id: 26, nombre: 'SAN JUSTO' },
+  { id: 27, nombre: 'RIO CUARTO' },
+  { id: 28, nombre: 'QUILMES' },
+  { id: 29, nombre: 'CHIVILCOY' },
+  { id: 30, nombre: 'PATAGONIA NORTE' },
+  { id: 31, nombre: 'INSSJP - AMBITO NACIONAL' }
 ]
 
 const tramo = [
@@ -54,18 +118,30 @@ const flatpickrOptions = {
   }
 }
 
-function InformacionLaboralData ({ register, setValue, disabled }) {
+function InformacionLaboralData ({ register, setValue, disabled, watch }) {
   const [picker, setPicker] = useState(null)
   const [cargaHoraria, setCargaHoraria] = useState('')
   const [correoElectronicoLaboral, setCorreoElectronicoLaboral] = useState('')
   const [telefonoLaboral, setTelefonoLaboral] = useState('')
+  const dispatch = useDispatch()
 
   useEffect(() => {
-    register('fecha_ingreso')
-    register('carga_horaria')
-    register('email_laboral')
-    register('telefono_laboral')
-  }, [register])
+    const datosLaboralesData = {
+      fecha_afiliacion: picker,
+      carga_horaria: cargaHoraria,
+      email: correoElectronicoLaboral,
+      telefono_laboral: telefonoLaboral,
+      tipo_contrato: watch('tipo_contrato'),
+      ugl_id: watch('ugl_id'),
+      agencia_id: watch('agencia_id'),
+      domicilio_trabajo: watch('domicilio_trabajo'),
+      seccional_id: watch('seccional_id'),
+      agrupamiento: watch('agrupamiento'),
+      tramo: watch('tramo')
+    }
+
+    dispatch(updateDatosLaborales(datosLaboralesData))
+  }, [picker, correoElectronicoLaboral, telefonoLaboral, dispatch])
 
   const handleDateChange = (date) => {
     setPicker(date)
@@ -81,7 +157,7 @@ function InformacionLaboralData ({ register, setValue, disabled }) {
   const handleCorreoElectronicoChange = (e) => {
     const value = e.target.value
     setCorreoElectronicoLaboral(value)
-    setValue('email_laboral', value)
+    setValue('email', value)
   }
 
   const handleTelefonoLaboralChange = (e) => {
@@ -115,7 +191,7 @@ function InformacionLaboralData ({ register, setValue, disabled }) {
           <SelectForm
             register={register('ugl_id')}
             title='UGL'
-            options={agrupamiento}
+            options={ugl}
             disabled={disabled}
           />
 
@@ -143,7 +219,7 @@ function InformacionLaboralData ({ register, setValue, disabled }) {
           <SelectForm
             register={register('seccional_id')}
             title='Seccional SUTEPA'
-            options={agrupamiento}
+            options={seccional}
             disabled={disabled}
           />
 
@@ -197,7 +273,8 @@ function InformacionLaboralData ({ register, setValue, disabled }) {
           <Textinput
             label='Correo Electrónico Laboral'
             register={register}
-            id='email_laboral'
+            id='email'
+            className='minuscula'
             placeholder='Ingrese el correo electrónico laboral'
             value={correoElectronicoLaboral}
             onChange={handleCorreoElectronicoChange}

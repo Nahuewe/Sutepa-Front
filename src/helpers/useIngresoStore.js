@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import { useSelector, useDispatch } from 'react-redux'
 import { sutepaApi } from '../api'
 import { toast } from 'react-toastify'
@@ -5,7 +6,7 @@ import { cleanIngreso, handleIngreso, onDeleteIngreso } from '../store/ingreso'
 
 export const useIngresoStore = () => {
   const dispatch = useDispatch()
-  const { ingresos, familiares, documentos, subsidios, activeIngreso } = useSelector(state => state.ingreso)
+  const { ingresos, familiares, documentos, subsidios, personas, domicilio, datos_laborales, obra_social, activeIngreso } = useSelector(state => state.ingreso)
   // const { user: { uid, seccional } } = useSelector(state => state.auth) // Id de seccional del usuario
 
   // const startSavingIngreso = async (form) => {
@@ -24,10 +25,13 @@ export const useIngresoStore = () => {
   //   }
   // }
 
-  const startSavingIngreso = async (data) => {
+  const startSavingIngreso = async () => {
     try {
       const afiliado = {
-        ...data,
+        personas,
+        domicilio,
+        datos_laborales,
+        obra_social,
         familiares,
         documentos,
         subsidios

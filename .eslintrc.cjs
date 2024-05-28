@@ -28,6 +28,7 @@ module.exports = {
       'warn',
       { allowConstantExport: true }
     ],
-    'react/prop-types': 'off' // Evita que muestre error en las props
+    'react/prop-types': 'off', // Evita que muestre error en las props
+    'react-hooks/exhaustive-deps': 'off' // evita errores en los objetos
   }
 };

@@ -3,20 +3,61 @@ import Textinput from '@/components/ui/Textinput'
 import Numberinput from '@/components/ui/Numberinput'
 import { SelectForm } from '@/components/sutepa/forms'
 import { useState, useEffect } from 'react'
-
-const tipoDocumento = [
-  {
-    id: 'CATAMARCA',
-    nombre: 'CATAMARCA'
-  },
-  {
-    id: 'BUENOS AIRES',
-    nombre: 'BUENOS AIRES'
-  }
-]
+import axios from 'axios'
+import { updateDomicilio } from '../../store/ingreso'
+import { useDispatch } from 'react-redux'
 
 function AfiliadoDomicilioData ({ register, disabled, setValue }) {
   const [codigoPostal, setCodigoPostal] = useState('')
+  const [provincias, setProvincias] = useState([])
+  const [localidades, setLocalidades] = useState([])
+  const [domicilio, setDomicilio] = useState('')
+  const [selectedProvincia, setSelectedProvincia] = useState('')
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    const fetchProvincias = async () => {
+      try {
+        const response = await axios.get('https://apis.datos.gob.ar/georef/api/provincias?campos=id,nombre')
+        const provinciasData = [...new Set(response.data.provincias.map(provincia => provincia.nombre.toUpperCase()))].sort((a, b) => a.localeCompare(b, 'es', { ignorePunctuation: true }))
+        const formattedProvincias = provinciasData.map(provincia => ({
+          id: provincia.toLowerCase(),
+          nombre: provincia
+        }))
+        setProvincias(formattedProvincias)
+      } catch (error) {
+        console.error('Error fetching provincias:', error)
+      }
+    }
+
+    fetchProvincias()
+  }, [])
+
+  const fetchLocalidades = async (provinciaId) => {
+    try {
+      const response = await axios.get(`https://apis.datos.gob.ar/georef/api/localidades?provincia=${provinciaId}&campos=nombre&max=5000`)
+      const localidadesData = [...new Set(response.data.localidades.map(localidad => localidad.nombre.toUpperCase()))].sort((a, b) => a.localeCompare(b, 'es', { ignorePunctuation: true }))
+      const formattedLocalidades = localidadesData.map(localidad => ({
+        id: localidad.toLowerCase(),
+        nombre: localidad
+      }))
+      setLocalidades(formattedLocalidades)
+    } catch (error) {
+      console.error('Error fetching localidades:', error)
+    }
+  }
+
+  const handleDomicilioChange = (e) => {
+    const value = e.target.value
+    setDomicilio(value)
+  }
+
+  const handleProvinciaChange = (e) => {
+    const provinciaId = e.target.value
+    setSelectedProvincia(provinciaId)
+    setValue('provincia', provinciaId)
+    fetchLocalidades(provinciaId)
+  }
 
   const handleCodigoPostalChange = (e) => {
     const value = e.target.value
@@ -32,11 +73,17 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
   }
 
   useEffect(() => {
-    register('domicilio')
-    register('provincia_id')
-    register('localidad_id')
-    register('codigo_postal')
-  }, [register])
+    if (codigoPostal && selectedProvincia && localidades.length > 0) {
+      const domicilioData = {
+        domicilio,
+        provincia: selectedProvincia,
+        localidad: localidades[0].id,
+        codigo_postal: codigoPostal
+      }
+
+      dispatch(updateDomicilio(domicilioData))
+    }
+  }, [codigoPostal, selectedProvincia, localidades, domicilio])
 
   return (
     <>
@@ -52,6 +99,7 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
             register={register}
             placeholder='Ingrese el domicilio'
             disabled={disabled}
+            onChange={handleDomicilioChange}
           />
 
           <div>
@@ -59,8 +107,9 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
               Provincia
             </label>
             <SelectForm
-              register={register('provincia_id')}
-              options={tipoDocumento}
+              register={register('provincia')}
+              options={provincias}
+              onChange={handleProvinciaChange}
               disabled={disabled}
             />
           </div>
@@ -70,9 +119,9 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
               Localidad
             </label>
             <SelectForm
-              register={register('localidad_id')}
-              options={tipoDocumento}
-              disabled={disabled}
+              register={register('localidad')}
+              options={localidades}
+              disabled={disabled || !selectedProvincia}
             />
           </div>
 
