@@ -1,0 +1,26 @@
+[
+    {
+        "ugl_id": "1",
+        "nombre": "AGENCIA VALENTIN ALSINA",
+        "domicilio_trabajo": "JUAN DOMINGO PERON 3872, VALENTIN ALSINA, BUENOS AIRES",
+        "telefono_trabajo": "01142283246"
+    },
+    {
+        "ugl_id": "1",
+        "nombre": "UGL X - LANUS",
+        "domicilio_trabajo": "AV. HIPOLITO YRIGOYEN 6247, REMEDIOS DE ESCALADA, BUENOS AIRES",
+        "telefono_trabajo": "01150882048"
+    },
+    {
+        "ugl_id": "1",
+        "nombre": "CAP VILLA FIORITO",
+        "domicilio_trabajo": "EL PLUMERILLO 2028, VILLA FIORITO, BUENOS AIRES",
+        "telefono_trabajo": "01142864214"
+    },
+    {
+        "ugl_id": "1",
+        "nombre": "AGENCIA MONTE CHINGOLO",
+        "domicilio_trabajo": "AV. EVA PERON 3269, MONTE CHINGOLO, BUENOS AIRES",
+        "telefono_trabajo": "01142466517"
+    }
+]

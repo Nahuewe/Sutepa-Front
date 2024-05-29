@@ -3,11 +3,12 @@ import Textarea from '@/components/ui/Textarea'
 import { SelectForm } from '@/components/sutepa/forms'
 import Flatpickr from 'react-flatpickr'
 import 'flatpickr/dist/themes/material_red.css'
-import { useRef, useState } from 'react'
-import { Icon } from '@iconify/react'
-import Tooltip from '@/components/ui/Tooltip'
+import { useRef, useState, useEffect } from 'react'
+import { useForm } from 'react-hook-form'
 import { useSelector, useDispatch } from 'react-redux'
 import { onAddSubsidio } from '../../store/ingreso'
+import { Tooltip } from 'flowbite-react'
+import { Icon } from '@iconify/react/dist/iconify.js'
 
 const initialForm = {
   tipo_subsidio: '',
@@ -28,6 +29,7 @@ const tiposSubsidio = [
 
 const flatpickrOptions = {
   dateFormat: 'd-m-Y',
+  maxDate: 'today',
   locale: {
     firstDayOfWeek: 1,
     weekdays: {
@@ -41,8 +43,9 @@ const flatpickrOptions = {
   }
 }
 
-function SubsidioData ({ register, setValue, disabled }) {
+function SubsidioData ({ disabled }) {
   const dispatch = useDispatch()
+  const { register, setValue, reset } = useForm()
   const [picker, setPicker] = useState(null)
   const [picker2, setPicker2] = useState(null)
   const [formData, setFormData] = useState(initialForm)
@@ -52,10 +55,48 @@ function SubsidioData ({ register, setValue, disabled }) {
   const { user } = useSelector(state => state.auth)
   const formRef = useRef()
 
+  useEffect(() => {
+    async function fetchData () {
+      const response = await fetch('/api/subsidios')
+      const data = await response.json()
+      setSubsidios(data)
+    }
+
+    fetchData()
+  }, [])
+
+  useEffect(() => {
+    if (isEditing && formData) {
+      setValue('tipo_subsidio', formData.tipo_subsidio)
+
+      if (formData.fecha_solicitud) {
+        const fechaSolicitud = new Date(formData.fecha_solicitud)
+        if (!isNaN(fechaSolicitud)) {
+          setPicker(fechaSolicitud)
+          setValue('fecha_solicitud', fechaSolicitud)
+        }
+      }
+
+      if (formData.fecha_otorgamiento) {
+        const fechaOtorgamiento = new Date(formData.fecha_otorgamiento)
+        if (!isNaN(fechaOtorgamiento)) {
+          setPicker2(fechaOtorgamiento)
+          setValue('fecha_otorgamiento', fechaOtorgamiento)
+        }
+      }
+    }
+  }, [formData, isEditing, setValue])
+
   const handleEdit = (subsidio) => {
     setFormData(subsidio)
     setEditingSubsidioId(subsidio.id)
-    setIsEditing(true) // Establece el estado de edición cuando se inicia la edición
+    setIsEditing(true)
+
+    // Establece los valores de los campos del formulario con los datos editados
+    setValue('tipo_subsidio', subsidio.tipo_subsidio)
+    setValue('fecha_solicitud', subsidio.fecha_solicitud ? new Date(subsidio.fecha_solicitud) : null)
+    setValue('fecha_otorgamiento', subsidio.fecha_otorgamiento ? new Date(subsidio.fecha_otorgamiento) : null)
+    setValue('observaciones', subsidio.observaciones)
   }
 
   const handleInputChange = (e) => {
@@ -86,6 +127,9 @@ function SubsidioData ({ register, setValue, disabled }) {
     setPicker(null)
     setPicker2(null)
     setFormData(initialForm)
+    setIsEditing(false)
+    setEditingSubsidioId(null)
+    reset()
   }
 
   const agregarSubsidio = () => {
@@ -93,21 +137,19 @@ function SubsidioData ({ register, setValue, disabled }) {
     const fechaCarga = new Date().toLocaleDateString('es-ES')
     const nuevoSubsidio = {
       ...formData,
-      id: editingSubsidioId || Date.now(), // Si estamos editando, mantenemos el ID, de lo contrario generamos uno nuevo
+      id: editingSubsidioId || Date.now(),
       tipo_subsidio: tipoSubsidioNombre,
       fecha_carga: fechaCarga,
-      fecha_solicitud: formData.fecha_solicitud ? new Date(formData.fecha_solicitud).toLocaleDateString('es-ES') : fechaCarga, // Maneja la posibilidad de que `fecha_solicitud` sea `null`
-      fecha_otorgamiento: formData.fecha_otorgamiento ? new Date(formData.fecha_otorgamiento).toLocaleDateString('es-ES') : fechaCarga // Maneja la posibilidad de que `fecha_otorgamiento` sea `null`
+      fecha_solicitud: formData.fecha_solicitud ? new Date(formData.fecha_solicitud).toLocaleDateString('es-ES') : fechaCarga,
+      fecha_otorgamiento: formData.fecha_otorgamiento ? new Date(formData.fecha_otorgamiento).toLocaleDateString('es-ES') : fechaCarga
     }
 
     if (editingSubsidioId) {
-      // Si estamos editando, actualizamos el subsidio existente en la lista
       const updatedSubsidios = subsidios.map(subsidio => (subsidio.id === editingSubsidioId ? nuevoSubsidio : subsidio))
       setSubsidios(updatedSubsidios)
-      setIsEditing(false) // Salimos del modo de edición
-      setEditingSubsidioId(null) // Limpiamos el estado de la ID de subsidio en edición
+      setIsEditing(false)
+      setEditingSubsidioId(null)
     } else {
-      // Si no estamos editando, agregamos el nuevo subsidio a la lista
       dispatch(onAddSubsidio(nuevoSubsidio))
       setSubsidios([...subsidios, nuevoSubsidio])
     }
@@ -119,7 +161,6 @@ function SubsidioData ({ register, setValue, disabled }) {
     const newSubsidios = subsidios.filter(subsidio => subsidio.id !== id)
     setSubsidios(newSubsidios)
   }
-
   return (
     <>
       <h4 className='card-title text-center bg-red-500 dark:bg-gray-700 text-white rounded-md p-2'>
