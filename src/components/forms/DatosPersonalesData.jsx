@@ -7,6 +7,7 @@ import { SelectForm } from '@/components/sutepa/forms'
 import Flatpickr from 'react-flatpickr'
 import 'flatpickr/dist/themes/material_red.css'
 import { updatePersona } from '../../store/ingreso'
+import { sutepaApi } from '../../api'
 
 const sexo = [
   {
@@ -20,60 +21,6 @@ const sexo = [
   {
     id: 3,
     nombre: 'NO INFORMA'
-  }
-]
-
-const estadoCivil = [
-  {
-    id: 1,
-    nombre: 'CASADO'
-  },
-  {
-    id: 2,
-    nombre: 'CONCUBINO'
-  },
-  {
-    id: 3,
-    nombre: 'DIVORCIADO'
-  },
-  {
-    id: 4,
-    nombre: 'SOLTERO'
-  },
-  {
-    id: 5,
-    nombre: 'VIUDO'
-  }
-]
-
-const nacionalidad = [
-  {
-    id: 1,
-    nombre: 'ARGENTINO'
-  },
-  {
-    id: 2,
-    nombre: 'CHILENO'
-  },
-  {
-    id: 3,
-    nombre: 'BOLIVIANO'
-  },
-  {
-    id: 4,
-    nombre: 'PERUANO'
-  },
-  {
-    id: 5,
-    nombre: 'PARAGUAYO'
-  },
-  {
-    id: 6,
-    nombre: 'URUGUAYO'
-  },
-  {
-    id: 7,
-    nombre: 'BRASILEÑO'
   }
 ]
 
@@ -106,6 +53,20 @@ function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
   const [correoElectronico, setCorreoElectronico] = useState('')
   const [telefono, setTelefono] = useState('')
   const dispatch = useDispatch()
+  const [estadoCivil, setEstadoCivil] = useState([])
+  const [nacionalidad, setNacionalidad] = useState([])
+
+  async function handleEstadoCivil () {
+    const response = await sutepaApi.get('estadocivil')
+    const { data } = response.data
+    setEstadoCivil(data)
+  }
+
+  async function handleNacionalidad () {
+    const response = await sutepaApi.get('nacionalidad')
+    const { data } = response.data
+    setNacionalidad(data)
+  }
 
   useEffect(() => {
     const personaData = {
@@ -208,6 +169,11 @@ function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
     setValue('telefono', value)
   }
 
+  useEffect(() => {
+    handleEstadoCivil()
+    handleNacionalidad()
+  }, [])
+
   return (
     <>
       <h4 className='card-title text-center bg-red-500 dark:bg-gray-700 text-white rounded-md p-2'>
@@ -301,19 +267,19 @@ function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
             <input type='hidden' {...register('fecha_nacimiento')} />
           </div>
 
-          <SelectForm
-            register={register('estado_civil_id')}
-            title='Estado Civil'
-            options={estadoCivil}
-            disabled={disabled}
-          />
+          <div>
+            <SelectForm
+              register={register('estado_civil_id')}
+              title='Estado Civil'
+              options={estadoCivil}
+              disabled={disabled}
+            />
+          </div>
 
           <div>
-            <label htmlFor='default-picker' className='form-label'>
-              Nacionalidad
-            </label>
             <SelectForm
               register={register('nacionalidad_id')}
+              title='Nacionalidad'
               options={nacionalidad}
               disabled={disabled}
             />

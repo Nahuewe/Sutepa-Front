@@ -19,25 +19,6 @@ import { ShowIngreso } from '@/components/sutepa/tables/ShowIngreso'
 import { DeleteModal } from '@/components/sutepa/forms/DeleteModal'
 import { hadleShowDeleteModal } from '@/store/layout'
 
-const Afiliados = [
-  {
-    id: 1,
-    nombre: 'Nahuel',
-    apellido: 'Soria Parodi',
-    dni: 43532773,
-    turno: 'Catamarca',
-    sucursal: 'Chau'
-  },
-  {
-    id: 2,
-    nombre: 'Nahuel',
-    apellido: 'Soria Parodi',
-    dni: 43532773,
-    turno: 'Catamarca',
-    sucursal: 'Hola'
-  }
-]
-
 export const Ingreso = ({ title = 'Lista de Afiliados' }) => {
   const { user: { sucursal } } = useAuthStore()
   const navigate = useNavigate()
@@ -66,14 +47,14 @@ export const Ingreso = ({ title = 'Lista de Afiliados' }) => {
     },
     {
       Header: 'UGL/Nivel Central',
-      accessor: 'turno',
+      accessor: 'ugl',
       Cell: (row) => {
         return <span>{row?.cell?.value}</span>
       }
     },
     {
       Header: 'Seccional',
-      accessor: 'sucursal',
+      accessor: 'seccional',
       Cell: (row) => {
         return <span>{row?.cell?.value}</span>
       }
@@ -161,14 +142,14 @@ export const Ingreso = ({ title = 'Lista de Afiliados' }) => {
     },
     {
       Header: 'UGL/Nivel Central',
-      accessor: 'turno',
+      accessor: 'ugl',
       Cell: (row) => {
         return <span>{row?.cell?.value}</span>
       }
     },
     {
       Header: 'Seccional',
-      accessor: 'sucursal',
+      accessor: 'seccional',
       Cell: (row) => {
         return <span>{row?.cell?.value.nombre}</span>
       }
@@ -199,6 +180,12 @@ export const Ingreso = ({ title = 'Lista de Afiliados' }) => {
         return (
           <div className='flex space-x-3 rtl:space-x-reverse'>
 
+            <Tooltip content='Ver' placement='top' arrow animation='shift-away'>
+              <button id={row?.cell?.value} className='action-btn' type='button' onClick={() => { row.showIngreso(row?.cell?.value) }}>
+                <Icon icon='heroicons:eye' />
+              </button>
+            </Tooltip>
+
             <Tooltip content='Editar' placement='top' arrow animation='shift-away' theme='info'>
               <button className='action-btn' type='button' onClick={() => { row.editIngreso(row?.cell?.value) }}>
                 <Icon icon='heroicons:pencil-square' />
@@ -226,7 +213,7 @@ export const Ingreso = ({ title = 'Lista de Afiliados' }) => {
   const tableInstance = useTable(
     {
       columns,
-      data: Afiliados
+      data
     },
 
     useGlobalFilter,
@@ -322,7 +309,7 @@ export const Ingreso = ({ title = 'Lista de Afiliados' }) => {
                   />
 
                   <div className='ltr:text-right rtl:text-left'>
-                    <button className='bg-red-600 text-white items-center text-center py-2 px-6 rounded-lg' onClick={() => navigate('/ingresos/crear')}>Agregar Afiliado</button>
+                    <button className='bg-red-600 text-white items-center text-center py-2 px-6 rounded-lg' onClick={() => navigate('/afiliados/crear')}>Agregar Afiliado</button>
                   </div>
                 </div>
               </div>

@@ -9,6 +9,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { onAddSubsidio } from '../../store/ingreso'
 import { Tooltip } from 'flowbite-react'
 import { Icon } from '@iconify/react/dist/iconify.js'
+import { sutepaApi } from '../../api'
 
 const initialForm = {
   tipo_subsidio: '',
@@ -16,16 +17,6 @@ const initialForm = {
   fecha_otorgamiento: null,
   observaciones: ''
 }
-
-const tiposSubsidio = [
-  { id: 1, nombre: 'APOYO ESCOLAR' },
-  { id: 2, nombre: 'APOYO SECUNDARIO' },
-  { id: 3, nombre: 'APOYO TRABAJADOR/UNIVERSITARIO' },
-  { id: 4, nombre: 'CASAMIENTO' },
-  { id: 5, nombre: 'FALLECIMIENTO DE FAMILIAR DIRECTO' },
-  { id: 6, nombre: 'FALLECIMIENTO DEL TITULAR' },
-  { id: 7, nombre: 'NACIMIENTO' }
-]
 
 const flatpickrOptions = {
   dateFormat: 'd-m-Y',
@@ -54,16 +45,13 @@ function SubsidioData ({ disabled }) {
   const [isEditing, setIsEditing] = useState(false)
   const { user } = useSelector(state => state.auth)
   const formRef = useRef()
+  const [subsidio, setSubsidio] = useState([])
 
-  useEffect(() => {
-    async function fetchData () {
-      const response = await fetch('/api/subsidios')
-      const data = await response.json()
-      setSubsidios(data)
-    }
-
-    fetchData()
-  }, [])
+  async function handleSubsidio () {
+    const response = await sutepaApi.get('subsidio')
+    const { data } = response.data
+    setSubsidio(data)
+  }
 
   useEffect(() => {
     if (isEditing && formData) {
@@ -133,16 +121,15 @@ function SubsidioData ({ disabled }) {
   }
 
   const agregarSubsidio = () => {
-    const tipoSubsidioNombre = tiposSubsidio.find(ts => ts.id === Number(formData.tipo_subsidio))?.nombre || ''
     const fechaCarga = new Date().toLocaleDateString('es-ES')
     const nuevoSubsidio = {
       ...formData,
       id: editingSubsidioId || Date.now(),
-      tipo_subsidio: tipoSubsidioNombre,
       fecha_carga: fechaCarga,
       fecha_solicitud: formData.fecha_solicitud ? new Date(formData.fecha_solicitud).toLocaleDateString('es-ES') : fechaCarga,
       fecha_otorgamiento: formData.fecha_otorgamiento ? new Date(formData.fecha_otorgamiento).toLocaleDateString('es-ES') : fechaCarga
     }
+    console.log(formData)
 
     if (editingSubsidioId) {
       const updatedSubsidios = subsidios.map(subsidio => (subsidio.id === editingSubsidioId ? nuevoSubsidio : subsidio))
@@ -161,6 +148,11 @@ function SubsidioData ({ disabled }) {
     const newSubsidios = subsidios.filter(subsidio => subsidio.id !== id)
     setSubsidios(newSubsidios)
   }
+
+  useEffect(() => {
+    handleSubsidio()
+  }, [])
+
   return (
     <>
       <h4 className='card-title text-center bg-red-500 dark:bg-gray-700 text-white rounded-md p-2'>
@@ -170,18 +162,14 @@ function SubsidioData ({ disabled }) {
       <Card>
         <form ref={formRef}>
           <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-            <div>
-              <label htmlFor='tipo_subsidio' className='form-label'>
-                Tipo de Subsidio
-              </label>
-              <SelectForm
-                register={register('tipo_subsidio')}
-                options={tiposSubsidio}
-                value={formData.tipo_subsidio}
-                onChange={handleInputChange}
-                disabled={disabled}
-              />
-            </div>
+
+            <SelectForm
+              register={register('tipo_subsidio_id')}
+              title='Tipo de Subsidio'
+              options={subsidio}
+              disabled={disabled}
+            />
+
             <div>
               <label htmlFor='fecha_solicitud' className='form-label'>
                 Fecha de Solicitud
@@ -259,7 +247,7 @@ function SubsidioData ({ disabled }) {
               {subsidios.map((subsidio, index) => (
                 <tr key={index} className='bg-white dark:bg-gray-800 dark:border-gray-700'>
                   <td className='px-4 py-2 text-center dark:text-white'>{subsidio.fecha_carga}</td>
-                  <td className='px-4 py-2 text-center dark:text-white'>{subsidio.tipo_subsidio}</td>
+                  <td className='px-4 py-2 text-center dark:text-white'>{subsidio.tipo_subsidio_id.nombre}</td>
                   <td className='px-4 py-2 text-center dark:text-white'>{subsidio.fecha_solicitud}</td>
                   <td className='px-4 py-2 text-center dark:text-white'>{subsidio.fecha_otorgamiento}</td>
                   <td className='px-4 py-2 text-center dark:text-white'>{subsidio.observaciones}</td>

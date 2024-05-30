@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Card from '@/components/ui/Card'
 import Textinput from '@/components/ui/Textinput'
 import Numberinput from '@/components/ui/Numberinput'
@@ -9,6 +9,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { onAddFamiliar, onDeleteFamiliar } from '../../store/ingreso'
 import { Icon } from '@iconify/react'
 import { Tooltip } from 'flowbite-react'
+import { sutepaApi } from '../../api'
 
 const initialForm = {
   id: null,
@@ -18,19 +19,6 @@ const initialForm = {
   documento: '',
   parentesco: ''
 }
-
-const parentescoOptions = [
-  { id: 1, nombre: 'ABUELO' },
-  { id: 2, nombre: 'AHIJADO' },
-  { id: 3, nombre: 'CONCUBINO' },
-  { id: 4, nombre: 'CONYUGE' },
-  { id: 5, nombre: 'HERMANO' },
-  { id: 6, nombre: 'HIJO' },
-  { id: 7, nombre: 'MADRE' },
-  { id: 8, nombre: 'NIETO' },
-  { id: 9, nombre: 'PADRE' },
-  { id: 10, nombre: 'SOBRINO' }
-]
 
 const tipoDocumento = [
   { id: 'DNI', nombre: 'DNI' },
@@ -66,6 +54,13 @@ function FamiliarAcargoData ({ register, disabled }) {
   const [dni, setDni] = useState('')
   const [formData, setFormData] = useState(initialForm)
   const formRef = useRef()
+  const [parentesco, setParentesco] = useState([])
+
+  async function handleParentesco () {
+    const response = await sutepaApi.get('parentesco')
+    const { data } = response.data
+    setParentesco(data)
+  }
 
   function onDelete (id) {
     dispatch(onDeleteFamiliar(id))
@@ -79,11 +74,9 @@ function FamiliarAcargoData ({ register, disabled }) {
   }
 
   const addFamiliar = () => {
-    const parentescoNombre = parentescoOptions.find(ts => ts.id === Number(formData.parentesco))?.nombre || ''
     const newFamiliar = {
       ...formData,
       id: Date.now(),
-      parentesco: parentescoNombre,
       fecha_carga: new Date().toLocaleDateString('es-ES')
     }
     dispatch(onAddFamiliar(newFamiliar))
@@ -125,6 +118,10 @@ function FamiliarAcargoData ({ register, disabled }) {
     setDni(formattedDni)
     setFormData((prevData) => ({ ...prevData, documento: formattedDni }))
   }
+
+  useEffect(() => {
+    handleParentesco()
+  }, [])
 
   return (
     <>
@@ -185,18 +182,12 @@ function FamiliarAcargoData ({ register, disabled }) {
               disabled={disabled}
             />
 
-            <div>
-              <label htmlFor='parentesco' className='form-label'>
-                Parentesco
-              </label>
-              <SelectForm
-                register={register('parentesco')}
-                options={parentescoOptions}
-                value={formData.parentesco}
-                onChange={(e) => setFormData({ ...formData, parentesco: e.target.value })}
-                disabled={disabled}
-              />
-            </div>
+            <SelectForm
+              register={register('parentesco_id')}
+              title='Parentesco'
+              options={parentesco}
+              disabled={disabled}
+            />
           </div>
           <div className='flex justify-end mt-4 gap-4'>
             <button

@@ -2,7 +2,7 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { sutepaApi } from '../api'
 import { toast } from 'react-toastify'
-import { cleanIngreso, handleIngreso, onDeleteIngreso } from '../store/ingreso'
+import { cleanIngreso, handleIngreso, onAddNewIngreso, onDeleteIngreso } from '../store/ingreso'
 
 export const useIngresoStore = () => {
   const dispatch = useDispatch()
@@ -25,8 +25,9 @@ export const useIngresoStore = () => {
   //   }
   // }
 
-  const startSavingIngreso = async () => {
+  const startSavingIngreso = async (form) => {
     try {
+      const { data } = await sutepaApi.post('/personas', ...form)
       const afiliado = {
         personas,
         domicilio,
@@ -38,11 +39,17 @@ export const useIngresoStore = () => {
       }
 
       console.log(afiliado)
-      dispatch(cleanIngreso())
+      console.log(data)
+      if (data.ok) {
+        dispatch(onAddNewIngreso(data.ingreso))
+        dispatch(cleanIngreso())
 
-      toast.success('Afiliado Creado con exito')
+        toast.success('Afiliado creado con exito')
+      } else {
+        toast.error(data.message)
+      }
     } catch (error) {
-      toast.error('No se pudo modificar los datos')
+      toast.error('No se pudo agregar los datos')
     }
   }
 

@@ -1,12 +1,13 @@
 import Card from '@/components/ui/Card'
 import { SelectForm } from '@/components/sutepa/forms'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Icon } from '@iconify/react/dist/iconify.js'
 import Tooltip from '@/components/ui/Tooltip'
 import { toast } from 'react-toastify'
 import { FileInput } from 'flowbite-react'
 import { onAddDocumento, onDeleteDocumento } from '../../store/ingreso'
 import { useDispatch, useSelector } from 'react-redux'
+import { sutepaApi } from '../../api'
 
 const initialForm = {
   tipo_archivo: '',
@@ -30,6 +31,13 @@ function DocumentacionAdicionalData ({ register, disabled }) {
   const { user } = useSelector(state => state.auth)
   const [formData, setFormData] = useState(initialForm)
   const formRef = useRef()
+  const [archivo, setArchivo] = useState([])
+
+  async function handleArchivo () {
+    const response = await sutepaApi.get('archivo')
+    const { data } = response.data
+    setArchivo(data)
+  }
 
   const handleInputChange = (e) => {
     const { name, value, files } = e.target
@@ -74,6 +82,10 @@ function DocumentacionAdicionalData ({ register, disabled }) {
     dispatch(onDeleteDocumento(index))
   }
 
+  useEffect(() => {
+    handleArchivo()
+  }, [])
+
   return (
     <>
       <h4 className='card-title text-center bg-red-500 dark:bg-gray-700 text-white rounded-md p-2'>
@@ -86,9 +98,7 @@ function DocumentacionAdicionalData ({ register, disabled }) {
             <SelectForm
               register={register('tipo_archivo')}
               title='Tipo de Archivo'
-              options={tipoArchivo}
-              value={formData.tipo_archivo}
-              onChange={(e) => setFormData({ ...formData, tipo_archivo: e.target.value })}
+              options={archivo}
               disabled={disabled}
             />
             <div>
@@ -99,6 +109,7 @@ function DocumentacionAdicionalData ({ register, disabled }) {
                 name='archivo'
                 onChange={handleInputChange}
                 disabled={disabled}
+                accept='.docx,.doc,.xlsx,.ppt,.jpeg,.jpg,.png'
               />
             </div>
           </div>

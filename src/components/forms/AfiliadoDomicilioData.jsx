@@ -3,9 +3,9 @@ import Textinput from '@/components/ui/Textinput'
 import Numberinput from '@/components/ui/Numberinput'
 import { SelectForm } from '@/components/sutepa/forms'
 import { useState, useEffect } from 'react'
-import axios from 'axios'
 import { updateDomicilio } from '../../store/ingreso'
 import { useDispatch } from 'react-redux'
+import { sutepaApi } from '../../api'
 
 function AfiliadoDomicilioData ({ register, disabled, setValue }) {
   const [codigoPostal, setCodigoPostal] = useState('')
@@ -15,48 +15,23 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
   const [selectedProvincia, setSelectedProvincia] = useState('')
   const dispatch = useDispatch()
 
-  useEffect(() => {
-    const fetchProvincias = async () => {
-      try {
-        const response = await axios.get('https://apis.datos.gob.ar/georef/api/provincias?campos=id,nombre')
-        const provinciasData = [...new Set(response.data.provincias.map(provincia => provincia.nombre.toUpperCase()))].sort((a, b) => a.localeCompare(b, 'es', { ignorePunctuation: true }))
-        const formattedProvincias = provinciasData.map(provincia => ({
-          id: provincia.toLowerCase(),
-          nombre: provincia
-        }))
-        setProvincias(formattedProvincias)
-      } catch (error) {
-        console.error('Error fetching provincias:', error)
-      }
-    }
+  // Función para obtener las provincias
+  async function handleProvincia () {
+    const response = await sutepaApi.get('provincia')
+    const { data } = response.data
+    setProvincias(data)
+  }
 
-    fetchProvincias()
-  }, [])
-
-  const fetchLocalidades = async (provinciaId) => {
-    try {
-      const response = await axios.get(`https://apis.datos.gob.ar/georef/api/localidades?provincia=${provinciaId}&campos=nombre&max=5000`)
-      const localidadesData = [...new Set(response.data.localidades.map(localidad => localidad.nombre.toUpperCase()))].sort((a, b) => a.localeCompare(b, 'es', { ignorePunctuation: true }))
-      const formattedLocalidades = localidadesData.map(localidad => ({
-        id: localidad.toLowerCase(),
-        nombre: localidad
-      }))
-      setLocalidades(formattedLocalidades)
-    } catch (error) {
-      console.error('Error fetching localidades:', error)
-    }
+  // Función para obtener las localidades según la provincia seleccionada
+  async function handleLocalidad (provinciaId) {
+    const response = await sutepaApi.get(`localidad?provinciaId=${provinciaId}`)
+    const { data } = response.data
+    setLocalidades(data)
   }
 
   const handleDomicilioChange = (e) => {
     const value = e.target.value
     setDomicilio(value)
-  }
-
-  const handleProvinciaChange = (e) => {
-    const provinciaId = e.target.value
-    setSelectedProvincia(provinciaId)
-    setValue('provincia', provinciaId)
-    fetchLocalidades(provinciaId)
   }
 
   const handleCodigoPostalChange = (e) => {
@@ -72,6 +47,16 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
     setValue('codigo_postal', cleanedValue)
   }
 
+  const handleProvinciaChange = (e) => {
+    const value = e.target.value
+    setSelectedProvincia(value)
+    handleLocalidad(value) // Actualizar localidades al cambiar provincia
+  }
+
+  useEffect(() => {
+    handleProvincia()
+  }, [])
+
   useEffect(() => {
     if (codigoPostal && selectedProvincia && localidades.length > 0) {
       const domicilioData = {
@@ -83,7 +68,7 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
 
       dispatch(updateDomicilio(domicilioData))
     }
-  }, [codigoPostal, selectedProvincia, localidades, domicilio])
+  }, [codigoPostal, selectedProvincia, localidades, domicilio, dispatch])
 
   return (
     <>
@@ -103,23 +88,19 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
           />
 
           <div>
-            <label htmlFor='default-picker' className='form-label'>
-              Provincia
-            </label>
             <SelectForm
-              register={register('provincia')}
+              register={register('provincia_id')}
+              title='Provincia'
               options={provincias}
-              onChange={handleProvinciaChange}
               disabled={disabled}
+              onChange={handleProvinciaChange}
             />
           </div>
 
           <div>
-            <label htmlFor='default-picker' className='form-label'>
-              Localidad
-            </label>
             <SelectForm
-              register={register('localidad')}
+              register={register('localidad_id')}
+              title='Localidad'
               options={localidades}
               disabled={disabled || !selectedProvincia}
             />
@@ -127,7 +108,7 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
 
           <div>
             <label htmlFor='default-picker' className='form-label'>
-              Codigo Postal
+              Código Postal
             </label>
             <Numberinput
               register={register}

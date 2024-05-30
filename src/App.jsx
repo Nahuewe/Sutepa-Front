@@ -26,15 +26,7 @@ function App () {
     <main className='App relative'>
       <Routes>
         {
-          (status === 'not-authenticated')
-            ? (
-              <>
-                {/* Login */}
-                <Route path='/auth/login' element={<Login />} />
-                <Route path='/*' element={<Navigate to='/auth/login' />} />
-              </>
-              )
-            : (
+          (
               <>
                 <Route path='/' element={<Navigate to='/dashboard' />} />
 
@@ -48,7 +40,7 @@ function App () {
 
                   {/* Ingresos */}
                   <Route path='afiliados' element={<Ingreso />} />
-                  <Route path='ingresos/crear' element={<Create />} />
+                  <Route path='afiliados/crear' element={<Create />} />
                   <Route path='ingresos/editar/:id' element={<Create />} />
                 </Route>
 

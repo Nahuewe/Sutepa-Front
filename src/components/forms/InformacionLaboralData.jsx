@@ -7,80 +7,11 @@ import 'flatpickr/dist/themes/material_red.css'
 import { useState, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { updateDatosLaborales } from '../../store/ingreso'
+import { sutepaApi } from '../../api'
 
 const tipoContrato = [
   { id: 'PLANTA PERMANENTE', nombre: 'PLANTA PERMANENTE' },
   { id: 'CONTRATO', nombre: 'CONTRATO' }
-]
-
-const agrupamiento = [
-  { id: 1, nombre: 'ADMINISTRATIVO' },
-  { id: 2, nombre: 'CONTRATADO' },
-  { id: 3, nombre: 'PROFESIONAL' },
-  { id: 4, nombre: 'SERVICIOS GENERALES' },
-  { id: 5, nombre: 'TECNICO' }
-]
-
-const seccional = [
-  { id: 1, nombre: 'LANUS' },
-  { id: 2, nombre: 'BAHIA BLANCA' },
-  { id: 3, nombre: 'CAPITAL FEDERAL' },
-  { id: 4, nombre: 'CORDOBA' },
-  { id: 5, nombre: 'CORRIENTES' },
-  { id: 6, nombre: 'CHUBUT' },
-  { id: 7, nombre: 'DAMNPYP' },
-  { id: 8, nombre: 'ENTRE RIOS' },
-  { id: 9, nombre: 'LA PLATA' },
-  { id: 10, nombre: 'LA PAMPA' },
-  { id: 11, nombre: 'LUJAN' },
-  { id: 12, nombre: 'MENDOZA' },
-  { id: 13, nombre: 'MILSTEIN' },
-  { id: 14, nombre: 'MISIONES' },
-  { id: 15, nombre: 'ROSARIO' },
-  { id: 16, nombre: 'SALTA' },
-  { id: 17, nombre: 'SAN JUSTO' },
-  { id: 18, nombre: 'SAN JUAN' },
-  { id: 19, nombre: 'TUCUMAN' },
-  { id: 20, nombre: 'CHIVILCOY' },
-  { id: 21, nombre: 'AZUL' },
-  { id: 22, nombre: 'NACIONAL' },
-  { id: 23, nombre: 'CATAMARCA' },
-  { id: 24, nombre: 'CHACO' },
-  { id: 25, nombre: 'TIERRA DEL FUEGO' }
-]
-
-const ugl = [
-  { id: 1, nombre: 'LANUS' },
-  { id: 2, nombre: 'MAR DEL PLATA' },
-  { id: 3, nombre: 'SALTA' },
-  { id: 4, nombre: 'CHACO' },
-  { id: 5, nombre: 'ENTRE RIOS' },
-  { id: 6, nombre: 'SANTA FE' },
-  { id: 7, nombre: 'NEUQUEN' },
-  { id: 8, nombre: 'CHUBUT' },
-  { id: 9, nombre: 'MISIONES' },
-  { id: 10, nombre: 'SANTIAGO DEL ESTERO' },
-  { id: 11, nombre: 'LA PAMPA' },
-  { id: 12, nombre: 'SAN JUAN' },
-  { id: 13, nombre: 'JUJUY' },
-  { id: 14, nombre: 'FORMOSA' },
-  { id: 15, nombre: 'CATAMARCA' },
-  { id: 16, nombre: 'LA RIOJA' },
-  { id: 17, nombre: 'SAN LUIS' },
-  { id: 18, nombre: 'RIO NEGRO' },
-  { id: 19, nombre: 'SANTA CRUZ' },
-  { id: 20, nombre: 'MORON' },
-  { id: 21, nombre: 'AZUL' },
-  { id: 22, nombre: 'JUNIN' },
-  { id: 23, nombre: 'LUJAN' },
-  { id: 24, nombre: 'TIERRA DEL FUEGO' },
-  { id: 25, nombre: 'CONCORDIA' },
-  { id: 26, nombre: 'SAN JUSTO' },
-  { id: 27, nombre: 'RIO CUARTO' },
-  { id: 28, nombre: 'QUILMES' },
-  { id: 29, nombre: 'CHIVILCOY' },
-  { id: 30, nombre: 'PATAGONIA NORTE' },
-  { id: 31, nombre: 'INSSJP - AMBITO NACIONAL' }
 ]
 
 const tramo = [
@@ -124,6 +55,34 @@ function InformacionLaboralData ({ register, setValue, disabled, watch }) {
   const [correoElectronicoLaboral, setCorreoElectronicoLaboral] = useState('')
   const [telefonoLaboral, setTelefonoLaboral] = useState('')
   const dispatch = useDispatch()
+  const [agrupamiento, setAgrupamiento] = useState([])
+  const [seccional, setSeccional] = useState([])
+  const [ugl, setUgl] = useState([])
+  const [agencia, setAgencia] = useState([])
+
+  async function handleAgrupamiento () {
+    const response = await sutepaApi.get('agrupamiento')
+    const { data } = response.data
+    setAgrupamiento(data)
+  }
+
+  async function handleSeccional () {
+    const response = await sutepaApi.get('seccional')
+    const { data } = response.data
+    setSeccional(data)
+  }
+
+  async function handleUgl () {
+    const response = await sutepaApi.get('ugl')
+    const { data } = response.data
+    setUgl(data)
+  }
+
+  async function handleAgencia () {
+    const response = await sutepaApi.get('agencia')
+    const { data } = response.data
+    setAgencia(data)
+  }
 
   useEffect(() => {
     const datosLaboralesData = {
@@ -173,6 +132,13 @@ function InformacionLaboralData ({ register, setValue, disabled, watch }) {
     setValue('carga_horaria', horas)
   }
 
+  useEffect(() => {
+    handleAgrupamiento()
+    handleSeccional()
+    handleUgl()
+    handleAgencia()
+  }, [])
+
   return (
     <>
       <h4 className='card-title text-center bg-red-500 dark:bg-gray-700 text-white rounded-md p-2'>
@@ -198,7 +164,7 @@ function InformacionLaboralData ({ register, setValue, disabled, watch }) {
           <SelectForm
             register={register('agencia_id')}
             title='Agencia'
-            options={agrupamiento}
+            options={agencia}
             disabled={disabled}
           />
 
@@ -224,7 +190,7 @@ function InformacionLaboralData ({ register, setValue, disabled, watch }) {
           />
 
           <SelectForm
-            register={register('agrupamiento')}
+            register={register('agrupamiento_id')}
             title='Agrupamiento'
             options={agrupamiento}
             disabled={disabled}
