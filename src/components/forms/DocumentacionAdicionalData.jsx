@@ -15,16 +15,6 @@ const initialForm = {
   url: null
 }
 
-const tipoArchivo = [
-  { id: 1, nombre: 'ACTA DE DEFUNCION' },
-  { id: 2, nombre: 'CERTIFICADO DE MATRIMONIO' },
-  { id: 3, nombre: 'CERTIFICADO DE NACIMIENTO' },
-  { id: 4, nombre: 'CONSTANCIA DE ALUMNO REGULAR' },
-  { id: 5, nombre: 'FORMULARIO DE ALTA' },
-  { id: 6, nombre: 'FOTOCOPIA DEL DNI' },
-  { id: 7, nombre: 'TELEGRAMA DE BAJA' }
-]
-
 function DocumentacionAdicionalData ({ register, disabled }) {
   const dispatch = useDispatch()
   const [documentos, setDocumentos] = useState([])
@@ -34,7 +24,7 @@ function DocumentacionAdicionalData ({ register, disabled }) {
   const [archivo, setArchivo] = useState([])
 
   async function handleArchivo () {
-    const response = await sutepaApi.get('archivo')
+    const response = await sutepaApi.get('documentacion')
     const { data } = response.data
     setArchivo(data)
   }
@@ -52,13 +42,10 @@ function DocumentacionAdicionalData ({ register, disabled }) {
   }
 
   const agregarDocumento = (documento) => {
-    // Verificar si ambos campos están llenos
-    const tipoArchivoData = tipoArchivo.find(ts => ts.id === Number(formData.tipo_archivo))?.nombre || ''
     if (formData.tipo_archivo && formData.archivo) {
       const nuevoDocumento = {
         ...formData,
         id: Date.now(),
-        tipo_archivo: tipoArchivoData,
         fecha_carga: new Date().toLocaleDateString('es-ES'),
         url: URL.createObjectURL(formData.archivo)
       }

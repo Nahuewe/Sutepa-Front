@@ -4,45 +4,20 @@ import Card from '@/components/ui/Card'
 import Textinput from '@/components/ui/Textinput'
 import Numberinput from '@/components/ui/Numberinput'
 import { SelectForm } from '@/components/sutepa/forms'
-import Flatpickr from 'react-flatpickr'
-import 'flatpickr/dist/themes/material_red.css'
 import { updatePersona } from '../../store/ingreso'
 import { sutepaApi } from '../../api'
+import DatePicker from '../ui/DatePicker'
 
 const sexo = [
-  {
-    id: 1,
-    nombre: 'HOMBRE'
-  },
-  {
-    id: 2,
-    nombre: 'MUJER'
-  },
-  {
-    id: 3,
-    nombre: 'NO INFORMA'
-  }
+  { id: 1, nombre: 'HOMBRE' },
+  { id: 2, nombre: 'MUJER' },
+  { id: 3, nombre: 'NO INFORMA' }
 ]
 
 const tipoDocumento = [
   { id: 'DNI', nombre: 'DNI' },
   { id: 'PASAPORTE', nombre: 'PASAPORTE' }
 ]
-
-const flatpickrOptions = {
-  dateFormat: 'd-m-Y',
-  locale: {
-    firstDayOfWeek: 1,
-    weekdays: {
-      shorthand: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
-      longhand: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado']
-    },
-    months: {
-      shorthand: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
-      longhand: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
-    }
-  }
-}
 
 function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
   const [picker, setPicker] = useState(null)
@@ -56,37 +31,42 @@ function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
   const [estadoCivil, setEstadoCivil] = useState([])
   const [nacionalidad, setNacionalidad] = useState([])
 
-  async function handleEstadoCivil () {
-    const response = await sutepaApi.get('estadocivil')
-    const { data } = response.data
-    setEstadoCivil(data)
-  }
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await sutepaApi.get('estadocivil')
+        const { data } = response.data
+        setEstadoCivil(data)
+      } catch (error) {
+        console.error('Error fetching estado civil:', error)
+      }
+    }
 
-  async function handleNacionalidad () {
-    const response = await sutepaApi.get('nacionalidad')
-    const { data } = response.data
-    setNacionalidad(data)
-  }
+    fetchData()
+  }, [])
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await sutepaApi.get('nacionalidad')
+        const { data } = response.data
+        setNacionalidad(data)
+      } catch (error) {
+        console.error('Error fetching nacionalidad:', error)
+      }
+    }
+
+    fetchData()
+  }, [])
 
   useEffect(() => {
     const personaData = {
+      ...watch('persona'),
       fecha_afiliacion: picker,
-      fecha_nacimiento: picker2,
-      dni,
-      cuil,
-      legajo,
-      email: correoElectronico,
-      telefono,
-      nombre: watch('nombre'),
-      apellido: watch('apellido'),
-      sexo: watch('sexo'),
-      estado_civil_id: watch('estado_civil_id'),
-      nacionalidad_id: watch('nacionalidad_id'),
-      tipo_documento: watch('tipo_documento')
+      fecha_nacimiento: picker2
     }
-
     dispatch(updatePersona(personaData))
-  }, [picker, picker2, cuil, dni, legajo, correoElectronico, telefono, dispatch])
+  }, [picker, picker2, watch, dispatch])
 
   const handleDateChange = (date, field) => {
     if (field === 'fecha_afiliacion') {
@@ -170,10 +150,30 @@ function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
   }
 
   useEffect(() => {
-    handleEstadoCivil()
-    handleNacionalidad()
-  }, [])
+    const legajoValue = watch('legajo')
+    const nombreValue = watch('nombre')
+    const apellidoValue = watch('apellido')
+    const dniValue = watch('dni')
+    const estadoCivilIdValue = watch('estado_civil_id')
 
+    const personaData = {
+      fecha_afiliacion: picker,
+      fecha_nacimiento: picker2,
+      dni: dniValue,
+      cuil,
+      legajo: legajoValue,
+      email: correoElectronico,
+      telefono,
+      nombre: nombreValue,
+      apellido: apellidoValue,
+      sexo: watch('sexo'),
+      estado_civil_id: estadoCivilIdValue,
+      nacionalidad_id: watch('nacionalidad_id'),
+      tipo_documento: watch('tipo_documento')
+    }
+
+    dispatch(updatePersona(personaData))
+  }, [picker, picker2, cuil, correoElectronico, telefono, watch, dispatch])
   return (
     <>
       <h4 className='card-title text-center bg-red-500 dark:bg-gray-700 text-white rounded-md p-2'>
@@ -202,9 +202,7 @@ function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
             <label htmlFor='default-picker' className='form-label'>
               Fecha de Afiliacion
             </label>
-            <Flatpickr
-              options={flatpickrOptions}
-              className='form-control py-2 flatPickrBG dark:flatPickrBGDark dark:placeholder-white placeholder-black-500'
+            <DatePicker
               value={picker}
               id='fecha_afiliacion'
               placeholder='Seleccione la fecha de afiliación'
@@ -255,9 +253,7 @@ function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
             <label htmlFor='default-picker' className='form-label'>
               Fecha de Nacimiento
             </label>
-            <Flatpickr
-              options={flatpickrOptions}
-              className='form-control py-2 flatPickrBG dark:flatPickrBGDark dark:placeholder-white placeholder-black-500'
+            <DatePicker
               value={picker2}
               id='fecha_nacimiento'
               placeholder='Seleccione la fecha de nacimiento'
@@ -299,6 +295,7 @@ function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
           <div>
             <label htmlFor='default-picker' className='form-label'>
               Documento
+              <strong className='obligatorio'>(*)</strong>
             </label>
             <Numberinput
               register={register}

@@ -3,13 +3,12 @@ import Card from '@/components/ui/Card'
 import Textinput from '@/components/ui/Textinput'
 import Numberinput from '@/components/ui/Numberinput'
 import { SelectForm } from '@/components/sutepa/forms'
-import Flatpickr from 'react-flatpickr'
-import 'flatpickr/dist/themes/material_red.css'
 import { useSelector, useDispatch } from 'react-redux'
 import { onAddFamiliar, onDeleteFamiliar } from '../../store/ingreso'
 import { Icon } from '@iconify/react'
 import { Tooltip } from 'flowbite-react'
 import { sutepaApi } from '../../api'
+import DatePicker from '../ui/DatePicker'
 
 const initialForm = {
   id: null,
@@ -25,27 +24,6 @@ const tipoDocumento = [
   { id: 'PASAPORTE', nombre: 'PASAPORTE' }
 ]
 
-const flatpickrOptions = {
-  dateFormat: 'd-m-Y',
-  locale: {
-    firstDayOfWeek: 1,
-    weekdays: {
-      shorthand: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
-      longhand: [
-        'Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'
-      ]
-    },
-    months: {
-      shorthand: [
-        'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'
-      ],
-      longhand: [
-        'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
-      ]
-    }
-  }
-}
-
 function FamiliarAcargoData ({ register, disabled }) {
   const dispatch = useDispatch()
   const { familiares } = useSelector(state => state.ingreso)
@@ -57,7 +35,7 @@ function FamiliarAcargoData ({ register, disabled }) {
   const [parentesco, setParentesco] = useState([])
 
   async function handleParentesco () {
-    const response = await sutepaApi.get('parentesco')
+    const response = await sutepaApi.get('familia')
     const { data } = response.data
     setParentesco(data)
   }
@@ -151,9 +129,7 @@ function FamiliarAcargoData ({ register, disabled }) {
               <label htmlFor='fecha_nacimiento' className='form-label'>
                 Fecha de Nacimiento
               </label>
-              <Flatpickr
-                options={flatpickrOptions}
-                className='form-control py-2 flatPickrBG dark:flatPickrBGDark dark:placeholder-white placeholder-black-500'
+              <DatePicker
                 value={picker}
                 id='fecha_nacimiento'
                 placeholder='Ingrese la fecha de nacimiento'

@@ -1,8 +1,6 @@
 import Card from '@/components/ui/Card'
 import Textarea from '@/components/ui/Textarea'
 import { SelectForm } from '@/components/sutepa/forms'
-import Flatpickr from 'react-flatpickr'
-import 'flatpickr/dist/themes/material_red.css'
 import { useRef, useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useSelector, useDispatch } from 'react-redux'
@@ -10,28 +8,13 @@ import { onAddSubsidio } from '../../store/ingreso'
 import { Tooltip } from 'flowbite-react'
 import { Icon } from '@iconify/react/dist/iconify.js'
 import { sutepaApi } from '../../api'
+import DatePicker from '../ui/DatePicker'
 
 const initialForm = {
   tipo_subsidio: '',
   fecha_solicitud: null,
   fecha_otorgamiento: null,
   observaciones: ''
-}
-
-const flatpickrOptions = {
-  dateFormat: 'd-m-Y',
-  maxDate: 'today',
-  locale: {
-    firstDayOfWeek: 1,
-    weekdays: {
-      shorthand: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
-      longhand: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado']
-    },
-    months: {
-      shorthand: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
-      longhand: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
-    }
-  }
 }
 
 function SubsidioData ({ disabled }) {
@@ -53,48 +36,6 @@ function SubsidioData ({ disabled }) {
     setSubsidio(data)
   }
 
-  useEffect(() => {
-    if (isEditing && formData) {
-      setValue('tipo_subsidio', formData.tipo_subsidio)
-
-      if (formData.fecha_solicitud) {
-        const fechaSolicitud = new Date(formData.fecha_solicitud)
-        if (!isNaN(fechaSolicitud)) {
-          setPicker(fechaSolicitud)
-          setValue('fecha_solicitud', fechaSolicitud)
-        }
-      }
-
-      if (formData.fecha_otorgamiento) {
-        const fechaOtorgamiento = new Date(formData.fecha_otorgamiento)
-        if (!isNaN(fechaOtorgamiento)) {
-          setPicker2(fechaOtorgamiento)
-          setValue('fecha_otorgamiento', fechaOtorgamiento)
-        }
-      }
-    }
-  }, [formData, isEditing, setValue])
-
-  const handleEdit = (subsidio) => {
-    setFormData(subsidio)
-    setEditingSubsidioId(subsidio.id)
-    setIsEditing(true)
-
-    // Establece los valores de los campos del formulario con los datos editados
-    setValue('tipo_subsidio', subsidio.tipo_subsidio)
-    setValue('fecha_solicitud', subsidio.fecha_solicitud ? new Date(subsidio.fecha_solicitud) : null)
-    setValue('fecha_otorgamiento', subsidio.fecha_otorgamiento ? new Date(subsidio.fecha_otorgamiento) : null)
-    setValue('observaciones', subsidio.observaciones)
-  }
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target
-    setFormData({
-      ...formData,
-      [name]: value
-    })
-  }
-
   const handleDateChange = (date, field) => {
     setFormData({
       ...formData,
@@ -108,6 +49,31 @@ function SubsidioData ({ disabled }) {
       setPicker2(date)
       setValue(field, date[0])
     }
+  }
+
+  const handleEdit = (subsidio) => {
+    setFormData(subsidio)
+    setEditingSubsidioId(subsidio.id)
+    setIsEditing(true)
+
+    // Establece los valores de los campos del formulario con los datos editados
+    setValue('tipo_subsidio', subsidio.tipo_subsidio)
+    setValue('fecha_solicitud', subsidio.fecha_solicitud ? new Date(subsidio.fecha_solicitud) : null)
+    setValue('fecha_otorgamiento', subsidio.fecha_otorgamiento ? new Date(subsidio.fecha_otorgamiento) : null)
+    setValue('observaciones', subsidio.observaciones)
+  }
+
+  const onDelete = (id) => {
+    const newSubsidios = subsidios.filter(subsidio => subsidio.id !== id)
+    setSubsidios(newSubsidios)
+  }
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target
+    setFormData({
+      ...formData,
+      [name]: value
+    })
   }
 
   const onReset = () => {
@@ -144,10 +110,27 @@ function SubsidioData ({ disabled }) {
     onReset()
   }
 
-  const onDelete = (id) => {
-    const newSubsidios = subsidios.filter(subsidio => subsidio.id !== id)
-    setSubsidios(newSubsidios)
-  }
+  useEffect(() => {
+    if (isEditing && formData) {
+      setValue('tipo_subsidio', formData.tipo_subsidio)
+
+      if (formData.fecha_solicitud) {
+        const fechaSolicitud = new Date(formData.fecha_solicitud)
+        if (!isNaN(fechaSolicitud)) {
+          setPicker(fechaSolicitud)
+          setValue('fecha_solicitud', fechaSolicitud)
+        }
+      }
+
+      if (formData.fecha_otorgamiento) {
+        const fechaOtorgamiento = new Date(formData.fecha_otorgamiento)
+        if (!isNaN(fechaOtorgamiento)) {
+          setPicker2(fechaOtorgamiento)
+          setValue('fecha_otorgamiento', fechaOtorgamiento)
+        }
+      }
+    }
+  }, [formData, isEditing, setValue])
 
   useEffect(() => {
     handleSubsidio()
@@ -174,9 +157,7 @@ function SubsidioData ({ disabled }) {
               <label htmlFor='fecha_solicitud' className='form-label'>
                 Fecha de Solicitud
               </label>
-              <Flatpickr
-                options={flatpickrOptions}
-                className='form-control py-2 flatPickrBG dark:flatPickrBGDark dark:placeholder-white placeholder-black-500'
+              <DatePicker
                 value={picker}
                 id='fecha_solicitud'
                 name='fecha_solicitud'
@@ -190,9 +171,7 @@ function SubsidioData ({ disabled }) {
               <label htmlFor='fecha_otorgamiento' className='form-label'>
                 Fecha de Otorgamiento
               </label>
-              <Flatpickr
-                options={flatpickrOptions}
-                className='form-control py-2 flatPickrBG dark:flatPickrBGDark dark:placeholder-white placeholder-black-500'
+              <DatePicker
                 value={picker2}
                 id='fecha_otorgamiento'
                 name='fecha_otorgamiento'

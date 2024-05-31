@@ -1,13 +1,12 @@
+import React, { useState, useEffect } from 'react'
+import { sutepaApi } from '../../api'
 import Card from '@/components/ui/Card'
 import Textinput from '@/components/ui/Textinput'
 import Numberinput from '@/components/ui/Numberinput'
 import { SelectForm } from '@/components/sutepa/forms'
-import Flatpickr from 'react-flatpickr'
-import 'flatpickr/dist/themes/material_red.css'
-import { useState, useEffect } from 'react'
+import DatePicker from '../ui/DatePicker'
+import { onAddAgencia } from '../../store/ingreso'
 import { useDispatch } from 'react-redux'
-import { updateDatosLaborales } from '../../store/ingreso'
-import { sutepaApi } from '../../api'
 
 const tipoContrato = [
   { id: 'PLANTA PERMANENTE', nombre: 'PLANTA PERMANENTE' },
@@ -28,37 +27,26 @@ const tramoHoras = {
   D: 35
 }
 
-const flatpickrOptions = {
-  dateFormat: 'd-m-Y',
-  locale: {
-    firstDayOfWeek: 1,
-    weekdays: {
-      shorthand: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
-      longhand: [
-        'Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'
-      ]
-    },
-    months: {
-      shorthand: [
-        'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'
-      ],
-      longhand: [
-        'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
-      ]
-    }
-  }
-}
-
-function InformacionLaboralData ({ register, setValue, disabled, watch }) {
+function InformacionLaboralData ({ register, setValue, disabled }) {
   const [picker, setPicker] = useState(null)
   const [cargaHoraria, setCargaHoraria] = useState('')
+  const dispatch = useDispatch()
   const [correoElectronicoLaboral, setCorreoElectronicoLaboral] = useState('')
   const [telefonoLaboral, setTelefonoLaboral] = useState('')
-  const dispatch = useDispatch()
+  const [domicilioTrabajo, setDomicilioTrabajo] = useState('')
   const [agrupamiento, setAgrupamiento] = useState([])
   const [seccional, setSeccional] = useState([])
   const [ugl, setUgl] = useState([])
-  const [agencia, setAgencia] = useState([])
+  const [filteredAgencias, setFilteredAgencias] = useState([])
+  const [agenciaDisabled, setAgenciaDisabled] = useState(true)
+
+  function addItem (agencia) {
+    setDomicilioTrabajo(agencia.domicilio_trabajo)
+    setTelefonoLaboral(agencia.telefono_laboral)
+    setValue('domicilio_trabajo', agencia.domicilio_trabajo)
+    setValue('telefono_laboral', agencia.telefono_laboral)
+    dispatch(onAddAgencia(agencia))
+  }
 
   async function handleAgrupamiento () {
     const response = await sutepaApi.get('agrupamiento')
@@ -78,29 +66,13 @@ function InformacionLaboralData ({ register, setValue, disabled, watch }) {
     setUgl(data)
   }
 
-  async function handleAgencia () {
-    const response = await sutepaApi.get('agencia')
+  async function handleAgencia (id) {
+    const response = await sutepaApi.get(`agencia/${id}`)
     const { data } = response.data
-    setAgencia(data)
+    setFilteredAgencias(data)
+    setAgenciaDisabled(false)
+    console.log(data)
   }
-
-  useEffect(() => {
-    const datosLaboralesData = {
-      fecha_afiliacion: picker,
-      carga_horaria: cargaHoraria,
-      email: correoElectronicoLaboral,
-      telefono_laboral: telefonoLaboral,
-      tipo_contrato: watch('tipo_contrato'),
-      ugl_id: watch('ugl_id'),
-      agencia_id: watch('agencia_id'),
-      domicilio_trabajo: watch('domicilio_trabajo'),
-      seccional_id: watch('seccional_id'),
-      agrupamiento: watch('agrupamiento'),
-      tramo: watch('tramo')
-    }
-
-    dispatch(updateDatosLaborales(datosLaboralesData))
-  }, [picker, correoElectronicoLaboral, telefonoLaboral, dispatch])
 
   const handleDateChange = (date) => {
     setPicker(date)
@@ -119,11 +91,11 @@ function InformacionLaboralData ({ register, setValue, disabled, watch }) {
     setValue('email', value)
   }
 
-  const handleTelefonoLaboralChange = (e) => {
-    const value = e.target.value
-    setTelefonoLaboral(value)
-    setValue('telefono_laboral', value)
-  }
+  // const handleTelefonoLaboralChange = (e) => {
+  //   const value = e.target.value
+  //   setTelefonoLaboral(value)
+  //   setValue('telefono_laboral', value)
+  // }
 
   const handleTramoChange = (e) => {
     const selectedTramo = e.target.value
@@ -132,11 +104,38 @@ function InformacionLaboralData ({ register, setValue, disabled, watch }) {
     setValue('carga_horaria', horas)
   }
 
+  const handleAgenciaChange = async (e) => {
+    const agenciaId = e.target.value
+    if (agenciaId) {
+      try {
+        const response = await sutepaApi.get(`agencia/${agenciaId}`)
+        const { data } = response.data
+        if (data) {
+          const domicilio = data.domicilio_trabajo || ''
+          const telefono = data.telefono_laboral || ''
+          setValue('domicilio_trabajo', domicilio)
+          setValue('telefono_laboral', telefono)
+          setDomicilioTrabajo(domicilio)
+          setTelefonoLaboral(telefono)
+          addItem(data)
+        }
+      } catch (error) {
+        console.error('Error fetching agency data:', error)
+      }
+    }
+  }
+
+  const handleUglChange = (e) => {
+    const selectedUglId = e.target.value
+    handleAgencia(selectedUglId)
+    setValue('agencia_id', '')
+    setAgenciaDisabled(true)
+  }
+
   useEffect(() => {
     handleAgrupamiento()
     handleSeccional()
     handleUgl()
-    handleAgencia()
   }, [])
 
   return (
@@ -158,27 +157,27 @@ function InformacionLaboralData ({ register, setValue, disabled, watch }) {
             register={register('ugl_id')}
             title='UGL'
             options={ugl}
+            onChange={handleUglChange}
             disabled={disabled}
           />
 
           <SelectForm
             register={register('agencia_id')}
             title='Agencia'
-            options={agencia}
-            disabled={disabled}
+            options={filteredAgencias}
+            onChange={handleAgenciaChange}
+            disabled={disabled || agenciaDisabled}
           />
 
           <div>
-            <label htmlFor='default-picker' className='form-label'>
-              Domicilio de Trabajo
-            </label>
             <Textinput
+              label='Domicilio de Trabajo'
               name='domicilio_trabajo'
-              type='text'
               register={register}
               placeholder='Ingrese el domicilio de trabajo'
               disabled={disabled}
-              readonly
+              value={domicilioTrabajo}
+              onChange={(e) => setDomicilioTrabajo(e.target.value)}
             />
           </div>
 
@@ -220,17 +219,15 @@ function InformacionLaboralData ({ register, setValue, disabled, watch }) {
           </div>
 
           <div>
-            <label htmlFor='default-picker' className='form-label'>
+            <label htmlFor='fecha_ingreso' className='form-label'>
               Fecha de Ingreso
             </label>
 
-            <Flatpickr
-              options={flatpickrOptions}
-              className='form-control py-2 flatPickrBG dark:flatPickrBGDark dark:placeholder-white placeholder-black-500'
+            <DatePicker
               value={picker}
-              id='fecha_ingreso'
-              placeholder='Ingese la fecha de ingreso'
               onChange={handleDateChange}
+              id='fecha_ingreso'
+              placeholder='Ingrese la fecha de ingreso'
               disabled={disabled}
             />
             <input type='hidden' {...register('fecha_ingreso')} />
@@ -247,15 +244,15 @@ function InformacionLaboralData ({ register, setValue, disabled, watch }) {
             disabled={disabled}
           />
 
-          <Numberinput
+          <Textinput
             label='Teléfono Laboral'
             register={register}
             id='telefono_laboral'
             placeholder='Ingrese el teléfono laboral'
             value={telefonoLaboral}
-            onChange={handleTelefonoLaboralChange}
+            // onChange={handleTelefonoLaboralChange}
+            onChange={(e) => setTelefonoLaboral(e.target.value)}
             disabled={disabled}
-            readOnly
           />
         </div>
       </Card>

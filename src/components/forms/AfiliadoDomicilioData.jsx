@@ -23,8 +23,8 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
   }
 
   // Función para obtener las localidades según la provincia seleccionada
-  async function handleLocalidad (provinciaId) {
-    const response = await sutepaApi.get(`localidad?provinciaId=${provinciaId}`)
+  async function handleLocalidad (id) {
+    const response = await sutepaApi.get(`localidad/${id}`)
     const { data } = response.data
     setLocalidades(data)
   }

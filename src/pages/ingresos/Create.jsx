@@ -22,8 +22,7 @@ export const Create = () => {
 
   const FormValidationSchema = yup.object().shape({
     nombre: yup.string().required('El nombre es requerido'),
-    apellido: yup.string().required('El apellido es requerido'),
-    legajo: yup.string().required('El legajo es requerido')
+    apellido: yup.string().required('El apellido es requerido')
   })
 
   const {

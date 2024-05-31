@@ -198,7 +198,7 @@ export const Ingreso = ({ title = 'Lista de Afiliados' }) => {
     }
   ]
 
-  const { ingresos, activeIngreso, startLoadingIngreso, startDeleteIngreso } = useIngresoStore()
+  const { ingresos, activeIngreso, startDeleteIngreso } = useIngresoStore()
   const dispatch = useDispatch()
   const [idIngreso, setIdIngreso] = useState()
   // const { selectDateReport, startDownloadReport } = useIngresoStore();
@@ -260,10 +260,6 @@ export const Ingreso = ({ title = 'Lista de Afiliados' }) => {
     setIdIngreso(e.target.id)
     dispatch(hadleShowDeleteModal(true))
   }
-
-  useEffect(() => {
-    startLoadingIngreso()
-  }, [])
 
   return (
     <>
