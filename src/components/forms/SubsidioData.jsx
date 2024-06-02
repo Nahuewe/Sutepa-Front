@@ -11,7 +11,7 @@ import { sutepaApi } from '../../api'
 import DatePicker from '../ui/DatePicker'
 
 const initialForm = {
-  tipo_subsidio: '',
+  tipo_subsidio_id: null,
   fecha_solicitud: null,
   fecha_otorgamiento: null,
   observaciones: ''
@@ -29,6 +29,14 @@ function SubsidioData ({ disabled }) {
   const { user } = useSelector(state => state.auth)
   const formRef = useRef()
   const [subsidio, setSubsidio] = useState([])
+
+  function onChange ({ target }) {
+    const { name, value } = target
+    setFormData((prevState) => ({
+      ...prevState,
+      [name]: value
+    }))
+  }
 
   async function handleSubsidio () {
     const response = await sutepaApi.get('subsidio')
@@ -52,14 +60,19 @@ function SubsidioData ({ disabled }) {
   }
 
   const handleEdit = (subsidio) => {
-    setFormData(subsidio)
+    setFormData({
+      ...subsidio,
+      fecha_solicitud: new Date(subsidio.fecha_solicitud),
+      fecha_otorgamiento: new Date(subsidio.fecha_otorgamiento)
+    })
     setEditingSubsidioId(subsidio.id)
     setIsEditing(true)
+    setPicker(new Date(subsidio.fecha_solicitud))
+    setPicker2(new Date(subsidio.fecha_otorgamiento))
 
-    // Establece los valores de los campos del formulario con los datos editados
-    setValue('tipo_subsidio', subsidio.tipo_subsidio)
-    setValue('fecha_solicitud', subsidio.fecha_solicitud ? new Date(subsidio.fecha_solicitud) : null)
-    setValue('fecha_otorgamiento', subsidio.fecha_otorgamiento ? new Date(subsidio.fecha_otorgamiento) : null)
+    setValue('tipo_subsidio_id', subsidio.tipo_subsidio_id)
+    setValue('fecha_solicitud', new Date(subsidio.fecha_solicitud))
+    setValue('fecha_otorgamiento', new Date(subsidio.fecha_otorgamiento))
     setValue('observaciones', subsidio.observaciones)
   }
 
@@ -68,12 +81,13 @@ function SubsidioData ({ disabled }) {
     setSubsidios(newSubsidios)
   }
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target
-    setFormData({
-      ...formData,
-      [name]: value
-    })
+  const handleSelectChange = (e) => {
+    const { value } = e.target
+    const tipoSubsidioId = parseInt(value)
+    setFormData((prevState) => ({
+      ...prevState,
+      tipo_subsidio_id: tipoSubsidioId
+    }))
   }
 
   const onReset = () => {
@@ -86,33 +100,40 @@ function SubsidioData ({ disabled }) {
     reset()
   }
 
-  const agregarSubsidio = () => {
-    const fechaCarga = new Date().toLocaleDateString('es-ES')
-    const nuevoSubsidio = {
+  function formatDate (date) {
+    return date ? new Date(date).toLocaleDateString() : ''
+  }
+
+  function getTipoSubsidioNombre (id) {
+    const subsidioEncontrado = subsidio.find(s => s.id === id)
+    return subsidioEncontrado ? subsidioEncontrado.nombre : ''
+  }
+
+  function addItem () {
+    const newSubsidio = {
       ...formData,
-      id: editingSubsidioId || Date.now(),
-      fecha_carga: fechaCarga,
-      fecha_solicitud: formData.fecha_solicitud ? new Date(formData.fecha_solicitud).toLocaleDateString('es-ES') : fechaCarga,
-      fecha_otorgamiento: formData.fecha_otorgamiento ? new Date(formData.fecha_otorgamiento).toLocaleDateString('es-ES') : fechaCarga
+      fecha_carga: new Date().toLocaleDateString(),
+      id: isEditing ? editingSubsidioId : Date.now(),
+      usuario_carga: user.nombre
     }
-    console.log(formData)
 
-    if (editingSubsidioId) {
-      const updatedSubsidios = subsidios.map(subsidio => (subsidio.id === editingSubsidioId ? nuevoSubsidio : subsidio))
-      setSubsidios(updatedSubsidios)
-      setIsEditing(false)
-      setEditingSubsidioId(null)
+    if (isEditing) {
+      setSubsidios((prevSubsidios) =>
+        prevSubsidios.map((subsidio) =>
+          subsidio.id === editingSubsidioId ? newSubsidio : subsidio
+        )
+      )
     } else {
-      dispatch(onAddSubsidio(nuevoSubsidio))
-      setSubsidios([...subsidios, nuevoSubsidio])
+      setSubsidios((prevSubsidios) => [...prevSubsidios, newSubsidio])
     }
 
+    dispatch(onAddSubsidio(newSubsidio))
     onReset()
   }
 
   useEffect(() => {
     if (isEditing && formData) {
-      setValue('tipo_subsidio', formData.tipo_subsidio)
+      setValue('tipo_subsidio_id', formData.tipo_subsidio_id)
 
       if (formData.fecha_solicitud) {
         const fechaSolicitud = new Date(formData.fecha_solicitud)
@@ -151,6 +172,7 @@ function SubsidioData ({ disabled }) {
               title='Tipo de Subsidio'
               options={subsidio}
               disabled={disabled}
+              onChange={handleSelectChange}
             />
 
             <div>
@@ -188,7 +210,7 @@ function SubsidioData ({ disabled }) {
               <Textarea
                 name='observaciones'
                 value={formData.observaciones}
-                onChange={handleInputChange}
+                onChange={onChange}
                 register={register}
                 placeholder='Ingrese algunas observaciones'
                 disabled={disabled}
@@ -199,7 +221,7 @@ function SubsidioData ({ disabled }) {
             <button
               type='button'
               className='btn btn-primary rounded-lg'
-              onClick={agregarSubsidio}
+              onClick={addItem}
               disabled={disabled}
             >
               {isEditing ? 'Terminar Edición' : 'Agregar Subsidio'}
@@ -225,12 +247,12 @@ function SubsidioData ({ disabled }) {
             <tbody className='divide-y dark:divide-gray-700'>
               {subsidios.map((subsidio, index) => (
                 <tr key={index} className='bg-white dark:bg-gray-800 dark:border-gray-700'>
-                  <td className='px-4 py-2 text-center dark:text-white'>{subsidio.fecha_carga}</td>
-                  <td className='px-4 py-2 text-center dark:text-white'>{subsidio.tipo_subsidio_id.nombre}</td>
-                  <td className='px-4 py-2 text-center dark:text-white'>{subsidio.fecha_solicitud}</td>
-                  <td className='px-4 py-2 text-center dark:text-white'>{subsidio.fecha_otorgamiento}</td>
+                  <td className='px-4 py-2 text-center dark:text-white'>{formatDate(subsidio.fecha_carga)}</td>
+                  <td className='px-4 py-2 text-center dark:text-white'>{getTipoSubsidioNombre(subsidio.tipo_subsidio_id)}</td>
+                  <td className='px-4 py-2 text-center dark:text-white'>{formatDate(subsidio.fecha_solicitud)}</td>
+                  <td className='px-4 py-2 text-center dark:text-white'>{formatDate(subsidio.fecha_otorgamiento)}</td>
                   <td className='px-4 py-2 text-center dark:text-white'>{subsidio.observaciones}</td>
-                  <td className='px-4 py-2 text-center dark:text-white'>{user.nombre}</td>
+                  <td className='px-4 py-2 text-center dark:text-white'>{subsidio.usuario_carga}</td>
                   <td className='text-center py-2 gap-4 flex justify-center'>
                     <Tooltip content='Editar'>
                       <button

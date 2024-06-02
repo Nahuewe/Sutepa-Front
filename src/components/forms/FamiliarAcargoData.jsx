@@ -16,7 +16,7 @@ const initialForm = {
   fecha_nacimiento: '',
   tipo_documento_familiar: '',
   documento: '',
-  parentesco: ''
+  parentesco_id: ''
 }
 
 const tipoDocumento = [
@@ -202,7 +202,7 @@ function FamiliarAcargoData ({ register, disabled }) {
                     <td className='px-4 py-2 text-center dark:text-white'>{fam.fecha_nacimiento}</td>
                     <td className='px-4 py-2 text-center dark:text-white'>{fam.tipo_documento_familiar}</td>
                     <td className='px-4 py-2 text-center dark:text-white'>{fam.documento}</td>
-                    <td className='px-4 py-2 text-center dark:text-white'>{fam.parentesco}</td>
+                    <td className='px-4 py-2 text-center dark:text-white'>{fam.parentesco_id}</td>
                     <td className='px-4 py-2 text-center dark:text-white'>{user.nombre}</td>
                     <td className='text-center py-2'>
                       <Tooltip content='Eliminar'>

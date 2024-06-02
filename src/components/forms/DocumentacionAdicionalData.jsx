@@ -1,13 +1,13 @@
-import Card from '@/components/ui/Card'
-import { SelectForm } from '@/components/sutepa/forms'
-import { useEffect, useRef, useState } from 'react'
-import { Icon } from '@iconify/react/dist/iconify.js'
-import Tooltip from '@/components/ui/Tooltip'
-import { toast } from 'react-toastify'
-import { FileInput } from 'flowbite-react'
-import { onAddDocumento, onDeleteDocumento } from '../../store/ingreso'
+import React, { useState, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { sutepaApi } from '../../api'
+import { toast } from 'react-toastify'
+import { FileInput } from 'flowbite-react'
+import Card from '@/components/ui/Card'
+import { SelectForm } from '@/components/sutepa/forms'
+import Tooltip from '@/components/ui/Tooltip'
+import { Icon } from '@iconify/react/dist/iconify.js'
+import { onAddDocumento, onDeleteDocumento } from '../../store/ingreso'
 
 const initialForm = {
   tipo_archivo: '',
@@ -21,13 +21,21 @@ function DocumentacionAdicionalData ({ register, disabled }) {
   const { user } = useSelector(state => state.auth)
   const [formData, setFormData] = useState(initialForm)
   const formRef = useRef()
-  const [archivo, setArchivo] = useState([])
+  const [archivoOptions, setArchivoOptions] = useState([])
 
-  async function handleArchivo () {
-    const response = await sutepaApi.get('documentacion')
-    const { data } = response.data
-    setArchivo(data)
+  const handleArchivo = async () => {
+    try {
+      const response = await sutepaApi.get('documentacion')
+      const { data } = response.data
+      setArchivoOptions(data)
+    } catch (error) {
+      console.error('Error fetching archivo options:', error)
+    }
   }
+
+  useEffect(() => {
+    handleArchivo()
+  }, [])
 
   const handleInputChange = (e) => {
     const { name, value, files } = e.target
@@ -39,24 +47,21 @@ function DocumentacionAdicionalData ({ register, disabled }) {
 
   const onReset = () => {
     formRef.current.reset()
+    setFormData(initialForm)
   }
 
-  const agregarDocumento = (documento) => {
-    if (formData.tipo_archivo && formData.archivo) {
+  const agregarDocumento = () => {
+    const tipoArchivoOption = archivoOptions.find(option => option.id === parseInt(formData.tipo_archivo))
+    if (tipoArchivoOption && formData.archivo) {
       const nuevoDocumento = {
         ...formData,
+        tipo_archivo: tipoArchivoOption.id,
         id: Date.now(),
         fecha_carga: new Date().toLocaleDateString('es-ES'),
         url: URL.createObjectURL(formData.archivo)
       }
       dispatch(onAddDocumento(nuevoDocumento))
       setDocumentos([...documentos, nuevoDocumento])
-      setFormData({
-        ...formData,
-        id: documento.id,
-        tipo_archivo: documento.tipo_archivo || '',
-        archivo: documento.archivo || ''
-      })
       onReset()
     } else {
       toast.error('Selecciona un tipo de archivo y subí un documento')
@@ -68,10 +73,6 @@ function DocumentacionAdicionalData ({ register, disabled }) {
     setDocumentos(newDocumentos)
     dispatch(onDeleteDocumento(index))
   }
-
-  useEffect(() => {
-    handleArchivo()
-  }, [])
 
   return (
     <>
@@ -85,8 +86,9 @@ function DocumentacionAdicionalData ({ register, disabled }) {
             <SelectForm
               register={register('tipo_archivo')}
               title='Tipo de Archivo'
-              options={archivo}
+              options={archivoOptions}
               disabled={disabled}
+              onChange={handleInputChange}
             />
             <div>
               <label htmlFor='archivo' className='form-label'>Archivo</label>
@@ -130,7 +132,7 @@ function DocumentacionAdicionalData ({ register, disabled }) {
                 <tr key={index} className='bg-white dark:bg-gray-800 dark:border-gray-700'>
                   <td className='px-4 py-2 text-center dark:text-white'>{documento.fecha_carga}</td>
                   <td className='px-4 py-2 whitespace-nowrap font-medium text-gray-900 dark:text-white text-center'>
-                    {documento.tipo_archivo}
+                    {documento.tipo_archivo.nombre}
                   </td>
                   <td className='px-4 py-2 text-center dark:text-white'>
                     <a href={documento.url} target='_blank' rel='noopener noreferrer' className='text-blue-500 underline'>

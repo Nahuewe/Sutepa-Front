@@ -2,11 +2,11 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { sutepaApi } from '../api'
 import { toast } from 'react-toastify'
-import { cleanIngreso, handleIngreso, onAddNewIngreso, onDeleteIngreso } from '../store/ingreso'
+import { cleanIngreso, onAddNewIngreso, onUpdateIngreso } from '../store/ingreso'
 
 export const useIngresoStore = () => {
   const dispatch = useDispatch()
-  const { ingresos, familiares, documentos, subsidios, persona, domicilios, datos_laborales, obraSociales, activeIngreso } = useSelector(state => state.ingreso)
+  const { ingresos, familiares, documentacion, subsidios, persona, domicilio, datos_laborales, obra_social, activeIngreso } = useSelector(state => state.ingreso)
   // const { user: { uid, seccional } } = useSelector(state => state.auth) // Id de seccional del usuario
 
   // const startSavingIngreso = async (form) => {
@@ -25,28 +25,22 @@ export const useIngresoStore = () => {
   //   }
   // }
 
-  const startSavingIngreso = async (form) => {
+  const startSavingIngreso = async () => {
     try {
-      const { data } = await sutepaApi.post('/personas', ...form)
-      console.log(data)
-      console.log(form)
-      const afiliado = {
-        ...data,
+      const { data } = await sutepaApi.post('/personas', {
         persona,
-        domicilios,
+        domicilio,
         datos_laborales,
-        obraSociales,
+        obra_social,
         familiares,
-        documentos,
+        documentacion,
         subsidios
-      }
-      console.log(afiliado)
-      console.log(data)
+      })
 
       dispatch(onAddNewIngreso(data.ingreso))
       dispatch(cleanIngreso())
 
-      toast.success('Afiliado creado con exito')
+      toast.success('Afiliado creado con éxito')
     } catch (error) {
       toast.error('No se pudo agregar los datos')
     }
@@ -63,27 +57,23 @@ export const useIngresoStore = () => {
 
   const startUpdateIngreso = async () => {
     try {
-      const { data } = await sutepaApi.post('/personas')
-      console.log(data)
-      const afiliado = {
-        ...data,
+      const { data } = await sutepaApi.put(`/ingresos/${activeIngreso.id}`, {
         persona,
-        domicilios,
+        domicilio,
         datos_laborales,
-        obraSociales,
+        obra_social,
         familiares,
-        documentos,
+        documentacion,
         subsidios
-      }
+      })
 
-      console.log(afiliado)
-      console.log(data)
-      dispatch(onAddNewIngreso(data.ingreso))
+      // Actualizar el estado de Redux con los datos actualizados del ingreso
+      dispatch(onUpdateIngreso(data))
       dispatch(cleanIngreso())
 
-      toast.success('Afiliado creado con exito')
+      toast.success('Afiliado actualizado con éxito')
     } catch (error) {
-      toast.error('No se pudo agregar los datos')
+      toast.error('No se pudo actualizar los datos')
     }
   }
 

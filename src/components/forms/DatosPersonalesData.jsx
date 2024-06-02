@@ -4,20 +4,25 @@ import Card from '@/components/ui/Card'
 import Textinput from '@/components/ui/Textinput'
 import Numberinput from '@/components/ui/Numberinput'
 import { SelectForm } from '@/components/sutepa/forms'
-import { updatePersona } from '../../store/ingreso'
+import { updatePersona, updateDatosLaborales } from '../../store/ingreso'
 import { sutepaApi } from '../../api'
 import DatePicker from '../ui/DatePicker'
 
 const sexo = [
   { id: 1, nombre: 'HOMBRE' },
-  { id: 2, nombre: 'MUJER' },
-  { id: 3, nombre: 'NO INFORMA' }
+  { id: 2, nombre: 'MUJER' }
 ]
 
 const tipoDocumento = [
   { id: 'DNI', nombre: 'DNI' },
   { id: 'PASAPORTE', nombre: 'PASAPORTE' }
 ]
+
+const initialForm = {
+  sexo_id: null,
+  estado_civil_id: null,
+  nacionalidad_id: null
+}
 
 function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
   const [picker, setPicker] = useState(null)
@@ -26,6 +31,7 @@ function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
   const [dni, setDni] = useState('')
   const [legajo, setLegajo] = useState('')
   const [correoElectronico, setCorreoElectronico] = useState('')
+  const [formData, setFormData] = useState(initialForm)
   const [telefono, setTelefono] = useState('')
   const dispatch = useDispatch()
   const [estadoCivil, setEstadoCivil] = useState([])
@@ -34,48 +40,69 @@ function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await sutepaApi.get('estadocivil')
-        const { data } = response.data
-        setEstadoCivil(data)
+        const [estadoCivilResponse, nacionalidadResponse] = await Promise.all([
+          sutepaApi.get('estadocivil'),
+          sutepaApi.get('nacionalidad')
+        ])
+        setEstadoCivil(estadoCivilResponse.data.data)
+        setNacionalidad(nacionalidadResponse.data.data)
       } catch (error) {
-        console.error('Error fetching estado civil:', error)
+        console.error('Error fetching data:', error)
       }
     }
-
     fetchData()
   }, [])
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await sutepaApi.get('nacionalidad')
-        const { data } = response.data
-        setNacionalidad(data)
-      } catch (error) {
-        console.error('Error fetching nacionalidad:', error)
-      }
-    }
-
-    fetchData()
-  }, [])
-
-  useEffect(() => {
+  // Función para manejar el envío de datos al store de Redux
+  const handleUpdatePersona = () => {
     const personaData = {
-      ...watch('persona'),
-      fecha_afiliacion: picker,
-      fecha_nacimiento: picker2
+      legajo,
+      fecha_afiliacion: picker ? picker[0] : null,
+      nombre: watch('nombre'),
+      apellido: watch('apellido'),
+      sexo_id: watch('sexo_id'),
+      fecha_nacimiento: picker2 ? picker2[0] : null,
+      estado_civil_id: watch('estado_civil_id'),
+      tipo_documento: watch('tipo_documento'),
+      dni,
+      cuil,
+      email: correoElectronico,
+      telefono,
+      nacionalidad_id: watch('nacionalidad_id')
     }
     dispatch(updatePersona(personaData))
-  }, [picker, picker2, watch, dispatch])
+  }
+
+  // Función para manejar el envío de datos laborales al store de Redux
+  const handleUpdateDatosLaborales = () => {
+    const datosLaborales = {
+      // tus campos de datos laborales aquí
+    }
+    dispatch(updateDatosLaborales(datosLaborales))
+  }
+
+  useEffect(() => {
+    handleUpdatePersona()
+  }, [picker, picker2, legajo, dni, cuil, correoElectronico, telefono, watch, dispatch])
+
+  useEffect(() => {
+    handleUpdateDatosLaborales()
+  }, [/* tus dependencias para datos laborales */])
 
   const handleDateChange = (date, field) => {
     if (field === 'fecha_afiliacion') {
       setPicker(date)
-      setValue(field, date[0])
+      setValue(field, date)
     } else if (field === 'fecha_nacimiento') {
       setPicker2(date)
-      setValue(field, date[0])
+      setValue(field, date)
     }
+  }
+
+  const handleChange = (setter) => (e) => {
+    const value = e.target.value
+    setter(value)
+    setValue(e.target.name, value)
   }
 
   const handleCuilChange = (e) => {
@@ -137,43 +164,15 @@ function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
     setValue('legajo', cleanedValue)
   }
 
-  const handleCorreoElectronicoChange = (e) => {
-    const value = e.target.value
-    setCorreoElectronico(value)
-    setValue('email', value)
+  const handleSelectChange = (field, e) => {
+    const { value } = e.target
+    const fieldValue = parseInt(value)
+    setFormData((prevState) => ({
+      ...prevState,
+      [field]: fieldValue
+    }))
   }
 
-  const handleTelefonoChange = (e) => {
-    const value = e.target.value
-    setTelefono(value)
-    setValue('telefono', value)
-  }
-
-  useEffect(() => {
-    const legajoValue = watch('legajo')
-    const nombreValue = watch('nombre')
-    const apellidoValue = watch('apellido')
-    const dniValue = watch('dni')
-    const estadoCivilIdValue = watch('estado_civil_id')
-
-    const personaData = {
-      fecha_afiliacion: picker,
-      fecha_nacimiento: picker2,
-      dni: dniValue,
-      cuil,
-      legajo: legajoValue,
-      email: correoElectronico,
-      telefono,
-      nombre: nombreValue,
-      apellido: apellidoValue,
-      sexo: watch('sexo'),
-      estado_civil_id: estadoCivilIdValue,
-      nacionalidad_id: watch('nacionalidad_id'),
-      tipo_documento: watch('tipo_documento')
-    }
-
-    dispatch(updatePersona(personaData))
-  }, [picker, picker2, cuil, correoElectronico, telefono, watch, dispatch])
   return (
     <>
       <h4 className='card-title text-center bg-red-500 dark:bg-gray-700 text-white rounded-md p-2'>
@@ -183,7 +182,7 @@ function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
       <Card>
         <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
           <div>
-            <label htmlFor='default-picker' className='form-label'>
+            <label htmlFor='legajo' className='form-label'>
               Legajo
               <strong className='obligatorio'>(*)</strong>
             </label>
@@ -243,10 +242,11 @@ function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
           </div>
 
           <SelectForm
-            register={register('sexo')}
+            register={register('sexo_id')}
             title='Sexo'
             options={sexo}
             disabled={disabled}
+            onChange={handleChange}
           />
 
           <div>
@@ -263,23 +263,21 @@ function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
             <input type='hidden' {...register('fecha_nacimiento')} />
           </div>
 
-          <div>
-            <SelectForm
-              register={register('estado_civil_id')}
-              title='Estado Civil'
-              options={estadoCivil}
-              disabled={disabled}
-            />
-          </div>
+          <SelectForm
+            register={register('estado_civil_id')}
+            title='Estado Civil'
+            options={estadoCivil}
+            disabled={disabled}
+            onChange={(e) => handleSelectChange('estado_civil_id', e)}
+          />
 
-          <div>
-            <SelectForm
-              register={register('nacionalidad_id')}
-              title='Nacionalidad'
-              options={nacionalidad}
-              disabled={disabled}
-            />
-          </div>
+          <SelectForm
+            register={register('nacionalidad_id')}
+            title='Nacionalidad'
+            options={nacionalidad}
+            disabled={disabled}
+            onChange={(e) => handleSelectChange('nacionalidad_id', e)}
+          />
 
           <div>
             <label htmlFor='default-picker' className='form-label'>
@@ -324,7 +322,7 @@ function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
             className='minuscula'
             placeholder='Ingrese el correo electrónico'
             value={correoElectronico}
-            onChange={handleCorreoElectronicoChange}
+            onChange={handleChange(setCorreoElectronico)}
             disabled={disabled}
           />
 
@@ -335,7 +333,7 @@ function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
             type='number'
             placeholder='Ingrese el número de teléfono'
             value={telefono}
-            onChange={handleTelefonoChange}
+            onChange={handleChange(setTelefono)}
             disabled={disabled}
           />
         </div>

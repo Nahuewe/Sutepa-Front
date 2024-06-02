@@ -1,5 +1,5 @@
 /* eslint-disable no-template-curly-in-string */
-import { useEffect } from 'react'
+// import { useEffect } from 'react'
 import { useAuthStore, useIngresoStore } from '@/helpers'
 import Card from '@/components/ui/Card'
 import EstadisticasDashboard from '@/components/partials/widget/chart/EstadisticasDashboard'
@@ -7,12 +7,12 @@ import RevenueBarChart from './RevenueBarChart'
 import DonutChart from './DonutChart'
 
 const Dashboard = () => {
-  const { ingresos, startLoadingIngreso } = useIngresoStore()
+  const { ingresos } = useIngresoStore()
   const { user: { sucursal } } = useAuthStore()
 
-  useEffect(() => {
-    startLoadingIngreso()
-  }, [])
+  // useEffect(() => {
+  //   startLoadingIngreso()
+  // }, [])
 
   return (
     <div>

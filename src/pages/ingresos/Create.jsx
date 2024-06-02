@@ -21,6 +21,7 @@ export const Create = () => {
   const [cambios, setCambios] = useState([])
 
   const FormValidationSchema = yup.object().shape({
+    legajo: yup.string().required('El legajo es requerido'),
     nombre: yup.string().required('El nombre es requerido'),
     apellido: yup.string().required('El apellido es requerido')
   })
@@ -92,6 +93,7 @@ export const Create = () => {
 
     reset()
     navigate('/afiliados')
+    console.log(data)
   }
 
   useEffect(() => {

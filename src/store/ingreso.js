@@ -4,11 +4,11 @@ import { createSlice } from '@reduxjs/toolkit'
 const initialState = {
   ingresos: [],
   persona: {},
-  domicilios: {},
-  datos_laborales: [],
-  obraSociales: {},
+  domicilio: {},
+  datos_laborales: {},
+  obra_social: {},
   familiares: [],
-  documentaciones: [],
+  documentacion: [],
   subsidios: [],
   activeIngreso: null
 }
@@ -24,12 +24,6 @@ export const ingresoSlice = createSlice({
     onAddNewIngreso: (state, { payload }) => {
       state.ingresos.push(payload)
       state.activeIngreso = null
-    },
-    onAddAgencia: (state, { payload }) => {
-      const existe = state.datos_laborales.find((datosLaborales) => datosLaborales.id === payload.id)
-      if (!existe) {
-        state.datos_laborales.push(payload) // Push en lugar de sobrescribir el array
-      }
     },
     onUpdateIngreso: (state, { payload }) => {
       state.ingresos = state.ingresos.map((ingreso) => {
@@ -48,13 +42,13 @@ export const ingresoSlice = createSlice({
       state.familiares = state.familiares.filter((familiar) => familiar.id !== payload)
     },
     onAddDocumento: (state, { payload }) => {
-      const existe = state.documentaciones.find((documento) => documento.id === payload.id)
+      const existe = state.documentacion.find((documento) => documento.id === payload.id)
       if (!existe) {
-        state.documentaciones = [...state.documentaciones, payload]
+        state.documentacion = [...state.documentacion, payload]
       }
     },
     onDeleteDocumento: (state, { payload }) => {
-      state.documentaciones = state.documentaciones.filter((documento) => documento.id !== payload)
+      state.documentacion = state.documentacion.filter((documento) => documento.id !== payload)
     },
     onAddSubsidio: (state, { payload }) => {
       const existe = state.subsidios.find((subsidio) => subsidio.id === payload.id)
@@ -62,17 +56,17 @@ export const ingresoSlice = createSlice({
         state.subsidios = [...state.subsidios, payload]
       }
     },
+    updatePersona: (state, { payload }) => {
+      state.persona = payload
+    },
+    updateDomicilio: (state, { payload }) => {
+      state.domicilio = payload
+    },
     onDeleteSubsidio: (state, { payload }) => {
       state.subsidios = state.subsidios.filter((subsidio) => subsidio.id !== payload)
     },
-    updateDomicilio: (state, { payload }) => {
-      state.domicilios = payload
-    },
     updateObraSocial: (state, { payload }) => {
-      state.obraSociales = payload
-    },
-    updatePersona: (state, { payload }) => {
-      state.persona = payload
+      state.obra_social = payload
     },
     updateDatosLaborales: (state, { payload }) => {
       state.datos_laborales = payload
@@ -89,11 +83,11 @@ export const ingresoSlice = createSlice({
     cleanIngreso: (state) => {
       state.ingresos = []
       state.persona = []
-      state.domicilios = []
+      state.domicilio = []
       state.datos_laborales = []
-      state.obraSociales = []
+      state.obra_social = []
       state.familiares = []
-      state.documentaciones = []
+      state.documentacion = []
       state.subsidios = []
     }
   }
@@ -102,7 +96,6 @@ export const ingresoSlice = createSlice({
 export const {
   handleIngreso,
   onAddNewIngreso,
-  onAddAgencia,
   updateDomicilio,
   updateObraSocial,
   updatePersona,

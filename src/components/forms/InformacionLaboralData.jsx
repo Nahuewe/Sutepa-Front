@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react'
+import { useDispatch } from 'react-redux'
 import { sutepaApi } from '../../api'
 import Card from '@/components/ui/Card'
 import Textinput from '@/components/ui/Textinput'
 import Numberinput from '@/components/ui/Numberinput'
 import { SelectForm } from '@/components/sutepa/forms'
 import DatePicker from '../ui/DatePicker'
-import { onAddAgencia } from '../../store/ingreso'
-import { useDispatch } from 'react-redux'
+import { updateDatosLaborales } from '../../store/ingreso'
 
 const tipoContrato = [
   { id: 'PLANTA PERMANENTE', nombre: 'PLANTA PERMANENTE' },
@@ -27,10 +27,9 @@ const tramoHoras = {
   D: 35
 }
 
-function InformacionLaboralData ({ register, setValue, disabled }) {
+function InformacionLaboralData ({ register, setValue, watch, disabled }) {
   const [picker, setPicker] = useState(null)
   const [cargaHoraria, setCargaHoraria] = useState('')
-  const dispatch = useDispatch()
   const [correoElectronicoLaboral, setCorreoElectronicoLaboral] = useState('')
   const [telefonoLaboral, setTelefonoLaboral] = useState('')
   const [domicilioTrabajo, setDomicilioTrabajo] = useState('')
@@ -39,40 +38,25 @@ function InformacionLaboralData ({ register, setValue, disabled }) {
   const [ugl, setUgl] = useState([])
   const [filteredAgencias, setFilteredAgencias] = useState([])
   const [agenciaDisabled, setAgenciaDisabled] = useState(true)
+  const dispatch = useDispatch()
 
-  function addItem (agencia) {
-    setDomicilioTrabajo(agencia.domicilio_trabajo)
-    setTelefonoLaboral(agencia.telefono_laboral)
-    setValue('domicilio_trabajo', agencia.domicilio_trabajo)
-    setValue('telefono_laboral', agencia.telefono_laboral)
-    dispatch(onAddAgencia(agencia))
-  }
-
-  async function handleAgrupamiento () {
-    const response = await sutepaApi.get('agrupamiento')
-    const { data } = response.data
-    setAgrupamiento(data)
-  }
-
-  async function handleSeccional () {
-    const response = await sutepaApi.get('seccional')
-    const { data } = response.data
-    setSeccional(data)
-  }
-
-  async function handleUgl () {
-    const response = await sutepaApi.get('ugl')
-    const { data } = response.data
-    setUgl(data)
-  }
-
-  async function handleAgencia (id) {
-    const response = await sutepaApi.get(`agencia/${id}`)
-    const { data } = response.data
-    setFilteredAgencias(data)
-    setAgenciaDisabled(false)
-    console.log(data)
-  }
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [agrupamientoResponse, seccionalResponse, uglResponse] = await Promise.all([
+          sutepaApi.get('agrupamiento'),
+          sutepaApi.get('seccional'),
+          sutepaApi.get('ugl')
+        ])
+        setAgrupamiento(agrupamientoResponse.data.data)
+        setSeccional(seccionalResponse.data.data)
+        setUgl(uglResponse.data.data)
+      } catch (error) {
+        console.error('Error fetching data:', error)
+      }
+    }
+    fetchData()
+  }, [])
 
   const handleDateChange = (date) => {
     setPicker(date)
@@ -91,12 +75,6 @@ function InformacionLaboralData ({ register, setValue, disabled }) {
     setValue('email', value)
   }
 
-  // const handleTelefonoLaboralChange = (e) => {
-  //   const value = e.target.value
-  //   setTelefonoLaboral(value)
-  //   setValue('telefono_laboral', value)
-  // }
-
   const handleTramoChange = (e) => {
     const selectedTramo = e.target.value
     const horas = tramoHoras[selectedTramo] || ''
@@ -104,39 +82,71 @@ function InformacionLaboralData ({ register, setValue, disabled }) {
     setValue('carga_horaria', horas)
   }
 
+  async function handleAgencia (id) {
+    const response = await sutepaApi.get(`agencia/${id}`)
+    const { data } = response.data
+    console.log('Agencia Data:', data)
+    setFilteredAgencias(data)
+    setAgenciaDisabled(false)
+  }
+
   const handleAgenciaChange = async (e) => {
     const agenciaId = e.target.value
     if (agenciaId) {
-      try {
-        const response = await sutepaApi.get(`agencia/${agenciaId}`)
-        const { data } = response.data
-        if (data) {
-          const domicilio = data.domicilio_trabajo || ''
-          const telefono = data.telefono_laboral || ''
-          setValue('domicilio_trabajo', domicilio)
-          setValue('telefono_laboral', telefono)
-          setDomicilioTrabajo(domicilio)
-          setTelefonoLaboral(telefono)
-          addItem(data)
-        }
-      } catch (error) {
-        console.error('Error fetching agency data:', error)
+      const response = await sutepaApi.get(`agencia/${agenciaId}`)
+      const { data } = response.data
+      if (data && data.length > 0) {
+        const domicilio = data[0].domicilio_trabajo || ''
+        const telefono = data[0].telefono_laboral || ''
+        setValue('domicilio_trabajo', domicilio)
+        setValue('telefono_laboral', telefono)
+        setDomicilioTrabajo(domicilio)
+        setTelefonoLaboral(telefono)
+      } else {
+        setValue('domicilio_trabajo', '')
+        setValue('telefono_laboral', '')
+        setDomicilioTrabajo('')
+        setTelefonoLaboral('')
       }
     }
   }
 
   const handleUglChange = (e) => {
     const selectedUglId = e.target.value
-    handleAgencia(selectedUglId)
-    setValue('agencia_id', '')
-    setAgenciaDisabled(true)
+    if (selectedUglId) {
+      handleAgencia(selectedUglId)
+      setValue('agencia_id', '')
+      setAgenciaDisabled(true)
+    }
   }
 
   useEffect(() => {
-    handleAgrupamiento()
-    handleSeccional()
-    handleUgl()
-  }, [])
+    dispatch(updateDatosLaborales({
+      tipo_contrato: watch('tipo_contrato'),
+      ugl_id: parseInt(watch('ugl_id')),
+      agencia_id: parseInt(watch('agencia_id')),
+      domicilio_trabajo: watch('domicilio_trabajo'),
+      seccional_id: parseInt(watch('seccional_id')),
+      agrupamiento_id: parseInt(watch('agrupamiento_id')),
+      tramo: watch('tramo'),
+      carga_horaria: watch('carga_horaria'),
+      fecha_ingreso: picker ? picker[0] : null,
+      email: watch('email'),
+      telefono_laboral: watch('telefono_laboral')
+    }))
+  }, [
+    watch('tipo_contrato'),
+    watch('ugl_id'),
+    watch('agencia_id'),
+    watch('domicilio_trabajo'),
+    watch('seccional_id'),
+    watch('agrupamiento_id'),
+    watch('tramo'),
+    watch('carga_horaria'),
+    picker,
+    watch('email'),
+    watch('telefono_laboral')
+  ])
 
   return (
     <>
@@ -177,7 +187,10 @@ function InformacionLaboralData ({ register, setValue, disabled }) {
               placeholder='Ingrese el domicilio de trabajo'
               disabled={disabled}
               value={domicilioTrabajo}
-              onChange={(e) => setDomicilioTrabajo(e.target.value)}
+              onChange={(e) => {
+                setDomicilioTrabajo(e.target.value)
+                setValue('domicilio_trabajo', e.target.value)
+              }}
             />
           </div>
 
@@ -228,32 +241,39 @@ function InformacionLaboralData ({ register, setValue, disabled }) {
               onChange={handleDateChange}
               id='fecha_ingreso'
               placeholder='Ingrese la fecha de ingreso'
+              className='form-control'
+              clearable
               disabled={disabled}
             />
-            <input type='hidden' {...register('fecha_ingreso')} />
           </div>
 
-          <Textinput
-            label='Correo Electrónico Laboral'
-            register={register}
-            id='email'
-            className='minuscula'
-            placeholder='Ingrese el correo electrónico laboral'
-            value={correoElectronicoLaboral}
-            onChange={handleCorreoElectronicoChange}
-            disabled={disabled}
-          />
+          <div>
+            <Textinput
+              label='Correo Electrónico Laboral'
+              name='email'
+              register={register}
+              className='minuscula'
+              placeholder='Ingrese el correo electrónico laboral'
+              disabled={disabled}
+              value={correoElectronicoLaboral}
+              onChange={handleCorreoElectronicoChange}
+            />
+          </div>
 
-          <Textinput
-            label='Teléfono Laboral'
-            register={register}
-            id='telefono_laboral'
-            placeholder='Ingrese el teléfono laboral'
-            value={telefonoLaboral}
-            // onChange={handleTelefonoLaboralChange}
-            onChange={(e) => setTelefonoLaboral(e.target.value)}
-            disabled={disabled}
-          />
+          <div>
+            <Textinput
+              label='Teléfono de Trabajo'
+              name='telefono_laboral'
+              register={register}
+              placeholder='Ingrese el teléfono laboral'
+              disabled={disabled}
+              value={telefonoLaboral}
+              onChange={(e) => {
+                setTelefonoLaboral(e.target.value)
+                setValue('telefono_laboral', e.target.value)
+              }}
+            />
+          </div>
         </div>
       </Card>
     </>

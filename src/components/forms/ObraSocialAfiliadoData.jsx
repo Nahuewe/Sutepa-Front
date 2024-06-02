@@ -1,9 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import Card from '@/components/ui/Card'
 import Textinput from '@/components/ui/Textinput'
 import { SelectForm } from '@/components/sutepa/forms'
-import { useDispatch } from 'react-redux'
-import { updateObraSocial } from '../../store/ingreso'
+
+const initialForm = {
+  tipo_obra: '',
+  obra_social: ''
+}
 
 const tipoObraSocial = [
   { id: 'SINDICAL', nombre: 'SINDICAL' },
@@ -11,18 +14,15 @@ const tipoObraSocial = [
 ]
 
 function ObraSocialAfiliadoData ({ register, disabled }) {
-  const dispatch = useDispatch()
-  const [tipoObra, setTipoObra] = useState('')
-  const [obraSocial, setObraSocial] = useState('')
+  const [formData, setFormData] = useState(initialForm)
 
-  useEffect(() => {
-    const obraSocialData = {
-      tipo_obra: tipoObra,
-      obra_social: obraSocial
-    }
-
-    dispatch(updateObraSocial(obraSocialData))
-  }, [obraSocial, tipoObra, dispatch])
+  function onChange ({ target }) {
+    const { name, value } = target
+    setFormData(prevState => ({
+      ...prevState,
+      [name]: value
+    }))
+  }
 
   return (
     <>
@@ -39,16 +39,17 @@ function ObraSocialAfiliadoData ({ register, disabled }) {
               register={register('tipo_obra')}
               options={tipoObraSocial}
               disabled={disabled}
-              onChange={(e) => setTipoObra(e.target.value)}
+              onChange={(e) => onChange(e)} // Modificado para enviar el evento completo
             />
           </div>
 
           <Textinput
             label='Obra Social'
-            register={register('obra_social')}
+            name='obra_social'
+            register={register}
             placeholder='Especifique la obra social'
             disabled={disabled}
-            onChange={(e) => setObraSocial(e.target.value)}
+            onChange={onChange}
           />
         </div>
       </Card>

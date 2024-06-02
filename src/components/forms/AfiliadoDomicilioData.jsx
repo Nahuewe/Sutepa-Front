@@ -48,7 +48,7 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
   }
 
   const handleProvinciaChange = (e) => {
-    const value = e.target.value
+    const value = parseInt(e.target.value)
     setSelectedProvincia(value)
     handleLocalidad(value) // Actualizar localidades al cambiar provincia
   }
