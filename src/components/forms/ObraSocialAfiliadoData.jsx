@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import Card from '@/components/ui/Card'
 import Textinput from '@/components/ui/Textinput'
 import { SelectForm } from '@/components/sutepa/forms'
+import { updateObraSocial } from '../../store/ingreso'
 
 const initialForm = {
   tipo_obra: '',
@@ -14,14 +16,18 @@ const tipoObraSocial = [
 ]
 
 function ObraSocialAfiliadoData ({ register, disabled }) {
-  const [formData, setFormData] = useState(initialForm)
+  const dispatch = useDispatch()
+  const obraSocialState = useSelector((state) => state.ingreso.obra_social)
+  const [formData, setFormData] = useState(obraSocialState || initialForm)
 
   function onChange ({ target }) {
     const { name, value } = target
-    setFormData(prevState => ({
-      ...prevState,
+    const newFormData = {
+      ...formData,
       [name]: value
-    }))
+    }
+    setFormData(newFormData)
+    dispatch(updateObraSocial(newFormData))
   }
 
   return (
@@ -39,7 +45,7 @@ function ObraSocialAfiliadoData ({ register, disabled }) {
               register={register('tipo_obra')}
               options={tipoObraSocial}
               disabled={disabled}
-              onChange={(e) => onChange(e)} // Modificado para enviar el evento completo
+              onChange={onChange} // Aquí se mantiene el cambio
             />
           </div>
 

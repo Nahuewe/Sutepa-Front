@@ -10,8 +10,8 @@ import { Icon } from '@iconify/react/dist/iconify.js'
 import { onAddDocumento, onDeleteDocumento } from '../../store/ingreso'
 
 const initialForm = {
-  tipo_archivo: '',
-  archivo: null,
+  tipo_documento_id: '',
+  archivo: '',
   url: null
 }
 
@@ -51,11 +51,11 @@ function DocumentacionAdicionalData ({ register, disabled }) {
   }
 
   const agregarDocumento = () => {
-    const tipoArchivoOption = archivoOptions.find(option => option.id === parseInt(formData.tipo_archivo))
+    const tipoArchivoOption = archivoOptions.find(option => option.id === parseInt(formData.tipo_documento_id))
     if (tipoArchivoOption && formData.archivo) {
       const nuevoDocumento = {
         ...formData,
-        tipo_archivo: tipoArchivoOption.id,
+        tipo_documento_id: tipoArchivoOption.id,
         id: Date.now(),
         fecha_carga: new Date().toLocaleDateString('es-ES'),
         url: URL.createObjectURL(formData.archivo)
@@ -84,7 +84,7 @@ function DocumentacionAdicionalData ({ register, disabled }) {
         <form ref={formRef}>
           <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
             <SelectForm
-              register={register('tipo_archivo')}
+              register={register('tipo_documento_id')}
               title='Tipo de Archivo'
               options={archivoOptions}
               disabled={disabled}
@@ -132,7 +132,7 @@ function DocumentacionAdicionalData ({ register, disabled }) {
                 <tr key={index} className='bg-white dark:bg-gray-800 dark:border-gray-700'>
                   <td className='px-4 py-2 text-center dark:text-white'>{documento.fecha_carga}</td>
                   <td className='px-4 py-2 whitespace-nowrap font-medium text-gray-900 dark:text-white text-center'>
-                    {documento.tipo_archivo.nombre}
+                    {documento.tipo_documento_id}
                   </td>
                   <td className='px-4 py-2 text-center dark:text-white'>
                     <a href={documento.url} target='_blank' rel='noopener noreferrer' className='text-blue-500 underline'>

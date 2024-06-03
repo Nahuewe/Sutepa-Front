@@ -7,24 +7,18 @@ import Numberinput from '@/components/ui/Numberinput'
 import { SelectForm } from '@/components/sutepa/forms'
 import DatePicker from '../ui/DatePicker'
 import { updateDatosLaborales } from '../../store/ingreso'
+import moment from 'moment'
 
 const tipoContrato = [
-  { id: 'PLANTA PERMANENTE', nombre: 'PLANTA PERMANENTE' },
-  { id: 'CONTRATO', nombre: 'CONTRATO' }
-]
-
-const tramo = [
-  { id: 'A', nombre: 'A' }, // Equivale a 45Hs
-  { id: 'B', nombre: 'B' }, // Equivale a 40Hs
-  { id: 'C', nombre: 'C' }, // Equivale a 35Hs
-  { id: 'D', nombre: 'D' } // Equivale a 35Hs
+  { id: 1, nombre: 'PLANTA PERMANENTE' },
+  { id: 2, nombre: 'CONTRATO' }
 ]
 
 const tramoHoras = {
-  A: 45,
-  B: 40,
-  C: 35,
-  D: 35
+  1: '45',
+  2: '40',
+  3: '35',
+  4: '35'
 }
 
 function InformacionLaboralData ({ register, setValue, watch, disabled }) {
@@ -36,6 +30,7 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
   const [agrupamiento, setAgrupamiento] = useState([])
   const [seccional, setSeccional] = useState([])
   const [ugl, setUgl] = useState([])
+  const [tramo, setTramo] = useState([])
   const [filteredAgencias, setFilteredAgencias] = useState([])
   const [agenciaDisabled, setAgenciaDisabled] = useState(true)
   const dispatch = useDispatch()
@@ -43,14 +38,16 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [agrupamientoResponse, seccionalResponse, uglResponse] = await Promise.all([
+        const [agrupamientoResponse, seccionalResponse, uglResponse, tramoResponse] = await Promise.all([
           sutepaApi.get('agrupamiento'),
           sutepaApi.get('seccional'),
-          sutepaApi.get('ugl')
+          sutepaApi.get('ugl'),
+          sutepaApi.get('tramo')
         ])
         setAgrupamiento(agrupamientoResponse.data.data)
         setSeccional(seccionalResponse.data.data)
         setUgl(uglResponse.data.data)
+        setTramo(tramoResponse.data.data)
       } catch (error) {
         console.error('Error fetching data:', error)
       }
@@ -85,7 +82,6 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
   async function handleAgencia (id) {
     const response = await sutepaApi.get(`agencia/${id}`)
     const { data } = response.data
-    console.log('Agencia Data:', data)
     setFilteredAgencias(data)
     setAgenciaDisabled(false)
   }
@@ -120,33 +116,27 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
     }
   }
 
+  const filterEmptyValues = (data) => {
+    return Object.fromEntries(Object.entries(data).filter(([_, v]) => v != null && v !== ''))
+  }
+
   useEffect(() => {
-    dispatch(updateDatosLaborales({
-      tipo_contrato: watch('tipo_contrato'),
-      ugl_id: parseInt(watch('ugl_id')),
-      agencia_id: parseInt(watch('agencia_id')),
-      domicilio_trabajo: watch('domicilio_trabajo'),
-      seccional_id: parseInt(watch('seccional_id')),
-      agrupamiento_id: parseInt(watch('agrupamiento_id')),
-      tramo: watch('tramo'),
-      carga_horaria: watch('carga_horaria'),
-      fecha_ingreso: picker ? picker[0] : null,
-      email: watch('email'),
-      telefono_laboral: watch('telefono_laboral')
-    }))
-  }, [
-    watch('tipo_contrato'),
-    watch('ugl_id'),
-    watch('agencia_id'),
-    watch('domicilio_trabajo'),
-    watch('seccional_id'),
-    watch('agrupamiento_id'),
-    watch('tramo'),
-    watch('carga_horaria'),
-    picker,
-    watch('email'),
-    watch('telefono_laboral')
-  ])
+    const datosLaborales = {
+      tipo_contrato_id: parseInt(watch('tipo_contrato_id')) || null,
+      ugl_id: parseInt(watch('ugl_id')) || null,
+      agencia_id: parseInt(watch('agencia_id')) || null,
+      domicilio_trabajo: watch('domicilio_trabajo') || null,
+      seccional_id: parseInt(watch('seccional_id')) || null,
+      agrupamiento_id: parseInt(watch('agrupamiento_id')) || null,
+      tramo_id: watch('tramo_id') || null,
+      carga_horaria: watch('carga_horaria') || null,
+      fecha_ingreso: picker ? moment(picker[0]).format('YYYY-MM-DD') : null,
+      email: watch('email') || null,
+      telefono_laboral: watch('telefono_laboral') || null
+    }
+    const filteredDatosLaborales = filterEmptyValues(datosLaborales)
+    dispatch(updateDatosLaborales(filteredDatosLaborales))
+  }, [watch, picker, dispatch])
 
   return (
     <>
@@ -157,7 +147,7 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
       <Card>
         <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
           <SelectForm
-            register={register('tipo_contrato')}
+            register={register('tipo_contrato_id')}
             title='Tipo de Contrato'
             options={tipoContrato}
             disabled={disabled}
@@ -209,7 +199,7 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
           />
 
           <SelectForm
-            register={register('tramo')}
+            register={register('tramo_id')}
             title='Tramo'
             options={tramo}
             onChange={handleTramoChange}

@@ -5,14 +5,15 @@ import Card from '@/components/ui/Card'
 import EstadisticasDashboard from '@/components/partials/widget/chart/EstadisticasDashboard'
 import RevenueBarChart from './RevenueBarChart'
 import DonutChart from './DonutChart'
+import { useEffect } from 'react'
 
 const Dashboard = () => {
-  const { ingresos } = useIngresoStore()
+  const { ingresos, startGetIngreso } = useIngresoStore()
   const { user: { sucursal } } = useAuthStore()
 
-  // useEffect(() => {
-  //   startLoadingIngreso()
-  // }, [])
+  useEffect(() => {
+    startGetIngreso()
+  }, [])
 
   return (
     <div>

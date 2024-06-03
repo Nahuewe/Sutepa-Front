@@ -4,14 +4,10 @@ import Card from '@/components/ui/Card'
 import Textinput from '@/components/ui/Textinput'
 import Numberinput from '@/components/ui/Numberinput'
 import { SelectForm } from '@/components/sutepa/forms'
-import { updatePersona, updateDatosLaborales } from '../../store/ingreso'
+import { updatePersona } from '../../store/ingreso'
 import { sutepaApi } from '../../api'
 import DatePicker from '../ui/DatePicker'
-
-const sexo = [
-  { id: 1, nombre: 'HOMBRE' },
-  { id: 2, nombre: 'MUJER' }
-]
+import moment from 'moment/moment'
 
 const tipoDocumento = [
   { id: 'DNI', nombre: 'DNI' },
@@ -21,7 +17,8 @@ const tipoDocumento = [
 const initialForm = {
   sexo_id: null,
   estado_civil_id: null,
-  nacionalidad_id: null
+  nacionalidad_id: null,
+  estados_id: 1
 }
 
 function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
@@ -36,16 +33,19 @@ function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
   const dispatch = useDispatch()
   const [estadoCivil, setEstadoCivil] = useState([])
   const [nacionalidad, setNacionalidad] = useState([])
+  const [sexo, setSexo] = useState([])
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [estadoCivilResponse, nacionalidadResponse] = await Promise.all([
+        const [estadoCivilResponse, nacionalidadResponse, sexoResponse] = await Promise.all([
           sutepaApi.get('estadocivil'),
-          sutepaApi.get('nacionalidad')
+          sutepaApi.get('nacionalidad'),
+          sutepaApi.get('sexo')
         ])
         setEstadoCivil(estadoCivilResponse.data.data)
         setNacionalidad(nacionalidadResponse.data.data)
+        setSexo(sexoResponse.data.data)
       } catch (error) {
         console.error('Error fetching data:', error)
       }
@@ -57,37 +57,26 @@ function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
   const handleUpdatePersona = () => {
     const personaData = {
       legajo,
-      fecha_afiliacion: picker ? picker[0] : null,
+      fecha_afiliacion: picker ? moment(picker[0]).format('YYYY-MM-DD') : null,
       nombre: watch('nombre'),
       apellido: watch('apellido'),
-      sexo_id: watch('sexo_id'),
-      fecha_nacimiento: picker2 ? picker2[0] : null,
-      estado_civil_id: watch('estado_civil_id'),
-      tipo_documento: watch('tipo_documento'),
+      sexo_id: parseInt(watch('sexo_id')) || null,
+      fecha_nacimiento: picker2 ? moment(picker2[0]).format('YYYY-MM-DD') : null,
+      estado_civil_id: parseInt(watch('estado_civil_id')) || null,
+      tipo_documento: watch('tipo_documento') || null,
       dni,
       cuil,
-      email: correoElectronico,
+      email: correoElectronico || null,
       telefono,
-      nacionalidad_id: watch('nacionalidad_id')
+      nacionalidad_id: parseInt(watch('nacionalidad_id')) || null,
+      estados_id: 1
     }
     dispatch(updatePersona(personaData))
-  }
-
-  // Función para manejar el envío de datos laborales al store de Redux
-  const handleUpdateDatosLaborales = () => {
-    const datosLaborales = {
-      // tus campos de datos laborales aquí
-    }
-    dispatch(updateDatosLaborales(datosLaborales))
   }
 
   useEffect(() => {
     handleUpdatePersona()
   }, [picker, picker2, legajo, dni, cuil, correoElectronico, telefono, watch, dispatch])
-
-  useEffect(() => {
-    handleUpdateDatosLaborales()
-  }, [/* tus dependencias para datos laborales */])
 
   const handleDateChange = (date, field) => {
     if (field === 'fecha_afiliacion') {

@@ -35,43 +35,43 @@ export const Create = () => {
     watch
   } = useForm({
     defaultValues: {
-      // agencia_id: activeIngreso?.agencia_id || '',
-      // agrupamiento: activeIngreso?.agrupamiento || '',
-      // apellido: activeIngreso?.apellido || '',
-      // carga_horaria: activeIngreso?.carga_horaria || '',
-      // codigo_postal: activeIngreso?.codigo_postal || '',
-      // cuil: activeIngreso?.cuil || '',
-      // dni: activeIngreso?.dni || '',
-      // domicilio: activeIngreso?.domicilio || '',
-      // domicilio_trabajo: activeIngreso?.domicilio_trabajo || '',
-      // email: activeIngreso?.email || '',
-      // email_laboral: activeIngreso?.email_laboral || '',
-      // fecha_afiliacion: activeIngreso?.fecha_afiliacion || '',
-      // fecha_ingreso: activeIngreso?.fecha_ingreso || '',
-      // fecha_nacimiento: activeIngreso?.fecha_nacimiento || '',
-      // fecha_otorgamiento: activeIngreso?.fecha_otorgamiento || '',
-      // fecha_solicitud: activeIngreso?.fecha_solicitud || '',
-      // legajo: activeIngreso?.legajo || '',
-      // localidad_id: activeIngreso?.localidad || '',
-      // nacionalidad_id: activeIngreso?.nacionalidad_id || '',
-      // nombre: activeIngreso?.nombre || '',
-      // nombre_familiar: activeIngreso?.nombre_familiar || '',
-      // obra_social: activeIngreso?.obra_social || '',
-      // observaciones: activeIngreso?.observaciones || '',
-      // parentesco: activeIngreso?.parentesco || '',
-      // provincia_id: activeIngreso?.provincia_id || '',
-      // seccional_id: activeIngreso?.seccional_id || '',
-      // sexo: activeIngreso?.sexo || '',
-      // telefono: activeIngreso?.telefono || '',
-      // telefono_laboral: activeIngreso?.telefono_laboral || '',
-      // tipo_archivo: activeIngreso?.tipo_archivo || '',
-      // tipo_documento_familiar: activeIngreso?.tipo_documento_familiar || '',
-      // tipo_contrato: activeIngreso?.tipo_contrato || '',
-      // tipo_documento: activeIngreso?.tipo_documento || '',
-      // tipo_obra: activeIngreso?.tipo_obra || '',
-      // tipo_subsidio: activeIngreso?.tipo_subsidio || '',
-      // tramo: activeIngreso?.tramo || '',
-      // ugl_id: activeIngreso?.ugl_id || ''
+      agencia_id: activeIngreso?.agencia_id || '',
+      agrupamiento_id: activeIngreso?.agrupamiento_id || '',
+      apellido: activeIngreso?.apellido || '',
+      carga_horaria: activeIngreso?.carga_horaria || '',
+      codigo_postal: activeIngreso?.codigo_postal || '',
+      cuil: activeIngreso?.cuil || '',
+      dni: activeIngreso?.dni || '',
+      domicilio: activeIngreso?.domicilio || '',
+      domicilio_trabajo: activeIngreso?.domicilio_trabajo || '',
+      email: activeIngreso?.email || '',
+      email_laboral: activeIngreso?.email_laboral || '',
+      fecha_afiliacion: activeIngreso?.fecha_afiliacion || '',
+      fecha_ingreso: activeIngreso?.fecha_ingreso || '',
+      fecha_nacimiento: activeIngreso?.fecha_nacimiento || '',
+      fecha_otorgamiento: activeIngreso?.fecha_otorgamiento || '',
+      fecha_solicitud: activeIngreso?.fecha_solicitud || '',
+      legajo: activeIngreso?.legajo || '',
+      localidad_id: activeIngreso?.localidad || '',
+      nacionalidad_id: activeIngreso?.nacionalidad_id || '',
+      nombre: activeIngreso?.nombre || '',
+      nombre_familiar: activeIngreso?.nombre_familiar || '',
+      obra_social: activeIngreso?.obra_social || '',
+      observaciones: activeIngreso?.observaciones || '',
+      parentesco: activeIngreso?.parentesco || '',
+      provincia_id: activeIngreso?.provincia_id || '',
+      seccional_id: activeIngreso?.seccional_id || '',
+      sexo_id: activeIngreso?.sexo_id || '',
+      telefono: activeIngreso?.telefono || '',
+      telefono_laboral: activeIngreso?.telefono_laboral || '',
+      tipo_archivo: activeIngreso?.tipo_archivo || '',
+      tipo_documento_familiar: activeIngreso?.tipo_documento_familiar || '',
+      tipo_contrato: activeIngreso?.tipo_contrato || '',
+      tipo_documento: activeIngreso?.tipo_documento || '',
+      tipo_obra: activeIngreso?.tipo_obra || '',
+      tipo_subsidio: activeIngreso?.tipo_subsidio || '',
+      tramo_id: activeIngreso?.tramo_id || '',
+      ugl_id: activeIngreso?.ugl_id || ''
     },
     resolver: yupResolver(FormValidationSchema)
   })
@@ -93,7 +93,6 @@ export const Create = () => {
 
     reset()
     navigate('/afiliados')
-    console.log(data)
   }
 
   useEffect(() => {
@@ -114,7 +113,7 @@ export const Create = () => {
 
       <ObraSocialAfiliadoData register={register} setValue={setValue} />
 
-      <FamiliarAcargoData register={register} setValue={setValue} />
+      <FamiliarAcargoData register={register} setValue={setValue} watch={watch} />
 
       <DocumentacionAdicionalData register={register} setValue={setValue} />
 

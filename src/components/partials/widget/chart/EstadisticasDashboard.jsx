@@ -3,6 +3,10 @@ import Icon from '@/components/ui/Icon'
 
 const EstadisticasDashboard = ({ ingresos }) => {
   const countIngresosPorEstado = (data) => {
+    if (!data || !Array.isArray(data)) {
+      console.error('Invalid data:', data)
+      return {}
+    }
     const totals = {
       1: 0, // totales
       2: 0, // activos

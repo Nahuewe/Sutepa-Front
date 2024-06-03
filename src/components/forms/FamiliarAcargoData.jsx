@@ -24,7 +24,7 @@ const tipoDocumento = [
   { id: 'PASAPORTE', nombre: 'PASAPORTE' }
 ]
 
-function FamiliarAcargoData ({ register, disabled }) {
+function FamiliarAcargoData ({ register, disabled, watch }) {
   const dispatch = useDispatch()
   const { familiares } = useSelector(state => state.ingreso)
   const { user } = useSelector(state => state.auth)
@@ -55,24 +55,29 @@ function FamiliarAcargoData ({ register, disabled }) {
     const newFamiliar = {
       ...formData,
       id: Date.now(),
+      parentesco_id: parseInt(watch('parentesco_id')) || null,
       fecha_carga: new Date().toLocaleDateString('es-ES')
     }
     dispatch(onAddFamiliar(newFamiliar))
     onReset()
   }
 
-  const handleDateChange = (date) => {
+  const handleDateChange = date => {
     setPicker(date)
     const formattedDate = date[0].toLocaleDateString('es-ES')
-    setFormData((prevData) => ({ ...prevData, fecha_nacimiento: formattedDate }))
+    setFormData(prevData => ({ ...prevData, fecha_nacimiento: formattedDate }))
   }
 
-  const handleInputChange = (e) => {
+  const handleInputChange = e => {
     const { name, value } = e.target
-    setFormData((prevData) => ({ ...prevData, [name]: value }))
+    if (name === 'parentesco_id') {
+      setFormData(prevData => ({ ...prevData, parentesco_id: value }))
+    } else {
+      setFormData(prevData => ({ ...prevData, [name]: value }))
+    }
   }
 
-  const handleDniChange = (e) => {
+  const handleDniChange = e => {
     const value = e.target.value
     const cleanedValue = value.replace(/[^\d]/g, '')
     const dniFormat = /^(\d{1,2})(\d{3})(\d{3})$/
@@ -94,7 +99,12 @@ function FamiliarAcargoData ({ register, disabled }) {
     }
 
     setDni(formattedDni)
-    setFormData((prevData) => ({ ...prevData, documento: formattedDni }))
+    setFormData(prevData => ({ ...prevData, documento: formattedDni }))
+  }
+
+  const getParentescoNameById = id => {
+    const parentescoObj = parentesco.find(item => item.id === id)
+    return parentescoObj ? parentescoObj.nombre : ''
   }
 
   useEffect(() => {
@@ -144,7 +154,7 @@ function FamiliarAcargoData ({ register, disabled }) {
               title='Tipo de Documento'
               options={tipoDocumento}
               value={formData.tipo_documento_familiar}
-              onChange={(e) => setFormData({ ...formData, tipo_documento_familiar: e.target.value })}
+              onChange={e => setFormData({ ...formData, tipo_documento_familiar: e.target.value })}
               disabled={disabled}
             />
 
@@ -178,50 +188,50 @@ function FamiliarAcargoData ({ register, disabled }) {
         </form>
       </Card>
 
-      {
-        familiares.length > 0 && (
-          <div className='overflow-x-auto mt-4'>
-            <table className='table-auto w-full'>
-              <thead className='bg-gray-300 dark:bg-gray-700'>
-                <tr>
-                  <th className='px-4 py-2 text-center dark:text-white'>Fecha de Carga</th>
-                  <th className='px-4 py-2 text-center dark:text-white'>Nombre y Apellido</th>
-                  <th className='px-4 py-2 text-center dark:text-white'>Fecha de Nacimiento</th>
-                  <th className='px-4 py-2 text-center dark:text-white'>Tipo de Documento</th>
-                  <th className='px-4 py-2 text-center dark:text-white'>Documento</th>
-                  <th className='px-4 py-2 text-center dark:text-white'>Parentesco</th>
-                  <th className='px-4 py-2 text-center dark:text-white'>Usuario de Carga</th>
-                  <th className='px-4 py-2 text-center dark:text-white'>Acciones</th>
+      {familiares.length > 0 && (
+        <div className='overflow-x-auto mt-4'>
+          <table className='table-auto w-full'>
+            <thead className='bg-gray-300 dark:bg-gray-700'>
+              <tr>
+                <th className='px-4 py-2 text-center dark:text-white'>Fecha de Carga</th>
+                <th className='px-4 py-2 text-center dark:text-white'>Nombre y Apellido</th>
+                <th className='px-4 py-2 text-center dark:text-white'>Fecha de Nacimiento</th>
+                <th className='px-4 py-2 text-center dark:text-white'>Tipo de Documento</th>
+                <th className='px-4 py-2 text-center dark:text-white'>Documento</th>
+                <th className='px-4 py-2 text-center dark:text-white'>Parentesco</th>
+                <th className='px-4 py-2 text-center dark:text-white'>Usuario de Carga</th>
+                <th className='px-4 py-2 text-center dark:text-white'>Acciones</th>
+              </tr>
+            </thead>
+            <tbody className='divide-y dark:divide-gray-700'>
+              {familiares.map(fam => (
+                <tr key={fam.id} className='bg-white dark:bg-gray-800 dark:border-gray-700'>
+                  <td className='px-4 py-2 text-center dark:text-white'>{fam.fecha_carga}</td>
+                  <td className='px-4 py-2 text-center dark:text-white'>{fam.nombre_familiar}</td>
+                  <td className='px-4 py-2 text-center dark:text-white'>{fam.fecha_nacimiento}</td>
+                  <td className='px-4 py-2 text-center dark:text-white'>{fam.tipo_documento_familiar}</td>
+                  <td className='px-4 py-2 text-center dark:text-white'>{fam.documento}</td>
+                  <td className='px-4 py-2 text-center dark:text-white'>
+                    {getParentescoNameById(fam.parentesco_id)}
+                  </td>
+                  <td className='px-4 py-2 text-center dark:text-white'>{user.nombre}</td>
+                  <td className='text-center py-2'>
+                    <Tooltip content='Eliminar'>
+                      <button
+                        type='button'
+                        onClick={() => onDelete(fam.id)}
+                        className=' text-red-600 hover:text-red-900'
+                      >
+                        <Icon icon='heroicons:trash' width='24' height='24' />
+                      </button>
+                    </Tooltip>
+                  </td>
                 </tr>
-              </thead>
-              <tbody className='divide-y dark:divide-gray-700'>
-                {familiares.map((fam) => (
-                  <tr key={fam.id} className='bg-white dark:bg-gray-800 dark:border-gray-700'>
-                    <td className='px-4 py-2 text-center dark:text-white'>{fam.fecha_carga}</td>
-                    <td className='px-4 py-2 text-center dark:text-white'>{fam.nombre_familiar}</td>
-                    <td className='px-4 py-2 text-center dark:text-white'>{fam.fecha_nacimiento}</td>
-                    <td className='px-4 py-2 text-center dark:text-white'>{fam.tipo_documento_familiar}</td>
-                    <td className='px-4 py-2 text-center dark:text-white'>{fam.documento}</td>
-                    <td className='px-4 py-2 text-center dark:text-white'>{fam.parentesco_id}</td>
-                    <td className='px-4 py-2 text-center dark:text-white'>{user.nombre}</td>
-                    <td className='text-center py-2'>
-                      <Tooltip content='Eliminar'>
-                        <button
-                          type='button'
-                          onClick={() => onDelete(fam.id)}
-                          className=' text-red-600 hover:text-red-900'
-                        >
-                          <Icon icon='heroicons:trash' width='24' height='24' />
-                        </button>
-                      </Tooltip>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )
-      }
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </>
   )
 }

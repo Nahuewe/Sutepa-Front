@@ -22,12 +22,14 @@ export const ingresoSlice = createSlice({
       state.activeIngreso = null
     },
     onAddNewIngreso: (state, { payload }) => {
-      state.ingresos.push(payload)
+      state.ingresos = [...state.ingresos, payload]
       state.activeIngreso = null
     },
     onUpdateIngreso: (state, { payload }) => {
       state.ingresos = state.ingresos.map((ingreso) => {
-        if (ingreso.id == payload.id) { return payload }
+        if (ingreso.id == payload.id) {
+          return payload
+        }
         return ingreso
       })
       state.activeIngreso = null

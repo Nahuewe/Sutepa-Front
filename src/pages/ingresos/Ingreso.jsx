@@ -22,156 +22,122 @@ import { hadleShowDeleteModal } from '@/store/layout'
 export const Ingreso = ({ title = 'Lista de Afiliados' }) => {
   const { user: { sucursal } } = useAuthStore()
   const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const { ingresos, activeIngreso, startDeleteIngreso, startGetIngreso } = useIngresoStore()
+  const [idIngreso, setIdIngreso] = useState()
 
   const COLUMNS = [
     {
       Header: 'Nombre',
-      accessor: 'nombre',
-      Cell: (row) => {
-        return <span>{row?.cell?.value}</span>
-      }
+      accessor: 'persona.nombre',
+      Cell: ({ cell }) => <span>{cell.value}</span>
     },
     {
       Header: 'Apellido',
-      accessor: 'apellido',
-      Cell: (row) => {
-        return <span>{row?.cell?.value}</span>
-      }
+      accessor: 'persona.apellido',
+      Cell: ({ cell }) => <span>{cell.value}</span>
     },
     {
       Header: 'DNI',
-      accessor: 'dni',
-      Cell: (row) => {
-        return <span>{row?.cell?.value}</span>
-      }
+      accessor: 'persona.ni',
+      Cell: ({ cell }) => <span>{cell.value}</span>
     },
     {
       Header: 'UGL/Nivel Central',
-      accessor: 'ugl',
-      Cell: (row) => {
-        return <span>{row?.cell?.value}</span>
-      }
+      accessor: 'persona.ugl',
+      Cell: ({ cell }) => <span>{cell.value}</span>
     },
     {
       Header: 'Seccional',
-      accessor: 'seccional',
-      Cell: (row) => {
-        return <span>{row?.cell?.value}</span>
-      }
+      accessor: 'persona.seccional',
+      Cell: ({ cell }) => <span>{cell.value}</span>
     },
     {
       Header: 'Estado',
       accessor: 'deletedAt',
-      Cell: (row) => {
-        return (
-          <span className='block w-full'>
-            <span
-              className={` inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-[999px] bg-opacity-25 text-black ${row?.cell?.value === null
+      Cell: ({ cell }) => (
+        <span className='block w-full'>
+          <span
+            className={`inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-[999px] bg-opacity-25 text-black ${
+              cell.value === null
                 ? 'text-warning-500 bg-warning-500 dark:text-warning-500 dark:bg-warning-500'
                 : 'text-success-500 bg-success-500 dark:text-success-500 dark:bg-success-500'
-                }   
-                  `}
-            >
-              {(row?.cell?.value === null) ? 'Inactivo' : 'Activo'}
-            </span>
+            }`}
+          >
+            {cell.value === null ? 'INACTIVO' : 'ACTIVO'}
           </span>
-        )
-      }
+        </span>
+      )
     },
     {
       Header: 'Acciones',
       accessor: 'id',
-      Cell: (row) => {
-        return (
-          <div className='flex space-x-3 rtl:space-x-reverse'>
-
-            <Tooltip content='Ver' placement='top' arrow animation='shift-away'>
-              <button id={row?.cell?.value} className='action-btn' type='button' onClick={() => { row.showIngreso(row?.cell?.value) }}>
-                <Icon icon='heroicons:eye' />
+      Cell: ({ cell: { value } }) => (
+        <div className='flex space-x-3 rtl:space-x-reverse'>
+          <Tooltip content='Ver' placement='top' arrow animation='shift-away'>
+            <button id={value} className='action-btn' type='button' onClick={() => showIngreso(value)}>
+              <Icon icon='heroicons:eye' />
+            </button>
+          </Tooltip>
+          <Tooltip content='Editar' placement='top' arrow animation='shift-away'>
+            <button className='action-btn' type='button' onClick={() => editIngreso(value)}>
+              <Icon icon='heroicons:pencil-square' />
+            </button>
+          </Tooltip>
+          {sucursal === 1 && (
+            <Tooltip content='Eliminar' placement='top' arrow animation='shift-away' theme='danger'>
+              <button id={value} className='action-btn' type='button' onClick={deleteSolicitud}>
+                <Icon icon='heroicons:trash' />
               </button>
             </Tooltip>
-
-            <Tooltip content='Editar' placement='top' arrow animation='shift-away'>
-              <button className='action-btn' type='button' onClick={() => { row.editIngreso(row?.cell?.value) }}>
-                <Icon icon='heroicons:pencil-square' />
-              </button>
-            </Tooltip>
-
-            {
-              (sucursal === 1) && (
-                <Tooltip
-                  content='Eliminar'
-                  placement='top'
-                  arrow
-                  animation='shift-away'
-                  theme='danger'
-                >
-                  <button id={row?.cell?.value} className='action-btn' type='button' onClick={deleteSolicitud}>
-                    <Icon icon='heroicons:trash' />
-                  </button>
-                </Tooltip>
-              )
-            }
-          </div>
-        )
-      }
+          )}
+        </div>
+      )
     }
   ]
 
   const COLUMNSUC = [
     {
       Header: 'Nombre',
-      accessor: 'nombre',
-      Cell: (row) => {
-        return <span>{row?.cell?.value}</span>
-      }
+      accessor: 'persona.nombre',
+      Cell: ({ cell }) => <span>{cell.value}</span>
     },
     {
       Header: 'Apellido',
-      accessor: 'apellido',
-      Cell: (row) => {
-        return <span>{row?.cell?.value}</span>
-      }
+      accessor: 'persona.apellido',
+      Cell: ({ cell }) => <span>{cell.value}</span>
     },
     {
       Header: 'DNI',
-      accessor: 'dni',
-      Cell: (row) => {
-        return <span>{row?.cell?.value}</span>
-      }
+      accessor: 'persona.dni',
+      Cell: ({ cell }) => <span>{cell.value}</span>
     },
     {
       Header: 'UGL/Nivel Central',
-      accessor: 'ugl',
-      Cell: (row) => {
-        return <span>{row?.cell?.value}</span>
-      }
+      accessor: 'persona.ugl',
+      Cell: ({ cell }) => <span>{cell.value}</span>
     },
     {
       Header: 'Seccional',
-      accessor: 'seccional',
-      Cell: (row) => {
-        return <span>{row?.cell?.value.nombre}</span>
-      }
+      accessor: 'persona.seccional',
+      Cell: ({ cell }) => <span>{cell.value}</span>
     },
     {
       Header: 'Estado',
       accessor: 'deletedAt',
-      Cell: (row) => {
-        return (
-          <span className='block w-full'>
-            <span
-              className={` inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-[999px] bg-opacity-25 text-black ${row?.cell?.value === null
-                ? 'text-success-500 bg-success-500 dark:text-success-500 dark:bg-success-500'
-                : 'text-warning-500 bg-warning-500 dark:text-warning-500 dark:bg-warning-500'
-                }   
-                    `}
-            >
-              {(row?.cell?.value === null) ? 'Activo' : 'Inactivo'}
-            </span>
+      Cell: ({ cell }) => (
+        <span className='block w-full'>
+          <span
+            className={`inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-[999px] bg-opacity-25 text-black ${
+              cell.value === null
+                ? 'text-warning-500 bg-warning-500 dark:text-warning-500 dark:bg-warning-500'
+                : 'text-success-500 bg-success-500 dark:text-success-500 dark:bg-success-500'
+            }`}
+          >
+            {cell.value === null ? 'INACTIVO' : 'ACTIVO'}
           </span>
-        )
-      }
+        </span>
+      )
     },
     {
       Header: 'Acciones',
@@ -198,35 +164,23 @@ export const Ingreso = ({ title = 'Lista de Afiliados' }) => {
     }
   ]
 
-  const { ingresos, activeIngreso, startDeleteIngreso } = useIngresoStore()
-  const dispatch = useDispatch()
-  const [idIngreso, setIdIngreso] = useState()
-  // const { selectDateReport, startDownloadReport } = useIngresoStore();
-
-  // const onDownloadReport = () => {
-  //     startDownloadReport();
-  // };
-
-  const columns = useMemo(() => (sucursal === 1) ? COLUMNS : COLUMNSUC, [])
-  const data = useMemo(() => ingresos, [ingresos])
+  const columns = useMemo(() => (sucursal === 1 ? COLUMNS : COLUMNSUC), [sucursal])
+  const data = useMemo(() => ingresos || [], [ingresos])
 
   const tableInstance = useTable(
     {
       columns,
       data
     },
-
     useGlobalFilter,
     useSortBy,
     usePagination,
     useRowSelect,
-
     (hooks) => {
-      hooks.visibleColumns.push((columns) => [
-        ...columns
-      ])
+      hooks.visibleColumns.push((columns) => [...columns])
     }
   )
+
   const {
     getTableProps,
     getTableBodyProps,
@@ -249,7 +203,7 @@ export const Ingreso = ({ title = 'Lista de Afiliados' }) => {
 
   const editIngreso = (id) => {
     dispatch(setActiveIngreso(id))
-    navigate(`/ingresos/editar/${id}`)
+    navigate(`/personas/editar/${id}`)
   }
 
   const showIngreso = (id) => {
@@ -260,6 +214,10 @@ export const Ingreso = ({ title = 'Lista de Afiliados' }) => {
     setIdIngreso(e.target.id)
     dispatch(hadleShowDeleteModal(true))
   }
+
+  useEffect(() => {
+    startGetIngreso()
+  }, [])
 
   return (
     <>

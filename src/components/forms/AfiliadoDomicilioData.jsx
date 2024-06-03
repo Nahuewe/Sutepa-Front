@@ -50,7 +50,7 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
   const handleProvinciaChange = (e) => {
     const value = parseInt(e.target.value)
     setSelectedProvincia(value)
-    handleLocalidad(value) // Actualizar localidades al cambiar provincia
+    handleLocalidad(value)
   }
 
   useEffect(() => {
@@ -61,7 +61,7 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
     if (codigoPostal && selectedProvincia && localidades.length > 0) {
       const domicilioData = {
         domicilio,
-        provincia: selectedProvincia,
+        provincia_id: selectedProvincia,
         localidad: localidades[0].id,
         codigo_postal: codigoPostal
       }
@@ -87,15 +87,13 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
             onChange={handleDomicilioChange}
           />
 
-          <div>
-            <SelectForm
-              register={register('provincia_id')}
-              title='Provincia'
-              options={provincias}
-              disabled={disabled}
-              onChange={handleProvinciaChange}
-            />
-          </div>
+          <SelectForm
+            register={register('provincia_id')}
+            title='Provincia'
+            options={provincias}
+            disabled={disabled}
+            onChange={handleProvinciaChange}
+          />
 
           <div>
             <SelectForm
