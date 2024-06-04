@@ -58,6 +58,12 @@ export const menuNormal = [
     title: 'Afiliados',
     icon: 'heroicons-outline:user-plus',
     link: 'afiliados'
+  },
+
+  {
+    title: 'Usuarios',
+    icon: 'heroicons-outline:users',
+    link: 'usuarios'
   }
 
 ]

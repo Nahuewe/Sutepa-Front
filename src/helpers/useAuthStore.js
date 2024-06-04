@@ -12,11 +12,11 @@ export const useAuthStore = () => {
     const message = 'Credenciales incorrectas.'
 
     try {
-      const { data } = await sutepaApi.post('/auth', { username, password })
+      const { data } = await sutepaApi.post('/login', { username, password })
 
       if (data.ok) {
         localStorage.setItem('token', data.token)
-        dispatch(handleLogin({ uid: data.uid, nombre: data.nombre, sucursal: data.sucursal }))
+        dispatch(handleLogin({ nombre: data.nombre, apellido: data.apellido, seccional: data.seccional }))
       } else {
         dispatch(handleLogout(message))
 
@@ -34,10 +34,10 @@ export const useAuthStore = () => {
     if (!token) return dispatch(handleLogout())
 
     try {
-      const { data } = await sutepaApi.get('/auth/renew')
+      const { data } = await sutepaApi.get('/login/renew')
 
       localStorage.setItem('token', data.token)
-      dispatch(handleLogin({ uid: data.uid, nombre: data.nombre, sucursal: data.sucursal }))
+      dispatch(handleLogin({ nombre: data.nombre, apellido: data.apellido, seccional: data.seccional }))
     } catch (error) {
       localStorage.clear()
       dispatch(handleLogout())

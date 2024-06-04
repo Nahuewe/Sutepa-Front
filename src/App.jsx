@@ -26,26 +26,35 @@ function App () {
     <main className='App relative'>
       <Routes>
         {
+          // (status === 'not-authenticated')
+          //   ? (
+          //     <>
+          //       {/* Login */}
+          //       <Route path='/login' element={<Login />} />
+          //       <Route path='/*' element={<Navigate to='/login' />} />
+          //     </>
+          //     )
+          //   :
           (
-              <>
-                <Route path='/' element={<Navigate to='/dashboard' />} />
+            <>
+              <Route path='/' element={<Navigate to='/dashboard' />} />
 
-                <Route path='/*' element={<Layout />}>
-                  <Route path='dashboard' element={<Dashboard />} />
-                  <Route path='*' element={<Navigate to='/404' />} />
+              <Route path='/*' element={<Layout />}>
+                <Route path='dashboard' element={<Dashboard />} />
+                <Route path='*' element={<Navigate to='/404' />} />
 
-                  {/* Nuevas Rutas */}
-                  <Route path='usuarios' element={<Users />} />
-                  <Route path='roles' element={<Sucursales />} />
+                {/* Nuevas Rutas */}
+                <Route path='usuarios' element={<Users />} />
+                <Route path='roles' element={<Sucursales />} />
 
-                  {/* Ingresos */}
-                  <Route path='afiliados' element={<Ingreso />} />
-                  <Route path='afiliados/crear' element={<Create />} />
-                  <Route path='ingresos/editar/:id' element={<Create />} />
-                </Route>
+                {/* Ingresos */}
+                <Route path='afiliados' element={<Ingreso />} />
+                <Route path='afiliados/crear' element={<Create />} />
+                <Route path='ingresos/editar/:id' element={<Create />} />
+              </Route>
 
-                <Route path='/404' element={<Error />} />
-              </>
+              <Route path='/404' element={<Error />} />
+            </>
               )
         }
       </Routes>

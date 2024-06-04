@@ -64,7 +64,7 @@ function FamiliarAcargoData ({ register, disabled, watch }) {
 
   const handleDateChange = date => {
     setPicker(date)
-    const formattedDate = date[0].toLocaleDateString('es-ES')
+    const formattedDate = date[0].toLocaleDateString('en')
     setFormData(prevData => ({ ...prevData, fecha_nacimiento: formattedDate }))
   }
 

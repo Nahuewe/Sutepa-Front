@@ -9,6 +9,7 @@ import { Tooltip } from 'flowbite-react'
 import { Icon } from '@iconify/react/dist/iconify.js'
 import { sutepaApi } from '../../api'
 import DatePicker from '../ui/DatePicker'
+import moment from 'moment'
 
 const initialForm = {
   tipo_subsidio_id: null,
@@ -62,8 +63,8 @@ function SubsidioData ({ disabled }) {
   const handleEdit = (subsidio) => {
     setFormData({
       ...subsidio,
-      fecha_solicitud: new Date(subsidio.fecha_solicitud),
-      fecha_otorgamiento: new Date(subsidio.fecha_otorgamiento)
+      fecha_solicitud: picker ? moment(picker[0]).format('YYYY-MM-DD') : null,
+      fecha_otorgamiento: picker2 ? moment(picker2[0]).format('YYYY-MM-DD') : null
     })
     setEditingSubsidioId(subsidio.id)
     setIsEditing(true)
@@ -71,8 +72,8 @@ function SubsidioData ({ disabled }) {
     setPicker2(new Date(subsidio.fecha_otorgamiento))
 
     setValue('tipo_subsidio_id', subsidio.tipo_subsidio_id)
-    setValue('fecha_solicitud', new Date(subsidio.fecha_solicitud))
-    setValue('fecha_otorgamiento', new Date(subsidio.fecha_otorgamiento))
+    setValue('fecha_solicitud', subsidio.fecha_solicitud)
+    setValue('fecha_otorgamiento', subsidio.fecha_otorgamiento)
     setValue('observaciones', subsidio.observaciones)
   }
 

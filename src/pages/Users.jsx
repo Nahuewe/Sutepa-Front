@@ -19,29 +19,17 @@ import { hadleShowDeleteModal, hadleShowModal } from '../store/layout'
 import { setActiveUser } from '../store/user'
 import EditModal from '../components/sutepa/forms/EditModal'
 
-const usuarios = [
-  {
-    id: 1,
-    nombre: 'Nahuel Soria Parodi',
-    username: 'nsoria',
-    sucursal: 'Administrador',
-    seccional: 'Catamarca',
-    createdAt: '22/07/2001'
-  },
-  {
-    id: 2,
-    nombre: 'Gonzalo Turati',
-    username: 'gturati',
-    sucursal: 'ABM_GENERAL',
-    seccional: 'Buenos Aires',
-    createdAt: '11/07/2001'
-  }
-]
-
 const COLUMNS = [
   {
-    Header: 'Nombre y Apellido',
+    Header: 'Nombre',
     accessor: 'nombre',
+    Cell: (row) => {
+      return <span>{row?.cell?.value}</span>
+    }
+  },
+  {
+    Header: 'Apellido',
+    accessor: 'apellido',
     Cell: (row) => {
       return <span>{row?.cell?.value}</span>
     }
@@ -55,7 +43,7 @@ const COLUMNS = [
   },
   {
     Header: 'Rol',
-    accessor: 'sucursal',
+    accessor: 'roles',
     Cell: (row) => {
       return <span>{row?.cell?.value}</span>
     }
@@ -122,9 +110,9 @@ const COLUMNS = [
 ]
 
 export const Users = ({ title = 'Listado de Usuarios' }) => {
-  const { users, activeUser, startLoadingUsers, startSavingUser, startDeleteUser, startUpdateUser } = useUserStore()
+  const { users, activeUser, startSavingUser, startDeleteUser, startUpdateUser } = useUserStore()
   const dispatch = useDispatch()
-  const { user: { sucursal } } = useAuthStore()
+  // const { user: { sucursal } } = useAuthStore()
 
   const columns = useMemo(() => COLUMNS, [])
   const data = useMemo(() => users, [users])
@@ -132,7 +120,7 @@ export const Users = ({ title = 'Listado de Usuarios' }) => {
   const tableInstance = useTable(
     {
       columns,
-      data: usuarios
+      data
     },
 
     useGlobalFilter,
@@ -174,9 +162,7 @@ export const Users = ({ title = 'Listado de Usuarios' }) => {
     dispatch(hadleShowModal(true))
   }
 
-  useEffect(() => {
-    startLoadingUsers()
-  }, [])
+
 
   const { globalFilter, pageIndex, pageSize } = state
   return (

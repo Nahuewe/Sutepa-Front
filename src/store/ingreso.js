@@ -88,9 +88,9 @@ export const ingresoSlice = createSlice({
       state.domicilio = []
       state.datos_laborales = []
       state.obra_social = []
-      state.familiares = []
-      state.documentacion = []
-      state.subsidios = []
+      state.familiares = null
+      state.documentacion = null
+      state.subsidios = null
     }
   }
 })

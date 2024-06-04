@@ -128,7 +128,7 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
       domicilio_trabajo: watch('domicilio_trabajo') || null,
       seccional_id: parseInt(watch('seccional_id')) || null,
       agrupamiento_id: parseInt(watch('agrupamiento_id')) || null,
-      tramo_id: watch('tramo_id') || null,
+      tramo_id: parseInt(watch('tramo_id')) || null,
       carga_horaria: watch('carga_horaria') || null,
       fecha_ingreso: picker ? moment(picker[0]).format('YYYY-MM-DD') : null,
       email: watch('email') || null,

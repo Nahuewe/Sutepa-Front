@@ -20,7 +20,7 @@ export const useSucursalStore = () => {
 
   const startLoadingSucursales = async () => {
     try {
-      const { data } = await sutepaApi.get('/sucursales')
+      const { data } = await sutepaApi.get('/seccionales')
       dispatch(handleSucursal(data.sucursales))
     } catch (error) {
       console.log(error)

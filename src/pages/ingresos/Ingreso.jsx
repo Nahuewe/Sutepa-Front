@@ -1,16 +1,9 @@
-/* eslint-disable react/jsx-key */
 import React, { useMemo, useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import Card from '@/components/ui/Card'
 import Icon from '@/components/ui/Icon'
 import Tooltip from '@/components/ui/Tooltip'
-import {
-  useTable,
-  useRowSelect,
-  useSortBy,
-  useGlobalFilter,
-  usePagination
-} from 'react-table'
+import { useTable, useRowSelect, useSortBy, useGlobalFilter, usePagination } from 'react-table'
 import GlobalFilter from '@/components/sutepa/tables/GlobalFilter'
 import { useAuthStore, useIngresoStore } from '@/helpers'
 import { setActiveIngreso } from '@/store/ingreso'
@@ -24,33 +17,29 @@ export const Ingreso = ({ title = 'Lista de Afiliados' }) => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const { ingresos, activeIngreso, startDeleteIngreso, startGetIngreso } = useIngresoStore()
+
   const [idIngreso, setIdIngreso] = useState()
 
-  const COLUMNS = [
+  const COLUMNS = useMemo(() => [
     {
       Header: 'Nombre',
-      accessor: 'persona.nombre',
-      Cell: ({ cell }) => <span>{cell.value}</span>
+      accessor: 'persona.nombre'
     },
     {
       Header: 'Apellido',
-      accessor: 'persona.apellido',
-      Cell: ({ cell }) => <span>{cell.value}</span>
+      accessor: 'persona.apellido'
     },
     {
       Header: 'DNI',
-      accessor: 'persona.ni',
-      Cell: ({ cell }) => <span>{cell.value}</span>
+      accessor: 'persona.dni'
     },
     {
       Header: 'UGL/Nivel Central',
-      accessor: 'persona.ugl',
-      Cell: ({ cell }) => <span>{cell.value}</span>
+      accessor: 'persona.ugl'
     },
     {
       Header: 'Seccional',
-      accessor: 'persona.seccional',
-      Cell: ({ cell }) => <span>{cell.value}</span>
+      accessor: 'persona.seccional'
     },
     {
       Header: 'Estado',
@@ -94,82 +83,24 @@ export const Ingreso = ({ title = 'Lista de Afiliados' }) => {
         </div>
       )
     }
-  ]
+  ], [sucursal])
 
-  const COLUMNSUC = [
-    {
-      Header: 'Nombre',
-      accessor: 'persona.nombre',
-      Cell: ({ cell }) => <span>{cell.value}</span>
-    },
-    {
-      Header: 'Apellido',
-      accessor: 'persona.apellido',
-      Cell: ({ cell }) => <span>{cell.value}</span>
-    },
-    {
-      Header: 'DNI',
-      accessor: 'persona.dni',
-      Cell: ({ cell }) => <span>{cell.value}</span>
-    },
-    {
-      Header: 'UGL/Nivel Central',
-      accessor: 'persona.ugl',
-      Cell: ({ cell }) => <span>{cell.value}</span>
-    },
-    {
-      Header: 'Seccional',
-      accessor: 'persona.seccional',
-      Cell: ({ cell }) => <span>{cell.value}</span>
-    },
-    {
-      Header: 'Estado',
-      accessor: 'deletedAt',
-      Cell: ({ cell }) => (
-        <span className='block w-full'>
-          <span
-            className={`inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-[999px] bg-opacity-25 text-black ${
-              cell.value === null
-                ? 'text-warning-500 bg-warning-500 dark:text-warning-500 dark:bg-warning-500'
-                : 'text-success-500 bg-success-500 dark:text-success-500 dark:bg-success-500'
-            }`}
-          >
-            {cell.value === null ? 'INACTIVO' : 'ACTIVO'}
-          </span>
-        </span>
-      )
-    },
-    {
-      Header: 'Acciones',
-      accessor: 'id',
-      Cell: (row) => {
-        return (
-          <div className='flex space-x-3 rtl:space-x-reverse'>
-
-            <Tooltip content='Ver' placement='top' arrow animation='shift-away'>
-              <button id={row?.cell?.value} className='action-btn' type='button' onClick={() => { row.showIngreso(row?.cell?.value) }}>
-                <Icon icon='heroicons:eye' />
-              </button>
-            </Tooltip>
-
-            <Tooltip content='Editar' placement='top' arrow animation='shift-away' theme='info'>
-              <button className='action-btn' type='button' onClick={() => { row.editIngreso(row?.cell?.value) }}>
-                <Icon icon='heroicons:pencil-square' />
-              </button>
-            </Tooltip>
-          </div>
-
-        )
+  const data = useMemo(() =>
+    ingresos?.map((ingreso) => ({
+      ...ingreso,
+      persona: {
+        nombre: ingreso.persona?.nombre, // Access nested properties safely
+        apellido: ingreso.persona?.apellido
+        // Add other persona properties here
       }
-    }
-  ]
-
-  const columns = useMemo(() => (sucursal === 1 ? COLUMNS : COLUMNSUC), [sucursal])
-  const data = useMemo(() => ingresos || [], [ingresos])
+    })) || [],
+  [ingresos]
+  )
+  console.log(data)
 
   const tableInstance = useTable(
     {
-      columns,
+      columns: COLUMNS,
       data
     },
     useGlobalFilter,
@@ -221,188 +152,176 @@ export const Ingreso = ({ title = 'Lista de Afiliados' }) => {
 
   return (
     <>
-      {
-        (activeIngreso)
-          ? (
-            <ShowIngreso />
-            )
-          : (
-            <Card>
-              <div className='md:flex justify-between items-center mb-6'>
-                <h4 className='card-title'>{title}</h4>
-                <div className='flex flex-wrap gap-4'>
-
-                  <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
-
-                  <div className='flex mt-4 md:mt-0 justify-between'>
-                    {sucursal === 1 && (
-                      <div className='flex items-center'>
-                        <button className='bg-slate-300 dark:bg-slate-900 inline-block text-center px-6 py-2 rounded-lg'>
-                          Exportar
-                        </button>
-                      </div>
-                    )}
-                  </div>
-
-                  <DeleteModal
-                    activeModal
-                    onClose
-                    noFade
-                    disableBackdrop
-                    className='max-w-xl'
-                    footerContent={false}
-                    centered
-                    scrollContent
-                    themeClass='bg-slate-900 dark:bg-slate-800 dark:border-b dark:border-slate-700'
-                    title='Eliminar Afiliado'
-                    label='Dar de Baja'
-                    labelClass='btn inline-flex justify-center btn-success px-16'
-                    message='¿Quieres darle de baja al afiliado?'
-                    labelBtn='Aceptar'
-                    btnFunction={() => startDeleteIngreso(idIngreso)}
-                  />
-
-                  <div className='ltr:text-right rtl:text-left'>
-                    <button className='bg-red-600 text-white items-center text-center py-2 px-6 rounded-lg' onClick={() => navigate('/afiliados/crear')}>Agregar Afiliado</button>
-                  </div>
-                </div>
+      {activeIngreso
+        ? (
+          <ShowIngreso />
+          )
+        : (
+          <Card>
+            <div className='md:flex justify-between items-center mb-6'>
+              <h4 className='card-title'>{title}</h4>
+              <div className='flex flex-wrap gap-4'>
+                <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
+                {sucursal === 1 && (
+                  <button className='bg-slate-300 dark:bg-slate-900 inline-block text-center px-6 py-2 rounded-lg'>
+                    Exportar
+                  </button>
+                )}
+                <DeleteModal
+                  activeModal
+                  onClose
+                  noFade
+                  disableBackdrop
+                  className='max-w-xl'
+                  footerContent={false}
+                  centered
+                  scrollContent
+                  themeClass='bg-slate-900 dark:bg-slate-800 dark:border-b dark:border-slate-700'
+                  title='Eliminar Afiliado'
+                  label='Dar de Baja'
+                  labelClass='btn inline-flex justify-center btn-success px-16'
+                  message='¿Quieres darle de baja al afiliado?'
+                  labelBtn='Aceptar'
+                  btnFunction={() => startDeleteIngreso(idIngreso)}
+                />
+                <button className='bg-red-600 text-white items-center text-center py-2 px-6 rounded-lg' onClick={() => navigate('/afiliados/crear')}>
+                  Agregar Afiliado
+                </button>
               </div>
-              <div className='overflow-x-auto -mx-6 capitalize'>
-                <div className='inline-block min-w-full align-middle'>
-                  <div className='overflow-hidden '>
-                    <table
-                      className='min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700'
-                      {...getTableProps}
-                    >
-                      <thead className='bg-slate-200 dark:bg-slate-700'>
-                        {headerGroups.map((headerGroup) => (
-                          <tr {...headerGroup.getHeaderGroupProps()}>
-                            {headerGroup.headers.map((column) => (
-                              <th
-                                {...column.getHeaderProps(
-                                  column.getSortByToggleProps()
-                                )}
-                                scope='col'
-                                className=' table-th '
-                              >
-                                {column.render('Header')}
-                                <span>
-                                  {column.isSorted
-                                    ? column.isSortedDesc
-                                      ? ' 🔽'
-                                      : ' 🔼'
-                                    : ''}
-                                </span>
-                              </th>
-                            ))}
-                          </tr>
-                        ))}
-                      </thead>
-                      <tbody
-                        className='bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700'
-                        {...getTableBodyProps}
-                      >
-                        {page.map((row) => {
-                          prepareRow(row)
-                          return (
-                            <tr {...row.getRowProps()}>
-                              {row.cells.map((cell) => {
-                                return (
-                                  <td {...cell.getCellProps()} className='table-td'>
-                                    {cell.render('Cell', { showIngreso, editIngreso })}
-                                  </td>
-                                )
-                              })}
-                            </tr>
-                          )
-                        })}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-              <div className='md:flex md:space-y-0 space-y-5 justify-between mt-6 items-center'>
-                <div className='flex items-center space-x-3 rtl:space-x-reverse'>
-                  <select
-                    className='form-control py-2 w-max'
-                    value={pageSize}
-                    onChange={(e) => setPageSize(Number(e.target.value))}
+            </div>
+            <div className='overflow-x-auto -mx-6 capitalize'>
+              <div className='inline-block min-w-full align-middle'>
+                <div className='overflow-hidden'>
+                  <table
+                    className='min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700'
+                    {...getTableProps()}
                   >
-                    {[10, 25, 50].map((pageSize) => (
-                      <option key={pageSize} value={pageSize}>
-                        Mostrar {pageSize}
-                      </option>
-                    ))}
-                  </select>
-                  <span className='text-sm font-medium text-slate-600 dark:text-slate-300'>
-                    Página{' '}
-                    <span>
-                      {pageIndex + 1} de {pageOptions.length}
-                    </span>
-                  </span>
+                    <thead className='bg-slate-200 dark:bg-slate-700'>
+                      {headerGroups.map((headerGroup) => (
+                        <tr {...headerGroup.getHeaderGroupProps()}>
+                          {headerGroup.headers.map((column) => (
+                            <th
+                              {...column.getHeaderProps(column.getSortByToggleProps())}
+                              scope='col'
+                              className='table-th'
+                            >
+                              {column.render('Header')}
+                              <span>
+                                {column.isSorted
+                                  ? column.isSortedDesc
+                                    ? ' 🔽'
+                                    : ' 🔼'
+                                  : ''}
+                              </span>
+                            </th>
+                          ))}
+                        </tr>
+                      ))}
+                    </thead>
+                    <tbody
+                      className='bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700'
+                      {...getTableBodyProps()}
+                    >
+                      {page.map((row) => {
+                        prepareRow(row)
+                        return (
+                          <tr {...row.getRowProps()}>
+                            {row.cells.map((cell) => {
+                              return (
+                                <td {...cell.getCellProps()} className='table-td'>
+                                  {cell.render('Cell', { showIngreso, editIngreso })}
+                                </td>
+                              )
+                            })}
+                          </tr>
+                        )
+                      })}
+                    </tbody>
+                  </table>
                 </div>
-                <ul className='flex items-center  space-x-3  rtl:space-x-reverse'>
-                  <li className='text-xl leading-4 text-slate-900 dark:text-white rtl:rotate-180'>
-                    <button
-                      className={` ${!canPreviousPage ? 'opacity-50 cursor-not-allowed' : ''
+              </div>
+            </div>
+            <div className='md:flex md:space-y-0 space-y-5 justify-between mt-6 items-center'>
+              <div className='flex items-center space-x-3 rtl:space-x-reverse'>
+                <select
+                  className='form-control py-2 w-max'
+                  value={pageSize}
+                  onChange={(e) => setPageSize(Number(e.target.value))}
+                >
+                  {[10, 25, 50].map((pageSize) => (
+                    <option key={pageSize} value={pageSize}>
+                      Mostrar {pageSize}
+                    </option>
+                  ))}
+                </select>
+                <span className='text-sm font-medium text-slate-600 dark:text-slate-300'>
+                  Página{' '}
+                  <span>
+                    {pageIndex + 1} de {pageOptions.length}
+                  </span>
+                </span>
+              </div>
+              <ul className='flex items-center  space-x-3  rtl:space-x-reverse'>
+                <li className='text-xl leading-4 text-slate-900 dark:text-white rtl:rotate-180'>
+                  <button
+                    className={` ${!canPreviousPage ? 'opacity-50 cursor-not-allowed' : ''
                         }`}
-                      onClick={() => gotoPage(0)}
-                      disabled={!canPreviousPage}
-                    >
-                      <Icon icon='heroicons:chevron-double-left-solid' />
-                    </button>
-                  </li>
-                  <li className='text-sm leading-4 text-slate-900 dark:text-white rtl:rotate-180'>
-                    <button
-                      className={` ${!canPreviousPage ? 'opacity-50 cursor-not-allowed' : ''
+                    onClick={() => gotoPage(0)}
+                    disabled={!canPreviousPage}
+                  >
+                    <Icon icon='heroicons:chevron-double-left-solid' />
+                  </button>
+                </li>
+                <li className='text-sm leading-4 text-slate-900 dark:text-white rtl:rotate-180'>
+                  <button
+                    className={` ${!canPreviousPage ? 'opacity-50 cursor-not-allowed' : ''
                         }`}
-                      onClick={() => previousPage()}
-                      disabled={!canPreviousPage}
-                    >
-                      Anterior
-                    </button>
-                  </li>
-                  {pageOptions.map((page, pageIdx) => (
-                    <li key={pageIdx}>
-                      <button
-                        href='#'
-                        aria-current='page'
-                        className={` ${pageIdx === pageIndex
+                    onClick={() => previousPage()}
+                    disabled={!canPreviousPage}
+                  >
+                    Anterior
+                  </button>
+                </li>
+                {pageOptions.map((page, pageIdx) => (
+                  <li key={pageIdx}>
+                    <button
+                      href='#'
+                      aria-current='page'
+                      className={` ${pageIdx === pageIndex
                           ? 'bg-red-600  dark:text-slate-200 text-white font-medium '
                           : 'bg-slate-100 dark:bg-slate-700 dark:text-slate-400 text-slate-900  font-normal  '
                           }    text-sm rounded leading-[16px] flex h-6 w-6 items-center justify-center transition-all duration-150`}
-                        onClick={() => gotoPage(pageIdx)}
-                      >
-                        {page + 1}
-                      </button>
-                    </li>
-                  ))}
-                  <li className='text-sm leading-4 text-slate-900 dark:text-white rtl:rotate-180'>
-                    <button
-                      className={` ${!canNextPage ? 'opacity-50 cursor-not-allowed' : ''
-                        }`}
-                      onClick={() => nextPage()}
-                      disabled={!canNextPage}
+                      onClick={() => gotoPage(pageIdx)}
                     >
-                      Siguiente
+                      {page + 1}
                     </button>
                   </li>
-                  <li className='text-xl leading-4 text-slate-900 dark:text-white rtl:rotate-180'>
-                    <button
-                      onClick={() => gotoPage(pageCount - 1)}
-                      disabled={!canNextPage}
-                      className={` ${!canNextPage ? 'opacity-50 cursor-not-allowed' : ''
+                ))}
+                <li className='text-sm leading-4 text-slate-900 dark:text-white rtl:rotate-180'>
+                  <button
+                    className={` ${!canNextPage ? 'opacity-50 cursor-not-allowed' : ''
                         }`}
-                    >
-                      <Icon icon='heroicons:chevron-double-right-solid' />
-                    </button>
-                  </li>
-                </ul>
-              </div>
-              {/* end */}
-            </Card>
-            )
-      }
+                    onClick={() => nextPage()}
+                    disabled={!canNextPage}
+                  >
+                    Siguiente
+                  </button>
+                </li>
+                <li className='text-xl leading-4 text-slate-900 dark:text-white rtl:rotate-180'>
+                  <button
+                    onClick={() => gotoPage(pageCount - 1)}
+                    disabled={!canNextPage}
+                    className={` ${!canNextPage ? 'opacity-50 cursor-not-allowed' : ''
+                        }`}
+                  >
+                    <Icon icon='heroicons:chevron-double-right-solid' />
+                  </button>
+                </li>
+              </ul>
+            </div>
+            {/* end */}
+          </Card>
+          )}
     </>
 
   )
