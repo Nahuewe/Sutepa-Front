@@ -1,15 +1,16 @@
-/* eslint-disable eqeqeq */
 import { createSlice } from '@reduxjs/toolkit'
 
 export const userSlice = createSlice({
   name: 'user',
   initialState: {
     users: [],
+    paginate: null,
     activeUser: null
   },
   reducers: {
     handleUser: (state, { payload }) => {
-      state.users = payload
+      state.users = payload.data
+      state.paginate = payload.meta
       state.activeUser = null
     },
     onAddNewUser: (state, { payload }) => {

@@ -243,7 +243,6 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
               label='Correo Electrónico Laboral'
               name='email'
               register={register}
-              className='minuscula'
               placeholder='Ingrese el correo electrónico laboral'
               disabled={disabled}
               value={correoElectronicoLaboral}

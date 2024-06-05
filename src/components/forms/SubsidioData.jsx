@@ -114,7 +114,7 @@ function SubsidioData ({ disabled }) {
   function addItem () {
     const newSubsidio = {
       ...formData,
-      fecha_carga: new Date().format('YYYY-MM-DD HH:mm:ss'),
+      fecha_carga: new Date(),
       id: isEditing ? editingSubsidioId : Date.now(),
       usuario_carga: user.nombre
     }

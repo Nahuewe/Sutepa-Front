@@ -1,334 +1,214 @@
-import React, { useMemo, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import Card from '@/components/ui/Card'
-import Icon from '@/components/ui/Icon'
 import Tooltip from '@/components/ui/Tooltip'
-import { useTable, useRowSelect, useSortBy, useGlobalFilter, usePagination } from 'react-table'
-import GlobalFilter from '@/components/sutepa/tables/GlobalFilter'
-import { useAuthStore, useIngresoStore } from '@/helpers'
-import { setActiveIngreso } from '@/store/ingreso'
 import { useNavigate } from 'react-router-dom'
-import { ShowIngreso } from '@/components/sutepa/tables/ShowIngreso'
-import { DeleteModal } from '@/components/sutepa/forms/DeleteModal'
-import { hadleShowDeleteModal } from '@/store/layout'
-import { sutepaApi } from '../../api'
+import Pagination from '@/components/ui/Pagination'
+import Loading from '@/components/Loading'
+import { DeleteModal } from '@/components/ui/DeleteModal'
+import { handleShowDelete } from '../../store/layout'
+import { useAfiliadoStore } from '../../helpers'
+import { setActiveAfiliado } from '../../store/afiliado'
 
-export const Ingreso = ({ title = 'Lista de Afiliados' }) => {
-  const { user: { seccional } } = useAuthStore()
+const columns = [
+  {
+    label: 'Nombre',
+    field: 'nombre'
+  },
+  {
+    label: 'Apellido',
+    field: 'apellido'
+  },
+  {
+    label: 'CUIL',
+    field: 'cuil'
+  },
+  {
+    label: 'Correo',
+    field: 'email'
+  },
+  {
+    label: 'UGL/Nivel Central',
+    field: 'ugl'
+  },
+  {
+    label: 'Seccional',
+    field: 'seccional'
+  },
+  {
+    label: 'Estado',
+    field: 'deletedAt',
+    Cell: ({ cell }) => (
+      <span className='block w-full'>
+        <span
+          className={`inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-[999px] bg-opacity-25 text-black ${cell.value === null
+            ? 'text-warning-500 bg-warning-500 dark:text-warning-500 dark:bg-warning-500'
+            : 'text-success-500 bg-success-500 dark:text-success-500 dark:bg-success-500'
+            }`}
+        >
+          {cell.value === null ? 'INACTIVO' : 'ACTIVO'}
+        </span>
+      </span>
+    )
+  },
+  {
+    label: 'Acciones',
+    field: 'acciones'
+  }
+]
+
+export const Ingreso = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  const { activeIngreso, startDeleteIngreso } = useIngresoStore()
-
-  const [personas, setPersonas] = useState([])
-  const [idIngreso, setIdIngreso] = useState()
-
-  const COLUMNS = useMemo(() => [
-    {
-      Header: 'Nombre',
-      accessor: 'nombre'
-    },
-    {
-      Header: 'Apellido',
-      accessor: 'apellido'
-    },
-    {
-      Header: 'CUIL',
-      accessor: 'cuil'
-    },
-    {
-      Header: 'Correo',
-      accessor: 'email'
-    },
-    {
-      Header: 'UGL/Nivel Central',
-      accessor: 'ugl'
-    },
-    {
-      Header: 'Seccional',
-      accessor: 'seccional'
-    },
-    {
-      Header: 'Estado',
-      accessor: 'deletedAt',
-      Cell: ({ cell }) => (
-        <span className='block w-full'>
-          <span
-            className={`inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-[999px] bg-opacity-25 text-black ${
-              cell.value === null
-                ? 'text-warning-500 bg-warning-500 dark:text-warning-500 dark:bg-warning-500'
-                : 'text-success-500 bg-success-500 dark:text-success-500 dark:bg-success-500'
-            }`}
-          >
-            {cell.value === null ? 'INACTIVO' : 'ACTIVO'}
-          </span>
-        </span>
-      )
-    },
-    {
-      Header: 'Acciones',
-      accessor: 'id',
-      Cell: ({ cell: { value } }) => (
-        <div className='flex space-x-3 rtl:space-x-reverse'>
-          <Tooltip content='Ver' placement='top' arrow animation='shift-away'>
-            <button id={value} className='action-btn' type='button' onClick={() => showIngreso(value)}>
-              <Icon icon='heroicons:eye' />
-            </button>
-          </Tooltip>
-          <Tooltip content='Editar' placement='top' arrow animation='shift-away'>
-            <button className='action-btn' type='button' onClick={() => editIngreso(value)}>
-              <Icon icon='heroicons:pencil-square' />
-            </button>
-          </Tooltip>
-          {seccional === 3 && (
-            <Tooltip content='Eliminar' placement='top' arrow animation='shift-away' theme='danger'>
-              <button id={value} className='action-btn' type='button' onClick={deleteSolicitud}>
-                <Icon icon='heroicons:trash' />
-              </button>
-            </Tooltip>
-          )}
-        </div>
-      )
-    }
-  ], [seccional])
-
-  const data = useMemo(() => personas.data || [], [personas])
-
-  console.log(data)
-
-  const tableInstance = useTable(
-    {
-      columns: COLUMNS,
-      data
-    },
-    useGlobalFilter,
-    useSortBy,
-    usePagination,
-    useRowSelect,
-    (hooks) => {
-      hooks.visibleColumns.push((columns) => [...columns])
-    }
-  )
-
+  const [isLoading, setIsLoading] = useState(true)
+  const [search, setSearch] = useState('')
   const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    page,
-    nextPage,
-    previousPage,
-    canNextPage,
-    canPreviousPage,
-    pageOptions,
-    state,
-    gotoPage,
-    pageCount,
-    setPageSize,
-    setGlobalFilter,
-    prepareRow
-  } = tableInstance
+    afiliados,
+    paginate,
+    // activeAfiliado,
+    startLoadingAfiliado,
+    startDeleteAfiliado,
+    startSearchAfiliado
+  } = useAfiliadoStore()
 
-  const { globalFilter, pageIndex, pageSize } = state
-
-  const editIngreso = (id) => {
-    dispatch(setActiveIngreso(id))
+  function onEdit (id) {
+    dispatch(setActiveAfiliado(id))
     navigate(`/personas/${id}`)
   }
 
-  const showIngreso = (id) => {
-    dispatch(setActiveIngreso(id))
+  function onDelete (id) {
+    dispatch(setActiveAfiliado(id))
+    dispatch(handleShowDelete())
   }
 
-  const deleteSolicitud = (e) => {
-    setIdIngreso(e.target.id)
-    dispatch(hadleShowDeleteModal(true))
+  async function onSearch ({ target: { value } }) {
+    setSearch(value)
+    if (value.length === 0) await loadingAfiliado()
+    if (value.length <= 3) return false
+    await startSearchAfiliado(value)
+  }
+
+  async function loadingAfiliado (page = 1) {
+    !isLoading && setIsLoading(true)
+
+    await startLoadingAfiliado(page)
+    setIsLoading(false)
   }
 
   useEffect(() => {
-    console.log('ingresos')
-    const fetchPersonas = async () => {
-      try {
-        console.log('ingresos2')
-        const response = await sutepaApi.get('/personas')
-        setPersonas(response.data)
-      } catch (error) {
-        console.error('Error al obtener los datos:', error)
-      }
-    }
-    fetchPersonas()
+    loadingAfiliado()
   }, [])
 
   return (
     <>
-      {activeIngreso
-        ? (
-          <ShowIngreso />
-          )
-        : (
-          <Card>
-            <div className='md:flex justify-between items-center mb-6'>
-              <h4 className='card-title'>{title}</h4>
-              <div className='flex flex-wrap gap-4'>
-                <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
-                {seccional === 3 && (
-                  <button className='bg-slate-300 dark:bg-slate-900 inline-block text-center px-6 py-2 rounded-lg'>
-                    Exportar
-                  </button>
-                )}
-                <DeleteModal
-                  activeModal
-                  onClose
-                  noFade
-                  disableBackdrop
-                  className='max-w-xl'
-                  footerContent={false}
-                  centered
-                  scrollContent
-                  themeClass='bg-slate-900 dark:bg-slate-800 dark:border-b dark:border-slate-700'
-                  title='Eliminar Afiliado'
-                  label='Dar de Baja'
-                  labelClass='btn inline-flex justify-center btn-success px-16'
-                  message='¿Quieres darle de baja al afiliado?'
-                  labelBtn='Aceptar'
-                  btnFunction={() => startDeleteIngreso(idIngreso)}
-                />
-                <button className='bg-red-600 text-white items-center text-center py-2 px-6 rounded-lg' onClick={() => navigate('/afiliados/crear')}>
-                  Agregar Afiliado
-                </button>
-              </div>
-            </div>
-            <div className='overflow-x-auto -mx-6 capitalize'>
-              <div className='inline-block min-w-full align-middle'>
-                <div className='overflow-hidden'>
-                  <table
-                    className='min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700'
-                    {...getTableProps()}
+      {
+        (isLoading)
+          ? <Loading className='mt-28 md:mt-64' />
+          : (
+            <Card
+              title='Listado de Afiliados'
+              headerslot={
+                <div className='flex gap-4'>
+                  <input
+                    type='text'
+                    placeholder='Buscar...'
+                    onChange={onSearch}
+                    value={search}
+                    className='form-control px-4 py-2 border border-gray-300 focus:outline-none focus:border-blue-500'
+                  />
+                  <DeleteModal
+                    themeClass='bg-slate-900 dark:bg-slate-800 dark:border-b dark:border-slate-700'
+                    centered
+                    title='Eliminar Afiliado'
+                    label='Eliminar'
+                    message='¿Quieres dar de baja a este afiliado?'
+                    labelBtn='Aceptar'
+                    btnFunction={startDeleteAfiliado}
+                  />
+                  <button
+                    className='bg-red-600 text-white items-center text-center py-2 px-6 rounded-lg'
+                    onClick={() => navigate('/afiliados/crear')}
                   >
-                    <thead className='bg-slate-200 dark:bg-slate-700'>
-                      {headerGroups.map((headerGroup) => (
-                        <tr {...headerGroup.getHeaderGroupProps()}>
-                          {headerGroup.headers.map((column) => (
-                            <th
-                              {...column.getHeaderProps(column.getSortByToggleProps())}
-                              scope='col'
-                              className='table-th'
-                            >
-                              {column.render('Header')}
-                              <span>
-                                {column.isSorted
-                                  ? column.isSortedDesc
-                                    ? ' 🔽'
-                                    : ' 🔼'
-                                  : ''}
-                              </span>
+                    Agregar
+                  </button>
+                </div>
+              }
+              noborder
+            >
+              <div className='overflow-x-auto -mx-6'>
+                <div className='inline-block min-w-full align-middle'>
+                  <div className='overflow-hidden '>
+                    <table className='min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700'>
+                      <thead className='bg-slate-200 dark:bg-slate-700'>
+                        <tr>
+                          {columns.map((column, i) => (
+                            <th key={i} scope='col' className=' table-th '>
+                              {column.label}
                             </th>
                           ))}
                         </tr>
-                      ))}
-                    </thead>
-                    <tbody
-                      className='bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700'
-                      {...getTableBodyProps()}
-                    >
-                      {page.map((row) => {
-                        prepareRow(row)
-                        return (
-                          <tr {...row.getRowProps()}>
-                            {row.cells.map((cell) => {
-                              return (
-                                <td {...cell.getCellProps()} className='table-td'>
-                                  {cell.render('Cell', { showIngreso, editIngreso })}
-                                </td>
-                              )
-                            })}
-                          </tr>
-                        )
-                      })}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody className='bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700'>
+                        {
+                          (afiliados.length > 0) && afiliados.map((afiliado) => (
+                            <tr key={afiliado.id}>
+                              <td className='table-td'>{afiliado.nombre}</td>
+                              <td className='table-td'>{afiliado.apellido}</td>
+                              <td className='table-td'>{afiliado.cuil}</td>
+                              <td className='table-td'>{afiliado.email}</td>
+                              <td className='table-td'>{afiliado.ugl}</td>
+                              <td className='table-td'>{afiliado.seccional}</td>
+                              <td className='table-td'>{afiliado.estado}</td>
+                              <td className='table-td flex justify-start gap-2'>
+                                <Tooltip content='Editar' placement='top' arrow animation='shift-away'>
+                                  <button className='bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-700' onClick={() => onEdit(afiliado.id)}>
+                                    <svg xmlns='http://www.w3.org/2000/svg' className='icon icon-tabler icon-tabler-pencil' width='24' height='24' viewBox='0 0 24 24' strokeWidth='2' stroke='currentColor' fill='none' strokeLinecap='round' strokeLinejoin='round'>
+                                      <path stroke='none' d='M0 0h24v24H0z' fill='none' /><path d='M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4' />
+                                      <path d='M13.5 6.5l4 4' />
+                                    </svg>
+                                  </button>
+                                </Tooltip>
+
+                                <Tooltip content='Eliminar' placement='top' arrow animation='shift-away'>
+                                  <button className='bg-red-500 text-white p-2 rounded-lg hover:bg-red-700' onClick={() => onDelete(afiliado.id)}>
+                                    <svg xmlns='http://www.w3.org/2000/svg' className='icon icon-tabler icon-tabler-trash' width='24' height='24' viewBox='0 0 24 24' strokeWidth='2' stroke='currentColor' fill='none' strokeLinecap='round' strokeLinejoin='round'>
+                                      <path stroke='none' d='M0 0h24v24H0z' fill='none' />
+                                      <path d='M4 7l16 0' /><path d='M10 11l0 6' />
+                                      <path d='M14 11l0 6' />
+                                      <path d='M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12' />
+                                      <path d='M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3' />
+                                    </svg>
+                                  </button>
+                                </Tooltip>
+                              </td>
+                            </tr>
+                          ))
+                        }
+                      </tbody>
+                    </table>
+
+                    {/* Paginado */}
+                    {
+                      paginate && (
+                        <div className='flex justify-center mt-8'>
+                          <Pagination
+                            paginate={paginate}
+                            onPageChange={(page) =>
+                              search !== ''
+                                ? startSearchAfiliado(search, page)
+                                : startLoadingAfiliado(page)}
+                            text
+                          />
+                        </div>
+                      )
+                    }
+
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className='md:flex md:space-y-0 space-y-5 justify-between mt-6 items-center'>
-              <div className='flex items-center space-x-3 rtl:space-x-reverse'>
-                <select
-                  className='form-control py-2 w-max'
-                  value={pageSize}
-                  onChange={(e) => setPageSize(Number(e.target.value))}
-                >
-                  {[10, 25, 50].map((pageSize) => (
-                    <option key={pageSize} value={pageSize}>
-                      Mostrar {pageSize}
-                    </option>
-                  ))}
-                </select>
-                <span className='text-sm font-medium text-slate-600 dark:text-slate-300'>
-                  Página{' '}
-                  <span>
-                    {pageIndex + 1} de {pageOptions.length}
-                  </span>
-                </span>
-              </div>
-              <ul className='flex items-center  space-x-3  rtl:space-x-reverse'>
-                <li className='text-xl leading-4 text-slate-900 dark:text-white rtl:rotate-180'>
-                  <button
-                    className={` ${!canPreviousPage ? 'opacity-50 cursor-not-allowed' : ''
-                        }`}
-                    onClick={() => gotoPage(0)}
-                    disabled={!canPreviousPage}
-                  >
-                    <Icon icon='heroicons:chevron-double-left-solid' />
-                  </button>
-                </li>
-                <li className='text-sm leading-4 text-slate-900 dark:text-white rtl:rotate-180'>
-                  <button
-                    className={` ${!canPreviousPage ? 'opacity-50 cursor-not-allowed' : ''
-                        }`}
-                    onClick={() => previousPage()}
-                    disabled={!canPreviousPage}
-                  >
-                    Anterior
-                  </button>
-                </li>
-                {pageOptions.map((page, pageIdx) => (
-                  <li key={pageIdx}>
-                    <button
-                      href='#'
-                      aria-current='page'
-                      className={` ${pageIdx === pageIndex
-                          ? 'bg-red-600  dark:text-slate-200 text-white font-medium '
-                          : 'bg-slate-100 dark:bg-slate-700 dark:text-slate-400 text-slate-900  font-normal  '
-                          }    text-sm rounded leading-[16px] flex h-6 w-6 items-center justify-center transition-all duration-150`}
-                      onClick={() => gotoPage(pageIdx)}
-                    >
-                      {page + 1}
-                    </button>
-                  </li>
-                ))}
-                <li className='text-sm leading-4 text-slate-900 dark:text-white rtl:rotate-180'>
-                  <button
-                    className={` ${!canNextPage ? 'opacity-50 cursor-not-allowed' : ''
-                        }`}
-                    onClick={() => nextPage()}
-                    disabled={!canNextPage}
-                  >
-                    Siguiente
-                  </button>
-                </li>
-                <li className='text-xl leading-4 text-slate-900 dark:text-white rtl:rotate-180'>
-                  <button
-                    onClick={() => gotoPage(pageCount - 1)}
-                    disabled={!canNextPage}
-                    className={` ${!canNextPage ? 'opacity-50 cursor-not-allowed' : ''
-                        }`}
-                  >
-                    <Icon icon='heroicons:chevron-double-right-solid' />
-                  </button>
-                </li>
-              </ul>
-            </div>
-            {/* end */}
-          </Card>
-          )}
+            </Card>
+            )
+      }
     </>
   )
 }

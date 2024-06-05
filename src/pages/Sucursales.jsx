@@ -14,9 +14,9 @@ import GlobalFilter from '@/components/sutepa/tables/GlobalFilter'
 import Modal from '@/components/ui/Modal'
 import { useSucursalStore } from '../helpers/useSucursalStore'
 import { DeleteModal, SucursalForm } from '../components/sutepa/forms'
-import { hadleShowDeleteModal, hadleShowModal } from '../store/layout'
+import { handleShowDelete, handleShowModal } from '../store/layout'
 import { setactiveSeccional } from '../store/sucursal'
-import EditModal from '../components/sutepa/forms/EditModal'
+import EditModal from '@/components/ui/EditModal'
 
 const roles = [
   {
@@ -113,12 +113,12 @@ export const Sucursales = ({ title = 'Listado de Roles' }) => {
 
   const deleteSucursal = (id) => {
     dispatch(setactiveSeccional(id))
-    dispatch(hadleShowDeleteModal(true))
+    dispatch(handleShowDelete(true))
   }
 
   const updateSucursal = (id) => {
     dispatch(setactiveSeccional(id))
-    dispatch(hadleShowModal(true))
+    dispatch(handleShowModal(true))
   }
 
   useEffect(() => {

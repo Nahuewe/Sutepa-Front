@@ -14,7 +14,7 @@ import SubsidioData from '@/components/forms/SubsidioData'
 
 export const Create = () => {
   const navigate = useNavigate()
-  const { activeIngreso, startSavingIngreso, startUpdateIngreso, startGetIngreso } = useIngresoStore()
+  const { activeIngreso, startSavingIngreso, startUpdateIngreso } = useIngresoStore()
 
   const FormValidationSchema = yup.object().shape({
     legajo: yup.string().required('El legajo es requerido'),
@@ -90,10 +90,6 @@ export const Create = () => {
       })
     }
   }, [activeIngreso, setValue])
-
-  useEffect(() => {
-    startGetIngreso()
-  }, [])
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className='space-y-4'>

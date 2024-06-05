@@ -1,368 +1,208 @@
-import React, { useMemo, useEffect } from 'react'
+/* eslint-disable react/no-children-prop */
+import { useEffect, useState } from 'react'
 import Card from '@/components/ui/Card'
-import Icon from '@/components/ui/Icon'
-import Tooltip from '@/components/ui/Tooltip'
-import {
-  useTable,
-  useRowSelect,
-  useSortBy,
-  useGlobalFilter,
-  usePagination
-} from 'react-table'
-import GlobalFilter from '@/components/sutepa/tables/GlobalFilter'
 import Modal from '@/components/ui/Modal'
-import { UserForm } from '@/components/sutepa/forms'
-import { useUserStore, useAuthStore } from '../helpers'
-import { DeleteModal } from '../components/sutepa/forms'
+import EditModal from '@/components/ui/EditModal'
+import { DeleteModal } from '@/components/ui/DeleteModal'
 import { useDispatch } from 'react-redux'
-import { hadleShowDeleteModal, hadleShowModal } from '../store/layout'
-import { setActiveUser } from '../store/user'
-import EditModal from '../components/sutepa/forms/EditModal'
+import { handleShowDelete, handleShowEdit } from '@/store/layout'
+import { useUserStore } from '@/helpers'
+import { setActiveUser } from '@/store/user'
+import Pagination from '@/components/ui/Pagination'
+import Loading from '@/components/Loading'
+import Tooltip from '@/components/ui/Tooltip'
+import { UserForm } from '../components/sutepa/forms/'
 
-const COLUMNS = [
+const columns = [
   {
-    Header: 'Nombre',
-    accessor: 'nombre',
-    Cell: (row) => {
-      return <span>{row?.cell?.value}</span>
-    }
+    label: 'Nombre',
+    field: 'nombre'
   },
   {
-    Header: 'Apellido',
-    accessor: 'apellido',
-    Cell: (row) => {
-      return <span>{row?.cell?.value}</span>
-    }
+    label: 'Apellido',
+    field: 'apellido'
   },
   {
-    Header: 'Usuario',
-    accessor: 'username',
-    Cell: (row) => {
-      return <span>{row?.cell?.value}</span>
-    }
+    label: 'Usuario',
+    field: 'usuario'
   },
   {
-    Header: 'Rol',
-    accessor: 'roles',
-    Cell: (row) => {
-      return <span>{row?.cell?.value}</span>
-    }
+    label: 'Correo',
+    field: 'correo'
   },
   {
-    Header: 'Seccional',
-    accessor: 'seccional',
-    Cell: (row) => {
-      return <span>{row?.cell?.value || '-'}</span>
-    }
+    label: 'Seccional',
+    field: 'seccional'
   },
   {
-    Header: 'Fecha de Creación',
-    accessor: 'createdAt',
-    Cell: (row) => {
-      return <span>{row?.cell?.value || '-'}</span>
-    }
+    label: 'Rol',
+    field: 'rol'
   },
   {
-    Header: 'Estado',
-    accessor: 'deletedAt',
-    Cell: (row) => {
-      return (
-        <span className='block w-full'>
-          <span
-            className={` inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-[999px] bg-opacity-25 text-black ${row?.cell?.value === null
-              ? 'text-warning-500 bg-warning-500 dark:text-warning-500 dark:bg-warning-500'
-              : 'text-success-500 bg-success-500 dark:text-success-500 dark:bg-success-500'
-              }   
-            `}
-          >
-            {(row?.cell?.value === null) ? 'Inactivo' : 'Activo'}
-          </span>
-        </span>
-      )
-    }
-  },
-  {
-    Header: 'Acciones',
-    accessor: 'id',
-    Cell: (row) => {
-      return (
-        <div className='flex space-x-3 rtl:space-x-reverse'>
-          <Tooltip content='Editar' placement='top' arrow animation='shift-away'>
-            <button className='action-btn' type='button' onClick={() => { row.updateUser(row?.cell?.value) }}>
-              <Icon icon='heroicons:pencil-square' />
-            </button>
-          </Tooltip>
-          <Tooltip
-            content='Eliminar'
-            placement='top'
-            arrow
-            animation='shift-away'
-            theme='danger'
-          >
-            <button className='action-btn' type='button' onClick={() => { row.deleteUser(row?.cell?.value) }}>
-              <Icon icon='heroicons:trash' />
-            </button>
-          </Tooltip>
-        </div>
-      )
-    }
+    label: 'Acciones',
+    field: 'acciones'
   }
 ]
 
-export const Users = ({ title = 'Listado de Usuarios' }) => {
-  const { users, activeUser, startSavingUser, startDeleteUser, startUpdateUser } = useUserStore()
+export const Users = () => {
+  const { users, paginate, activeUser, startLoadingUsers, startSavingUser, startDeleteUser, startUpdateUser, startSearchUser } = useUserStore()
   const dispatch = useDispatch()
-  // const { user: { sucursal } } = useAuthStore()
+  const [isLoading, setIsLoading] = useState(true)
+  const [search, setSearch] = useState('')
 
-  const columns = useMemo(() => COLUMNS, [])
-  const data = useMemo(() => users, [users])
-
-  const tableInstance = useTable(
-    {
-      columns,
-      data
-    },
-
-    useGlobalFilter,
-    useSortBy,
-    usePagination,
-    useRowSelect,
-
-    (hooks) => {
-      hooks.visibleColumns.push((columns) => [
-        ...columns
-      ])
-    }
-  )
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    page,
-    nextPage,
-    previousPage,
-    canNextPage,
-    canPreviousPage,
-    pageOptions,
-    state,
-    gotoPage,
-    pageCount,
-    setPageSize,
-    setGlobalFilter,
-    prepareRow
-  } = tableInstance
-
-  const deleteUser = (id) => {
+  function onEdit (id) {
     dispatch(setActiveUser(id))
-    dispatch(hadleShowDeleteModal(true))
+    dispatch(handleShowEdit())
   }
 
-  const updateUser = (id) => {
+  function onDelete (id) {
     dispatch(setActiveUser(id))
-    dispatch(hadleShowModal(true))
+    dispatch(handleShowDelete())
   }
 
+  async function onSearch ({ target: { value } }) {
+    setSearch(value)
+    if (value.length === 0) await loadingUsers()
+    if (value.length <= 3) return false
+    await startSearchUser(value)
+  }
 
+  async function loadingUsers (page = 1) {
+    !isLoading && setIsLoading(true)
 
-  const { globalFilter, pageIndex, pageSize } = state
+    await startLoadingUsers(page)
+    setIsLoading(false)
+  }
+
+  useEffect(() => {
+    loadingUsers()
+  }, [])
+
   return (
     <>
+      {
+      (isLoading)
+        ? <Loading className='mt-28 md:mt-64' />
+        : (
+          <Card
+            title='Listado de Usuarios'
+            headerslot={
+              <div className='flex gap-2'>
+                <input
+                  type='text'
+                  placeholder='Buscar'
+                  onChange={onSearch}
+                  value={search}
+                  className='form-control px-2 py-1 rounded-lg border border-gray-400'
+                />
 
-      <Card>
-        <div className='md:flex justify-between items-center mb-6'>
-          <h4 className='card-title'>{title}</h4>
-          <div className='flex flex-wrap gap-4 mt-4 md:mt-0'>
-            <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
+                <Modal
+                  title='Agregar Usuario'
+                  label='Agregar'
+                  labelClass='btn-dark'
+                  centered
+                  children={
+                    <UserForm
+                      fnAction={startSavingUser}
+                    />
+                  }
+                />
 
-            <Modal
-              activeModal
-              onClose
-              noFade
-              disableBackdrop
-              className='max-w-xl'
-              children={<UserForm startFn={startSavingUser} />}
-              footerContent={false}
-              centered
-              scrollContent
-              themeClass='bg-slate-900 dark:bg-slate-800 dark:border-b dark:border-slate-700'
-              title='Agregar Usuario'
-              uncontrol
-              label='Agregar Usuario'
-              labelClass='bg-red-600 text-white items-center text-center py-2 px-6 rounded-lg'
-            />
+                <EditModal
+                  title='Editar Usuario'
+                  centered
+                  children={
+                    <UserForm
+                      fnAction={startUpdateUser}
+                      activeUser={activeUser}
+                    />
+                  }
+                />
 
-            <EditModal
-              activeModal
-              onClose
-              noFade
-              disableBackdrop
-              className='max-w-xl'
-              children={<UserForm activeUser={activeUser} startFn={startUpdateUser} />}
-              footerContent={false}
-              centered
-              scrollContent
-              themeClass='bg-slate-900 dark:bg-slate-800 dark:border-b dark:border-slate-700'
-              title='Editar Unidad'
-              uncontrol
-              label='Editar'
-              labelClass='btn-dark items-center text-center px-6 rounded-lg flex'
-              btnIcon='plus'
-            />
-
-            <DeleteModal
-              activeModal
-              onClose
-              noFade
-              disableBackdrop
-              className='max-w-xl'
-              footerContent={false}
-              centered
-              scrollContent
-              themeClass='bg-slate-900 dark:bg-slate-800 dark:border-b dark:border-slate-700'
-              title='Eliminar Usuario'
-              label='Eliminar'
-              labelClass='btn inline-flex justify-center btn-success px-16'
-              message='¿Seguro que desea deshabilitar el usuario?'
-              labelBtn='Aceptar'
-              btnFunction={startDeleteUser}
-            />
-
-          </div>
-        </div>
-        <div className='overflow-x-auto -mx-6'>
-          <div className='inline-block min-w-full align-middle'>
-            <div className='overflow-hidden '>
-              <table
-                className='min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700'
-                {...getTableProps}
-              >
-                <thead className='bg-slate-200 dark:bg-slate-700'>
-                  {headerGroups.map((headerGroup) => (
-                    <tr {...headerGroup.getHeaderGroupProps()}>
-                      {headerGroup.headers.map((column) => (
-                        <th
-                          {...column.getHeaderProps(
-                            column.getSortByToggleProps()
-                          )}
-                          scope='col'
-                          className=' table-th '
-                        >
-                          {column.render('Header')}
-                          <span>
-                            {column.isSorted
-                              ? column.isSortedDesc
-                                ? ' 🔽'
-                                : ' 🔼'
-                              : ''}
-                          </span>
-                        </th>
-                      ))}
-                    </tr>
-                  ))}
-                </thead>
-                <tbody
-                  className='bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700'
-                  {...getTableBodyProps}
-                >
-                  {page.map((row) => {
-                    prepareRow(row)
-                    return (
-                      <tr {...row.getRowProps()}>
-                        {row.cells.map((cell) => {
-                          return (
-                            <td {...cell.getCellProps()} className='table-td'>
-                              {cell.render('Cell', { deleteUser, updateUser })}
-                            </td>
-                          )
-                        })}
+                <DeleteModal
+                  themeClass='bg-slate-900 dark:bg-slate-800 dark:border-b dark:border-slate-700'
+                  centered
+                  title='Eliminar Usuario'
+                  label='Eliminar'
+                  message='¿Quieres eliminar este usuario?'
+                  labelBtn='Aceptar'
+                  btnFunction={startDeleteUser}
+                />
+              </div>
+            }
+            noborder
+          >
+            <div className='overflow-x-auto -mx-6'>
+              <div className='inline-block min-w-full align-middle'>
+                <div className='overflow-hidden '>
+                  <table className='min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700'>
+                    <thead className='bg-slate-200 dark:bg-slate-700'>
+                      <tr>
+                        {columns.map((column, i) => (
+                          <th key={i} scope='col' className=' table-th '>
+                            {column.label}
+                          </th>
+                        ))}
                       </tr>
-                    )
-                  })}
-                </tbody>
-              </table>
+                    </thead>
+                    <tbody className='bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700'>
+                      {
+                          (users.length > 0) && users.map((row) => (
+                            <tr key={row.id}>
+                              <td className='table-td'>{row.id}</td>
+                              <td className='table-td'>{row.name}</td>
+                              <td className='table-td'>{row.username}</td>
+                              <td className='table-td'>{row.roles.name}</td>
+                              <td className='table-td flex justify-start gap-2'>
+                                <Tooltip content='Editar' placement='top' arrow animation='shift-away'>
+                                  <button className='bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-700' onClick={() => onEdit(row.id)}>
+                                    <svg xmlns='http://www.w3.org/2000/svg' className='icon icon-tabler icon-tabler-pencil' width='24' height='24' viewBox='0 0 24 24' strokeWidth='2' stroke='currentColor' fill='none' strokeLinecap='round' strokeLinejoin='round'>
+                                      <path stroke='none' d='M0 0h24v24H0z' fill='none' /><path d='M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4' />
+                                      <path d='M13.5 6.5l4 4' />
+                                    </svg>
+                                  </button>
+                                </Tooltip>
+
+                                <Tooltip content='Eliminar' placement='top' arrow animation='shift-away'>
+                                  <button className='bg-red-500 text-white p-2 rounded-lg hover:bg-red-700' onClick={() => onDelete(row.id)}>
+                                    <svg xmlns='http://www.w3.org/2000/svg' className='icon icon-tabler icon-tabler-trash' width='24' height='24' viewBox='0 0 24 24' strokeWidth='2' stroke='currentColor' fill='none' strokeLinecap='round' strokeLinejoin='round'>
+                                      <path stroke='none' d='M0 0h24v24H0z' fill='none' />
+                                      <path d='M4 7l16 0' /><path d='M10 11l0 6' />
+                                      <path d='M14 11l0 6' />
+                                      <path d='M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12' />
+                                      <path d='M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3' />
+                                    </svg>
+                                  </button>
+                                </Tooltip>
+                              </td>
+                            </tr>
+                          ))
+                        }
+                    </tbody>
+                  </table>
+
+                  {/* Paginado */}
+                  {
+                      paginate && (
+                        <div className='flex justify-center mt-8'>
+                          <Pagination
+                            paginate={paginate}
+                            onPageChange={(page) =>
+                              search !== ''
+                                ? startSearchUser(search, page)
+                                : loadingUsers(page)}
+                            text
+                          />
+                        </div>
+                      )
+                    }
+
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-        <div className='md:flex md:space-y-0 space-y-5 justify-between mt-6 items-center'>
-          <div className=' flex items-center space-x-3 rtl:space-x-reverse'>
-            <select
-              className='form-control py-2 w-max'
-              value={pageSize}
-              onChange={(e) => setPageSize(Number(e.target.value))}
-            >
-              {[10, 25, 50].map((pageSize) => (
-                <option key={pageSize} value={pageSize}>
-                  Mostrar {pageSize}
-                </option>
-              ))}
-            </select>
-            <span className='text-sm font-medium text-slate-600 dark:text-slate-300'>
-              Página{' '}
-              <span>
-                {pageIndex + 1} de {pageOptions.length}
-              </span>
-            </span>
-          </div>
-          <ul className='flex items-center  space-x-3  rtl:space-x-reverse'>
-            <li className='text-xl leading-4 text-slate-900 dark:text-white rtl:rotate-180'>
-              <button
-                className={` ${!canPreviousPage ? 'opacity-50 cursor-not-allowed' : ''
-                  }`}
-                onClick={() => gotoPage(0)}
-                disabled={!canPreviousPage}
-              >
-                <Icon icon='heroicons:chevron-double-left-solid' />
-              </button>
-            </li>
-            <li className='text-sm leading-4 text-slate-900 dark:text-white rtl:rotate-180'>
-              <button
-                className={` ${!canPreviousPage ? 'opacity-50 cursor-not-allowed' : ''
-                  }`}
-                onClick={() => previousPage()}
-                disabled={!canPreviousPage}
-              >
-                Anterior
-              </button>
-            </li>
-            {pageOptions.map((page, pageIdx) => (
-              <li key={pageIdx}>
-                <button
-                  href='#'
-                  aria-current='page'
-                  className={` ${pageIdx === pageIndex
-                    ? 'bg-red-600  dark:text-slate-200 text-white font-medium '
-                    : 'bg-slate-100 dark:bg-slate-700 dark:text-slate-400 text-slate-900  font-normal  '
-                    }    text-sm rounded leading-[16px] flex h-6 w-6 items-center justify-center transition-all duration-150`}
-                  onClick={() => gotoPage(pageIdx)}
-                >
-                  {page + 1}
-                </button>
-              </li>
-            ))}
-            <li className='text-sm leading-4 text-slate-900 dark:text-white rtl:rotate-180'>
-              <button
-                className={` ${!canNextPage ? 'opacity-50 cursor-not-allowed' : ''
-                  }`}
-                onClick={() => nextPage()}
-                disabled={!canNextPage}
-              >
-                Siguiente
-              </button>
-            </li>
-            <li className='text-xl leading-4 text-slate-900 dark:text-white rtl:rotate-180'>
-              <button
-                onClick={() => gotoPage(pageCount - 1)}
-                disabled={!canNextPage}
-                className={` ${!canNextPage ? 'opacity-50 cursor-not-allowed' : ''
-                  }`}
-              >
-                <Icon icon='heroicons:chevron-double-right-solid' />
-              </button>
-            </li>
-          </ul>
-        </div>
-        {/* end */}
-      </Card>
+          </Card>
+          )
+    }
     </>
   )
 }

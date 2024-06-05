@@ -116,11 +116,20 @@ export const layoutSlice = createSlice({
       state.isMonochrome = action.payload
       window.localStorage.setItem('monochrome', JSON.stringify(action.payload))
     },
-    hadleShowModal: (state, { payload }) => {
-      state.showModal = payload
+    handleShowModal: (state) => {
+      state.showModal = !state.showModal
     },
-    hadleShowDeleteModal: (state, { payload }) => {
-      state.showDeleteModal = payload
+    handleShowEdit: (state) => {
+      state.showEdit = !state.showEdit
+    },
+    handleShowDelete: (state) => {
+      state.showDelete = !state.showDelete
+    },
+    handleShowAuxModal: (state) => {
+      state.showAuxModal = !state.showAuxModal
+    },
+    handleShowConfirm: (state) => {
+      state.showConfirm = !state.showConfirm
     }
   }
 })
@@ -139,8 +148,11 @@ export const {
   handleFooterType,
   handleMobileMenu,
   handleMonoChrome,
-  hadleShowModal,
-  hadleShowDeleteModal
+  handleShowModal,
+  handleShowEdit,
+  handleShowDelete,
+  handleShowAuxModal,
+  handleShowConfirm
 } = layoutSlice.actions
 
 export default layoutSlice.reducer

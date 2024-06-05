@@ -8,6 +8,7 @@ const initialState = {
   familiares: [],
   documentacion: [],
   subsidios: [],
+  paginate: null,
   activeIngreso: null
 }
 
@@ -17,25 +18,23 @@ export const ingresoSlice = createSlice({
   reducers: {
     handleIngreso: (state, { payload }) => {
       state.ingresos = payload
+      state.paginate = payload.meta
       state.activeIngreso = null
+    },
+    setActiveIngreso: (state, { payload }) => {
+      state.activeIngreso = state.ingresos.find((ingreso) => ingreso.id === payload)
     },
     onAddNewIngreso: (state, { payload }) => {
       state.ingresos = [...state.ingresos, payload]
     },
     onUpdateIngreso: (state, { payload }) => {
-      state.ingresos = state.ingresos.map((ingreso) => {
-        if (ingreso.id == payload.id) {
-          return ingreso
-        }
-        return payload
+      state.ingeresos = state.ingeresos.map((ingreso) => {
+        if (ingreso.id === payload.id) return payload
+        return ingreso
       })
-      state.activeIngreso = null
     },
     onDeleteIngreso: (state, { payload }) => {
       state.ingresos = state.ingresos.filter((ingreso) => ingreso.id !== payload)
-    },
-    setActiveIngreso: (state, { payload }) => {
-      state.activeIngreso = state.ingresos.find((ingreso) => ingreso.id === payload)
     },
     onAddFamiliar: (state, { payload }) => {
       const existe = state.familiares.find((familiar) => familiar.id === payload.id)

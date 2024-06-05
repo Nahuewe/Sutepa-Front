@@ -1,8 +1,9 @@
+// EstadisticasDashboard.jsx
 import React, { useMemo } from 'react'
 import Icon from '@/components/ui/Icon'
 
-const EstadisticasDashboard = ({ ingresos }) => {
-  const countIngresosPorEstado = (data) => {
+const EstadisticasDashboard = ({ afiliados }) => {
+  const countAfiliadosPorEstado = (data) => {
     if (!data || !Array.isArray(data)) {
       console.error('Invalid data:', data)
       return {}
@@ -24,8 +25,8 @@ const EstadisticasDashboard = ({ ingresos }) => {
     return totals
   }
 
-  const totalsByEstado = useMemo(() => countIngresosPorEstado(ingresos), [
-    ingresos
+  const totalsByEstado = useMemo(() => countAfiliadosPorEstado(afiliados), [
+    afiliados
   ])
 
   function exportarNombresEstados () {

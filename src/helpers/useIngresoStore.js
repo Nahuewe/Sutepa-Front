@@ -14,21 +14,10 @@ export const useIngresoStore = () => {
   //   console.error('Error: state.ingresos is not an array')
   // }
 
-  const startGetIngreso = async () => {
-    try {
-      const { data } = await sutepaApi.get('/personas')
-      dispatch(handleIngreso(data.ingresos))
-    } catch (error) {
-      console.error('Error fetching ingresos:', error)
-      toast.error('No se pudo obtener las personas')
-    }
-  }
 
   const startSavingIngreso = async (form) => {
     try {
-      console.log(form)
       const { data } = await sutepaApi.post('/personas', {
-        form,
         persona,
         domicilio,
         datos_laborales,
@@ -40,7 +29,7 @@ export const useIngresoStore = () => {
 
       // dispatch(onAddNewIngreso(data.ingreso))
       // await startGetIngreso()
-      dispatch(cleanIngreso())
+      // dispatch(cleanIngreso())
       navigate('/afiliados')
       toast.success('Afiliado creado con éxito')
     } catch (error) {
@@ -74,7 +63,7 @@ export const useIngresoStore = () => {
   return {
     ingresos,
     activeIngreso,
-    startGetIngreso,
+
     startSavingIngreso,
     startUpdateIngreso
   }

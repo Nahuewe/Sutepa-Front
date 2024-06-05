@@ -1,149 +1,158 @@
-import { useEffect, useState } from 'react'
+import Textinput from '@/components/ui/Textinput'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import Textinput from '@/components/ui/Textinput'
 import * as yup from 'yup'
-import { SelectForm } from './'
-import { sutepaApi } from '../../../api'
+import { useEffect, useState } from 'react'
+import Select from '@/components/ui/Select'
+import { useGetParameters } from '@/helpers'
+import Button from '@/components/ui/Button'
+import Loading from '@/components/Loading'
 
-const roles = [
-  { id: 1, nombre: 'ADMINISTRADOR' },
-  { id: 2, nombre: 'DIRECTOR DE SECCION' },
-  { id: 3, nombre: 'SOLO LECTURA' },
-  { id: 4, nombre: 'SUBSIDIOS' }
-]
-
-const FormValidationSchema = yup
+const FormValidationSaving = yup
   .object({
-    // nombre: yup.string().required('El nombre es requerido'),
+    nombre: yup.string().required('El nombre es requerido'),
     apellido: yup.string().required('El apellido es requerido'),
-    // username: yup.string().required('El username es requerido'),
+    username: yup.string().required('El usuario es requerido'),
     password: yup.string().required('La contraseña es requerida'),
-    seccional_id: yup.string().notOneOf([''], 'Debe seleccionar una seccional'),
-    roles_id: yup.string().notOneOf([''], 'Debe seleccionar un rol')
+    email: yup.string().nullable(),
+    telefono: yup.string().nullable(),
+    roles_id: yup.string().notOneOf([''], 'Debe seleccionar un rol'),
+    seccional_id: yup.string().notOneOf([''], 'Debe seleccionar una seccional')
   })
   .required()
 
-const FormValidationSchemaUpdate = yup
+const FormValidationUpdate = yup
   .object({
-    password: yup.string(),
-    // nombre: yup.string().required('El nombre es requerido'),
-    // username: yup.string().required('El usuario es requerido'),
+    nombre: yup.string().required('El nombre es requerido'),
     apellido: yup.string().required('El apellido es requerido'),
-    seccional_id: yup.string().notOneOf([''], 'Debe seleccionar una seccional'),
-    roles_id: yup.string().notOneOf([''], 'Debe seleccionar un rol')
+    username: yup.string().required('El usuario es requerido'),
+    email: yup.string().nullable(),
+    telefono: yup.string().nullable(),
+    roles_id: yup.string().notOneOf([''], 'Debe seleccionar un rol'),
+    seccional_id: yup.string().notOneOf([''], 'Debe seleccionar una seccional')
   })
   .required()
 
-export const UserForm = ({ activeUser = null, startFn }) => {
-  const [seccional, setSeccional] = useState([])
+export const UserForm = ({ fnAction, activeUser = null }) => {
+  const [roles, setRoles] = useState([])
+  const [seccionales, setSeccionales] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
+  const { startSelectRoles, startSelectSeccionales } = useGetParameters()
 
   const {
     register,
-    formState: { errors },
+    formState: { errors, isSubmitting },
     handleSubmit,
-    reset
+    setValue
   } = useForm({
-    defaultValues: {
-      nombre: activeUser?.nombre || '',
-      apellido: activeUser?.apellido || '',
-      username: activeUser?.username || '',
-      seccional_id: activeUser?.seccional_id || '',
-      role_id: activeUser?.role_id || ''
-    },
-    resolver: activeUser ? yupResolver(FormValidationSchemaUpdate) : yupResolver(FormValidationSchema)
+    resolver: yupResolver(activeUser ? FormValidationUpdate : FormValidationSaving)
   })
 
-  const onSubmit = (data) => {
-    startFn(data)
-    reset({ username: '', nombre: '', apellido: '', password: '', seccional_id: '', roles_id: '' })
+  const onSubmit = async (data) => {
+    await fnAction(data)
+  }
+
+  async function loadingInit () {
+    const rolesData = await startSelectRoles()
+    setRoles(rolesData)
+
+    const seccionalesData = await startSelectSeccionales()
+    setSeccionales(seccionalesData)
+
+    if (activeUser) {
+      Object.entries(activeUser).forEach(([key, value]) => {
+        if (key === 'roles') setValue('roles_id', value.id)
+        else setValue(key, value)
+      })
+    }
+
+    setIsLoading(false)
   }
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [seccionalResponse] = await Promise.all([
-          sutepaApi.get('seccional')
-        ])
-        setSeccional(seccionalResponse.data.data)
-      } catch (error) {
-        console.error('Error fetching data:', error)
-      }
-    }
-    fetchData()
+    loadingInit()
   }, [])
 
   return (
-    <div>
-      <form onSubmit={handleSubmit(onSubmit)} className='space-y-4'>
-        <Textinput
-          label='Nombre'
-          type='text'
-          register={register('nombre')}
-          error={errors.nombre}
-          placeholder='Nombre'
-        />
+    <>
+      {
+      isLoading
+        ? <Loading />
+        : (
+          <form onSubmit={handleSubmit(onSubmit)} className='space-y-4 '>
+            <Textinput
+              name='nombre'
+              label='Nombre'
+              type='text'
+              placeholder='Nombre'
+              register={register}
+              error={errors.nombre}
+            />
 
-        <Textinput
-          label='Apellido'
-          register={register('apellido')}
-          type='text'
-          error={errors.apellido}
-          placeholder='Apellido'
-        />
+            <Textinput
+              name='apellido'
+              label='Apellido'
+              type='text'
+              placeholder='Apellido'
+              register={register}
+              error={errors.apellido}
+            />
 
-        <Textinput
-          label='Usuario'
-          register={register('username')}
-          type='text'
-          error={errors.username}
-          placeholder='Usuario'
-        />
+            <Textinput
+              name='username'
+              label='Usuario'
+              type='text'
+              placeholder='Usuario'
+              register={register}
+              error={errors.username}
+            />
 
-        <Textinput
-          name='password'
-          label='Contraseña'
-          type='password'
-          register={register}
-          error={errors.password}
-          placeholder='Contraseña'
-        />
+            {
+              (!activeUser) && (
+                <Textinput
+                  name='password'
+                  label='Contraseña'
+                  type='password'
+                  placeholder='Contraseña'
+                  register={register}
+                  error={errors.password}
+                />
+              )
+            }
 
-        <Textinput
-          name='correo'
-          label='Correo Electronico'
-          type='email'
-          register={register}
-          error={errors.correo}
-          placeholder='Correo Electronico'
-        />
+            <Textinput
+              name='email'
+              label='Correo'
+              type='email'
+              placeholder='Correo'
+              register={register}
+              error={errors.email}
+            />
 
-        <Textinput
-          name='telefono'
-          label='Telefono'
-          register={register}
-          error={errors.telefono}
-          placeholder='Telefono'
-        />
+            <Select
+              name='roles_id'
+              label='Roles'
+              options={roles}
+              register={register}
+              error={errors.roles_id}
+              placeholder='Seleccione un rol'
+            />
 
-        <SelectForm
-          register={register('seccional_id')}
-          title='Seccional'
-          error={errors.seccional_id}
-          options={seccional}
-        />
+            <Select
+              name='seccional_id'
+              label='Seccionales'
+              options={seccionales}
+              register={register}
+              error={errors.seccional_id}
+              placeholder='Seleccione una seccional'
+            />
 
-        <SelectForm
-          register={register('roles_id')}
-          title='Rol'
-          error={errors.roles_id}
-          options={roles}
-        />
-
-        <div className='ltr:text-right rtl:text-left'>
-          <button className='btn-dark items-center text-center py-2 px-6 rounded-lg'>Guardar</button>
-        </div>
-      </form>
-    </div>
+            <div className='ltr:text-right rtl:text-left'>
+              <Button type='submit' text='Guardar' className='btn-dark' isLoading={isSubmitting} />
+            </div>
+          </form>
+          )
+    }
+    </>
   )
 }

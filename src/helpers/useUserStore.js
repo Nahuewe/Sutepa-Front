@@ -1,27 +1,30 @@
-/* eslint-disable camelcase */
 import { useSelector, useDispatch } from 'react-redux'
-import { sutepaApi } from '../api'
-import { handleUser, onAddNewUser, onDeleteUser, onUpdateUser } from '../store/user'
 import { toast } from 'react-toastify'
-import { hadleShowModal } from '../store/layout'
+import { handleUser, onAddNewUser, onUpdateUser } from '@/store/user'
+import { handleShowEdit, handleShowModal } from '@/store/layout'
+import { sutepaApi } from '../api'
 
 export const useUserStore = () => {
-  const { users, activeUser } = useSelector(state => state.user)
+  const { users, paginate, activeUser } = useSelector(state => state.user)
   const dispatch = useDispatch()
 
-  // const startLoadingUsers = async () => {
-  //   try {
-  //     const { data } = await sutepaApi.get('/')
-  //     dispatch(handleUser(data.usuarios))registrar
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
-  // }
-
-  const startSavingUser = async ({ nombre, apellido, username, password, seccional_id, roles_id, telefono, correo }) => {
+  const startLoadingUsers = async (page) => {
     try {
-      const { data } = await sutepaApi.post('/registrar', { nombre, apellido, username, password, seccional_id, roles_id, telefono, correo })
-      dispatch(onAddNewUser(data.usuario))
+      const response = await sutepaApi.get(`/usuarios?page=${page}`)
+      const { data, meta } = response.data
+      dispatch(handleUser({ data, meta }))
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const startSavingUser = async (form) => {
+    try {
+      const response = await sutepaApi.post('/usuarios', form)
+      // const { data } = response.data
+      // dispatch(onAddNewUser(data))
+      startLoadingUsers()
+      dispatch(handleShowModal())
 
       toast.success('Usuario agregado con exito')
     } catch (error) {
@@ -29,12 +32,13 @@ export const useUserStore = () => {
     }
   }
 
-  const startUpdateUser = async ({ nombre, apellido, username, password, seccional_id, roles_id, telefono, correo }) => {
+  const startUpdateUser = async (form) => {
     try {
       const id = activeUser.id
-      const { data } = await sutepaApi.put(`/registrar/update/${id}`, { nombre, apellido, username, password, seccional_id, roles_id, telefono, correo })
-      dispatch(onUpdateUser(data.usuario))
-      dispatch(hadleShowModal(false))
+      const response = await sutepaApi.put(`/usuarios/${id}`, form)
+      const { data } = response.data
+      dispatch(onUpdateUser(data))
+      dispatch(handleShowEdit())
 
       toast.success('Usuario actualizado con exito')
     } catch (error) {
@@ -45,8 +49,8 @@ export const useUserStore = () => {
   const startDeleteUser = async () => {
     try {
       const id = activeUser.id
-      const { data } = await sutepaApi.delete(`/registrar/delete/${id}`)
-      dispatch(onDeleteUser(data.usuario))
+      await sutepaApi.delete(`/usuarios/${id}`)
+      startLoadingUsers()
 
       toast.success('Usuario desactivado con exito')
     } catch (error) {
@@ -54,14 +58,27 @@ export const useUserStore = () => {
     }
   }
 
+  const startSearchUser = async (search, page = 1) => {
+    try {
+      const response = await sutepaApi.get(`/usuarios/buscar/${search}?page=${page}`)
+      const { data, meta } = response.data
+      dispatch(handleUser({ data, meta }))
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   return {
     //* Propiedades
     users,
+    paginate,
     activeUser,
 
     //* Metodos
+    startLoadingUsers,
     startSavingUser,
     startDeleteUser,
-    startUpdateUser
+    startUpdateUser,
+    startSearchUser
   }
 }

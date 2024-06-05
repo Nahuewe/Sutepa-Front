@@ -312,7 +312,6 @@ function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
             label='Correo Electrónico'
             register={register}
             id='email'
-            className='minuscula'
             placeholder='Ingrese el correo electrónico'
             value={correoElectronico}
             onChange={handleChange(setCorreoElectronico)}

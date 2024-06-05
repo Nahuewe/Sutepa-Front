@@ -1,64 +1,48 @@
-import React, { Fragment } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
 import { Dialog, Transition } from '@headlessui/react'
+import React, { Fragment } from 'react'
 import Icon from '@/components/ui/Icon'
-import { hadleShowDeleteModal } from '../../../store/layout'
+import { useDispatch, useSelector } from 'react-redux'
+import { handleShowEdit } from '@/store/layout'
 
-export const DeleteModal = ({
-  activeModal,
-  onClose,
+const EditModal = ({
   noFade,
   disableBackdrop,
   className = 'max-w-xl',
+  children,
   footerContent,
   centered,
   scrollContent,
   themeClass = 'bg-slate-900 dark:bg-slate-800 dark:border-b dark:border-slate-700',
-  title = 'Basic Modal',
-  label = 'Basic Modal',
-  labelClass,
-  btnIcon,
-  message,
-  labelBtn = 'Aceptar',
-  btnFunction
+  title = 'Basic Modal'
 }) => {
-  const { showDeleteModal } = useSelector(state => state.layout)
   const dispatch = useDispatch()
+  const { showEdit } = useSelector(state => state.layout)
 
-  const closeModal = () => {
-    dispatch(hadleShowDeleteModal(false))
+  const onClose = () => {
+    dispatch(handleShowEdit())
   }
 
-  const aceptDelete = () => {
-    btnFunction()
-    dispatch(hadleShowDeleteModal(false))
-  }
-
-  const returnNull = () => {
+  if (typeof showEdit !== 'boolean') {
     return null
   }
 
   return (
     <>
-      <Transition appear show={showDeleteModal} as={Fragment}>
-        <Dialog
-          as='div'
-          className='relative z-[99999]'
-          onClose={!disableBackdrop ? closeModal : returnNull}
-        >
-          {!disableBackdrop && (
-            <Transition.Child
-              as={Fragment}
-              enter={noFade ? '' : 'duration-300 ease-out'}
-              enterFrom={noFade ? '' : 'opacity-0'}
-              enterTo={noFade ? '' : 'opacity-100'}
-              leave={noFade ? '' : 'duration-200 ease-in'}
-              leaveFrom={noFade ? '' : 'opacity-100'}
-              leaveTo={noFade ? '' : 'opacity-0'}
-            >
+      <Transition appear show={showEdit} as={Fragment}>
+        <Dialog as='div' className='relative z-[99999]' onClose={onClose}>
+          <Transition.Child
+            as={Fragment}
+            enter={noFade ? '' : 'duration-300 ease-out'}
+            enterFrom={noFade ? '' : 'opacity-0'}
+            enterTo={noFade ? '' : 'opacity-100'}
+            leave={noFade ? '' : 'duration-200 ease-in'}
+            leaveFrom={noFade ? '' : 'opacity-100'}
+            leaveTo={noFade ? '' : 'opacity-0'}
+          >
+            {!disableBackdrop && (
               <div className='fixed inset-0 bg-slate-900/50 backdrop-filter backdrop-blur-sm' />
-            </Transition.Child>
-          )}
+            )}
+          </Transition.Child>
 
           <div className='fixed inset-0 overflow-y-auto'>
             <div
@@ -77,7 +61,7 @@ export const DeleteModal = ({
               >
                 <Dialog.Panel
                   className={`w-full transform overflow-hidden rounded-md
-              bg-white dark:bg-slate-800 text-left align-middle shadow-xl transition-alll ${className}`}
+                bg-white dark:bg-slate-800 text-left align-middle shadow-xl transition-alll ${className}`}
                 >
                   <div
                     className={`relative overflow-hidden py-4 px-5 text-white flex justify-between  ${themeClass}`}
@@ -85,21 +69,16 @@ export const DeleteModal = ({
                     <h2 className='capitalize leading-6 tracking-wider font-medium text-base text-white'>
                       {title}
                     </h2>
-                    <button onClick={closeModal} className='text-[22px]'>
+                    <button onClick={onClose} className='text-[22px]'>
                       <Icon icon='heroicons-outline:x' />
                     </button>
                   </div>
                   <div
-                    className={`px-6 py-4 ${
+                    className={`px-6 py-8 ${
                       scrollContent ? 'overflow-y-auto max-h-[400px]' : ''
                     }`}
                   >
-                    {/* Content */}
-                    <p className='text-center mb-4'>{message}</p>
-                    <div className='flex justify-center gap-4'>
-                      <button className='btn inline-flex justify-center btn-danger px-12' onClick={closeModal}>Cancelar</button>
-                      <button className='btn inline-flex justify-center btn-success px-12' onClick={aceptDelete}>{labelBtn}</button>
-                    </div>
+                    {children}
                   </div>
                   {footerContent && (
                     <div className='px-4 py-3 flex justify-end space-x-3 border-t border-slate-100 dark:border-slate-700'>
@@ -115,3 +94,5 @@ export const DeleteModal = ({
     </>
   )
 }
+
+export default EditModal

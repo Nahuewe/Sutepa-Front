@@ -45,7 +45,7 @@ function LoginForm () {
         name='username'
         label='usuario'
         autoComplete='username'
-        className='h-[48px] minuscula'
+        className='h-[48px]'
         style={{ color: 'gray', border: 'none' }}
         placeholder='Usuario'
         register={register}
