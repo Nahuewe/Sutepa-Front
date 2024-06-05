@@ -91,6 +91,7 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
     if (agenciaId) {
       const response = await sutepaApi.get(`agencia/${agenciaId}`)
       const { data } = response.data
+      console.log(data)
       if (data && data.length > 0) {
         const domicilio = data[0].domicilio_trabajo || ''
         const telefono = data[0].telefono_laboral || ''

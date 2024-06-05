@@ -15,7 +15,7 @@ import Modal from '@/components/ui/Modal'
 import { useSucursalStore } from '../helpers/useSucursalStore'
 import { DeleteModal, SucursalForm } from '../components/sutepa/forms'
 import { hadleShowDeleteModal, hadleShowModal } from '../store/layout'
-import { setActiveSucursal } from '../store/sucursal'
+import { setactiveSeccional } from '../store/sucursal'
 import EditModal from '../components/sutepa/forms/EditModal'
 
 const roles = [
@@ -67,11 +67,11 @@ const COLUMNS = [
 ]
 
 export const Sucursales = ({ title = 'Listado de Roles' }) => {
-  const { sucursales, activeSucursal, startLoadingSucursales, startDeleteSucursal, startSavingSucursal, startUpdateSucursal } = useSucursalStore()
+  const { seccionales, activeSeccional, startGetSeccional, startDeleteSeccional, startSavingSeccional, startUpdateSeccional } = useSucursalStore()
   const dispatch = useDispatch()
 
   const columns = useMemo(() => COLUMNS, [])
-  const data = useMemo(() => sucursales, [sucursales])
+  const data = useMemo(() => seccionales, [seccionales])
 
   const tableInstance = useTable(
     {
@@ -112,17 +112,17 @@ export const Sucursales = ({ title = 'Listado de Roles' }) => {
   const { globalFilter, pageIndex, pageSize } = state
 
   const deleteSucursal = (id) => {
-    dispatch(setActiveSucursal(id))
+    dispatch(setactiveSeccional(id))
     dispatch(hadleShowDeleteModal(true))
   }
 
   const updateSucursal = (id) => {
-    dispatch(setActiveSucursal(id))
+    dispatch(setactiveSeccional(id))
     dispatch(hadleShowModal(true))
   }
 
   useEffect(() => {
-    startLoadingSucursales()
+    startGetSeccional()
   }, [])
 
   return (
@@ -139,7 +139,7 @@ export const Sucursales = ({ title = 'Listado de Roles' }) => {
               noFade
               disableBackdrop
               className='max-w-xl'
-              children={<SucursalForm startFn={startSavingSucursal} />}
+              children={<SucursalForm startFn={startSavingSeccional} />}
               footerContent={false}
               centered
               scrollContent
@@ -156,7 +156,7 @@ export const Sucursales = ({ title = 'Listado de Roles' }) => {
               noFade
               disableBackdrop
               className='max-w-xl'
-              children={<SucursalForm sucursal={activeSucursal?.nombre} startFn={startUpdateSucursal} />}
+              children={<SucursalForm sucursal={activeSeccional?.nombre} startFn={startUpdateSucursal} />}
               footerContent={false}
               centered
               scrollContent
@@ -183,7 +183,7 @@ export const Sucursales = ({ title = 'Listado de Roles' }) => {
               labelClass='btn inline-flex justify-center btn-success px-16'
               message='¿Quieres eliminar esta sucursal?'
               labelBtn='Aceptar'
-              btnFunction={startDeleteSucursal}
+              btnFunction={startDeleteSeccional}
             />
 
           </div>

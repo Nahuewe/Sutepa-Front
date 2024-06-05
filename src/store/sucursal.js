@@ -2,37 +2,37 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 export const sucursalSlice = createSlice({
-  name: 'sucursal',
+  name: 'seccional',
   initialState: {
-    sucursales: [],
-    activeSucursal: null
+    seccionales: [],
+    activeSeccional: null
   },
   reducers: {
-    handleSucursal: (state, { payload }) => {
-      state.sucursales = payload
-      state.activeSucursal = null
+    handleSeccional: (state, { payload }) => {
+      state.seccionales = payload
+      state.activeSeccional = null
     },
-    onAddNewSucursal: (state, { payload }) => {
-      state.sucursales.push(payload)
-      state.activeSucursal = null
+    onAddNewSeccional: (state, { payload }) => {
+      state.seccionales.push(payload)
+      state.activeSeccional = null
     },
-    onDeleteSucursal: (state, { payload }) => {
-      state.sucursales = state.sucursales.filter((sucursal) => {
-        if (sucursal.id != payload) return sucursal
+    onDeleteSeccional: (state, { payload }) => {
+      state.seccionales = state.seccionales.filter((seccional) => {
+        if (seccional.id != payload) return seccional
       })
-      state.activeSucursal = null
+      state.activeSeccional = null
     },
-    setActiveSucursal: (state, { payload }) => {
-      state.sucursales.filter((sucursal) => {
-        if (sucursal.id == payload) {
-          state.activeSucursal = sucursal
+    setactiveSeccional: (state, { payload }) => {
+      state.seccionales.filter((seccional) => {
+        if (seccional.id == payload) {
+          state.activeSeccional = seccional
         }
       })
     },
-    onUpdateSucursal: (state, { payload }) => {
-      state.sucursales = state.sucursales.map((sucursal) => {
-        if (sucursal.id == payload.id) { return payload }
-        return sucursal
+    onUpdatesSeccional: (state, { payload }) => {
+      state.seccionales = state.seccionales.map((seccional) => {
+        if (seccional.id == payload.id) { return payload }
+        return seccional
       })
       state.activeSucursal = null
     }
@@ -40,11 +40,11 @@ export const sucursalSlice = createSlice({
 })
 
 export const {
-  handleSucursal,
-  onAddNewSucursal,
-  onDeleteSucursal,
-  setActiveSucursal,
-  onUpdateSucursal
+  handleSeccional,
+  onAddNewSeccional,
+  onDeleteSeccional,
+  setactiveSeccional,
+  onUpdatesSeccional
 } = sucursalSlice.actions
 
 export default sucursalSlice.reducer

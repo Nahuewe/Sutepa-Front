@@ -61,7 +61,7 @@ const Sidebar = ({ user }) => {
           scrollableNodeProps={{ ref: scrollableNodeRef }}
         >
           {/* Opciones de menu */}
-          <Navmenu menus={(user.sucursal === 1) ? menuItems : menuNormal} />
+          <Navmenu menus={(user.seccional === 1) ? menuItems : menuNormal} />
         </SimpleBar>
       </div>
     </div>

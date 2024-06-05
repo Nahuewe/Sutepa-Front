@@ -3,7 +3,7 @@ import Icon from '@/components/ui/Icon'
 import { useAuthStore } from '../../../../helpers'
 
 const EstadisticasUsuario = ({ ingresos }) => {
-  const { user: { sucursal } } = useAuthStore()
+  const { user: { seccional } } = useAuthStore()
 
   const countIngresosPorEstado = (data) => {
     const totals = {
@@ -41,7 +41,7 @@ const EstadisticasUsuario = ({ ingresos }) => {
 
   const statistics = []
 
-  if (sucursal === 1) {
+  if (seccional === 3) {
     statistics.push({
       title: `Usuarios ${nombresEstados[1]}`,
       count: totalsByEstado[1] || 0,

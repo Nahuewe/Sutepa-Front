@@ -11,35 +11,41 @@ import { useNavigate } from 'react-router-dom'
 import { ShowIngreso } from '@/components/sutepa/tables/ShowIngreso'
 import { DeleteModal } from '@/components/sutepa/forms/DeleteModal'
 import { hadleShowDeleteModal } from '@/store/layout'
+import { sutepaApi } from '../../api'
 
 export const Ingreso = ({ title = 'Lista de Afiliados' }) => {
   const { user: { seccional } } = useAuthStore()
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  const { ingresos, activeIngreso, startDeleteIngreso, startGetIngreso } = useIngresoStore()
+  const { activeIngreso, startDeleteIngreso } = useIngresoStore()
 
+  const [personas, setPersonas] = useState([])
   const [idIngreso, setIdIngreso] = useState()
 
   const COLUMNS = useMemo(() => [
     {
       Header: 'Nombre',
-      accessor: 'persona.nombre'
+      accessor: 'nombre'
     },
     {
       Header: 'Apellido',
-      accessor: 'persona.apellido'
+      accessor: 'apellido'
     },
     {
-      Header: 'DNI',
-      accessor: 'persona.dni'
+      Header: 'CUIL',
+      accessor: 'cuil'
+    },
+    {
+      Header: 'Correo',
+      accessor: 'email'
     },
     {
       Header: 'UGL/Nivel Central',
-      accessor: 'persona.ugl'
+      accessor: 'ugl'
     },
     {
       Header: 'Seccional',
-      accessor: 'persona.seccional'
+      accessor: 'seccional'
     },
     {
       Header: 'Estado',
@@ -85,17 +91,8 @@ export const Ingreso = ({ title = 'Lista de Afiliados' }) => {
     }
   ], [seccional])
 
-  const data = useMemo(() =>
-    ingresos?.map((ingreso) => ({
-      ...ingreso,
-      persona: {
-        nombre: ingreso.persona?.nombre, // Access nested properties safely
-        apellido: ingreso.persona?.apellido
-        // Add other persona properties here
-      }
-    })) || [],
-  [ingresos]
-  )
+  const data = useMemo(() => personas.data || [], [personas])
+
   console.log(data)
 
   const tableInstance = useTable(
@@ -134,7 +131,7 @@ export const Ingreso = ({ title = 'Lista de Afiliados' }) => {
 
   const editIngreso = (id) => {
     dispatch(setActiveIngreso(id))
-    navigate(`/personas/editar/${id}`)
+    navigate(`/personas/${id}`)
   }
 
   const showIngreso = (id) => {
@@ -147,7 +144,17 @@ export const Ingreso = ({ title = 'Lista de Afiliados' }) => {
   }
 
   useEffect(() => {
-    startGetIngreso()
+    console.log('ingresos')
+    const fetchPersonas = async () => {
+      try {
+        console.log('ingresos2')
+        const response = await sutepaApi.get('/personas')
+        setPersonas(response.data)
+      } catch (error) {
+        console.error('Error al obtener los datos:', error)
+      }
+    }
+    fetchPersonas()
   }, [])
 
   return (
@@ -323,6 +330,5 @@ export const Ingreso = ({ title = 'Lista de Afiliados' }) => {
           </Card>
           )}
     </>
-
   )
 }

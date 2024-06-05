@@ -1,51 +1,51 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { sutepaApi } from '../api'
-import { handleSucursal, onAddNewSucursal, onDeleteSucursal, onUpdateSucursal } from '../store/sucursal'
+import { handleSeccional, onAddNewSeccional, onDeleteSeccional, onUpdatesSeccional } from '../store/sucursal'
 import { toast } from 'react-toastify'
 
 export const useSucursalStore = () => {
   const dispatch = useDispatch()
-  const { sucursales, activeSucursal } = useSelector(state => state.sucursal)
+  const { seccionales, activeSeccional } = useSelector(state => state.seccional)
 
-  const startSavingSucursal = async ({ nombre }) => {
+  const startSavingSeccional = async ({ nombre }) => {
     try {
-      const { data } = await sutepaApi.post('/sucursales/create', { nombre })
-      dispatch(onAddNewSucursal(data.sucursal))
+      const { data } = await sutepaApi.post('/seccional/create', { nombre })
+      dispatch(onAddNewSeccional(data.seccional))
 
-      toast.success('Sucursal agregada con exito')
+      toast.success('Seccional agregada con exito')
     } catch (error) {
       toast.error('No se pudo agregar los datos')
     }
   }
 
-  const startLoadingSucursales = async () => {
+  const startGetSeccional = async () => {
     try {
-      const { data } = await sutepaApi.get('/seccionales')
-      dispatch(handleSucursal(data.sucursales))
+      const { data } = await sutepaApi.get('/seccional')
+      dispatch(handleSeccional(data.seccionales))
     } catch (error) {
       console.log(error)
     }
   }
 
-  const startDeleteSucursal = async () => {
+  const startDeleteSeccional = async () => {
     try {
-      const { id } = activeSucursal
-      //   const { data } = await sutepaApi.delete(`/sucursales/delete/${id}`)
-      dispatch(onDeleteSucursal(id))
+      const { id } = activeSeccional
+      //   const { data } = await sutepaApi.delete(`/seccional/delete/${id}`)
+      dispatch(onDeleteSeccional(id))
 
-      toast.success('Sucursal eliminada con exito')
+      toast.success('Seccional eliminada con exito')
     } catch (error) {
       toast.error('No se pudo modificar los datos')
     }
   }
 
-  const startUpdateSucursal = async ({ nombre }) => {
+  const startUpdateSeccional = async ({ nombre }) => {
     try {
-      const { id } = activeSucursal
-      const { data } = await sutepaApi.put(`/sucursales/update/${id}`, { nombre })
-      dispatch(onUpdateSucursal(data.sucursal))
+      const { id } = activeSeccional
+      const { data } = await sutepaApi.put(`/seccional/update/${id}`, { nombre })
+      dispatch(onUpdatesSeccional(data.seccional))
 
-      toast.success('Sucursal actualizada con exito')
+      toast.success('Seccional actualizada con exito')
     } catch (error) {
       toast.error('No se pudo modificar los datos')
     }
@@ -53,13 +53,13 @@ export const useSucursalStore = () => {
 
   return {
     //* Propiedades
-    sucursales,
-    activeSucursal,
+    seccionales,
+    activeSeccional,
 
     //* Metodos
-    startSavingSucursal,
-    startLoadingSucursales,
-    startDeleteSucursal,
-    startUpdateSucursal
+    startSavingSeccional,
+    startGetSeccional,
+    startDeleteSeccional,
+    startUpdateSeccional
   }
 }

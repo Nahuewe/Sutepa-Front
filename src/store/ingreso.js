@@ -1,12 +1,10 @@
-/* eslint-disable eqeqeq */
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
-  ingresos: [],
-  persona: {},
-  domicilio: {},
-  datos_laborales: {},
-  obra_social: {},
+  persona: [],
+  domicilio: [],
+  datos_laborales: [],
+  obra_social: [],
   familiares: [],
   documentacion: [],
   subsidios: [],
@@ -82,10 +80,10 @@ export const ingresoSlice = createSlice({
       state.activeIngreso = null
     },
     cleanIngreso: (state) => {
-      state.persona = {}
-      state.domicilio = {}
-      state.datos_laborales = {}
-      state.obra_social = {}
+      state.persona = []
+      state.domicilio = []
+      state.datos_laborales = []
+      state.obra_social = []
       state.familiares = []
       state.documentacion = []
       state.subsidios = []

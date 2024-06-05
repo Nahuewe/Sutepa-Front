@@ -63,7 +63,7 @@ const MobileMenu = ({ className = 'custom-class', user }) => {
         scrollableNodeProps={{ ref: scrollableNodeRef }}
       >
         {/* Opciones de menu */}
-        <Navmenu menus={(user.sucursal === 1) ? menuItems : menuNormal} />
+        <Navmenu menus={(user.seccional === 3) ? menuItems : menuNormal} />
       </SimpleBar>
     </div>
   )

@@ -293,15 +293,20 @@ function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
             />
           </div>
 
-          <Numberinput
-            label='CUIL'
-            register={register}
-            id='cuil'
-            placeholder='Ingrese el CUIL'
-            value={cuil}
-            onChange={handleCuilChange}
-            disabled={disabled}
-          />
+          <div>
+            <label htmlFor='default-picker' className='form-label'>
+              CUIL
+              <strong className='obligatorio'>(*)</strong>
+            </label>
+            <Numberinput
+              register={register}
+              id='cuil'
+              placeholder='Ingrese el CUIL'
+              value={cuil}
+              onChange={handleCuilChange}
+              disabled={disabled}
+            />
+          </div>
 
           <Textinput
             label='Correo Electrónico'

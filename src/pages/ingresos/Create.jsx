@@ -14,7 +14,7 @@ import SubsidioData from '@/components/forms/SubsidioData'
 
 export const Create = () => {
   const navigate = useNavigate()
-  const { activeIngreso, startSavingIngreso, startUpdateIngreso } = useIngresoStore()
+  const { activeIngreso, startSavingIngreso, startUpdateIngreso, startGetIngreso } = useIngresoStore()
 
   const FormValidationSchema = yup.object().shape({
     legajo: yup.string().required('El legajo es requerido'),
@@ -72,15 +72,15 @@ export const Create = () => {
     resolver: yupResolver(FormValidationSchema)
   })
 
-  const onSubmit = (ingreso) => {
+  const onSubmit = async (ingreso) => {
     if (!activeIngreso) {
-      startSavingIngreso(ingreso)
+      await startSavingIngreso(ingreso)
     } else {
-      startUpdateIngreso(ingreso)
+      await startUpdateIngreso(ingreso)
     }
 
     reset()
-    navigate('/afiliados')
+    // navigate('/afiliados')
   }
 
   useEffect(() => {
@@ -90,6 +90,10 @@ export const Create = () => {
       })
     }
   }, [activeIngreso, setValue])
+
+  useEffect(() => {
+    startGetIngreso()
+  }, [])
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className='space-y-4'>

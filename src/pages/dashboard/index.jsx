@@ -9,7 +9,7 @@ import { useEffect } from 'react'
 
 const Dashboard = () => {
   const { ingresos, startGetIngreso } = useIngresoStore()
-  const { user: { sucursal } } = useAuthStore()
+  const { user: { seccional } } = useAuthStore()
 
   useEffect(() => {
     startGetIngreso()
@@ -20,7 +20,7 @@ const Dashboard = () => {
       <Card title='SUTEPA'>
         <div className='flex justify-between'>
           <p className='text-lg mx-0 my-auto hidden md:flex'>Dashboard</p>
-          {sucursal === 1 && (
+          {seccional === 3 && (
             <div className='flex items-center'>
               <button className='bg-slate-300 dark:bg-slate-900 inline-block text-center px-6 py-2 rounded-lg'>
                 Exportar
