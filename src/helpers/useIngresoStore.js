@@ -8,6 +8,10 @@ export const useIngresoStore = () => {
   const dispatch = useDispatch()
   const { ingresos, familiares, documentacion, subsidios, persona, domicilio, datos_laborales, obra_social, activeIngreso } = useSelector(state => state.ingreso)
 
+  if (!Array.isArray(ingresos)) {
+    console.error('Error: state.ingresos is not an array')
+  }
+
   const startGetIngreso = async () => {
     try {
       const { data } = await sutepaApi.get('/personas')

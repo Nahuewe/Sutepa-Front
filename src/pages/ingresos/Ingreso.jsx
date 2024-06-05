@@ -13,7 +13,7 @@ import { DeleteModal } from '@/components/sutepa/forms/DeleteModal'
 import { hadleShowDeleteModal } from '@/store/layout'
 
 export const Ingreso = ({ title = 'Lista de Afiliados' }) => {
-  const { user: { sucursal } } = useAuthStore()
+  const { user: { seccional } } = useAuthStore()
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const { ingresos, activeIngreso, startDeleteIngreso, startGetIngreso } = useIngresoStore()
@@ -73,7 +73,7 @@ export const Ingreso = ({ title = 'Lista de Afiliados' }) => {
               <Icon icon='heroicons:pencil-square' />
             </button>
           </Tooltip>
-          {sucursal === 1 && (
+          {seccional === 3 && (
             <Tooltip content='Eliminar' placement='top' arrow animation='shift-away' theme='danger'>
               <button id={value} className='action-btn' type='button' onClick={deleteSolicitud}>
                 <Icon icon='heroicons:trash' />
@@ -83,7 +83,7 @@ export const Ingreso = ({ title = 'Lista de Afiliados' }) => {
         </div>
       )
     }
-  ], [sucursal])
+  ], [seccional])
 
   const data = useMemo(() =>
     ingresos?.map((ingreso) => ({
@@ -162,7 +162,7 @@ export const Ingreso = ({ title = 'Lista de Afiliados' }) => {
               <h4 className='card-title'>{title}</h4>
               <div className='flex flex-wrap gap-4'>
                 <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
-                {sucursal === 1 && (
+                {seccional === 3 && (
                   <button className='bg-slate-300 dark:bg-slate-900 inline-block text-center px-6 py-2 rounded-lg'>
                     Exportar
                   </button>

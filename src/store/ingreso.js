@@ -23,16 +23,21 @@ export const ingresoSlice = createSlice({
     },
     onAddNewIngreso: (state, { payload }) => {
       state.ingresos = [...state.ingresos, payload]
-      state.activeIngreso = null
     },
     onUpdateIngreso: (state, { payload }) => {
       state.ingresos = state.ingresos.map((ingreso) => {
         if (ingreso.id == payload.id) {
-          return payload
+          return ingreso
         }
-        return ingreso
+        return payload
       })
       state.activeIngreso = null
+    },
+    onDeleteIngreso: (state, { payload }) => {
+      state.ingresos = state.ingresos.filter((ingreso) => ingreso.id !== payload)
+    },
+    setActiveIngreso: (state, { payload }) => {
+      state.activeIngreso = state.ingresos.find((ingreso) => ingreso.id === payload)
     },
     onAddFamiliar: (state, { payload }) => {
       const existe = state.familiares.find((familiar) => familiar.id === payload.id)
@@ -58,14 +63,14 @@ export const ingresoSlice = createSlice({
         state.subsidios = [...state.subsidios, payload]
       }
     },
+    onDeleteSubsidio: (state, { payload }) => {
+      state.subsidios = state.subsidios.filter((subsidio) => subsidio.id !== payload)
+    },
     updatePersona: (state, { payload }) => {
       state.persona = payload
     },
     updateDomicilio: (state, { payload }) => {
       state.domicilio = payload
-    },
-    onDeleteSubsidio: (state, { payload }) => {
-      state.subsidios = state.subsidios.filter((subsidio) => subsidio.id !== payload)
     },
     updateObraSocial: (state, { payload }) => {
       state.obra_social = payload
@@ -73,24 +78,17 @@ export const ingresoSlice = createSlice({
     updateDatosLaborales: (state, { payload }) => {
       state.datos_laborales = payload
     },
-    setActiveIngreso: (state, { payload }) => {
-      state.activeIngreso = state.ingresos.find((ingreso) => ingreso.id === payload)
-    },
-    onDeleteIngreso: (state, { payload }) => {
-      state.ingresos = state.ingresos.filter((ingreso) => ingreso.id !== payload)
-    },
     cleanActiveIngreso: (state) => {
       state.activeIngreso = null
     },
     cleanIngreso: (state) => {
-      state.ingresos = []
-      state.persona = []
-      state.domicilio = []
-      state.datos_laborales = []
-      state.obra_social = []
-      state.familiares = null
-      state.documentacion = null
-      state.subsidios = null
+      state.persona = {}
+      state.domicilio = {}
+      state.datos_laborales = {}
+      state.obra_social = {}
+      state.familiares = []
+      state.documentacion = []
+      state.subsidios = []
     }
   }
 })

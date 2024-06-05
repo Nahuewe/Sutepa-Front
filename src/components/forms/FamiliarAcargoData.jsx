@@ -9,6 +9,7 @@ import { Icon } from '@iconify/react'
 import { Tooltip } from 'flowbite-react'
 import { sutepaApi } from '../../api'
 import DatePicker from '../ui/DatePicker'
+import moment from 'moment'
 
 const initialForm = {
   id: null,
@@ -64,7 +65,7 @@ function FamiliarAcargoData ({ register, disabled, watch }) {
 
   const handleDateChange = date => {
     setPicker(date)
-    const formattedDate = date[0].toLocaleDateString('en')
+    const formattedDate = date ? moment(date).format('YYYY-MM-DD') : null
     setFormData(prevData => ({ ...prevData, fecha_nacimiento: formattedDate }))
   }
 

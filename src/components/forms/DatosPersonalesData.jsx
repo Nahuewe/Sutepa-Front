@@ -76,7 +76,7 @@ function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
 
   useEffect(() => {
     handleUpdatePersona()
-  }, [picker, picker2, legajo, dni, cuil, correoElectronico, telefono, watch, dispatch])
+  }, [picker, picker2, legajo, dni, cuil, correoElectronico, telefono, watch('nombre'), watch('apellido'), watch('sexo_id'), watch('estado_civil_id'), watch('tipo_documento'), watch('nacionalidad_id')])
 
   const handleDateChange = (date, field) => {
     if (field === 'fecha_afiliacion') {
@@ -143,14 +143,13 @@ function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
   const handleLegajoChange = (e) => {
     const value = e.target.value
     const cleanedValue = value.replace(/[^\d]/g, '')
+
+    // Limitar la longitud a 5 caracteres
     const maxLength = 5
+    const legajoLimited = cleanedValue.slice(0, maxLength)
 
-    if (cleanedValue.length > maxLength) {
-      return
-    }
-
-    setLegajo(cleanedValue)
-    setValue('legajo', cleanedValue)
+    setLegajo(legajoLimited)
+    setValue('legajo', legajoLimited)
   }
 
   const handleSelectChange = (field, e) => {

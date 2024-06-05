@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import { useIngresoStore } from '@/helpers'
@@ -11,14 +11,10 @@ import ObraSocialAfiliadoData from '@/components/forms/ObraSocialAfiliadoData'
 import FamiliarAcargoData from '@/components/forms/FamiliarAcargoData'
 import DocumentacionAdicionalData from '@/components/forms/DocumentacionAdicionalData'
 import SubsidioData from '@/components/forms/SubsidioData'
-import HistorialCambios from '@/components/forms/HistorialCambios'
-import { useSelector } from 'react-redux'
 
 export const Create = () => {
   const navigate = useNavigate()
   const { activeIngreso, startSavingIngreso, startUpdateIngreso } = useIngresoStore()
-  const { user } = useSelector(state => state.auth)
-  const [cambios, setCambios] = useState([])
 
   const FormValidationSchema = yup.object().shape({
     legajo: yup.string().required('El legajo es requerido'),
@@ -76,19 +72,11 @@ export const Create = () => {
     resolver: yupResolver(FormValidationSchema)
   })
 
-  const onSubmit = (data) => {
-    const fechaCambio = new Date().toLocaleString()
-    const nuevoCambio = {
-      fecha_cambio: fechaCambio,
-      estado: activeIngreso ? 'Actualización' : 'Nuevo Ingreso',
-      usuario: user
-    }
-    setCambios([...cambios, nuevoCambio])
-
+  const onSubmit = (ingreso) => {
     if (!activeIngreso) {
-      startSavingIngreso(data)
+      startSavingIngreso(ingreso)
     } else {
-      startUpdateIngreso(data)
+      startUpdateIngreso(ingreso)
     }
 
     reset()
@@ -118,8 +106,6 @@ export const Create = () => {
       <DocumentacionAdicionalData register={register} setValue={setValue} />
 
       <SubsidioData register={register} setValue={setValue} />
-
-      <HistorialCambios cambios={cambios} />
 
       <div className='flex justify-end gap-4 mt-8'>
         <div className='ltr:text-right rtl:text-left'>

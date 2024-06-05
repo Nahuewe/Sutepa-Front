@@ -46,25 +46,26 @@ function SubsidioData ({ disabled }) {
   }
 
   const handleDateChange = (date, field) => {
+    const formattedDate = moment(date[0]).format('YYYY-MM-DD HH:mm:ss')
     setFormData({
       ...formData,
-      [field]: date[0]
+      [field]: formattedDate
     })
-    setValue(field, date[0])
+    setValue(field, formattedDate)
     if (field === 'fecha_solicitud') {
       setPicker(date)
-      setValue(field, date[0])
+      setValue(field, formattedDate)
     } else if (field === 'fecha_otorgamiento') {
       setPicker2(date)
-      setValue(field, date[0])
+      setValue(field, formattedDate)
     }
   }
 
   const handleEdit = (subsidio) => {
     setFormData({
       ...subsidio,
-      fecha_solicitud: picker ? moment(picker[0]).format('YYYY-MM-DD') : null,
-      fecha_otorgamiento: picker2 ? moment(picker2[0]).format('YYYY-MM-DD') : null
+      fecha_solicitud: subsidio.fecha_solicitud ? moment(subsidio.fecha_solicitud).format('YYYY-MM-DD HH:mm:ss') : null,
+      fecha_otorgamiento: subsidio.fecha_otorgamiento ? moment(subsidio.fecha_otorgamiento).format('YYYY-MM-DD HH:mm:ss') : null
     })
     setEditingSubsidioId(subsidio.id)
     setIsEditing(true)
@@ -72,8 +73,8 @@ function SubsidioData ({ disabled }) {
     setPicker2(new Date(subsidio.fecha_otorgamiento))
 
     setValue('tipo_subsidio_id', subsidio.tipo_subsidio_id)
-    setValue('fecha_solicitud', subsidio.fecha_solicitud)
-    setValue('fecha_otorgamiento', subsidio.fecha_otorgamiento)
+    setValue('fecha_solicitud', subsidio.fecha_solicitud ? moment(subsidio.fecha_solicitud).format('YYYY-MM-DD HH:mm:ss') : '')
+    setValue('fecha_otorgamiento', subsidio.fecha_otorgamiento ? moment(subsidio.fecha_otorgamiento).format('YYYY-MM-DD HH:mm:ss') : '')
     setValue('observaciones', subsidio.observaciones)
   }
 
@@ -113,7 +114,7 @@ function SubsidioData ({ disabled }) {
   function addItem () {
     const newSubsidio = {
       ...formData,
-      fecha_carga: new Date().toLocaleDateString(),
+      fecha_carga: new Date().format('YYYY-MM-DD HH:mm:ss'),
       id: isEditing ? editingSubsidioId : Date.now(),
       usuario_carga: user.nombre
     }
