@@ -1,7 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
 import { handleAfiliado, onDeleteAfiliado, onUpdateAfiliado } from '@/store/afiliado'
-import { handleShowEdit } from '@/store/layout'
 import { sutepaApi } from '../api'
 
 export const useAfiliadoStore = () => {
@@ -18,13 +17,12 @@ export const useAfiliadoStore = () => {
     }
   }
 
-  const startUpdateAfiliado = async (form) => {
+  const startUpdateAfiliado = async () => {
     try {
       const { id } = activeAfiliado
-      const response = await sutepaApi.put(`/personas/${id}`, form)
+      const response = await sutepaApi.put(`/personas/${id}`)
       const { data } = response
       dispatch(onUpdateAfiliado(data))
-      dispatch(handleShowEdit())
 
       toast.success('Afiliado editada con exito')
     } catch (error) {

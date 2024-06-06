@@ -37,7 +37,7 @@ const columns = [
   },
   {
     label: 'Estado',
-    field: 'deletedAt',
+    field: 'estado',
     Cell: ({ cell }) => (
       <span className='block w-full'>
         <span
@@ -71,9 +71,13 @@ export const Ingreso = () => {
     startSearchAfiliado
   } = useAfiliadoStore()
 
+  const showIngreso = (id) => {
+    dispatch(setActiveAfiliado(id))
+  }
+
   function onEdit (id) {
     dispatch(setActiveAfiliado(id))
-    navigate(`/personas/${id}`)
+    navigate(`/afiliados/${id}`)
   }
 
   function onDelete (id) {
@@ -158,8 +162,28 @@ export const Ingreso = () => {
                               <td className='table-td'>{afiliado.email}</td>
                               <td className='table-td'>{afiliado.ugl}</td>
                               <td className='table-td'>{afiliado.seccional}</td>
-                              <td className='table-td'>{afiliado.estado}</td>
+                              <td className='table-td'>
+                                <span
+                                  className={`inline-block px-3 min-w-[90px] text-center py-1 rounded-full bg-opacity-25 ${afiliado.estado === 'ACTIVO'
+                                      ? 'text-green-800 bg-green-200 dark:text-green-200 dark:bg-green-700'
+                                      : 'text-orange-800 bg-orange-200 dark:text-orange-200 dark:bg-orange-700'
+                                    }`}
+                                >
+                                  {afiliado.estado === 'ACTIVO' ? 'ACTIVO' : 'INACTIVO'}
+                                </span>
+                              </td>
                               <td className='table-td flex justify-start gap-2'>
+                                {/* Botones de acción */}
+                                <Tooltip content='Ver' placement='top' arrow animation='shift-away'>
+                                  <button className='bg-indigo-500 text-white p-2 rounded-lg hover:bg-blue-700' onClick={() => showIngreso(afiliado.id)}>
+                                    <svg xmlns='http://www.w3.org/2000/svg' className='icon icon-tabler icon-tabler-eye' width='24' height='24' viewBox='0 0 24 24' strokeWidth='1.5' stroke='#ffffff' fill='none' strokeLinecap='round' strokeLinejoin='round'>
+                                      <path stroke='none' d='M0 0h24v24H0z' fill='none' />
+                                      <path d='M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0' />
+                                      <path d='M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6' />
+                                    </svg>
+                                  </button>
+                                </Tooltip>
+
                                 <Tooltip content='Editar' placement='top' arrow animation='shift-away'>
                                   <button className='bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-700' onClick={() => onEdit(afiliado.id)}>
                                     <svg xmlns='http://www.w3.org/2000/svg' className='icon icon-tabler icon-tabler-pencil' width='24' height='24' viewBox='0 0 24 24' strokeWidth='2' stroke='currentColor' fill='none' strokeLinecap='round' strokeLinejoin='round'>

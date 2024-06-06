@@ -1,12 +1,12 @@
-import Textinput from '@/components/ui/Textinput'
+import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
-import { useEffect, useState } from 'react'
+import Textinput from '@/components/ui/Textinput'
 import Select from '@/components/ui/Select'
-import { useGetParameters } from '@/helpers'
 import Button from '@/components/ui/Button'
 import Loading from '@/components/Loading'
+import { useGetParameters } from '@/helpers'
 
 const FormValidationSaving = yup
   .object({
@@ -14,7 +14,7 @@ const FormValidationSaving = yup
     apellido: yup.string().required('El apellido es requerido'),
     username: yup.string().required('El usuario es requerido'),
     password: yup.string().required('La contraseña es requerida'),
-    email: yup.string().nullable(),
+    correo: yup.string().nullable(),
     telefono: yup.string().nullable(),
     roles_id: yup.string().notOneOf([''], 'Debe seleccionar un rol'),
     seccional_id: yup.string().notOneOf([''], 'Debe seleccionar una seccional')
@@ -25,13 +25,23 @@ const FormValidationUpdate = yup
   .object({
     nombre: yup.string().required('El nombre es requerido'),
     apellido: yup.string().required('El apellido es requerido'),
-    username: yup.string().required('El usuario es requerido'),
-    email: yup.string().nullable(),
+    username: yup.string().nullable(),
+    password: yup.string().nullable(),
+    correo: yup.string().nullable(),
     telefono: yup.string().nullable(),
     roles_id: yup.string().notOneOf([''], 'Debe seleccionar un rol'),
     seccional_id: yup.string().notOneOf([''], 'Debe seleccionar una seccional')
   })
   .required()
+
+const generateUsername = (nombre, apellido) => {
+  if (!nombre || !apellido) return ''
+
+  const firstLetterOfFirstName = nombre.trim().charAt(0).toLowerCase()
+  const cleanedLastName = apellido.trim().toLowerCase().split(' ')[0] // Toma solo el primer apellido
+
+  return `${firstLetterOfFirstName}${cleanedLastName}`
+}
 
 export const UserForm = ({ fnAction, activeUser = null }) => {
   const [roles, setRoles] = useState([])
@@ -43,10 +53,22 @@ export const UserForm = ({ fnAction, activeUser = null }) => {
     register,
     formState: { errors, isSubmitting },
     handleSubmit,
-    setValue
+    setValue,
+    watch
   } = useForm({
     resolver: yupResolver(activeUser ? FormValidationUpdate : FormValidationSaving)
   })
+
+  const nombre = watch('nombre')
+  const apellido = watch('apellido')
+
+  useEffect(() => {
+    // Generar y establecer el nombre de usuario automáticamente
+    if (nombre && apellido) {
+      const newUsername = generateUsername(nombre, apellido)
+      setValue('username', newUsername)
+    }
+  }, [nombre, apellido, setValue])
 
   const onSubmit = async (data) => {
     await fnAction(data)
@@ -75,11 +97,12 @@ export const UserForm = ({ fnAction, activeUser = null }) => {
 
   return (
     <>
-      {
-      isLoading
-        ? <Loading />
+      {isLoading
+        ? (
+          <Loading />
+          )
         : (
-          <form onSubmit={handleSubmit(onSubmit)} className='space-y-4 '>
+          <form onSubmit={handleSubmit(onSubmit)} className='space-y-4'>
             <Textinput
               name='nombre'
               label='Nombre'
@@ -107,26 +130,30 @@ export const UserForm = ({ fnAction, activeUser = null }) => {
               error={errors.username}
             />
 
-            {
-              (!activeUser) && (
-                <Textinput
-                  name='password'
-                  label='Contraseña'
-                  type='password'
-                  placeholder='Contraseña'
-                  register={register}
-                  error={errors.password}
-                />
-              )
-            }
+            <Textinput
+              name='password'
+              label='Contraseña'
+              type='password'
+              placeholder='Contraseña'
+              register={register}
+              error={errors.password}
+            />
 
             <Textinput
-              name='email'
+              name='correo'
               label='Correo'
               type='email'
               placeholder='Correo'
               register={register}
-              error={errors.email}
+              error={errors.correo}
+            />
+
+            <Textinput
+              name='telefono'
+              label='Telefono'
+              placeholder='Telefono'
+              register={register}
+              error={errors.telefono}
             />
 
             <Select
@@ -151,8 +178,7 @@ export const UserForm = ({ fnAction, activeUser = null }) => {
               <Button type='submit' text='Guardar' className='btn-dark' isLoading={isSubmitting} />
             </div>
           </form>
-          )
-    }
+          )}
     </>
   )
 }

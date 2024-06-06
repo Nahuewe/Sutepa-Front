@@ -57,9 +57,7 @@ const Textinput = ({
             type={type === 'password' && open === true ? 'text' : type}
             {...register(name)}
             {...rest}
-            className={`${
-              error ? ' has-error' : ' '
-            } form-control py-2 ${className}  `}
+            className={`${error ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600'} ${error ? 'has-error' : ''} form-control py-2 ${className} dark:text-white dark:placeholder-white placeholder-black-900 `}
             placeholder={placeholder}
             readOnly={readonly}
             defaultValue={defaultValue}
@@ -72,7 +70,7 @@ const Textinput = ({
         {!name && !isMask && (
           <input
             type={type === 'password' && open === true ? 'text' : type}
-            className={`form-control py-2 ${className}`}
+            className={`${error ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600'} ${error ? 'has-error' : ''} form-control py-2 ${className} dark:text-white dark:placeholder-white placeholder-black-900`}
             placeholder={placeholder}
             readOnly={readonly}
             disabled={disabled}

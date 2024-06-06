@@ -50,7 +50,7 @@ function App () {
                 {/* Ingresos */}
                 <Route path='afiliados' element={<Ingreso />} />
                 <Route path='afiliados/crear' element={<Create />} />
-                <Route path='ingresos/editar/:id' element={<Create />} />
+                <Route path='afiliados/:id' element={<Create />} />
               </Route>
 
               <Route path='/404' element={<Error />} />

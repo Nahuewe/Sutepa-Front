@@ -1,31 +1,28 @@
-import { useSelector, useDispatch } from 'react-redux'
-import { handleLogin, handleLogout, onChecking } from '../store/auth'
-import { sutepaApi } from '../api'
+import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
+import { handleLogin, handleLogout, onChecking } from '@/store/auth'
+import { sutepaApi } from '../api'
 
 export const useAuthStore = () => {
-  const { status, user, errorMessage } = useSelector(state => state.auth)
+  const { status, user } = useSelector(state => state.auth)
   const dispatch = useDispatch()
 
   const startLogin = async ({ username, password }) => {
     dispatch(onChecking())
-    const message = 'Credenciales incorrectas.'
 
     try {
-      const { data } = await sutepaApi.post('/login', { username, password })
+      const { data: { token, user } } = await sutepaApi.post('/login', { username, password })
 
-      if (data.ok) {
-        localStorage.setItem('token', data.token)
-        dispatch(handleLogin({ nombre: data.nombre, apellido: data.apellido, seccional: data.seccional }))
+      if (user) {
+        localStorage.setItem('token', token)
+        dispatch(handleLogin({ ...user }))
       } else {
-        dispatch(handleLogout(message))
-
-        toast.error(message)
+        startLogout()
       }
     } catch (error) {
-      dispatch(handleLogout(message))
+      toast.error('Error. No se pudo validar los datos')
 
-      toast.error(message)
+      startLogout()
     }
   }
 
@@ -34,10 +31,9 @@ export const useAuthStore = () => {
     if (!token) return dispatch(handleLogout())
 
     try {
-      const { data } = await sutepaApi.get('/login/renew')
-
-      localStorage.setItem('token', data.token)
-      dispatch(handleLogin({ nombre: data.nombre, apellido: data.apellido, seccional: data.seccional }))
+      const { data: { token, user } } = await sutepaApi.post('/refresh-token')
+      localStorage.setItem('token', token)
+      dispatch(handleLogin({ ...user }))
     } catch (error) {
       localStorage.clear()
       dispatch(handleLogout())
@@ -53,7 +49,6 @@ export const useAuthStore = () => {
     //* Propiedades
     status,
     user,
-    errorMessage,
 
     //* Metodos
     startLogin,

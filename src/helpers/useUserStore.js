@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
-import { handleUser, onAddNewUser, onUpdateUser } from '@/store/user'
+import { handleUser, onUpdateUser } from '@/store/user'
 import { handleShowEdit, handleShowModal } from '@/store/layout'
 import { sutepaApi } from '../api'
 
@@ -10,7 +10,7 @@ export const useUserStore = () => {
 
   const startLoadingUsers = async (page) => {
     try {
-      const response = await sutepaApi.get(`/usuarios?page=${page}`)
+      const response = await sutepaApi.get(`/user?page=${page}`)
       const { data, meta } = response.data
       dispatch(handleUser({ data, meta }))
     } catch (error) {
@@ -20,7 +20,7 @@ export const useUserStore = () => {
 
   const startSavingUser = async (form) => {
     try {
-      const response = await sutepaApi.post('/usuarios', form)
+      const response = await sutepaApi.post('/registrar', form)
       // const { data } = response.data
       // dispatch(onAddNewUser(data))
       startLoadingUsers()
@@ -35,9 +35,10 @@ export const useUserStore = () => {
   const startUpdateUser = async (form) => {
     try {
       const id = activeUser.id
-      const response = await sutepaApi.put(`/usuarios/${id}`, form)
+      const response = await sutepaApi.put(`/user/${id}`, form)
       const { data } = response.data
-      dispatch(onUpdateUser(data))
+      // dispatch(onUpdateUser(data))
+      startLoadingUsers()
       dispatch(handleShowEdit())
 
       toast.success('Usuario actualizado con exito')
@@ -49,7 +50,7 @@ export const useUserStore = () => {
   const startDeleteUser = async () => {
     try {
       const id = activeUser.id
-      await sutepaApi.delete(`/usuarios/${id}`)
+      await sutepaApi.delete(`/user/${id}`)
       startLoadingUsers()
 
       toast.success('Usuario desactivado con exito')
@@ -60,7 +61,7 @@ export const useUserStore = () => {
 
   const startSearchUser = async (search, page = 1) => {
     try {
-      const response = await sutepaApi.get(`/usuarios/buscar/${search}?page=${page}`)
+      const response = await sutepaApi.get(`/user/buscar/${search}?page=${page}`)
       const { data, meta } = response.data
       dispatch(handleUser({ data, meta }))
     } catch (error) {
