@@ -49,7 +49,7 @@ const Dashboard = () => {
     }
 
     fetchData()
-  }, []) // El array vacío asegura que el efecto solo se ejecute una vez cuando el componente se monta
+  }, [])
 
   return (
     <>

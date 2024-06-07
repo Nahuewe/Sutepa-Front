@@ -7,7 +7,7 @@ import Card from '@/components/ui/Card'
 import { SelectForm } from '@/components/sutepa/forms'
 import Tooltip from '@/components/ui/Tooltip'
 import { Icon } from '@iconify/react/dist/iconify.js'
-import { onAddDocumento, onDeleteDocumento } from '../../store/ingreso'
+import { onAddDocumento, onDeleteDocumento } from '../../store/afiliado'
 
 const initialForm = {
   tipo_documento_id: '',

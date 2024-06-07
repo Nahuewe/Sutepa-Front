@@ -28,6 +28,30 @@ export const useAfiliadoStore = () => {
     }
   }
 
+  const startSavingAfiliado = async (data) => {
+    try {
+      const afiliado = {
+        ...data,
+        persona,
+        datos_laborales,
+        obra_social,
+        documentacion,
+        familiares,
+        subsidios
+      }
+
+      const response = await sutepaApi.post('/personas', afiliado)
+      console.log(response)
+      navigate('/afiliados')
+      // dispatch(clearCargaActa())
+
+      toast.success('Afiliado agregado con exito')
+    } catch (error) {
+      console.error('Error saving ingreso:', error.response ? error.response.data : error.message)
+      toast.error('No se pudo agregar los datos')
+    }
+  }
+
   const startUpdateAfiliado = async () => {
     try {
       const { id } = activeAfiliado
@@ -73,6 +97,7 @@ export const useAfiliadoStore = () => {
     // Métodos
     startLoadingAfiliado,
     startLoadingActiveAfiliado,
+    startSavingAfiliado,
     startUpdateAfiliado,
     startDeleteAfiliado,
     startSearchAfiliado

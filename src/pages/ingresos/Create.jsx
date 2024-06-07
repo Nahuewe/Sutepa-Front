@@ -1,7 +1,7 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
-// import { useIngresoStore } from '@/helpers'
+import { useAfiliadoStore } from '../../helpers'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 import DatosPersonalesData from '@/components/forms/DatosPersonalesData'
@@ -11,12 +11,12 @@ import ObraSocialAfiliadoData from '@/components/forms/ObraSocialAfiliadoData'
 import FamiliarAcargoData from '@/components/forms/FamiliarAcargoData'
 import DocumentacionAdicionalData from '@/components/forms/DocumentacionAdicionalData'
 import SubsidioData from '@/components/forms/SubsidioData'
-import { useAfiliadoStore, useIngresoStore } from '../../helpers'
+import Loading from '@/components/Loading'
 
 export const Create = () => {
   const navigate = useNavigate()
-  const { activeIngreso, startSavingIngreso, startUpdateIngreso } = useIngresoStore()
-  const { activeAfiliado, startSavingAfiliado, startUpdateAfiliado } = useAfiliadoStore()
+  const [isLoading, setIsLoading] = useState(true)
+  const { activeAfiliado, startSavingAfiliado, startUpdateAfiliado, startLoadingAfiliado } = useAfiliadoStore()
 
   const FormValidationSchema = yup.object().shape({
     legajo: yup.string().required('El legajo es requerido'),
@@ -76,9 +76,9 @@ export const Create = () => {
 
   const onSubmit = async (afiliado) => {
     if (!activeAfiliado) {
-      await startSavingIngreso(afiliado)
+      await startSavingAfiliado(afiliado)
     } else {
-      await startUpdateIngreso(afiliado)
+      await startUpdateAfiliado(afiliado)
     }
 
     reset()
@@ -93,30 +93,49 @@ export const Create = () => {
     }
   }, [activeAfiliado, setValue])
 
+  async function loadingAfiliado (page = 1) {
+    !isLoading && setIsLoading(true)
+
+    await startLoadingAfiliado(page)
+    setIsLoading(false)
+  }
+
+  useEffect(() => {
+    loadingAfiliado()
+  }, [])
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className='space-y-4'>
-      <DatosPersonalesData register={register} errors={errors} setValue={setValue} watch={watch} />
+    <>
+      {
+        (isLoading)
+          ? <Loading className='mt-28 md:mt-64' />
+          : (
+            <form onSubmit={handleSubmit(onSubmit)} className='space-y-4'>
+              <DatosPersonalesData register={register} errors={errors} setValue={setValue} watch={watch} />
 
-      <AfiliadoDomicilioData register={register} setValue={setValue} />
+              <AfiliadoDomicilioData register={register} setValue={setValue} />
 
-      <InformacionLaboralData register={register} setValue={setValue} watch={watch} />
+              <InformacionLaboralData register={register} setValue={setValue} watch={watch} />
 
-      <ObraSocialAfiliadoData register={register} setValue={setValue} />
+              <ObraSocialAfiliadoData register={register} setValue={setValue} />
 
-      <FamiliarAcargoData register={register} setValue={setValue} watch={watch} />
+              <FamiliarAcargoData register={register} setValue={setValue} watch={watch} />
 
-      <DocumentacionAdicionalData register={register} setValue={setValue} />
+              <DocumentacionAdicionalData register={register} setValue={setValue} />
 
-      <SubsidioData register={register} setValue={setValue} />
+              <SubsidioData register={register} setValue={setValue} />
 
-      <div className='flex justify-end gap-4 mt-8'>
-        <div className='ltr:text-right rtl:text-left'>
-          <button className='btn-danger items-center text-center py-2 px-6 rounded-lg' onClick={() => navigate('/afiliados')}>Volver</button>
-        </div>
-        <div className='ltr:text-right rtl:text-left'>
-          <button type='submit' className='btn-success items-center text-center py-2 px-6 rounded-lg'>Guardar</button>
-        </div>
-      </div>
-    </form>
+              <div className='flex justify-end gap-4 mt-8'>
+                <div className='ltr:text-right rtl:text-left'>
+                  <button className='btn-danger items-center text-center py-2 px-6 rounded-lg' onClick={() => navigate('/afiliados')}>Volver</button>
+                </div>
+                <div className='ltr:text-right rtl:text-left'>
+                  <button type='submit' className='btn-success items-center text-center py-2 px-6 rounded-lg'>Guardar</button>
+                </div>
+              </div>
+            </form>
+            )
+      }
+    </>
   )
 }

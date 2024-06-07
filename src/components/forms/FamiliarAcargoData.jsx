@@ -4,7 +4,7 @@ import Textinput from '@/components/ui/Textinput'
 import Numberinput from '@/components/ui/Numberinput'
 import { SelectForm } from '@/components/sutepa/forms'
 import { useSelector, useDispatch } from 'react-redux'
-import { onAddFamiliar, onDeleteFamiliar } from '../../store/ingreso'
+import { onAddFamiliar, onDeleteFamiliar } from '../../store/afiliado'
 import { Icon } from '@iconify/react'
 import { Tooltip } from 'flowbite-react'
 import { sutepaApi } from '../../api'
@@ -27,7 +27,7 @@ const tipoDocumento = [
 
 function FamiliarAcargoData ({ register, disabled, watch }) {
   const dispatch = useDispatch()
-  const { familiares } = useSelector(state => state.ingreso)
+  const { familiares } = useSelector(state => state.afiliado)
   const { user } = useSelector(state => state.auth)
   const [picker, setPicker] = useState(null)
   const [dni, setDni] = useState('')

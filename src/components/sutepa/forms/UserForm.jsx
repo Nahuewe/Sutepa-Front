@@ -61,9 +61,12 @@ export const UserForm = ({ fnAction, activeUser = null }) => {
 
     if (activeUser) {
       Object.entries(activeUser).forEach(([key, value]) => {
-        if (key === 'roles') setValue('roles_id', value.id)
-        else setValue(key, value)
+        setValue(key, value)
       })
+
+      setValue('roles_id', activeUser.rol)
+      setValue('seccional_id', activeUser.seccional)
+      setValue('username', activeUser.user)
     }
 
     setIsLoading(false)

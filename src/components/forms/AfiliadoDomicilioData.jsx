@@ -3,7 +3,7 @@ import Textinput from '@/components/ui/Textinput'
 import Numberinput from '@/components/ui/Numberinput'
 import { SelectForm } from '@/components/sutepa/forms'
 import { useState, useEffect } from 'react'
-import { updateDomicilio } from '../../store/ingreso'
+import { updateDomicilio } from '../../store/afiliado'
 import { useDispatch } from 'react-redux'
 import { sutepaApi } from '../../api'
 
@@ -62,7 +62,7 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
       const domicilioData = {
         domicilio,
         provincia_id: selectedProvincia,
-        localidad: localidades[0].id,
+        localidad_id: localidades[0].id,
         codigo_postal: codigoPostal
       }
 

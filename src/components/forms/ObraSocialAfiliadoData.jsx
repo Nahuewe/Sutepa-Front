@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import Card from '@/components/ui/Card'
 import Textinput from '@/components/ui/Textinput'
 import { SelectForm } from '@/components/sutepa/forms'
-import { updateObraSocial } from '../../store/ingreso'
+import { updateObraSocial } from '../../store/afiliado'
 
 const initialForm = {
   tipo_obra: '',
@@ -17,7 +17,7 @@ const tipoObraSocial = [
 
 function ObraSocialAfiliadoData ({ register, disabled }) {
   const dispatch = useDispatch()
-  const obraSocialState = useSelector((state) => state.ingreso.obra_social)
+  const obraSocialState = useSelector((state) => state.afiliado.obra_social)
   const [formData, setFormData] = useState(obraSocialState || initialForm)
 
   function onChange ({ target }) {

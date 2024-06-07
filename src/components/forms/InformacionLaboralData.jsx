@@ -6,7 +6,7 @@ import Textinput from '@/components/ui/Textinput'
 import Numberinput from '@/components/ui/Numberinput'
 import { SelectForm } from '@/components/sutepa/forms'
 import DatePicker from '../ui/DatePicker'
-import { updateDatosLaborales } from '../../store/ingreso'
+import { updateDatosLaborales } from '../../store/afiliado'
 import moment from 'moment'
 
 const tipoContrato = [

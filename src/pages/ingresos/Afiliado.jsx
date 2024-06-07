@@ -56,7 +56,7 @@ const columns = [
   }
 ]
 
-export const Ingreso = () => {
+export const Afiliado = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const [isLoading, setIsLoading] = useState(true)
@@ -64,7 +64,6 @@ export const Ingreso = () => {
   const {
     afiliados,
     paginate,
-    // activeAfiliado,
     startLoadingAfiliado,
     startLoadingActiveAfiliado,
     startDeleteAfiliado,
@@ -76,7 +75,9 @@ export const Ingreso = () => {
   }
 
   const showIngreso = (id) => {
-    startLoadingActiveAfiliado(id)
+    startLoadingAfiliado(id).then(() => {
+      navigate(`/afiliados/ver/${id}`)
+    })
   }
 
   function onEdit (id) {
@@ -141,7 +142,7 @@ export const Ingreso = () => {
                     Agregar
                   </button>
                 </div>
-              }
+                }
               noborder
             >
               <div className='overflow-x-auto -mx-6'>

@@ -23,6 +23,10 @@ const columns = [
     field: 'apellido'
   },
   {
+    label: 'Usuario',
+    field: 'username'
+  },
+  {
     label: 'Correo',
     field: 'correo'
   },
@@ -151,6 +155,7 @@ export const Users = () => {
                             <tr key={usuario.id}>
                               <td className='table-td'>{usuario.nombre}</td>
                               <td className='table-td'>{usuario.apellido}</td>
+                              <td className='table-td'>{usuario.user}</td>
                               <td className='table-td'>{usuario.correo}</td>
                               <td className='table-td'>{usuario.seccional}</td>
                               <td className='table-td'>{usuario.rol}</td>
