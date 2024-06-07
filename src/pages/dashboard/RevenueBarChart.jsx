@@ -10,38 +10,25 @@ const RevenueBarChart = ({ afiliados, height = 400 }) => {
   const [isDark] = useDarkMode()
   const [isRtl] = useRtl()
   const [series, setSeries] = useState([])
-  const [totalData, setTotalData] = useState([])
+  const [totalData, setTotalData] = useState(0)
 
   useEffect(() => {
     if (afiliados) {
-      const masculino = Array(12).fill(0)
-      const femenino = Array(12).fill(0)
-      const noInforma = Array(12).fill(0)
+      const seccionales = {}
 
       afiliados.forEach(afiliado => {
-        const month = new Date(afiliado.fecha_afiliacion).getMonth()
-        if (afiliado.sexo === 'Masculino') {
-          masculino[month] += 1
-        } else if (afiliado.sexo === 'Femenino') {
-          femenino[month] += 1
-        } else {
-          noInforma[month] += 1
-        }
+        const seccional = afiliado.seccional || 'Seccional no Asignada'
+        seccionales[seccional] = (seccionales[seccional] || 0) + 1
       })
 
-      const seriesData = [
-        { name: 'Masculino', data: masculino },
-        { name: 'Femenino', data: femenino },
-        { name: 'No informa', data: noInforma }
-      ]
+      const totalAfiliados = afiliados.length
+      const seriesData = Object.keys(seccionales).map(seccional => ({
+        name: seccional,
+        data: [(seccionales[seccional] / totalAfiliados) * 100]
+      }))
 
       setSeries(seriesData)
-
-      const total = seriesData.reduce((acc, curr) => {
-        return acc.map((val, index) => val + curr.data[index])
-      }, Array(seriesData[0].data.length).fill(0))
-
-      setTotalData(total)
+      setTotalData(totalAfiliados)
     }
   }, [afiliados])
 
@@ -53,35 +40,13 @@ const RevenueBarChart = ({ afiliados, height = 400 }) => {
     },
     plotOptions: {
       bar: {
-        horizontal: false,
+        horizontal: true,
         endingShape: 'rounded',
         columnWidth: '45%'
       }
     },
-    legend: {
-      show: true,
-      position: 'top',
-      horizontalAlign: 'right',
-      fontSize: '12px',
-      fontFamily: 'Inter',
-      offsetY: -30,
-      markers: {
-        width: 8,
-        height: 8,
-        offsetY: -1,
-        offsetX: -5,
-        radius: 12
-      },
-      labels: {
-        colors: isDark ? '#CBD5E1' : '#475569'
-      },
-      itemMargin: {
-        horizontal: 18,
-        vertical: 0
-      }
-    },
     title: {
-      text: 'Afiliados Activos Por Seccional',
+      text: 'Porcentaje de Afiliados Por Seccional',
       align: 'left',
       offsetX: isRtl ? '0%' : 0,
       offsetY: 13,
@@ -111,9 +76,7 @@ const RevenueBarChart = ({ afiliados, height = 400 }) => {
       }
     },
     xaxis: {
-      categories: [
-        'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre', 'Enero'
-      ],
+      categories: ['Porcentaje de Afiliados'],
       labels: {
         style: {
           colors: isDark ? '#CBD5E1' : '#475569',
@@ -133,11 +96,24 @@ const RevenueBarChart = ({ afiliados, height = 400 }) => {
     tooltip: {
       y: {
         formatter: function (val) {
-          return val
+          return val.toFixed(2) + '%'
         }
+      },
+      theme: isDark ? 'dark' : 'light'
+    },
+    legend: {
+      labels: {
+        colors: isDark ? '#ffffff' : '#000000'
       }
     },
-    colors: ['#4669FA', '#0CE7FA', '#FA916B'],
+    colors: [
+      '#4669FA', '#0CE7FA', '#FA916B', '#51BB25', '#FFD500',
+      '#FF7A00', '#7C3AED', '#34B3EB', '#FF5247', '#33CC33',
+      '#FFA07A', '#00FFFF', '#C0C0C0', '#808080', '#FF0000',
+      '#800000', '#FFFF00', '#808000', '#00FF00', '#008000',
+      '#00FFFF', '#008080', '#0000FF', '#000080', '#FF00FF',
+      '#800080'
+    ],
     grid: {
       show: true,
       borderColor: isDark ? '#334155' : '#E2E8F0',
@@ -168,7 +144,7 @@ const RevenueBarChart = ({ afiliados, height = 400 }) => {
       htmlToImage.toPng(chartRef.current)
         .then(function (dataUrl) {
           const link = document.createElement('a')
-          link.download = 'AfiliadosActivos.png'
+          link.download = 'PorcentajeAfiliadosPorSeccional.png'
           link.href = dataUrl
           link.click()
         })
@@ -177,12 +153,12 @@ const RevenueBarChart = ({ afiliados, height = 400 }) => {
 
   return (
     <Card>
-      <div className='flex justify-end'>
-        <button className='btn btn-dark' onClick={downloadChart}>Descargar</button>
+      <div className={`flex justify-end ${isDark ? 'dark' : ''}`}>
+        <button className={`btn ${isDark ? 'btn-dark' : 'btn-light'}`} onClick={downloadChart}>Descargar</button>
       </div>
       <div ref={chartRef}>
         <Chart options={options} series={series} type='bar' height={height} />
-        <div className='btn btn-dark' style={{ textAlign: 'center', marginTop: '10px' }}>Total: {totalData.reduce((acc, val) => acc + val, 0)}</div>
+        <div className={`btn ${isDark ? 'btn-dark' : 'btn-light'}`} style={{ textAlign: 'center', marginTop: '10px' }}>Total de Afiliados: {totalData}</div>
       </div>
     </Card>
   )

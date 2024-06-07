@@ -19,11 +19,6 @@ const DonutChart = ({ afiliados, height = 350 }) => {
     }
   }, [afiliados])
 
-  function colorOpacity (color, opacity) {
-    const _opacity = Math.round(Math.min(Math.max(opacity || 1, 0), 1) * 255)
-    return color + _opacity.toString(16).toUpperCase()
-  }
-
   const activeColor = isDark ? '#747ffc' : '#0CE7FA'
   const inactiveColor = isDark ? '#FF7F7F' : '#f48f8f'
 
@@ -73,7 +68,17 @@ const DonutChart = ({ afiliados, height = 350 }) => {
           }
         }
       }
+    },
+    animate: {
+      enabled: true,
+      easing: 'easeinout',
+      speed: 800
     }
+  }
+
+  function colorOpacity (color, opacity) {
+    const _opacity = Math.round(Math.min(Math.max(opacity || 1, 0), 1) * 255)
+    return color + _opacity.toString(16).toUpperCase()
   }
 
   return (
@@ -81,8 +86,8 @@ const DonutChart = ({ afiliados, height = 350 }) => {
       <h4>Total de afiliados</h4>
       <p className='mt-2'>Cantidad: {totalAfiliados}</p>
       <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', marginBottom: '8px', marginTop: '8px' }}>
-        <button className={`btn btn-${chartType === 'active' ? 'primary' : 'primary'}`} onClick={() => setChartType('active')}>Afiliados activos</button>
-        <button className={`btn btn-${chartType === 'inactive' ? 'danger' : 'danger'}`} onClick={() => setChartType('inactive')}>Afiliados dados de baja</button>
+        <button className={`btn btn-${chartType === 'active' ? 'primary' : 'primary'}`} style={{ backgroundColor: chartType === 'active' ? activeColor : '' }} onClick={() => setChartType('active')}>Afiliados activos</button>
+        <button className={`btn btn-${chartType === 'inactive' ? 'danger' : 'danger'}`} style={{ backgroundColor: chartType === 'inactive' ? inactiveColor : '' }} onClick={() => setChartType('inactive')}>Afiliados dados de baja</button>
       </div>
       <Chart options={options} series={series} type='pie' height={height} />
     </Card>

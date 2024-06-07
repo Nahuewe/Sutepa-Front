@@ -3,10 +3,6 @@ import Icon from '@/components/ui/Icon'
 
 const EstadisticasDashboard = ({ afiliados, totalUsers, totalSeccionales }) => {
   const countAfiliadosPorEstado = (data) => {
-    if (!data || !Array.isArray(data)) {
-      console.error('Invalid data:', data)
-      return {}
-    }
     const totals = {
       totales: data.length,
       activos: data.filter(a => a.estado === 'ACTIVO').length,
@@ -20,21 +16,21 @@ const EstadisticasDashboard = ({ afiliados, totalUsers, totalSeccionales }) => {
 
   const statistics = [
     {
-      title: 'Afiliados totales',
+      title: 'Afiliados Totales',
       count: totalsByEstado.totales || 0,
       bg: 'bg-info-500',
       text: 'text-info-500',
       icon: 'heroicons-solid:user-group'
     },
     {
-      title: 'Total Usuarios',
+      title: 'Total de Usuarios',
       count: totalUsers || 0,
       bg: 'bg-success-500',
       text: 'text-success-500',
       icon: 'heroicons-solid:users'
     },
     {
-      title: 'Total Seccionales',
+      title: 'Total de Seccionales',
       count: totalSeccionales || 0,
       bg: 'bg-warning-500',
       text: 'text-warning-500',

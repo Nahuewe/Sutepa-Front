@@ -1,6 +1,7 @@
+/* eslint-disable no-unused-vars */
 import { useSelector, useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
-import { handleUser, onUpdateUser } from '@/store/user'
+import { handleUser } from '@/store/user'
 import { handleShowEdit, handleShowModal } from '@/store/layout'
 import { sutepaApi } from '../api'
 
@@ -21,8 +22,6 @@ export const useUserStore = () => {
   const startSavingUser = async (form) => {
     try {
       const response = await sutepaApi.post('/registrar', form)
-      // const { data } = response.data
-      // dispatch(onAddNewUser(data))
       startLoadingUsers()
       dispatch(handleShowModal())
 
@@ -37,7 +36,6 @@ export const useUserStore = () => {
       const id = activeUser.id
       const response = await sutepaApi.put(`/user/${id}`, form)
       const { data } = response.data
-      // dispatch(onUpdateUser(data))
       startLoadingUsers()
       dispatch(handleShowEdit())
 

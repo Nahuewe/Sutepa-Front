@@ -10,7 +10,6 @@ const Select = ({
   register,
   name,
   readonly,
-  value,
   error,
   icon,
   disabled,
@@ -21,7 +20,6 @@ const Select = ({
   description,
   onChange,
   options,
-  defaultValue,
   size,
   ...rest
 }) => {
@@ -29,7 +27,7 @@ const Select = ({
 
   return (
     <div
-      className={`fromGroup ${error ? 'has-error' : ''} ${horizontal ? 'flex' : ''} ${validate ? 'is-valid' : ''}`}
+      className={`formGroup ${error ? 'has-error' : ''} ${horizontal ? 'flex' : ''} ${validate ? 'is-valid' : ''}`}
     >
       {label && (
         <label
@@ -49,9 +47,7 @@ const Select = ({
             readOnly={readonly}
             disabled={disabled}
             id={id}
-            value={value !== undefined ? value : ''}
             size={size}
-            defaultValue={defaultValue !== undefined ? defaultValue : ''}
           >
             {/* Primera opción como placeholder */}
             <option value='' disabled>
@@ -82,9 +78,7 @@ const Select = ({
             readOnly={readonly}
             disabled={disabled}
             id={id}
-            value={value !== undefined ? value : ''}
             size={size}
-            defaultValue={defaultValue !== undefined ? defaultValue : ''}
           >
             {/* Primera opción como placeholder */}
             <option value='' disabled>

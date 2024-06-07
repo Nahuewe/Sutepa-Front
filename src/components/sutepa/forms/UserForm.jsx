@@ -13,7 +13,7 @@ const FormValidationSaving = yup
     nombre: yup.string().required('El nombre es requerido'),
     apellido: yup.string().required('El apellido es requerido'),
     username: yup.string().required('El usuario es requerido'),
-    password: yup.string().required('La contraseña es requerida').min(6, 'La contraseña debe contener al menos 6 caracteres'),
+    password: yup.string().required('La contraseña es requerida'),
     correo: yup.string().nullable(),
     telefono: yup.string().nullable(),
     roles_id: yup.string().notOneOf([''], 'Debe seleccionar un rol'),
@@ -25,8 +25,7 @@ const FormValidationUpdate = yup
   .object({
     nombre: yup.string().required('El nombre es requerido'),
     apellido: yup.string().required('El apellido es requerido'),
-    username: yup.string().nullable(),
-    password: yup.string().nullable(),
+    username: yup.string().required('El usuario es requerido'),
     correo: yup.string().nullable(),
     telefono: yup.string().nullable(),
     roles_id: yup.string().notOneOf([''], 'Debe seleccionar un rol'),
@@ -83,7 +82,7 @@ export const UserForm = ({ fnAction, activeUser = null }) => {
         : (
           <form onSubmit={handleSubmit(onSubmit)} className='space-y-4'>
             <div>
-              <label htmlFor='legajo' className='form-label space-y-2'>
+              <label htmlFor='nombre' className='form-label space-y-2'>
                 Nombre
                 <strong className='obligatorio'>(*)</strong>
                 <Textinput
@@ -96,32 +95,47 @@ export const UserForm = ({ fnAction, activeUser = null }) => {
               </label>
             </div>
 
-            <Textinput
-              name='apellido'
-              label='Apellido'
-              type='text'
-              placeholder='Apellido'
-              register={register}
-              error={errors.apellido}
-            />
+            <div>
+              <label htmlFor='apellido' className='form-label space-y-2'>
+                Apellido
+                <strong className='obligatorio'>(*)</strong>
+                <Textinput
+                  name='apellido'
+                  type='text'
+                  placeholder='Apellido'
+                  register={register}
+                  error={errors.apellido}
+                />
+              </label>
+            </div>
 
-            <Textinput
-              name='username'
-              label='Usuario'
-              type='text'
-              placeholder='Usuario'
-              register={register}
-              error={errors.username}
-            />
+            <div>
+              <label htmlFor='username' className='form-label space-y-2'>
+                Usuario
+                <strong className='obligatorio'>(*)</strong>
+                <Textinput
+                  name='username'
+                  type='text'
+                  placeholder='Usuario'
+                  register={register}
+                  error={errors.username}
+                />
+              </label>
+            </div>
 
-            <Textinput
-              name='password'
-              label='Contraseña'
-              type='password'
-              placeholder='Contraseña'
-              register={register}
-              error={errors.password}
-            />
+            <div>
+              <label htmlFor='password' className='form-label space-y-2'>
+                Contraseña
+                <strong className='obligatorio'>(*)</strong>
+                <Textinput
+                  name='password'
+                  type='password'
+                  placeholder='Contraseña'
+                  register={register}
+                  error={errors.password}
+                />
+              </label>
+            </div>
 
             <Textinput
               name='correo'
@@ -140,23 +154,33 @@ export const UserForm = ({ fnAction, activeUser = null }) => {
               error={errors.telefono}
             />
 
-            <Select
-              name='roles_id'
-              label='Roles'
-              options={roles}
-              register={register}
-              error={errors.roles_id}
-              placeholder='Seleccione un rol'
-            />
+            <div>
+              <label htmlFor='roles_id' className='form-label space-y-2'>
+                Roles
+                <strong className='obligatorio'>(*)</strong>
+                <Select
+                  name='roles_id'
+                  options={roles}
+                  register={register}
+                  error={errors.roles_id}
+                  placeholder='Seleccione un rol'
+                />
+              </label>
+            </div>
 
-            <Select
-              name='seccional_id'
-              label='Seccionales'
-              options={seccionales}
-              register={register}
-              error={errors.seccional_id}
-              placeholder='Seleccione una seccional'
-            />
+            <div>
+              <label htmlFor='seccional_id' className='form-label space-y-2'>
+                Seccionales
+                <strong className='obligatorio'>(*)</strong>
+                <Select
+                  name='seccional_id'
+                  options={seccionales}
+                  register={register}
+                  error={errors.seccional_id}
+                  placeholder='Seleccione una seccional'
+                />
+              </label>
+            </div>
 
             <div className='ltr:text-right rtl:text-left'>
               <Button type='submit' text='Guardar' className='btn-dark' isLoading={isSubmitting} />

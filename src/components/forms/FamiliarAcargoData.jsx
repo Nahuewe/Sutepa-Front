@@ -8,8 +8,8 @@ import { onAddFamiliar, onDeleteFamiliar } from '../../store/ingreso'
 import { Icon } from '@iconify/react'
 import { Tooltip } from 'flowbite-react'
 import { sutepaApi } from '../../api'
-import DatePicker from '../ui/DatePicker'
 import moment from 'moment'
+import DatePicker from '../ui/DatePicker'
 
 const initialForm = {
   id: null,
