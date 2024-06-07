@@ -1,8 +1,8 @@
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
-import { useIngresoStore } from '@/helpers'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { useAfiliadoStore } from '../../helpers'
 import * as yup from 'yup'
 import DatosPersonalesData from '@/components/forms/DatosPersonalesData'
 import AfiliadoDomicilioData from '@/components/forms/AfiliadoDomicilioData'
@@ -12,9 +12,9 @@ import FamiliarAcargoData from '@/components/forms/FamiliarAcargoData'
 import DocumentacionAdicionalData from '@/components/forms/DocumentacionAdicionalData'
 import SubsidioData from '@/components/forms/SubsidioData'
 
-export const ShowIngreso = () => {
+export const Create = () => {
   const navigate = useNavigate()
-  const { activeIngreso, startSavingIngreso, startUpdateIngreso } = useIngresoStore()
+  const { activeAfiliado } = useAfiliadoStore()
 
   const FormValidationSchema = yup.object().shape({
     legajo: yup.string().required('El legajo es requerido'),
@@ -23,34 +23,61 @@ export const ShowIngreso = () => {
   })
 
   const {
-    handleSubmit,
-    reset,
     setValue,
     disabled
   } = useForm({
+    defaultValues: {
+      agencia_id: activeAfiliado?.agencia_id || '',
+      agrupamiento_id: activeAfiliado?.agrupamiento_id || '',
+      apellido: activeAfiliado?.apellido || '',
+      carga_horaria: activeAfiliado?.carga_horaria || '',
+      codigo_postal: activeAfiliado?.codigo_postal || '',
+      cuil: activeAfiliado?.cuil || '',
+      dni: activeAfiliado?.dni || '',
+      domicilio: activeAfiliado?.domicilio || '',
+      domicilio_trabajo: activeAfiliado?.domicilio_trabajo || '',
+      email: activeAfiliado?.email || '',
+      email_laboral: activeAfiliado?.email_laboral || '',
+      fecha_afiliacion: activeAfiliado?.fecha_afiliacion || '',
+      fecha_ingreso: activeAfiliado?.fecha_ingreso || '',
+      fecha_nacimiento: activeAfiliado?.fecha_nacimiento || '',
+      fecha_otorgamiento: activeAfiliado?.fecha_otorgamiento || '',
+      fecha_solicitud: activeAfiliado?.fecha_solicitud || '',
+      legajo: activeAfiliado?.legajo || '',
+      localidad_id: activeAfiliado?.localidad || '',
+      nacionalidad_id: activeAfiliado?.nacionalidad_id || '',
+      nombre: activeAfiliado?.nombre || '',
+      nombre_familiar: activeAfiliado?.nombre_familiar || '',
+      obra_social: activeAfiliado?.obra_social || '',
+      observaciones: activeAfiliado?.observaciones || '',
+      parentesco: activeAfiliado?.parentesco || '',
+      provincia_id: activeAfiliado?.provincia_id || '',
+      seccional_id: activeAfiliado?.seccional_id || '',
+      sexo_id: activeAfiliado?.sexo_id || '',
+      telefono: activeAfiliado?.telefono || '',
+      telefono_laboral: activeAfiliado?.telefono_laboral || '',
+      tipo_archivo: activeAfiliado?.tipo_archivo || '',
+      tipo_documento_familiar: activeAfiliado?.tipo_documento_familiar || '',
+      tipo_contrato: activeAfiliado?.tipo_contrato || '',
+      tipo_documento: activeAfiliado?.tipo_documento || '',
+      tipo_obra: activeAfiliado?.tipo_obra || '',
+      tipo_subsidio: activeAfiliado?.tipo_subsidio || '',
+      tramo_id: activeAfiliado?.tramo_id || '',
+      ugl_id: activeAfiliado?.ugl_id || ''
+    },
     resolver: yupResolver(FormValidationSchema)
   })
 
-  const onSubmit = async (ingreso) => {
-    if (!activeIngreso) {
-      await startSavingIngreso(ingreso)
-    } else {
-      await startUpdateIngreso(ingreso)
-    }
-
-    reset()
-  }
-
   useEffect(() => {
-    if (activeIngreso) {
-      Object.entries(activeIngreso).forEach(([key, value]) => {
+    if (activeAfiliado) {
+      Object.entries(activeAfiliado).forEach(([key, value]) => {
         setValue(key, value)
       })
     }
-  }, [activeIngreso, setValue])
+  }, [activeAfiliado, setValue])
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className='space-y-4'>
+    <form className='space-y-4'>
       <DatosPersonalesData disabled={disabled} setValue={setValue} />
 
       <AfiliadoDomicilioData setValue={setValue} disabled={disabled} />

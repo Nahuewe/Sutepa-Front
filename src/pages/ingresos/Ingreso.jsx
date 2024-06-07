@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import { useAfiliadoStore } from '@/helpers'
 import Card from '@/components/ui/Card'
 import Tooltip from '@/components/ui/Tooltip'
-import { useNavigate } from 'react-router-dom'
 import Pagination from '@/components/ui/Pagination'
 import Loading from '@/components/Loading'
 import { DeleteModal } from '@/components/ui/DeleteModal'
-import { handleShowDelete } from '../../store/layout'
-import { useAfiliadoStore } from '../../helpers'
-import { setActiveAfiliado } from '../../store/afiliado'
+import { handleShowDelete } from '@/store/layout'
 
 const columns = [
   {
@@ -67,21 +66,26 @@ export const Ingreso = () => {
     paginate,
     // activeAfiliado,
     startLoadingAfiliado,
+    startLoadingActiveAfiliado,
     startDeleteAfiliado,
     startSearchAfiliado
   } = useAfiliadoStore()
 
+  function addAfiliado () {
+    navigate('/afiliados/crear')
+  }
+
   const showIngreso = (id) => {
-    dispatch(setActiveAfiliado(id))
+    startLoadingActiveAfiliado(id)
   }
 
   function onEdit (id) {
-    dispatch(setActiveAfiliado(id))
+    startLoadingActiveAfiliado(id)
     navigate(`/afiliados/${id}`)
   }
 
   function onDelete (id) {
-    dispatch(setActiveAfiliado(id))
+    startLoadingActiveAfiliado(id)
     dispatch(handleShowDelete())
   }
 
@@ -130,8 +134,9 @@ export const Ingreso = () => {
                     btnFunction={startDeleteAfiliado}
                   />
                   <button
+                    type='button'
+                    onClick={addAfiliado}
                     className='bg-red-600 text-white items-center text-center py-2 px-6 rounded-lg'
-                    onClick={() => navigate('/afiliados/crear')}
                   >
                     Agregar
                   </button>
@@ -165,8 +170,8 @@ export const Ingreso = () => {
                               <td className='table-td'>
                                 <span
                                   className={`inline-block px-3 min-w-[90px] text-center py-1 rounded-full bg-opacity-25 ${afiliado.estado === 'ACTIVO'
-                                      ? 'text-green-800 bg-green-200 dark:text-green-200 dark:bg-green-700'
-                                      : 'text-orange-800 bg-orange-200 dark:text-orange-200 dark:bg-orange-700'
+                                      ? 'text-green-800 bg-green-500 dark:text-green-200 dark:bg-green-700'
+                                      : 'text-orange-800 bg-orange-500 dark:text-orange-200 dark:bg-orange-700'
                                     }`}
                                 >
                                   {afiliado.estado === 'ACTIVO' ? 'ACTIVO' : 'INACTIVO'}

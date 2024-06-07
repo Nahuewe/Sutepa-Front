@@ -81,72 +81,72 @@ export const Users = () => {
   return (
     <>
       {
-      (isLoading)
-        ? <Loading className='mt-28 md:mt-64' />
-        : (
-          <Card
-            title='Listado de Usuarios'
-            headerslot={
-              <div className='flex gap-2'>
-                <input
-                  type='text'
-                  placeholder='Buscar'
-                  onChange={onSearch}
-                  value={search}
-                  className='form-control px-2 py-1 rounded-lg border border-gray-400'
-                />
+        (isLoading)
+          ? <Loading className='mt-28 md:mt-64' />
+          : (
+            <Card
+              title='Listado de Usuarios'
+              headerslot={
+                <div className='flex gap-2'>
+                  <input
+                    type='text'
+                    placeholder='Buscar'
+                    onChange={onSearch}
+                    value={search}
+                    className='form-control px-2 py-1 rounded-lg border border-gray-400'
+                  />
 
-                <Modal
-                  title='Agregar Usuario'
-                  label='Agregar'
-                  labelClass='btn-dark'
-                  centered
-                  children={
-                    <UserForm
-                      fnAction={startSavingUser}
-                    />
-                  }
-                />
+                  <Modal
+                    title='Agregar Usuario'
+                    label='Agregar'
+                    labelClass='bg-red-600 text-white items-center text-center py-2 px-6 rounded-lg'
+                    centered
+                    children={
+                      <UserForm
+                        fnAction={startSavingUser}
+                      />
+                    }
+                  />
 
-                <EditModal
-                  title='Editar Usuario'
-                  centered
-                  children={
-                    <UserForm
-                      fnAction={startUpdateUser}
-                      activeUser={activeUser}
-                    />
-                  }
-                />
+                  <EditModal
+                    title='Editar Usuario'
+                    centered
+                    children={
+                      <UserForm
+                        fnAction={startUpdateUser}
+                        activeUser={activeUser}
+                      />
+                    }
+                  />
 
-                <DeleteModal
-                  themeClass='bg-slate-900 dark:bg-slate-800 dark:border-b dark:border-slate-700'
-                  centered
-                  title='Eliminar Usuario'
-                  label='Eliminar'
-                  message='¿Quieres eliminar este usuario?'
-                  labelBtn='Aceptar'
-                  btnFunction={startDeleteUser}
-                />
-              </div>
-            }
-            noborder
-          >
-            <div className='overflow-x-auto -mx-6'>
-              <div className='inline-block min-w-full align-middle'>
-                <div className='overflow-hidden '>
-                  <table className='min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700'>
-                    <thead className='bg-slate-200 dark:bg-slate-700'>
-                      <tr>
-                        {columns.map((column, i) => (
-                          <th key={i} scope='col' className=' table-th '>
-                            {column.label}
-                          </th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody className='bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700'>
-                      {
+                  <DeleteModal
+                    themeClass='bg-slate-900 dark:bg-slate-800 dark:border-b dark:border-slate-700'
+                    centered
+                    title='Eliminar Usuario'
+                    label='Eliminar'
+                    message='¿Quieres eliminar este usuario?'
+                    labelBtn='Aceptar'
+                    btnFunction={startDeleteUser}
+                  />
+                </div>
+              }
+              noborder
+            >
+              <div className='overflow-x-auto -mx-6'>
+                <div className='inline-block min-w-full align-middle'>
+                  <div className='overflow-hidden '>
+                    <table className='min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700'>
+                      <thead className='bg-slate-200 dark:bg-slate-700'>
+                        <tr>
+                          {columns.map((column, i) => (
+                            <th key={i} scope='col' className='table-th'>
+                              {column.label}
+                            </th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody className='bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700'>
+                        {
                           (users.length > 0) && users.map((usuario) => (
                             <tr key={usuario.id}>
                               <td className='table-td'>{usuario.nombre}</td>
@@ -166,19 +166,31 @@ export const Users = () => {
                               </td>
                               <td className='table-td flex justify-start gap-2'>
                                 <Tooltip content='Editar' placement='top' arrow animation='shift-away'>
-                                  <button className='bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-700' onClick={() => onEdit(usuario.id)}>
+                                  <button
+                                    className={`bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-700 ${usuario.estado === 'INACTIVO' ? 'opacity-50 cursor-not-allowed' : ''
+                                      }`}
+                                    onClick={() => usuario.estado === 'ACTIVO' && onEdit(usuario.id)}
+                                    disabled={usuario.estado === 'INACTIVO'}
+                                  >
                                     <svg xmlns='http://www.w3.org/2000/svg' className='icon icon-tabler icon-tabler-pencil' width='24' height='24' viewBox='0 0 24 24' strokeWidth='2' stroke='currentColor' fill='none' strokeLinecap='round' strokeLinejoin='round'>
-                                      <path stroke='none' d='M0 0h24v24H0z' fill='none' /><path d='M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4' />
+                                      <path stroke='none' d='M0 0h24v24H0z' fill='none' />
+                                      <path d='M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4' />
                                       <path d='M13.5 6.5l4 4' />
                                     </svg>
                                   </button>
                                 </Tooltip>
 
                                 <Tooltip content='Eliminar' placement='top' arrow animation='shift-away'>
-                                  <button className='bg-red-500 text-white p-2 rounded-lg hover:bg-red-700' onClick={() => onDelete(usuario.id)}>
+                                  <button
+                                    className={`bg-red-500 text-white p-2 rounded-lg hover:bg-red-700 ${usuario.estado === 'INACTIVO' ? 'opacity-50 cursor-not-allowed' : ''
+                                      }`}
+                                    onClick={() => usuario.estado === 'ACTIVO' && onDelete(usuario.id)}
+                                    disabled={usuario.estado === 'INACTIVO'}
+                                  >
                                     <svg xmlns='http://www.w3.org/2000/svg' className='icon icon-tabler icon-tabler-trash' width='24' height='24' viewBox='0 0 24 24' strokeWidth='2' stroke='currentColor' fill='none' strokeLinecap='round' strokeLinejoin='round'>
                                       <path stroke='none' d='M0 0h24v24H0z' fill='none' />
-                                      <path d='M4 7l16 0' /><path d='M10 11l0 6' />
+                                      <path d='M4 7l16 0' />
+                                      <path d='M10 11l0 6' />
                                       <path d='M14 11l0 6' />
                                       <path d='M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12' />
                                       <path d='M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3' />
@@ -189,11 +201,11 @@ export const Users = () => {
                             </tr>
                           ))
                         }
-                    </tbody>
-                  </table>
+                      </tbody>
+                    </table>
 
-                  {/* Paginado */}
-                  {
+                    {/* Paginado */}
+                    {
                       paginate && (
                         <div className='flex justify-center mt-8'>
                           <Pagination
@@ -208,12 +220,12 @@ export const Users = () => {
                       )
                     }
 
+                  </div>
                 </div>
               </div>
-            </div>
-          </Card>
-          )
-    }
+            </Card>
+            )
+      }
     </>
   )
 }

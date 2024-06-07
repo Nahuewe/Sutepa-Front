@@ -13,7 +13,7 @@ const FormValidationSaving = yup
     nombre: yup.string().required('El nombre es requerido'),
     apellido: yup.string().required('El apellido es requerido'),
     username: yup.string().required('El usuario es requerido'),
-    password: yup.string().required('La contraseña es requerida'),
+    password: yup.string().required('La contraseña es requerida').min(6, 'La contraseña debe contener al menos 6 caracteres'),
     correo: yup.string().nullable(),
     telefono: yup.string().nullable(),
     roles_id: yup.string().notOneOf([''], 'Debe seleccionar un rol'),
@@ -34,15 +34,6 @@ const FormValidationUpdate = yup
   })
   .required()
 
-const generateUsername = (nombre, apellido) => {
-  if (!nombre || !apellido) return ''
-
-  const firstLetterOfFirstName = nombre.trim().charAt(0).toLowerCase()
-  const cleanedLastName = apellido.trim().toLowerCase().split(' ')[0] // Toma solo el primer apellido
-
-  return `${firstLetterOfFirstName}${cleanedLastName}`
-}
-
 export const UserForm = ({ fnAction, activeUser = null }) => {
   const [roles, setRoles] = useState([])
   const [seccionales, setSeccionales] = useState([])
@@ -53,22 +44,10 @@ export const UserForm = ({ fnAction, activeUser = null }) => {
     register,
     formState: { errors, isSubmitting },
     handleSubmit,
-    setValue,
-    watch
+    setValue
   } = useForm({
     resolver: yupResolver(activeUser ? FormValidationUpdate : FormValidationSaving)
   })
-
-  const nombre = watch('nombre')
-  const apellido = watch('apellido')
-
-  useEffect(() => {
-    // Generar y establecer el nombre de usuario automáticamente
-    if (nombre && apellido) {
-      const newUsername = generateUsername(nombre, apellido)
-      setValue('username', newUsername)
-    }
-  }, [nombre, apellido, setValue])
 
   const onSubmit = async (data) => {
     await fnAction(data)
@@ -103,14 +82,19 @@ export const UserForm = ({ fnAction, activeUser = null }) => {
           )
         : (
           <form onSubmit={handleSubmit(onSubmit)} className='space-y-4'>
-            <Textinput
-              name='nombre'
-              label='Nombre'
-              type='text'
-              placeholder='Nombre'
-              register={register}
-              error={errors.nombre}
-            />
+            <div>
+              <label htmlFor='legajo' className='form-label space-y-2'>
+                Nombre
+                <strong className='obligatorio'>(*)</strong>
+                <Textinput
+                  name='nombre'
+                  type='text'
+                  placeholder='Nombre'
+                  register={register}
+                  error={errors.nombre}
+                />
+              </label>
+            </div>
 
             <Textinput
               name='apellido'

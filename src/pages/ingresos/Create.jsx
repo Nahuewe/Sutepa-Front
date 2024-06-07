@@ -11,11 +11,11 @@ import ObraSocialAfiliadoData from '@/components/forms/ObraSocialAfiliadoData'
 import FamiliarAcargoData from '@/components/forms/FamiliarAcargoData'
 import DocumentacionAdicionalData from '@/components/forms/DocumentacionAdicionalData'
 import SubsidioData from '@/components/forms/SubsidioData'
-import { useAfiliadoStore } from '../../helpers'
+import { useAfiliadoStore, useIngresoStore } from '../../helpers'
 
 export const Create = () => {
   const navigate = useNavigate()
-  // const { activeIngreso, startSavingIngreso, startUpdateIngreso } = useIngresoStore()
+  const { activeIngreso, startSavingIngreso, startUpdateIngreso } = useIngresoStore()
   const { activeAfiliado, startSavingAfiliado, startUpdateAfiliado } = useAfiliadoStore()
 
   const FormValidationSchema = yup.object().shape({
@@ -76,9 +76,9 @@ export const Create = () => {
 
   const onSubmit = async (afiliado) => {
     if (!activeAfiliado) {
-      await startSavingAfiliado(afiliado)
+      await startSavingIngreso(afiliado)
     } else {
-      await startUpdateAfiliado(afiliado)
+      await startUpdateIngreso(afiliado)
     }
 
     reset()

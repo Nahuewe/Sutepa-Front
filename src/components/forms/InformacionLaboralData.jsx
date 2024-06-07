@@ -176,7 +176,7 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
               name='domicilio_trabajo'
               register={register}
               placeholder='Ingrese el domicilio de trabajo'
-              disabled={disabled}
+              disabled
               value={domicilioTrabajo}
               onChange={(e) => {
                 setDomicilioTrabajo(e.target.value)
@@ -256,7 +256,7 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
               name='telefono_laboral'
               register={register}
               placeholder='Ingrese el teléfono laboral'
-              disabled={disabled}
+              disabled
               value={telefonoLaboral}
               onChange={(e) => {
                 setTelefonoLaboral(e.target.value)

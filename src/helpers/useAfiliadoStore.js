@@ -2,6 +2,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
 import { handleAfiliado, onDeleteAfiliado, onUpdateAfiliado } from '@/store/afiliado'
 import { sutepaApi } from '../api'
+import { setActiveAfiliado } from '../store/afiliado'
 
 export const useAfiliadoStore = () => {
   const dispatch = useDispatch()
@@ -17,6 +18,16 @@ export const useAfiliadoStore = () => {
     }
   }
 
+  const startLoadingActiveAfiliado = async (id) => {
+    try {
+      const response = await sutepaApi.get(`/personas/${id}`)
+      const { data } = response.data
+      dispatch(setActiveAfiliado(data))
+    } catch (error) {
+      console.error('No se pudo cargar el afiliado activo:', error)
+    }
+  }
+
   const startUpdateAfiliado = async () => {
     try {
       const { id } = activeAfiliado
@@ -24,7 +35,7 @@ export const useAfiliadoStore = () => {
       const { data } = response
       dispatch(onUpdateAfiliado(data))
 
-      toast.success('Afiliado editada con exito')
+      toast.success('Afiliado editado con éxito')
     } catch (error) {
       toast.error('No se pudo editar los datos')
     }
@@ -37,7 +48,7 @@ export const useAfiliadoStore = () => {
       const { data } = response
       dispatch(onDeleteAfiliado(data))
 
-      toast.success('Afiliado dado de baja con exito')
+      toast.success('Afiliado dado de baja con éxito')
     } catch (error) {
       toast.error('No se pudo eliminar los datos')
     }
@@ -54,13 +65,14 @@ export const useAfiliadoStore = () => {
   }
 
   return {
-    //* Propiedades
+    // Propiedades
     afiliados,
     paginate,
     activeAfiliado,
 
-    //* Metodos
+    // Métodos
     startLoadingAfiliado,
+    startLoadingActiveAfiliado,
     startUpdateAfiliado,
     startDeleteAfiliado,
     startSearchAfiliado

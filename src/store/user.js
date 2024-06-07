@@ -1,3 +1,6 @@
+/* eslint-disable eqeqeq */
+/* eslint-disable array-callback-return */
+/* eslint-disable no-return-assign */
 import { createSlice } from '@reduxjs/toolkit'
 
 export const userSlice = createSlice({

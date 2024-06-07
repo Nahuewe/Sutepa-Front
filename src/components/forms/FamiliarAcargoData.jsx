@@ -34,6 +34,7 @@ function FamiliarAcargoData ({ register, disabled, watch }) {
   const [formData, setFormData] = useState(initialForm)
   const formRef = useRef()
   const [parentesco, setParentesco] = useState([])
+  const [idCounter, setIdCounter] = useState(0)
 
   async function handleParentesco () {
     const response = await sutepaApi.get('familia')
@@ -55,27 +56,24 @@ function FamiliarAcargoData ({ register, disabled, watch }) {
   const addFamiliar = () => {
     const newFamiliar = {
       ...formData,
-      id: Date.now(),
+      id: idCounter,
       parentesco_id: parseInt(watch('parentesco_id')) || null,
-      fecha_carga: new Date().toLocaleDateString('es-ES')
+      fecha_carga: moment().format('DD/MM/YYYY')
     }
     dispatch(onAddFamiliar(newFamiliar))
+    setIdCounter(idCounter + 1)
     onReset()
   }
 
   const handleDateChange = date => {
     setPicker(date)
-    const formattedDate = date ? moment(date).format('YYYY-MM-DD') : null
+    const formattedDate = date ? moment(date).format('DD/MM/YYYY') : ''
     setFormData(prevData => ({ ...prevData, fecha_nacimiento: formattedDate }))
   }
 
   const handleInputChange = e => {
     const { name, value } = e.target
-    if (name === 'parentesco_id') {
-      setFormData(prevData => ({ ...prevData, parentesco_id: value }))
-    } else {
-      setFormData(prevData => ({ ...prevData, [name]: value }))
-    }
+    setFormData(prevData => ({ ...prevData, [name]: value }))
   }
 
   const handleDniChange = e => {

@@ -22,6 +22,7 @@ function DocumentacionAdicionalData ({ register, disabled }) {
   const [formData, setFormData] = useState(initialForm)
   const formRef = useRef()
   const [archivoOptions, setArchivoOptions] = useState([])
+  const [idCounter, setIdCounter] = useState(0)
 
   const handleArchivo = async () => {
     try {
@@ -56,17 +57,23 @@ function DocumentacionAdicionalData ({ register, disabled }) {
       const nuevoDocumento = {
         ...formData,
         tipo_documento_id: tipoArchivoOption.id,
-        id: Date.now(),
+        id: idCounter,
         archivo: formData.archivo.name,
         fecha_carga: new Date().toLocaleDateString('es-ES'),
         url: URL.createObjectURL(formData.archivo)
       }
       dispatch(onAddDocumento(nuevoDocumento))
       setDocumentos([...documentos, nuevoDocumento])
+      setIdCounter(idCounter + 1) // Incrementa el contador de IDs
       onReset()
     } else {
       toast.error('Selecciona un tipo de archivo y subí un documento')
     }
+  }
+
+  const getDocumentoByName = id => {
+    const documentoObj = archivoOptions.find(item => item.id === id)
+    return documentoObj ? documentoObj.nombre : ''
   }
 
   const onDelete = (index) => {
@@ -133,7 +140,7 @@ function DocumentacionAdicionalData ({ register, disabled }) {
                 <tr key={index} className='bg-white dark:bg-gray-800 dark:border-gray-700'>
                   <td className='px-4 py-2 text-center dark:text-white'>{documento.fecha_carga}</td>
                   <td className='px-4 py-2 whitespace-nowrap font-medium text-gray-900 dark:text-white text-center'>
-                    {documento.tipo_documento_id}
+                    {getDocumentoByName(documento.tipo_documento_id)}
                   </td>
                   <td className='px-4 py-2 text-center dark:text-white'>
                     <a href={documento.url} target='_blank' rel='noopener noreferrer' className='text-blue-500 underline'>

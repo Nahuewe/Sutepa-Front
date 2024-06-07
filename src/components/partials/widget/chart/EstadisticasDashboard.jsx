@@ -1,76 +1,46 @@
-// EstadisticasDashboard.jsx
 import React, { useMemo } from 'react'
 import Icon from '@/components/ui/Icon'
 
-const EstadisticasDashboard = ({ afiliados }) => {
+const EstadisticasDashboard = ({ afiliados, totalUsers, totalSeccionales }) => {
   const countAfiliadosPorEstado = (data) => {
     if (!data || !Array.isArray(data)) {
       console.error('Invalid data:', data)
       return {}
     }
     const totals = {
-      1: 0, // totales
-      2: 0, // activos
-      3: 0, // dados de baja
-      4: 0 // promedio
+      totales: data.length,
+      activos: data.filter(a => a.estado === 'ACTIVO').length,
+      inactivos: data.filter(a => a.estado === 'INACTIVO').length
     }
-
-    data.forEach((item) => {
-      const estadoId = item.estado // item.estado.id
-      if (Object.prototype.hasOwnProperty.call(totals, estadoId)) {
-        totals[estadoId]++
-      }
-    })
 
     return totals
   }
 
-  const totalsByEstado = useMemo(() => countAfiliadosPorEstado(afiliados), [
-    afiliados
-  ])
+  const totalsByEstado = useMemo(() => countAfiliadosPorEstado(afiliados), [afiliados])
 
-  function exportarNombresEstados () {
-    return {
-      1: 'totales',
-      2: 'activos',
-      3: 'dados de baja',
-      4: 'promedio'
-    }
-  }
-
-  const nombresEstados = exportarNombresEstados()
-  const statistics = []
-
-  statistics.push(
+  const statistics = [
     {
-      title: `Afiliados ${nombresEstados[1]}`,
-      count: totalsByEstado[1] || 0,
+      title: 'Afiliados totales',
+      count: totalsByEstado.totales || 0,
       bg: 'bg-info-500',
       text: 'text-info-500',
+      icon: 'heroicons-solid:user-group'
+    },
+    {
+      title: 'Total Usuarios',
+      count: totalUsers || 0,
+      bg: 'bg-success-500',
+      text: 'text-success-500',
       icon: 'heroicons-solid:users'
     },
     {
-      title: `Afiliados ${nombresEstados[2]}`,
-      count: totalsByEstado[2] || 0,
-      bg: 'bg-success-500',
-      text: 'text-success-500',
-      icon: 'heroicons-solid:check'
-    },
-    {
-      title: `Afiliados ${nombresEstados[3]}`,
-      count: totalsByEstado[3] || 0,
-      bg: 'bg-red-500',
-      text: 'text-red-500',
-      icon: 'heroicons-solid:x-mark'
-    },
-    {
-      title: `Edad ${nombresEstados[4]}`,
-      count: totalsByEstado[4] || 0,
+      title: 'Total Seccionales',
+      count: totalSeccionales || 0,
       bg: 'bg-warning-500',
       text: 'text-warning-500',
-      icon: 'heroicons-outline:clock'
+      icon: 'heroicons-solid:office-building'
     }
-  )
+  ]
 
   return (
     <>

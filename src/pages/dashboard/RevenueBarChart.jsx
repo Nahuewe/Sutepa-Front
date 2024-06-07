@@ -1,33 +1,49 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import Chart from 'react-apexcharts'
 import useDarkMode from '@/hooks/useDarkMode'
 import useRtl from '@/hooks/useRtl'
 import Card from '@/components/ui/Card'
 import * as htmlToImage from 'html-to-image'
 
-const RevenueBarChart = ({ height = 400 }) => {
+const RevenueBarChart = ({ afiliados, height = 400 }) => {
   const chartRef = useRef(null)
   const [isDark] = useDarkMode()
   const [isRtl] = useRtl()
-  const series = [
-    {
-      name: 'Masculino',
-      data: [44, 55, 57, 56, 61, 58, 63, 60, 66]
-    },
-    {
-      name: 'Femenino',
-      data: [76, 85, 101, 98, 87, 105, 91, 114, 94]
-    },
-    {
-      name: 'No informa',
-      data: [35, 41, 36, 26, 45, 48, 52, 53, 41]
-    }
-  ]
+  const [series, setSeries] = useState([])
+  const [totalData, setTotalData] = useState([])
 
-  // Calculamos la suma de los datos
-  const totalData = series.reduce((acc, curr) => {
-    return acc.map((val, index) => val + curr.data[index])
-  }, Array(series[0].data.length).fill(0))
+  useEffect(() => {
+    if (afiliados) {
+      const masculino = Array(12).fill(0)
+      const femenino = Array(12).fill(0)
+      const noInforma = Array(12).fill(0)
+
+      afiliados.forEach(afiliado => {
+        const month = new Date(afiliado.fecha_afiliacion).getMonth()
+        if (afiliado.sexo === 'Masculino') {
+          masculino[month] += 1
+        } else if (afiliado.sexo === 'Femenino') {
+          femenino[month] += 1
+        } else {
+          noInforma[month] += 1
+        }
+      })
+
+      const seriesData = [
+        { name: 'Masculino', data: masculino },
+        { name: 'Femenino', data: femenino },
+        { name: 'No informa', data: noInforma }
+      ]
+
+      setSeries(seriesData)
+
+      const total = seriesData.reduce((acc, curr) => {
+        return acc.map((val, index) => val + curr.data[index])
+      }, Array(seriesData[0].data.length).fill(0))
+
+      setTotalData(total)
+    }
+  }, [afiliados])
 
   const options = {
     chart: {
@@ -96,15 +112,7 @@ const RevenueBarChart = ({ height = 400 }) => {
     },
     xaxis: {
       categories: [
-        'Febrero',
-        'Marzo',
-        'Abril',
-        'Mayo',
-        'Junio',
-        'Julio',
-        'Agosto',
-        'Septiembre',
-        'Octubre'
+        'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre', 'Enero'
       ],
       labels: {
         style: {

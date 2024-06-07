@@ -3,24 +3,29 @@ import Chart from 'react-apexcharts'
 import useDarkMode from '@/hooks/useDarkMode'
 import Card from '@/components/ui/Card'
 
-const DonutChart = ({ height = 350 }) => {
+const DonutChart = ({ afiliados, height = 350 }) => {
   const [isDark] = useDarkMode()
   const [chartType, setChartType] = useState('active')
+  const [series, setSeries] = useState([0, 0])
+  const [totalAfiliados, setTotalAfiliados] = useState(0)
+
+  useEffect(() => {
+    if (afiliados) {
+      const activeCount = afiliados.filter(a => a.estado === 'ACTIVO').length
+      const inactiveCount = afiliados.filter(a => a.estado === 'INACTIVO').length
+      setSeries([activeCount, inactiveCount])
+      const total = activeCount + inactiveCount
+      setTotalAfiliados(total)
+    }
+  }, [afiliados])
 
   function colorOpacity (color, opacity) {
     const _opacity = Math.round(Math.min(Math.max(opacity || 1, 0), 1) * 255)
     return color + _opacity.toString(16).toUpperCase()
   }
 
-  useEffect(() => {
-    setChartType('neutral')
-  }, [])
-
-  // Define los colores para los afiliados activos y dados de baja
   const activeColor = isDark ? '#747ffc' : '#0CE7FA'
   const inactiveColor = isDark ? '#FF7F7F' : '#f48f8f'
-
-  const series = chartType === 'active' ? [70, 30] : [30, 70] // Cambia la serie basado en el tipo de gráfico seleccionado
 
   const options = {
     labels: ['Afiliados activos', 'Afiliados dados de baja'],
@@ -57,7 +62,7 @@ const DonutChart = ({ height = 350 }) => {
               fontFamily: 'Inter',
               color: isDark ? '#ffffff' : '#000000',
               formatter (val) {
-                return `${parseInt(val)}%`
+                return `${parseInt(val)}`
               }
             },
             total: {
@@ -74,7 +79,7 @@ const DonutChart = ({ height = 350 }) => {
   return (
     <Card>
       <h4>Total de afiliados</h4>
-      <p className='mt-2'>Cantidad:</p>
+      <p className='mt-2'>Cantidad: {totalAfiliados}</p>
       <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', marginBottom: '8px', marginTop: '8px' }}>
         <button className={`btn btn-${chartType === 'active' ? 'primary' : 'primary'}`} onClick={() => setChartType('active')}>Afiliados activos</button>
         <button className={`btn btn-${chartType === 'inactive' ? 'danger' : 'danger'}`} onClick={() => setChartType('inactive')}>Afiliados dados de baja</button>

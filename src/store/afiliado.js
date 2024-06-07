@@ -16,7 +16,7 @@ export const categoriaSlice = createSlice({
       state.activeAfiliado = null
     },
     setActiveAfiliado: (state, { payload }) => {
-      state.activeAfiliado = state.afiliados.find((afiliado) => afiliado.id === payload)
+      state.activeAfiliado = payload
     },
     onUpdateAfiliado: (state, { payload }) => {
       state.afiliados = state.afiliados.map((afiliado) => {
