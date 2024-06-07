@@ -1,12 +1,14 @@
+/* eslint-disable camelcase */
 import { useSelector, useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
-import { handleAfiliado, onDeleteAfiliado, onUpdateAfiliado } from '@/store/afiliado'
+import { handleAfiliado, onDeleteAfiliado, onUpdateAfiliado, setActiveAfiliado, setErrorMessage } from '@/store/afiliado'
 import { sutepaApi } from '../api'
-import { setActiveAfiliado } from '../store/afiliado'
+import { useNavigate } from 'react-router-dom'
 
 export const useAfiliadoStore = () => {
   const dispatch = useDispatch()
-  const { afiliados, paginate, activeAfiliado } = useSelector(state => state.afiliado)
+  const navigate = useNavigate()
+  const { afiliados, paginate, activeAfiliado, persona, datos_laborales, obra_social, documentacion, familiares, subsidios } = useSelector(state => state.afiliado)
 
   const startLoadingAfiliado = async (page) => {
     try {
@@ -45,10 +47,20 @@ export const useAfiliadoStore = () => {
       navigate('/afiliados')
       // dispatch(clearCargaActa())
 
-      toast.success('Afiliado agregado con exito')
+      toast.success('Afiliado agregado con éxito')
     } catch (error) {
-      console.error('Error saving ingreso:', error.response ? error.response.data : error.message)
-      toast.error('No se pudo agregar los datos')
+      let errorMessage = 'Error desconocido'
+      if (error.response && error.response.data && error.response.data.errors) {
+        const errors = error.response.data.errors
+        const firstErrorKey = Object.keys(errors)[0]
+        errorMessage = errors[firstErrorKey][0]
+      } else {
+        errorMessage = error.message
+      }
+
+      console.error('Error saving ingreso:', errorMessage)
+      dispatch(setErrorMessage(errorMessage))
+      toast.error(`No se pudo agregar los datos: ${errorMessage}`)
     }
   }
 

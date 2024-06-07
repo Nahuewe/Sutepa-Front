@@ -288,6 +288,7 @@ function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
               id='dni'
               placeholder='Ingrese el número de documento'
               value={dni}
+              error={errors.dni}
               onChange={handleDniChange}
               disabled={disabled}
             />
@@ -303,6 +304,7 @@ function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
               id='cuil'
               placeholder='Ingrese el CUIL'
               value={cuil}
+              error={errors.cuil}
               onChange={handleCuilChange}
               disabled={disabled}
             />

@@ -82,7 +82,7 @@ export const Afiliado = () => {
 
   function onEdit (id) {
     startLoadingActiveAfiliado(id)
-    navigate(`/afiliados/${id}`)
+    navigate(`/afiliados/editar/${id}`)
   }
 
   function onDelete (id) {

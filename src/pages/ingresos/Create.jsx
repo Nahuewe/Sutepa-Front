@@ -12,6 +12,7 @@ import FamiliarAcargoData from '@/components/forms/FamiliarAcargoData'
 import DocumentacionAdicionalData from '@/components/forms/DocumentacionAdicionalData'
 import SubsidioData from '@/components/forms/SubsidioData'
 import Loading from '@/components/Loading'
+import Button from '@/components/ui/Button'
 
 export const Create = () => {
   const navigate = useNavigate()
@@ -21,12 +22,14 @@ export const Create = () => {
   const FormValidationSchema = yup.object().shape({
     legajo: yup.string().required('El legajo es requerido'),
     nombre: yup.string().required('El nombre es requerido'),
-    apellido: yup.string().required('El apellido es requerido')
+    apellido: yup.string().required('El apellido es requerido'),
+    dni: yup.string().required('El DNI es requerido'),
+    cuil: yup.string().required('El CUIL es requerido')
   })
 
   const {
     register,
-    formState: { errors },
+    formState: { errors, isSubmitting },
     handleSubmit,
     reset,
     setValue,
@@ -130,7 +133,7 @@ export const Create = () => {
                   <button className='btn-danger items-center text-center py-2 px-6 rounded-lg' onClick={() => navigate('/afiliados')}>Volver</button>
                 </div>
                 <div className='ltr:text-right rtl:text-left'>
-                  <button type='submit' className='btn-success items-center text-center py-2 px-6 rounded-lg'>Guardar</button>
+                  <Button type='submit' text='Guardar' className='btn btn-success rounded-lg items-center text-center py-2 px-6' isLoading={isSubmitting} />
                 </div>
               </div>
             </form>

@@ -66,9 +66,14 @@ function FamiliarAcargoData ({ register, disabled, watch }) {
   }
 
   const handleDateChange = date => {
-    setPicker(date)
-    const formattedDate = date ? moment(date).format('DD/MM/YYYY') : ''
-    setFormData(prevData => ({ ...prevData, fecha_nacimiento: formattedDate }))
+    if (date) {
+      const formattedDate = moment(date).format('DD/MM/YYYY')
+      setFormData(prevData => ({ ...prevData, fecha_nacimiento: formattedDate }))
+      setPicker(date)
+    } else {
+      setFormData(prevData => ({ ...prevData, fecha_nacimiento: '' }))
+      setPicker(null)
+    }
   }
 
   const handleInputChange = e => {
@@ -139,10 +144,10 @@ function FamiliarAcargoData ({ register, disabled, watch }) {
                 Fecha de Nacimiento
               </label>
               <DatePicker
-                value={picker}
-                id='fecha_nacimiento'
-                placeholder='Ingrese la fecha de nacimiento'
+                selected={picker}
                 onChange={handleDateChange}
+                dateFormat='dd/MM/yyyy'
+                placeholderText='Ingrese la fecha de nacimiento'
                 disabled={disabled}
               />
               <input type='hidden' {...register('fecha_nacimiento')} />

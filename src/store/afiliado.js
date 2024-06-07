@@ -10,10 +10,11 @@ const initialState = {
   documentacion: [],
   subsidios: [],
   paginate: null,
-  activeAfiliado: null
+  activeAfiliado: null,
+  errorMessage: ''
 }
 
-export const categoriaSlice = createSlice({
+export const afiliadoSlice = createSlice({
   name: 'afiliado',
   initialState,
   reducers: {
@@ -84,6 +85,9 @@ export const categoriaSlice = createSlice({
       state.familiares = []
       state.documentacion = []
       state.subsidios = []
+    },
+    setErrorMessage: (state, { payload }) => {
+      state.errorMessage = payload
     }
   }
 })
@@ -105,7 +109,8 @@ export const {
   updateObraSocial,
   updateDatosLaborales,
   cleanActiveAfiliado,
-  cleanAfiliado
-} = categoriaSlice.actions
+  cleanAfiliado,
+  setErrorMessage
+} = afiliadoSlice.actions
 
-export default categoriaSlice.reducer
+export default afiliadoSlice.reducer
