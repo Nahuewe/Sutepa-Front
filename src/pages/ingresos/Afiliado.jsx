@@ -74,8 +74,8 @@ export const Afiliado = () => {
     navigate('/afiliados/crear')
   }
 
-  const showIngreso = (id) => {
-    startLoadingAfiliado(id).then(() => {
+  function showAfiliado (id) {
+    startLoadingActiveAfiliado(id).then(() => {
       navigate(`/afiliados/ver/${id}`)
     })
   }
@@ -181,7 +181,7 @@ export const Afiliado = () => {
                               <td className='table-td flex justify-start gap-2'>
                                 {/* Botones de acción */}
                                 <Tooltip content='Ver' placement='top' arrow animation='shift-away'>
-                                  <button className='bg-indigo-500 text-white p-2 rounded-lg hover:bg-blue-700' onClick={() => showIngreso(afiliado.id)}>
+                                  <button className='bg-indigo-500 text-white p-2 rounded-lg hover:bg-blue-700' onClick={() => showAfiliado(afiliado.id)}>
                                     <svg xmlns='http://www.w3.org/2000/svg' className='icon icon-tabler icon-tabler-eye' width='24' height='24' viewBox='0 0 24 24' strokeWidth='1.5' stroke='#ffffff' fill='none' strokeLinecap='round' strokeLinejoin='round'>
                                       <path stroke='none' d='M0 0h24v24H0z' fill='none' />
                                       <path d='M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0' />

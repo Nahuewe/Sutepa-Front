@@ -69,7 +69,7 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
   const handleCorreoElectronicoChange = (e) => {
     const value = e.target.value
     setCorreoElectronicoLaboral(value)
-    setValue('email', value)
+    setValue('email_laboral', value)
   }
 
   const handleTramoChange = (e) => {
@@ -91,7 +91,6 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
     if (agenciaId) {
       const response = await sutepaApi.get(`agencia/${agenciaId}`)
       const { data } = response.data
-      console.log(data)
       if (data && data.length > 0) {
         const domicilio = data[0].domicilio_trabajo || ''
         const telefono = data[0].telefono_laboral || ''
@@ -132,7 +131,7 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
       tramo_id: parseInt(watch('tramo_id')) || null,
       carga_horaria: watch('carga_horaria') || null,
       fecha_ingreso: picker ? moment(picker[0]).format('YYYY-MM-DD') : null,
-      email: watch('email') || null,
+      email_laboral: watch('email_laboral') || null,
       telefono_laboral: watch('telefono_laboral') || null
     }
     const filteredDatosLaborales = filterEmptyValues(datosLaborales)
@@ -241,7 +240,8 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
           <div>
             <Textinput
               label='Correo Electrónico Laboral'
-              name='email'
+              name='email_laboral'
+              type='email'
               register={register}
               placeholder='Ingrese el correo electrónico laboral'
               disabled={disabled}

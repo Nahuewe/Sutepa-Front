@@ -187,7 +187,7 @@ function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
 
           <div>
             <label htmlFor='default-picker' className='form-label'>
-              Fecha de Afiliacion
+              Fecha de Afiliación
             </label>
             <DatePicker
               value={picker}
@@ -314,6 +314,7 @@ function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
             label='Correo Electrónico'
             register={register}
             id='email'
+            type='email'
             placeholder='Ingrese el correo electrónico'
             value={correoElectronico}
             onChange={handleChange(setCorreoElectronico)}

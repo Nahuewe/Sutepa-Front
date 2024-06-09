@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom'
 export const useAfiliadoStore = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const { afiliados, paginate, activeAfiliado, persona, datos_laborales, obra_social, documentacion, familiares, subsidios } = useSelector(state => state.afiliado)
+  const { afiliados, paginate, activeAfiliado, persona, domicilio, datos_laborales, obra_social, documentacion, familiares, subsidios } = useSelector(state => state.afiliado)
 
   const startLoadingAfiliado = async (page) => {
     try {
@@ -30,11 +30,11 @@ export const useAfiliadoStore = () => {
     }
   }
 
-  const startSavingAfiliado = async (data) => {
+  const startSavingAfiliado = async () => {
     try {
       const afiliado = {
-        ...data,
         persona,
+        domicilio,
         datos_laborales,
         obra_social,
         documentacion,
@@ -43,7 +43,6 @@ export const useAfiliadoStore = () => {
       }
 
       const response = await sutepaApi.post('/personas', afiliado)
-      console.log(response)
       navigate('/afiliados')
       // dispatch(clearCargaActa())
 
@@ -58,7 +57,7 @@ export const useAfiliadoStore = () => {
         errorMessage = error.message
       }
 
-      console.error('Error saving ingreso:', errorMessage)
+      console.error('Error en la carga de Afiliado:', errorMessage)
       dispatch(setErrorMessage(errorMessage))
       toast.error(`No se pudo agregar los datos: ${errorMessage}`)
     }

@@ -180,8 +180,8 @@ export const UserForm = ({ fnAction, activeUser = null }) => {
 
             <Textinput
               name='telefono'
-              label='Telefono'
-              placeholder='Telefono'
+              label='Teléfono'
+              placeholder='Teléfono'
               register={register}
               error={errors.telefono}
             />

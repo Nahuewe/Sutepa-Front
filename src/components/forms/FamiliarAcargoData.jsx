@@ -14,7 +14,7 @@ import DatePicker from '../ui/DatePicker'
 const initialForm = {
   id: null,
   nombre_familiar: '',
-  fecha_nacimiento: '',
+  fecha_nacimiento_familiar: '',
   tipo_documento_familiar: '',
   documento: '',
   parentesco_id: ''
@@ -25,7 +25,7 @@ const tipoDocumento = [
   { id: 'PASAPORTE', nombre: 'PASAPORTE' }
 ]
 
-function FamiliarAcargoData ({ register, disabled, watch }) {
+function FamiliarAcargoData ({ register, disabled, watch, setValue }) {
   const dispatch = useDispatch()
   const { familiares } = useSelector(state => state.afiliado)
   const { user } = useSelector(state => state.auth)
@@ -58,6 +58,7 @@ function FamiliarAcargoData ({ register, disabled, watch }) {
       ...formData,
       id: idCounter,
       parentesco_id: parseInt(watch('parentesco_id')) || null,
+      fecha_nacimiento_familiar: picker ? moment(picker[0]).format('YYYY-MM-DD') : null,
       fecha_carga: moment().format('DD/MM/YYYY')
     }
     dispatch(onAddFamiliar(newFamiliar))
@@ -65,15 +66,13 @@ function FamiliarAcargoData ({ register, disabled, watch }) {
     onReset()
   }
 
-  const handleDateChange = date => {
-    if (date) {
-      const formattedDate = moment(date).format('DD/MM/YYYY')
-      setFormData(prevData => ({ ...prevData, fecha_nacimiento: formattedDate }))
-      setPicker(date)
-    } else {
-      setFormData(prevData => ({ ...prevData, fecha_nacimiento: '' }))
-      setPicker(null)
-    }
+  function formatDate (date) {
+    return date ? new Date(date).toLocaleDateString() : ''
+  }
+
+  const handleDateChange = (date) => {
+    setPicker(date)
+    setValue('fecha_nacimiento_familiar', date[0])
   }
 
   const handleInputChange = e => {
@@ -140,17 +139,16 @@ function FamiliarAcargoData ({ register, disabled, watch }) {
             </div>
 
             <div>
-              <label htmlFor='fecha_nacimiento' className='form-label'>
+              <label htmlFor='fecha_nacimiento_familiar' className='form-label'>
                 Fecha de Nacimiento
               </label>
               <DatePicker
                 selected={picker}
-                onChange={handleDateChange}
-                dateFormat='dd/MM/yyyy'
-                placeholderText='Ingrese la fecha de nacimiento'
+                onChange={(date) => handleDateChange(date, 'fecha_nacimiento_familiar')}
+                placeholder='Ingrese la fecha de nacimiento'
                 disabled={disabled}
               />
-              <input type='hidden' {...register('fecha_nacimiento')} />
+              <input type='hidden' {...register('fecha_nacimiento_familiar')} />
             </div>
 
             <SelectForm
@@ -212,7 +210,7 @@ function FamiliarAcargoData ({ register, disabled, watch }) {
                 <tr key={fam.id} className='bg-white dark:bg-gray-800 dark:border-gray-700'>
                   <td className='px-4 py-2 text-center dark:text-white'>{fam.fecha_carga}</td>
                   <td className='px-4 py-2 text-center dark:text-white'>{fam.nombre_familiar}</td>
-                  <td className='px-4 py-2 text-center dark:text-white'>{fam.fecha_nacimiento}</td>
+                  <td className='px-4 py-2 text-center dark:text-white'>{formatDate(fam.fecha_nacimiento_familiar)}</td>
                   <td className='px-4 py-2 text-center dark:text-white'>{fam.tipo_documento_familiar}</td>
                   <td className='px-4 py-2 text-center dark:text-white'>{fam.documento}</td>
                   <td className='px-4 py-2 text-center dark:text-white'>

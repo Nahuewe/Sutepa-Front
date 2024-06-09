@@ -30,6 +30,7 @@ function SubsidioData ({ disabled }) {
   const { user } = useSelector(state => state.auth)
   const formRef = useRef()
   const [subsidio, setSubsidio] = useState([])
+  const [idCounter, setIdCounter] = useState(0)
 
   function onChange ({ target }) {
     const { name, value } = target
@@ -115,7 +116,7 @@ function SubsidioData ({ disabled }) {
     const newSubsidio = {
       ...formData,
       fecha_carga: new Date(),
-      id: isEditing ? editingSubsidioId : Date.now(),
+      id: isEditing ? editingSubsidioId : idCounter,
       usuario_carga: user.nombre
     }
 
@@ -128,7 +129,7 @@ function SubsidioData ({ disabled }) {
     } else {
       setSubsidios((prevSubsidios) => [...prevSubsidios, newSubsidio])
     }
-
+    setIdCounter(idCounter + 1)
     dispatch(onAddSubsidio(newSubsidio))
     onReset()
   }

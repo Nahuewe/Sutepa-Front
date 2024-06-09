@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
-import { useAfiliadoStore } from '../../helpers'
+import { useAfiliadoStore } from '@/helpers'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 import DatosPersonalesData from '@/components/forms/DatosPersonalesData'
