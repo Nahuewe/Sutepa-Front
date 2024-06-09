@@ -31,49 +31,9 @@ export const Create = () => {
     register,
     formState: { errors, isSubmitting },
     handleSubmit,
-    reset,
     setValue,
     watch
   } = useForm({
-    defaultValues: {
-      agencia_id: activeAfiliado?.agencia_id || '',
-      agrupamiento_id: activeAfiliado?.agrupamiento_id || '',
-      apellido: activeAfiliado?.apellido || '',
-      carga_horaria: activeAfiliado?.carga_horaria || '',
-      codigo_postal: activeAfiliado?.codigo_postal || '',
-      cuil: activeAfiliado?.cuil || '',
-      dni: activeAfiliado?.dni || '',
-      domicilio: activeAfiliado?.domicilio || '',
-      domicilio_trabajo: activeAfiliado?.domicilio_trabajo || '',
-      email: activeAfiliado?.email || '',
-      email_laboral: activeAfiliado?.email_laboral || '',
-      fecha_afiliacion: activeAfiliado?.fecha_afiliacion || '',
-      fecha_ingreso: activeAfiliado?.fecha_ingreso || '',
-      fecha_nacimiento: activeAfiliado?.fecha_nacimiento || '',
-      fecha_otorgamiento: activeAfiliado?.fecha_otorgamiento || '',
-      fecha_solicitud: activeAfiliado?.fecha_solicitud || '',
-      legajo: activeAfiliado?.legajo || '',
-      localidad_id: activeAfiliado?.localidad || '',
-      nacionalidad_id: activeAfiliado?.nacionalidad_id || '',
-      nombre: activeAfiliado?.nombre || '',
-      nombre_familiar: activeAfiliado?.nombre_familiar || '',
-      obra_social: activeAfiliado?.obra_social || '',
-      observaciones: activeAfiliado?.observaciones || '',
-      parentesco: activeAfiliado?.parentesco || '',
-      provincia_id: activeAfiliado?.provincia_id || '',
-      seccional_id: activeAfiliado?.seccional_id || '',
-      sexo_id: activeAfiliado?.sexo_id || '',
-      telefono: activeAfiliado?.telefono || '',
-      telefono_laboral: activeAfiliado?.telefono_laboral || '',
-      tipo_archivo: activeAfiliado?.tipo_archivo || '',
-      tipo_documento_familiar: activeAfiliado?.tipo_documento_familiar || '',
-      tipo_contrato: activeAfiliado?.tipo_contrato || '',
-      tipo_documento: activeAfiliado?.tipo_documento || '',
-      tipo_obra: activeAfiliado?.tipo_obra || '',
-      tipo_subsidio: activeAfiliado?.tipo_subsidio || '',
-      tramo_id: activeAfiliado?.tramo_id || '',
-      ugl_id: activeAfiliado?.ugl_id || ''
-    },
     resolver: yupResolver(FormValidationSchema)
   })
 
@@ -83,18 +43,7 @@ export const Create = () => {
     } else {
       await startUpdateAfiliado(afiliado)
     }
-
-    reset()
-    // navigate('/afiliados')
   }
-
-  useEffect(() => {
-    if (activeAfiliado) {
-      Object.entries(activeAfiliado).forEach(([key, value]) => {
-        setValue(key, value)
-      })
-    }
-  }, [activeAfiliado, setValue])
 
   async function loadingAfiliado (page = 1) {
     !isLoading && setIsLoading(true)
@@ -106,6 +55,15 @@ export const Create = () => {
   useEffect(() => {
     loadingAfiliado()
   }, [])
+
+  useEffect(() => {
+    if (activeAfiliado) {
+      console.log('Cargando datos de activeAfiliado:', activeAfiliado)
+      Object.entries(activeAfiliado).forEach(([key, value]) => {
+        setValue(key, value)
+      })
+    }
+  }, [activeAfiliado, setValue])
 
   return (
     <>

@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import React, { useState, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { sutepaApi } from '../../api'
@@ -89,20 +90,23 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
   const handleAgenciaChange = async (e) => {
     const agenciaId = e.target.value
     if (agenciaId) {
-      const response = await sutepaApi.get(`agencia/${agenciaId}`)
-      const { data } = response.data
-      if (data && data.length > 0) {
-        const domicilio = data[0].domicilio_trabajo || ''
-        const telefono = data[0].telefono_laboral || ''
-        setValue('domicilio_trabajo', domicilio)
-        setValue('telefono_laboral', telefono)
-        setDomicilioTrabajo(domicilio)
-        setTelefonoLaboral(telefono)
-      } else {
-        setValue('domicilio_trabajo', '')
-        setValue('telefono_laboral', '')
-        setDomicilioTrabajo('')
-        setTelefonoLaboral('')
+      try {
+        const response = await sutepaApi.get(`agenciaDatos/${agenciaId}`)
+        const { data } = response.data
+        if (data) {
+          const { domicilio_trabajo, telefono_laboral } = data
+          setDomicilioTrabajo(domicilio_trabajo)
+          setTelefonoLaboral(telefono_laboral)
+          setValue('domicilio_trabajo', domicilio_trabajo)
+          setValue('telefono_laboral', telefono_laboral)
+        } else {
+          setDomicilioTrabajo('')
+          setTelefonoLaboral('')
+          setValue('domicilio_trabajo', '')
+          setValue('telefono_laboral', '')
+        }
+      } catch (error) {
+        console.error('Error fetching agency data:', error)
       }
     }
   }
@@ -136,7 +140,7 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
     }
     const filteredDatosLaborales = filterEmptyValues(datosLaborales)
     dispatch(updateDatosLaborales(filteredDatosLaborales))
-  }, [watch, picker, dispatch])
+  }, [watch, picker, dispatch, watch('email_laboral')])
 
   return (
     <>
@@ -255,7 +259,7 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
               label='Teléfono de Trabajo'
               name='telefono_laboral'
               register={register}
-              placeholder='Ingrese el teléfono laboral'
+              placeholder='Ingrese el teléfono de trabajo'
               disabled
               value={telefonoLaboral}
               onChange={(e) => {

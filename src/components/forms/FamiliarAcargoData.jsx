@@ -14,7 +14,6 @@ import DatePicker from '../ui/DatePicker'
 const initialForm = {
   id: null,
   nombre_familiar: '',
-  fecha_nacimiento_familiar: '',
   tipo_documento_familiar: '',
   documento: '',
   parentesco_id: ''
@@ -143,8 +142,9 @@ function FamiliarAcargoData ({ register, disabled, watch, setValue }) {
                 Fecha de Nacimiento
               </label>
               <DatePicker
-                selected={picker}
-                onChange={(date) => handleDateChange(date, 'fecha_nacimiento_familiar')}
+                value={picker}
+                id='fecha_nacimiento_familiar'
+                onChange={handleDateChange}
                 placeholder='Ingrese la fecha de nacimiento'
                 disabled={disabled}
               />

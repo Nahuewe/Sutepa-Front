@@ -109,7 +109,8 @@ export const ShowAfiliado = () => {
     XLSX.utils.book_append_sheet(wb, familiaresSheet, 'Familiares')
     XLSX.utils.book_append_sheet(wb, subsidiosSheet, 'Subsidios')
 
-    XLSX.writeFile(wb, 'AfiliadoData.xlsx')
+    const fileName = `Datos del Afiliado ${activeAfiliado.persona.nombre} ${activeAfiliado.persona.apellido}.xlsx`
+    XLSX.writeFile(wb, fileName)
   }
 
   return (
@@ -270,8 +271,8 @@ export const ShowAfiliado = () => {
                   </tr>
                 </thead>
                 <tbody className='divide-y dark:divide-gray-700'>
-                  {activeAfiliado.documentaciones.map((documento, index) => (
-                    <tr key={index} className='bg-white dark:bg-gray-800 dark:border-gray-700'>
+                  {activeAfiliado.documentaciones.map(documento => (
+                    <tr key={documento.id} className='bg-white dark:bg-gray-800 dark:border-gray-700'>
                       <td className='px-4 py-2 whitespace-nowrap font-medium text-gray-900 dark:text-white text-center'>
                         {tipoDocumentoNombres[documento.tipo_documento_id] || 'Desconocido'}
                       </td>
@@ -287,8 +288,6 @@ export const ShowAfiliado = () => {
             </div>
           </div>
         )}
-
-        {/* Tabla de Familiares */}
 
         {activeAfiliado.familiares && activeAfiliado.familiares.length > 0 && (
           <div>
@@ -313,9 +312,7 @@ export const ShowAfiliado = () => {
                       <td className='px-4 py-2 text-center dark:text-white'>{formatDate(fam.fecha_nacimiento_familiar)}</td>
                       <td className='px-4 py-2 text-center dark:text-white'>{tipoDocumento[fam.tipo_documento_familiar] || ''}</td>
                       <td className='px-4 py-2 text-center dark:text-white'>{fam.documento}</td>
-                      <td className='px-4 py-2 text-center dark:text-white'>
-                        {getParentescoNameById(fam.parentesco_id)}
-                      </td>
+                      <td className='px-4 py-2 text-center dark:text-white'>{getParentescoNameById(fam.parentesco_id)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -323,8 +320,6 @@ export const ShowAfiliado = () => {
             </div>
           </div>
         )}
-
-        {/* Tabla de Subsidios */}
 
         {activeAfiliado.subsidios && activeAfiliado.subsidios.length > 0 && (
           <div>
@@ -342,8 +337,8 @@ export const ShowAfiliado = () => {
                   </tr>
                 </thead>
                 <tbody className='divide-y dark:divide-gray-700'>
-                  {activeAfiliado.subsidios.map((subsidio, index) => (
-                    <tr key={index} className='bg-white dark:bg-gray-800 dark:border-gray-700'>
+                  {activeAfiliado.subsidios.map(subsidio => (
+                    <tr key={subsidio.id} className='bg-white dark:bg-gray-800 dark:border-gray-700'>
                       <td className='px-4 py-2 text-center dark:text-white'>{getTipoSubsidioNombre(subsidio.tipo_subsidio_id)}</td>
                       <td className='px-4 py-2 text-center dark:text-white'>{formatDate(subsidio.fecha_solicitud)}</td>
                       <td className='px-4 py-2 text-center dark:text-white'>{formatDate(subsidio.fecha_otorgamiento)}</td>

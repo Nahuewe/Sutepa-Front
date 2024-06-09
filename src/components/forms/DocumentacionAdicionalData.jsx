@@ -23,6 +23,7 @@ function DocumentacionAdicionalData ({ register, disabled }) {
   const formRef = useRef()
   const [archivoOptions, setArchivoOptions] = useState([])
   const [idCounter, setIdCounter] = useState(0)
+  const { activeAfiliado } = useSelector(state => state.afiliado)
 
   const handleArchivo = async () => {
     try {
@@ -37,6 +38,15 @@ function DocumentacionAdicionalData ({ register, disabled }) {
   useEffect(() => {
     handleArchivo()
   }, [])
+
+  useEffect(() => {
+    // Si hay un afiliado activo, establecer los documentos asociados
+    if (activeAfiliado) {
+      setDocumentos(activeAfiliado.documentacion || [])
+    } else {
+      setDocumentos([]) // Limpiar los documentos si no hay afiliado activo
+    }
+  }, [activeAfiliado])
 
   const handleInputChange = (e) => {
     const { name, value, files } = e.target

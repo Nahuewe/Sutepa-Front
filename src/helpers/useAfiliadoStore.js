@@ -67,8 +67,10 @@ export const useAfiliadoStore = () => {
     try {
       const { id } = activeAfiliado
       const response = await sutepaApi.put(`/personas/${id}`)
-      const { data } = response
+      const { data } = response.data
       dispatch(onUpdateAfiliado(data))
+      dispatch(setActiveAfiliado(data)) // Asegurar que el activeAfiliado se actualice con los nuevos datos
+      navigate('/afiliados')
 
       toast.success('Afiliado editado con éxito')
     } catch (error) {

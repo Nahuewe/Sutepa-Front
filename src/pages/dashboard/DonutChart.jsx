@@ -1,13 +1,15 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import Chart from 'react-apexcharts'
 import useDarkMode from '@/hooks/useDarkMode'
 import Card from '@/components/ui/Card'
+import * as htmlToImage from 'html-to-image'
 
 const DonutChart = ({ afiliados, height = 350 }) => {
   const [isDark] = useDarkMode()
   const [chartType, setChartType] = useState('active')
   const [series, setSeries] = useState([0, 0])
   const [totalAfiliados, setTotalAfiliados] = useState(0)
+  const chartRef = useRef(null)
 
   useEffect(() => {
     if (afiliados) {
@@ -81,15 +83,32 @@ const DonutChart = ({ afiliados, height = 350 }) => {
     return color + _opacity.toString(16).toUpperCase()
   }
 
+  const downloadChart = () => {
+    if (chartRef.current) {
+      htmlToImage.toPng(chartRef.current)
+        .then(function (dataUrl) {
+          const link = document.createElement('a')
+          link.download = 'AfiliadosTotales.png'
+          link.href = dataUrl
+          link.click()
+        })
+    }
+  }
+
   return (
     <Card>
+      <div className={`flex justify-end ${isDark ? 'dark' : ''}`}>
+        <button className={`btn ${isDark ? 'btn-dark' : 'btn-light'}`} onClick={downloadChart}>Descargar</button>
+      </div>
       <h4>Total de afiliados</h4>
       <p className='mt-2'>Cantidad: {totalAfiliados}</p>
       <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', marginBottom: '8px', marginTop: '8px' }}>
         <button className={`btn btn-${chartType === 'active' ? 'primary' : 'primary'}`} style={{ backgroundColor: chartType === 'active' ? activeColor : '' }} onClick={() => setChartType('active')}>Afiliados activos</button>
         <button className={`btn btn-${chartType === 'inactive' ? 'danger' : 'danger'}`} style={{ backgroundColor: chartType === 'inactive' ? inactiveColor : '' }} onClick={() => setChartType('inactive')}>Afiliados dados de baja</button>
       </div>
-      <Chart options={options} series={series} type='pie' height={height} />
+      <div ref={chartRef}>
+        <Chart options={options} series={series} type='pie' height={height} />
+      </div>
     </Card>
   )
 }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import Card from '@/components/ui/Card'
 import Textinput from '@/components/ui/Textinput'
 import Numberinput from '@/components/ui/Numberinput'
@@ -35,6 +35,8 @@ function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
   const [nacionalidad, setNacionalidad] = useState([])
   const [sexo, setSexo] = useState([])
 
+  const { activeAfiliado } = useSelector(state => state.afiliado)
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -52,6 +54,32 @@ function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
     }
     fetchData()
   }, [])
+
+  useEffect(() => {
+    if (activeAfiliado) {
+      setValue('legajo', activeAfiliado.legajo)
+      setValue('fecha_afiliacion', activeAfiliado.fecha_afiliacion ? moment(activeAfiliado.fecha_afiliacion).toDate() : null)
+      setValue('nombre', activeAfiliado.nombre)
+      setValue('apellido', activeAfiliado.apellido)
+      setValue('sexo_id', activeAfiliado.sexo_id)
+      setValue('fecha_nacimiento', activeAfiliado.fecha_nacimiento ? moment(activeAfiliado.fecha_nacimiento).toDate() : null)
+      setValue('estado_civil_id', activeAfiliado.estado_civil_id)
+      setValue('tipo_documento', activeAfiliado.tipo_documento)
+      setValue('dni', activeAfiliado.dni)
+      setValue('cuil', activeAfiliado.cuil)
+      setValue('email', activeAfiliado.email)
+      setValue('telefono', activeAfiliado.telefono)
+      setValue('nacionalidad_id', activeAfiliado.nacionalidad_id)
+
+      setLegajo(activeAfiliado.legajo || '')
+      setPicker(activeAfiliado.fecha_afiliacion ? [moment(activeAfiliado.fecha_afiliacion).toDate()] : null)
+      setPicker2(activeAfiliado.fecha_nacimiento ? [moment(activeAfiliado.fecha_nacimiento).toDate()] : null)
+      setDni(activeAfiliado.dni || '')
+      setCuil(activeAfiliado.cuil || '')
+      setCorreoElectronico(activeAfiliado.email || '')
+      setTelefono(activeAfiliado.telefono || '')
+    }
+  }, [activeAfiliado, setValue])
 
   // Función para manejar el envío de datos al store de Redux
   const handleUpdatePersona = () => {

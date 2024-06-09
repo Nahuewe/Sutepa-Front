@@ -81,13 +81,15 @@ export const Afiliado = () => {
   }
 
   function onEdit (id) {
-    startLoadingActiveAfiliado(id)
-    navigate(`/afiliados/editar/${id}`)
+    startLoadingActiveAfiliado(id).then(() => {
+      navigate(`/afiliados/editar/${id}`)
+    })
   }
 
   function onDelete (id) {
-    startLoadingActiveAfiliado(id)
-    dispatch(handleShowDelete())
+    startLoadingActiveAfiliado(id).then(() => {
+      dispatch(handleShowDelete())
+    })
   }
 
   async function onSearch ({ target: { value } }) {
