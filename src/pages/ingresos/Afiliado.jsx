@@ -8,6 +8,7 @@ import Pagination from '@/components/ui/Pagination'
 import Loading from '@/components/Loading'
 import { DeleteModal } from '@/components/ui/DeleteModal'
 import { handleShowDelete } from '@/store/layout'
+import * as XLSX from 'xlsx'
 
 const columns = [
   {
@@ -110,6 +111,14 @@ export const Afiliado = () => {
     loadingAfiliado()
   }, [])
 
+  // Función para exportar los datos a Excel
+  const exportToExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(afiliados)
+    const workbook = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Afiliados')
+    XLSX.writeFile(workbook, 'afiliados.xlsx')
+  }
+
   return (
     <>
       {
@@ -138,8 +147,15 @@ export const Afiliado = () => {
                   />
                   <button
                     type='button'
+                    onClick={exportToExcel}
+                    className='bg-green-500 hover:bg-green-700 text-white items-center text-center py-2 px-6 rounded-lg'
+                  >
+                    Exportar
+                  </button>
+                  <button
+                    type='button'
                     onClick={addAfiliado}
-                    className='bg-red-600 text-white items-center text-center py-2 px-6 rounded-lg'
+                    className='bg-red-600 hover:bg-red-800 text-white items-center text-center py-2 px-6 rounded-lg'
                   >
                     Agregar
                   </button>

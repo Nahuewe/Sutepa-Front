@@ -23,12 +23,10 @@ const Select = ({
   size,
   ...rest
 }) => {
-  options = options || Array(3).fill('option')
+  options = options || Array(3).fill('option') // Asegúrate de que `options` esté en el formato correcto
 
   return (
-    <div
-      className={`formGroup ${error ? 'has-error' : ''} ${horizontal ? 'flex' : ''} ${validate ? 'is-valid' : ''}`}
-    >
+    <div className={`formGroup ${error ? 'has-error' : ''} ${horizontal ? 'flex' : ''} ${validate ? 'is-valid' : ''}`}>
       {label && (
         <label
           htmlFor={id}
@@ -71,38 +69,6 @@ const Select = ({
             ))}
           </select>
         )}
-        {!name && (
-          <select
-            onChange={onChange}
-            className={`${error ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600'} ${error ? 'has-error' : ''} form-control py-2 ${className} dark:text-white dark:placeholder-white placeholder-black-900`}
-            readOnly={readonly}
-            disabled={disabled}
-            id={id}
-            size={size}
-          >
-            {/* Primera opción como placeholder */}
-            <option value='' disabled>
-              {placeholder}
-            </option>
-            {/* Mapeo de opciones */}
-            {options.map((option, i) => (
-              <Fragment key={i}>
-                {option.value && option.label
-                  ? (
-                    <option key={i} value={option.value}>
-                      {option.label}
-                    </option>
-                    )
-                  : (
-                    <option key={i} value={option}>
-                      {option}
-                    </option>
-                    )}
-              </Fragment>
-            ))}
-          </select>
-        )}
-
         {/* icon */}
         <div className='flex text-xl absolute ltr:right-[14px] rtl:left-[14px] top-1/2 -translate-y-1/2 space-x-1 rtl:space-x-reverse'>
           <span className=' relative -right-2 inline-block text-slate-900 dark:text-slate-300 pointer-events-none'>
