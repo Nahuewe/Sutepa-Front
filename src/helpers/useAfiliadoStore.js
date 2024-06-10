@@ -66,10 +66,10 @@ export const useAfiliadoStore = () => {
   const startUpdateAfiliado = async () => {
     try {
       const { id } = activeAfiliado
-      const response = await sutepaApi.put(`/personas/${id}`)
+      const response = await sutepaApi.put(`/personas/1`)
       const { data } = response.data
       dispatch(onUpdateAfiliado(data))
-      dispatch(setActiveAfiliado(data)) // Asegurar que el activeAfiliado se actualice con los nuevos datos
+      dispatch(setActiveAfiliado(data))
       navigate('/afiliados')
 
       toast.success('Afiliado editado con éxito')
@@ -81,9 +81,11 @@ export const useAfiliadoStore = () => {
   const startDeleteAfiliado = async () => {
     try {
       const { id } = activeAfiliado
-      const response = await sutepaApi.delete(`/personas/${id}`)
+      const response = await sutepaApi.delete(`/personas/1`)
       const { data } = response
       dispatch(onDeleteAfiliado(data))
+      dispatch(setActiveAfiliado(data))
+      startLoadingAfiliado()
 
       toast.success('Afiliado dado de baja con éxito')
     } catch (error) {

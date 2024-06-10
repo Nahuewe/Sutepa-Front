@@ -3,7 +3,7 @@ import { useAfiliadoStore } from '@/helpers'
 import { Card } from 'flowbite-react'
 import * as XLSX from 'xlsx'
 import { useNavigate } from 'react-router-dom'
-import { tipoDocumento, tipoDocumentoNombres, formatDate, getParentescoNameById, getTipoSubsidioNombre, getTipoEstadoCivil, getTipoNacionalidad, getTipoProvincia, getTipoSexo } from '@/constant/datos-id'
+import { formatDate, getTipoContrato } from '@/constant/datos-id'
 
 export const ShowAfiliado = () => {
   const { activeAfiliado } = useAfiliadoStore()
@@ -19,15 +19,15 @@ export const ShowAfiliado = () => {
             Nombre: activeAfiliado.persona.nombre,
             Apellido: activeAfiliado.persona.apellido,
             'Correo Electrónico': activeAfiliado.persona.email,
-            'Tipo de Documento': tipoDocumento[activeAfiliado.persona.tipo_documento] || '',
+            'Tipo de Documento': activeAfiliado.persona.tipo_documento || '',
             DNI: activeAfiliado.persona.dni,
             CUIL: activeAfiliado.persona.cuil,
             Teléfono: activeAfiliado.persona.telefono,
-            Sexo: getTipoSexo(activeAfiliado.persona.sexo_id),
+            Sexo: activeAfiliado.persona.sexo,
             'Fecha de Nacimiento': formatDate(activeAfiliado.persona.fecha_nacimiento),
             'Fecha de Afiliación': formatDate(activeAfiliado.persona.fecha_afiliacion),
-            'Estado Civil': getTipoEstadoCivil(activeAfiliado.persona.estado_civil_id),
-            Nacionalidad: getTipoNacionalidad(activeAfiliado.persona.nacionalidad_id)
+            'Estado Civil': activeAfiliado.persona.estado_civil,
+            Nacionalidad: activeAfiliado.persona.nacionalidad
           }
         ]
       : []
@@ -36,8 +36,8 @@ export const ShowAfiliado = () => {
       ? [
           {
             Domicilio: activeAfiliado.domicilios.domicilio,
-            Provincia: getTipoProvincia(activeAfiliado.domicilios.provincia_id),
-            Localidad: activeAfiliado.domicilios.localidad_id,
+            Provincia: activeAfiliado.domicilios.provincia,
+            Localidad: activeAfiliado.domicilios.localidad,
             'Código Postal': activeAfiliado.domicilios.codigo_postal
           }
         ]
@@ -46,12 +46,12 @@ export const ShowAfiliado = () => {
     const datosLaboralesData = activeAfiliado.datos_laborales
       ? [
           {
-            'Tipo de Contrato': activeAfiliado.datos_laborales.tipo_contrato_id,
+            'Tipo de Contrato': getTipoContrato(activeAfiliado.datos_laborales.tipo_contrato_id),
             UGL: activeAfiliado.datos_laborales.ugl_id,
-            Agencia: activeAfiliado.datos_laborales.agencia_id,
-            'Domicilio de Trabajo': activeAfiliado.datos_laborales.domicilio_trabajo,
-            Seccional: activeAfiliado.datos_laborales.seccional_id,
-            Agrupamiento: activeAfiliado.datos_laborales.agrupamiento_id,
+            Agencia: activeAfiliado.datos_laborales.agencia,
+            'Domicilio de Trabajo': activeAfiliado.datos_laborales.domicilio,
+            Seccional: activeAfiliado.datos_laborales.seccional,
+            Agrupamiento: activeAfiliado.datos_laborales.agrupamiento,
             Tramo: activeAfiliado.datos_laborales.tramo_id,
             'Carga Horaria': activeAfiliado.datos_laborales.carga_horaria,
             'Fecha de Ingreso': formatDate(activeAfiliado.datos_laborales.fecha_ingreso),
@@ -71,21 +71,21 @@ export const ShowAfiliado = () => {
       : []
 
     const documentacionesData = activeAfiliado.documentaciones.map(doc => ({
-      'Tipo de Archivo': tipoDocumentoNombres[doc.tipo_documento_id] || '',
+      'Tipo de Archivo': doc.tipo_documento || '',
       'Nombre de Archivo': doc.archivo
     }))
 
     const familiaresData = activeAfiliado.familiares.map(fam => ({
       'Nombre y Apellido': fam.nombre_familiar,
       'Fecha de Nacimiento': formatDate(fam.fecha_nacimiento_familiar),
-      'Tipo de Documento': tipoDocumento[fam.tipo_documento_familiar] || '',
+      'Tipo de Documento': fam.tipo_documento_familiar || '',
       Documento: fam.documento,
-      Parentesco: getParentescoNameById(fam.parentesco_id)
+      Parentesco: fam.parentesco
     }))
 
     const subsidiosData = activeAfiliado.subsidios
       ? activeAfiliado.subsidios.map(subsidio => ({
-        'Tipo de Subsidio': getTipoSubsidioNombre(subsidio.tipo_subsidio_id),
+        'Tipo de Subsidio': subsidio.tipo_subsidio,
         'Fecha de Solicitud': formatDate(subsidio.fecha_solicitud),
         'Fecha de Otorgamiento': formatDate(subsidio.fecha_otorgamiento),
         Observaciones: subsidio.observaciones
@@ -150,7 +150,7 @@ export const ShowAfiliado = () => {
                 <strong>Teléfono:</strong> {activeAfiliado.persona.telefono}
               </div>
               <div className='border-b py-2 px-4'>
-                <strong>Sexo:</strong> {getTipoSexo(activeAfiliado.persona.sexo_id)}
+                <strong>Sexo:</strong> {activeAfiliado.persona.sexo}
               </div>
               <div className='border-b py-2 px-4'>
                 <strong>Fecha de Nacimiento:</strong> {formatDate(activeAfiliado.persona.fecha_nacimiento)}
@@ -159,10 +159,10 @@ export const ShowAfiliado = () => {
                 <strong>Fecha de Afiliación:</strong> {formatDate(activeAfiliado.persona.fecha_afiliacion)}
               </div>
               <div className='border-b py-2 px-4'>
-                <strong>Estado Civil:</strong> {getTipoEstadoCivil(activeAfiliado.persona.estado_civil_id)}
+                <strong>Estado Civil:</strong> {activeAfiliado.persona.estado_civil}
               </div>
               <div className='border-b py-2 px-4'>
-                <strong>Nacionalidad:</strong> {getTipoNacionalidad(activeAfiliado.persona.nacionalidad_id)}
+                <strong>Nacionalidad:</strong> {activeAfiliado.persona.nacionalidad}
               </div>
             </div>
           </div>
@@ -180,10 +180,10 @@ export const ShowAfiliado = () => {
                 <strong>Domicilio:</strong> {activeAfiliado.domicilios.domicilio}
               </div>
               <div className='border-b py-2 px-4'>
-                <strong>Provincia:</strong> {getTipoProvincia(activeAfiliado.domicilios.provincia_id)}
+                <strong>Provincia:</strong> {activeAfiliado.domicilios.provincia}
               </div>
               <div className='border-b py-2 px-4'>
-                <strong>localidad:</strong> {activeAfiliado.domicilios.localidad_id}
+                <strong>localidad:</strong> {activeAfiliado.domicilios.localidad}
               </div>
               <div className='border-b py-2 px-4'>
                 <strong>Codigo Postal:</strong> {activeAfiliado.domicilios.codigo_postal}
@@ -201,25 +201,25 @@ export const ShowAfiliado = () => {
             </h4>
             <div className='grid grid-cols-1 md:grid-cols-2 gap-4 p-4'>
               <div className='border-b py-2 px-4'>
-                <strong>Tipo de Contrato:</strong> {activeAfiliado.datos_laborales.tipo_contrato_id}
+                <strong>Tipo de Contrato:</strong> {getTipoContrato(activeAfiliado.datos_laborales.tipo_contrato_id)}
               </div>
               <div className='border-b py-2 px-4'>
-                <strong>UGL:</strong> {activeAfiliado.datos_laborales.ugl_id}
+                <strong>UGL:</strong> {activeAfiliado.datos_laborales.ugl}
               </div>
               <div className='border-b py-2 px-4'>
-                <strong>Agencia:</strong> {activeAfiliado.datos_laborales.agencia_id}
+                <strong>Agencia:</strong> {activeAfiliado.datos_laborales.agencia}
               </div>
               <div className='border-b py-2 px-4'>
-                <strong>Domicilio de Trabajo:</strong> {activeAfiliado.datos_laborales.domicilio_trabajo}
+                <strong>Domicilio de Trabajo:</strong> {activeAfiliado.datos_laborales.domicilio}
               </div>
               <div className='border-b py-2 px-4'>
-                <strong>Seccional:</strong> {activeAfiliado.datos_laborales.seccional_id}
+                <strong>Seccional:</strong> {activeAfiliado.datos_laborales.seccional}
               </div>
               <div className='border-b py-2 px-4'>
-                <strong>Agrupamiento:</strong> {activeAfiliado.datos_laborales.agrupamiento_id}
+                <strong>Agrupamiento:</strong> {activeAfiliado.datos_laborales.agrupamiento}
               </div>
               <div className='border-b py-2 px-4'>
-                <strong>Tramo:</strong> {activeAfiliado.datos_laborales.tramo_id}
+                <strong>Tramo:</strong> {activeAfiliado.datos_laborales.tramo}
               </div>
               <div className='border-b py-2 px-4'>
                 <strong>Carga Horaria:</strong> {activeAfiliado.datos_laborales.carga_horaria}
@@ -274,7 +274,7 @@ export const ShowAfiliado = () => {
                   {activeAfiliado.documentaciones.map(documento => (
                     <tr key={documento.id} className='bg-white dark:bg-gray-800 dark:border-gray-700'>
                       <td className='px-4 py-2 whitespace-nowrap font-medium text-gray-900 dark:text-white text-center'>
-                        {tipoDocumentoNombres[documento.tipo_documento_id] || 'Desconocido'}
+                        {documento.tipo_documento || 'Desconocido'}
                       </td>
                       <td className='px-4 py-2 text-center dark:text-white'>
                         <a href={documento.url} target='_blank' rel='noopener noreferrer' className='text-blue-500 underline'>
@@ -310,9 +310,9 @@ export const ShowAfiliado = () => {
                     <tr key={fam.id} className='bg-white dark:bg-gray-800 dark:border-gray-700'>
                       <td className='px-4 py-2 text-center dark:text-white'>{fam.nombre_familiar}</td>
                       <td className='px-4 py-2 text-center dark:text-white'>{formatDate(fam.fecha_nacimiento_familiar)}</td>
-                      <td className='px-4 py-2 text-center dark:text-white'>{tipoDocumento[fam.tipo_documento_familiar] || ''}</td>
+                      <td className='px-4 py-2 text-center dark:text-white'>{fam.tipo_documento_familiar || ''}</td>
                       <td className='px-4 py-2 text-center dark:text-white'>{fam.documento}</td>
-                      <td className='px-4 py-2 text-center dark:text-white'>{getParentescoNameById(fam.parentesco_id)}</td>
+                      <td className='px-4 py-2 text-center dark:text-white'>{fam.parentesco}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -339,7 +339,7 @@ export const ShowAfiliado = () => {
                 <tbody className='divide-y dark:divide-gray-700'>
                   {activeAfiliado.subsidios.map(subsidio => (
                     <tr key={subsidio.id} className='bg-white dark:bg-gray-800 dark:border-gray-700'>
-                      <td className='px-4 py-2 text-center dark:text-white'>{getTipoSubsidioNombre(subsidio.tipo_subsidio_id)}</td>
+                      <td className='px-4 py-2 text-center dark:text-white'>{subsidio.tipo_subsidio}</td>
                       <td className='px-4 py-2 text-center dark:text-white'>{formatDate(subsidio.fecha_solicitud)}</td>
                       <td className='px-4 py-2 text-center dark:text-white'>{formatDate(subsidio.fecha_otorgamiento)}</td>
                       <td className='px-4 py-2 text-center dark:text-white'>{subsidio.observaciones}</td>

@@ -41,7 +41,7 @@ function LoginForm () {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className='relative'>
+    <form onSubmit={handleSubmit(onSubmit)} className='relative space-y-2'>
       <Textinput
         name='username'
         label='usuario'
