@@ -207,6 +207,7 @@ function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
             <DatePicker
               value={picker}
               id='fecha_afiliacion'
+              className='mayuscula'
               placeholder='Seleccione la fecha de afiliación'
               onChange={(date) => handleDateChange(date, 'fecha_afiliacion')}
               disabled={disabled}
@@ -222,6 +223,7 @@ function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
             <Textinput
               name='nombre'
               type='text'
+              className='mayuscula'
               register={register}
               placeholder='Ingrese el nombre'
               error={errors.nombre}
@@ -237,6 +239,7 @@ function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
             <Textinput
               name='apellido'
               type='text'
+              className='mayuscula'
               register={register}
               placeholder='Ingrese el apellido'
               error={errors.apellido}

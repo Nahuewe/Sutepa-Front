@@ -97,7 +97,7 @@ function LoginForm () {
             )}
       </button>
 
-      <button className='btn btn-primary block w-full text-center mt-2'>Iniciar Sesión</button>
+      <button className='btn bg-red-600 hover:bg-red-800 block w-full text-center mt-2 text-white'>Iniciar Sesión</button>
     </form>
   )
 }

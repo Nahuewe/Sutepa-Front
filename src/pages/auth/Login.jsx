@@ -1,7 +1,7 @@
 import React from 'react'
 import LoginForm from '@/components/sutepa/auth/login-form'
 import { ToastContainer } from 'react-toastify'
-import Illustration from '@/assets/images/auth/imagen-login.jpg'
+import Illustration from '@/assets/images/auth/designer.mp4'
 import LogoSutepa from '@/assets/images/logo/favicon-sutepa.png'
 
 const Login = () => {
@@ -13,10 +13,14 @@ const Login = () => {
           <div className='left-column relative z-[1]'>
 
             <div className='h-full w-full pointer-events-none'>
-              <img
+              <video
                 src={Illustration}
                 alt='Imagen de SUTEPA'
                 className='h-full w-full'
+                controls
+                autoPlay
+                muted
+                loop
               />
             </div>
 
@@ -34,7 +38,8 @@ const Login = () => {
                 <LoginForm />
               </div>
               <div className='auth-footer text-center'>
-                Copyright &copy; <span>{(new Date().getFullYear())}</span><a target='_blank' rel='noreferrer' className='animate--text dark:animate--text--dark' href='https://linktr.ee/Nahuel_Soria_Parodi'> → Nahuel Soria Parodi - Todos los derechos reservados ← </a>
+                Copyright &copy; <span>{(new Date().getFullYear())} SUTEPA</span>
+                {/* <a target='_blank' rel='noreferrer' className='animate--text dark:animate--text--dark' href='https://linktr.ee/Nahuel_Soria_Parodi'> → Nahuel Soria Parodi - Todos los derechos reservados ← </a> */}
               </div>
             </div>
           </div>

@@ -81,6 +81,7 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
           <Textinput
             name='domicilio'
             label='Domicilio'
+            className='mayuscula'
             register={register}
             placeholder='Ingrese el domicilio'
             disabled={disabled}

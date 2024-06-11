@@ -14,7 +14,7 @@ const FormValidationSaving = yup
     apellido: yup.string().required('El apellido es requerido'),
     username: yup.string().required('El usuario es requerido'),
     password: yup.string().required('La contraseña es requerida'),
-    correo: yup.string().nullable(),
+    correo: yup.string().required('El correo es requerido'),
     telefono: yup.string().nullable(),
     roles_id: yup.string().notOneOf([''], 'Debe seleccionar un rol'),
     seccional_id: yup.string().notOneOf([''], 'Debe seleccionar una seccional')
@@ -26,7 +26,7 @@ const FormValidationUpdate = yup
     nombre: yup.string().required('El nombre es requerido'),
     apellido: yup.string().required('El apellido es requerido'),
     username: yup.string().required('El usuario es requerido'),
-    correo: yup.string().nullable(),
+    correo: yup.string().required('El correo es requerido'),
     telefono: yup.string().nullable(),
     roles_id: yup.string().notOneOf([''], 'Debe seleccionar un rol'),
     seccional_id: yup.string().notOneOf([''], 'Debe seleccionar una seccional')
@@ -44,7 +44,8 @@ export const UserForm = ({ fnAction, activeUser = null }) => {
     register,
     formState: { errors, isSubmitting },
     handleSubmit,
-    setValue
+    setValue,
+    watch
   } = useForm({
     resolver: yupResolver(activeUser ? FormValidationUpdate : FormValidationSaving)
   })
@@ -68,6 +69,8 @@ export const UserForm = ({ fnAction, activeUser = null }) => {
       setValue('roles_id', activeUser.rol)
       setValue('seccional_id', activeUser.seccional)
       setValue('username', activeUser.user)
+    } else {
+      setValue('password', 'SUTEPA$123')
     }
 
     setIsLoading(false)
@@ -76,6 +79,17 @@ export const UserForm = ({ fnAction, activeUser = null }) => {
   useEffect(() => {
     loadingInit()
   }, [])
+
+  const nombre = watch('nombre')
+  const apellido = watch('apellido')
+
+  useEffect(() => {
+    if (nombre && apellido) {
+      const firstSurname = apellido.split(' ')[0].toLowerCase()
+      const username = `${nombre.charAt(0).toLowerCase()}${firstSurname}`
+      setValue('username', username)
+    }
+  }, [nombre, apellido, setValue])
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword)
@@ -123,6 +137,7 @@ export const UserForm = ({ fnAction, activeUser = null }) => {
                 <strong className='obligatorio'>(*)</strong>
                 <Textinput
                   name='username'
+                  disabled
                   type='text'
                   placeholder='Usuario'
                   register={register}
@@ -137,6 +152,7 @@ export const UserForm = ({ fnAction, activeUser = null }) => {
                 <strong className='obligatorio'>(*)</strong>
                 <Textinput
                   name='password'
+                  disabled={!activeUser}
                   type={showPassword ? 'text' : 'password'}
                   placeholder='Contraseña'
                   register={register}
@@ -169,14 +185,19 @@ export const UserForm = ({ fnAction, activeUser = null }) => {
               </label>
             </div>
 
-            <Textinput
-              name='correo'
-              label='Correo'
-              type='email'
-              placeholder='Correo'
-              register={register}
-              error={errors.correo}
-            />
+            <div>
+              <label htmlFor='roles_id' className='form-label space-y-2'>
+                Correo
+                <strong className='obligatorio'>(*)</strong>
+                <Textinput
+                  name='correo'
+                  type='email'
+                  placeholder='Correo'
+                  register={register}
+                  error={errors.correo}
+                />
+              </label>
+            </div>
 
             <Textinput
               name='telefono'

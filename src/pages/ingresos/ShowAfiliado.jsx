@@ -266,13 +266,16 @@ export const ShowAfiliado = () => {
               <table className='table-auto w-full'>
                 <thead className='bg-gray-300 dark:bg-gray-700'>
                   <tr>
+                    <th className='px-4 py-2 text-center dark:text-white'>Fecha de Carga</th>
                     <th className='px-4 py-2 text-center dark:text-white'>Tipo de Archivo</th>
                     <th className='px-4 py-2 text-center dark:text-white'>Nombre del Archivo</th>
+                    <th className='px-4 py-2 text-center dark:text-white'>Ultimo Cambio</th>
                   </tr>
                 </thead>
                 <tbody className='divide-y dark:divide-gray-700'>
                   {activeAfiliado.documentaciones.map(documento => (
                     <tr key={documento.id} className='bg-white dark:bg-gray-800 dark:border-gray-700'>
+                      <td className='px-4 py-2 text-center dark:text-white'>{formatDate(documento.created_at)}</td>
                       <td className='px-4 py-2 whitespace-nowrap font-medium text-gray-900 dark:text-white text-center'>
                         {documento.tipo_documento || 'Desconocido'}
                       </td>
@@ -281,6 +284,7 @@ export const ShowAfiliado = () => {
                           {documento.archivo}
                         </a>
                       </td>
+                      <td className='px-4 py-2 text-center dark:text-white'>{formatDate(documento.updated_at)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -298,21 +302,25 @@ export const ShowAfiliado = () => {
               <table className='table-auto w-full'>
                 <thead className='bg-gray-300 dark:bg-gray-700'>
                   <tr>
+                    <th className='px-4 py-2 text-center dark:text-white'>Fecha de Carga</th>
                     <th className='px-4 py-2 text-center dark:text-white'>Nombre y Apellido</th>
                     <th className='px-4 py-2 text-center dark:text-white'>Fecha de Nacimiento</th>
                     <th className='px-4 py-2 text-center dark:text-white'>Tipo de Documento</th>
                     <th className='px-4 py-2 text-center dark:text-white'>Documento</th>
                     <th className='px-4 py-2 text-center dark:text-white'>Parentesco</th>
+                    <th className='px-4 py-2 text-center dark:text-white'>Ultimo Cambio</th>
                   </tr>
                 </thead>
                 <tbody className='divide-y dark:divide-gray-700'>
                   {activeAfiliado.familiares.map(fam => (
                     <tr key={fam.id} className='bg-white dark:bg-gray-800 dark:border-gray-700'>
+                      <td className='px-4 py-2 text-center dark:text-white'>{formatDate(fam.created_at)}</td>
                       <td className='px-4 py-2 text-center dark:text-white'>{fam.nombre_familiar}</td>
                       <td className='px-4 py-2 text-center dark:text-white'>{formatDate(fam.fecha_nacimiento_familiar)}</td>
                       <td className='px-4 py-2 text-center dark:text-white'>{fam.tipo_documento_familiar || ''}</td>
                       <td className='px-4 py-2 text-center dark:text-white'>{fam.documento}</td>
                       <td className='px-4 py-2 text-center dark:text-white'>{fam.parentesco}</td>
+                      <td className='px-4 py-2 text-center dark:text-white'>{formatDate(fam.updated_at)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -330,19 +338,23 @@ export const ShowAfiliado = () => {
               <table className='table-auto w-full'>
                 <thead className='bg-gray-300 dark:bg-gray-700'>
                   <tr>
+                    <th className='px-4 py-2 text-center dark:text-white'>Fecha de Carga</th>
                     <th className='px-4 py-2 text-center dark:text-white'>Tipo de Subsidio</th>
                     <th className='px-4 py-2 text-center dark:text-white'>Fecha de Solicitud</th>
                     <th className='px-4 py-2 text-center dark:text-white'>Fecha de Otorgamiento</th>
                     <th className='px-4 py-2 text-center dark:text-white'>Observaciones</th>
+                    <th className='px-4 py-2 text-center dark:text-white'>Ultimo Cambio</th>
                   </tr>
                 </thead>
                 <tbody className='divide-y dark:divide-gray-700'>
                   {activeAfiliado.subsidios.map(subsidio => (
                     <tr key={subsidio.id} className='bg-white dark:bg-gray-800 dark:border-gray-700'>
+                      <td className='px-4 py-2 text-center dark:text-white'>{formatDate(subsidio.created_at)}</td>
                       <td className='px-4 py-2 text-center dark:text-white'>{subsidio.tipo_subsidio}</td>
                       <td className='px-4 py-2 text-center dark:text-white'>{formatDate(subsidio.fecha_solicitud)}</td>
                       <td className='px-4 py-2 text-center dark:text-white'>{formatDate(subsidio.fecha_otorgamiento)}</td>
                       <td className='px-4 py-2 text-center dark:text-white'>{subsidio.observaciones}</td>
+                      <td className='px-4 py-2 text-center dark:text-white'>{formatDate(subsidio.updated_at)}</td>
                     </tr>
                   ))}
                 </tbody>

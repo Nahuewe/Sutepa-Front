@@ -1,12 +1,12 @@
+import React, { useRef, useState, useEffect } from 'react'
+import { useForm } from 'react-hook-form'
+import { useSelector, useDispatch } from 'react-redux'
+import { onAddOrUpdateSubsidio, onDeleteSubsidio } from '../../store/afiliado'
 import Card from '@/components/ui/Card'
 import Textarea from '@/components/ui/Textarea'
 import { SelectForm } from '@/components/sutepa/forms'
-import { useRef, useState, useEffect } from 'react'
-import { useForm } from 'react-hook-form'
-import { useSelector, useDispatch } from 'react-redux'
-import { onAddSubsidio } from '../../store/afiliado'
 import { Tooltip } from 'flowbite-react'
-import { Icon } from '@iconify/react/dist/iconify.js'
+import { Icon } from '@iconify/react'
 import { sutepaApi } from '../../api'
 import DatePicker from '../ui/DatePicker'
 import moment from 'moment'
@@ -82,6 +82,7 @@ function SubsidioData ({ disabled }) {
   const onDelete = (id) => {
     const newSubsidios = subsidios.filter(subsidio => subsidio.id !== id)
     setSubsidios(newSubsidios)
+    dispatch(onDeleteSubsidio(id))
   }
 
   const handleSelectChange = (e) => {
@@ -128,9 +129,10 @@ function SubsidioData ({ disabled }) {
       )
     } else {
       setSubsidios((prevSubsidios) => [...prevSubsidios, newSubsidio])
+      setIdCounter(idCounter + 1)
     }
-    setIdCounter(idCounter + 1)
-    dispatch(onAddSubsidio(newSubsidio))
+
+    dispatch(onAddOrUpdateSubsidio(newSubsidio))
     onReset()
   }
 
@@ -213,6 +215,7 @@ function SubsidioData ({ disabled }) {
               <Textarea
                 name='observaciones'
                 value={formData.observaciones}
+                className='mayuscula'
                 onChange={onChange}
                 register={register}
                 placeholder='Ingrese algunas observaciones'

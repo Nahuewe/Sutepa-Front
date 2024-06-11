@@ -61,6 +61,7 @@ function ObraSocialAfiliadoData ({ register, setValue, disabled }) {
           <Textinput
             label='Obra Social'
             name='obra_social'
+            className='mayuscula'
             register={register}
             placeholder='Especifique la obra social'
             disabled={disabled}

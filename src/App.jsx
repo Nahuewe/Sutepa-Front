@@ -50,7 +50,7 @@ function App () {
                 <Route path='afiliados' element={<Afiliado />} />
                 <Route path='afiliados/crear' element={<Create />} />
                 <Route path='afiliados/editar/:id' element={<Create />} />
-                <Route path='afiliados/ver/:id' element={<ShowAfiliado disabled />} />
+                <Route path='afiliados/ver/:id' element={<ShowAfiliado />} />
               </Route>
 
               <Route path='/404' element={<Error />} />

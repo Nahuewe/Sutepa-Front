@@ -57,7 +57,7 @@ const Textinput = ({
             type={type === 'password' && open === true ? 'text' : type}
             {...register(name)}
             {...rest}
-            className={`${error ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600'} ${error ? 'has-error' : ''} form-control py-2 ${className} dark:text-white dark:placeholder-white placeholder-black-900 `}
+            className={`${error ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600'} ${error ? 'has-error' : ''} form-control py-2 ${className} dark:text-white dark:placeholder-white placeholder-black-900 placeholder`}
             placeholder={placeholder}
             readOnly={readonly}
             defaultValue={defaultValue}

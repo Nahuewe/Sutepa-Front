@@ -1,6 +1,3 @@
-/* eslint-disable array-callback-return */
-/* eslint-disable eqeqeq */
-/* eslint-disable no-return-assign */
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
@@ -59,10 +56,12 @@ export const afiliadoSlice = createSlice({
     onDeleteDocumento: (state, { payload }) => {
       state.documentacion = state.documentacion.filter((documento) => documento.id !== payload)
     },
-    onAddSubsidio: (state, { payload }) => {
-      const existe = state.subsidios.find((subsidio) => subsidio.id === payload.id)
-      if (!existe) {
-        state.subsidios = [...state.subsidios, payload]
+    onAddOrUpdateSubsidio: (state, { payload }) => {
+      const index = state.subsidios.findIndex((subsidio) => subsidio.id === payload.id)
+      if (index !== -1) {
+        state.subsidios[index] = payload // Update existing subsidio
+      } else {
+        state.subsidios.push(payload) // Add new subsidio
       }
     },
     onDeleteSubsidio: (state, { payload }) => {
@@ -108,9 +107,8 @@ export const {
   onDeleteFamiliar,
   onAddDocumento,
   onDeleteDocumento,
-  onAddSubsidio,
+  onAddOrUpdateSubsidio,
   onDeleteSubsidio,
-  // Updates
   updatePersona,
   updateDomicilio,
   updateObraSocial,

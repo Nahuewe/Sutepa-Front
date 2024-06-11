@@ -129,6 +129,7 @@ function FamiliarAcargoData ({ register, disabled, watch, setValue }) {
               <Textinput
                 name='nombre_familiar'
                 type='text'
+              className='mayuscula'
                 register={register}
                 placeholder='Ingrese el nombre y apellido'
                 value={formData.nombre_familiar}
@@ -144,6 +145,7 @@ function FamiliarAcargoData ({ register, disabled, watch, setValue }) {
               <DatePicker
                 value={picker}
                 id='fecha_nacimiento_familiar'
+              className='mayuscula'
                 onChange={handleDateChange}
                 placeholder='Ingrese la fecha de nacimiento'
                 disabled={disabled}
@@ -154,6 +156,7 @@ function FamiliarAcargoData ({ register, disabled, watch, setValue }) {
             <SelectForm
               register={register('tipo_documento_familiar')}
               title='Tipo de Documento'
+              className='mayuscula'
               options={tipoDocumento}
               value={formData.tipo_documento_familiar}
               onChange={e => setFormData({ ...formData, tipo_documento_familiar: e.target.value })}
