@@ -1,11 +1,14 @@
+/* eslint-disable array-callback-return */
+/* eslint-disable eqeqeq */
+/* eslint-disable no-return-assign */
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
   afiliados: [],
-  persona: [],
-  domicilio: [],
-  datos_laborales: [],
-  obra_social: [],
+  persona: {},
+  domicilio: {},
+  datos_laborales: {},
+  obra_social: {},
   familiares: [],
   documentacion: [],
   subsidios: [],
@@ -24,7 +27,7 @@ export const afiliadoSlice = createSlice({
       state.activeAfiliado = null
     },
     setActiveAfiliado: (state, { payload }) => {
-      state.activeAfiliado = payload
+      state.activeAfiliado = state.afiliados.find((afiliado) => afiliado.id === payload)
     },
     onUpdateAfiliado: (state, { payload }) => {
       state.afiliados = state.afiliados.map((afiliado) => {
@@ -34,6 +37,9 @@ export const afiliadoSlice = createSlice({
     },
     onDeleteAfiliado: (state, { payload }) => {
       state.afiliados = state.afiliados.filter((afiliado) => afiliado.id !== payload.id)
+    },
+    onShowAfiliado: (state, { payload }) => {
+      state.activeAfiliado = payload
     },
     onAddFamiliar: (state, { payload }) => {
       const existe = state.familiares.find((familiar) => familiar.id === payload.id)
@@ -78,10 +84,10 @@ export const afiliadoSlice = createSlice({
       state.activeAfiliado = null
     },
     cleanAfiliado: (state) => {
-      state.persona = []
-      state.domicilio = []
-      state.datos_laborales = []
-      state.obra_social = []
+      state.persona = {}
+      state.domicilio = {}
+      state.datos_laborales = {}
+      state.obra_social = {}
       state.familiares = []
       state.documentacion = []
       state.subsidios = []
@@ -97,6 +103,7 @@ export const {
   setActiveAfiliado,
   onUpdateAfiliado,
   onDeleteAfiliado,
+  onShowAfiliado,
   onAddFamiliar,
   onDeleteFamiliar,
   onAddDocumento,

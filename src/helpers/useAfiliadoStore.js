@@ -1,9 +1,11 @@
 /* eslint-disable camelcase */
 import { useSelector, useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
-import { handleAfiliado, onDeleteAfiliado, onUpdateAfiliado, setActiveAfiliado, setErrorMessage } from '@/store/afiliado'
+import { handleAfiliado, onUpdateAfiliado, setErrorMessage, onShowAfiliado, cleanAfiliado } from '@/store/afiliado'
 import { sutepaApi } from '../api'
 import { useNavigate } from 'react-router-dom'
+
+// useAfiliadoStore.js
 
 export const useAfiliadoStore = () => {
   const dispatch = useDispatch()
@@ -17,16 +19,6 @@ export const useAfiliadoStore = () => {
       dispatch(handleAfiliado({ data, meta }))
     } catch (error) {
       console.log(error)
-    }
-  }
-
-  const startLoadingActiveAfiliado = async (id) => {
-    try {
-      const response = await sutepaApi.get(`/personas/${id}`)
-      const { data } = response.data
-      dispatch(setActiveAfiliado(data))
-    } catch (error) {
-      console.error('No se pudo cargar el afiliado activo:', error)
     }
   }
 
@@ -44,7 +36,7 @@ export const useAfiliadoStore = () => {
 
       const response = await sutepaApi.post('/personas', afiliado)
       navigate('/afiliados')
-      // dispatch(clearCargaActa())
+      dispatch(cleanAfiliado())
 
       toast.success('Afiliado agregado con éxito')
     } catch (error) {
@@ -63,13 +55,22 @@ export const useAfiliadoStore = () => {
     }
   }
 
+  const startEditAfiliado = async (id) => {
+    try {
+      const response = await sutepaApi.get(`/personas/${id}`)
+      const { data } = response.data
+      dispatch(onShowAfiliado(data))
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   const startUpdateAfiliado = async () => {
     try {
       const { id } = activeAfiliado
-      const response = await sutepaApi.put(`/personas/1`)
-      const { data } = response.data
+      const response = await sutepaApi.put(`/personas/${id}`)
+      const { data } = response
       dispatch(onUpdateAfiliado(data))
-      dispatch(setActiveAfiliado(data))
       navigate('/afiliados')
 
       toast.success('Afiliado editado con éxito')
@@ -80,14 +81,11 @@ export const useAfiliadoStore = () => {
 
   const startDeleteAfiliado = async () => {
     try {
-      const { id } = activeAfiliado
-      const response = await sutepaApi.delete(`/personas/1`)
-      const { data } = response
-      dispatch(onDeleteAfiliado(data))
-      dispatch(setActiveAfiliado(data))
+      await sutepaApi.delete(`/personas/${activeAfiliado.id}`)
       startLoadingAfiliado()
 
-      toast.success('Afiliado dado de baja con éxito')
+      const message = activeAfiliado.estado === 'ACTIVO' ? 'Afiliado dado de baja con éxito' : 'Afiliado reactivado con éxito'
+      toast.success(message)
     } catch (error) {
       toast.error('No se pudo eliminar los datos')
     }
@@ -111,7 +109,7 @@ export const useAfiliadoStore = () => {
 
     // Métodos
     startLoadingAfiliado,
-    startLoadingActiveAfiliado,
+    startEditAfiliado,
     startSavingAfiliado,
     startUpdateAfiliado,
     startDeleteAfiliado,

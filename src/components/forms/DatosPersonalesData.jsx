@@ -28,7 +28,6 @@ function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
   const [dni, setDni] = useState('')
   const [legajo, setLegajo] = useState('')
   const [correoElectronico, setCorreoElectronico] = useState('')
-  const [formData, setFormData] = useState(initialForm)
   const [telefono, setTelefono] = useState('')
   const dispatch = useDispatch()
   const [estadoCivil, setEstadoCivil] = useState([])
@@ -57,19 +56,9 @@ function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
 
   useEffect(() => {
     if (activeAfiliado) {
-      setValue('legajo', activeAfiliado.legajo)
-      setValue('fecha_afiliacion', activeAfiliado.fecha_afiliacion ? moment(activeAfiliado.fecha_afiliacion).toDate() : null)
-      setValue('nombre', activeAfiliado.nombre)
-      setValue('apellido', activeAfiliado.apellido)
-      setValue('sexo_id', activeAfiliado.sexo_id)
-      setValue('fecha_nacimiento', activeAfiliado.fecha_nacimiento ? moment(activeAfiliado.fecha_nacimiento).toDate() : null)
-      setValue('estado_civil_id', activeAfiliado.estado_civil_id)
-      setValue('tipo_documento', activeAfiliado.tipo_documento)
-      setValue('dni', activeAfiliado.dni)
-      setValue('cuil', activeAfiliado.cuil)
-      setValue('email', activeAfiliado.email)
-      setValue('telefono', activeAfiliado.telefono)
-      setValue('nacionalidad_id', activeAfiliado.nacionalidad_id)
+      Object.entries(activeAfiliado).forEach(([key, value]) => {
+        setValue(key, value)
+      })
 
       setLegajo(activeAfiliado.legajo || '')
       setPicker(activeAfiliado.fecha_afiliacion ? [moment(activeAfiliado.fecha_afiliacion).toDate()] : null)
@@ -81,7 +70,6 @@ function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
     }
   }, [activeAfiliado, setValue])
 
-  // Función para manejar el envío de datos al store de Redux
   const handleUpdatePersona = () => {
     const personaData = {
       legajo,
@@ -172,7 +160,6 @@ function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
     const value = e.target.value
     const cleanedValue = value.replace(/[^\d]/g, '')
 
-    // Limitar la longitud a 5 caracteres
     const maxLength = 5
     const legajoLimited = cleanedValue.slice(0, maxLength)
 

@@ -355,9 +355,9 @@ export const ShowAfiliado = () => {
 
         <div className='mt-4 flex justify-end gap-4'>
           <button className='bg-red-500 hover:bg-red-800 text-white px-4 py-2 rounded' onClick={() => navigate('/afiliados')}>Volver</button>
-          <button onClick={exportToExcel} className='bg-green-500 hover:bg-green-800 text-white px-4 py-2 rounded'>
+          {/* <button onClick={exportToExcel} className='bg-green-500 hover:bg-green-800 text-white px-4 py-2 rounded'>
             Exportar a Excel
-          </button>
+          </button> */}
         </div>
 
       </Card>

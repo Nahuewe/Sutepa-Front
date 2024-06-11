@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useAfiliadoStore } from '@/helpers'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
@@ -15,9 +15,11 @@ import Loading from '@/components/Loading'
 import Button from '@/components/ui/Button'
 
 export const Create = () => {
+  const { id } = useParams()
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(true)
-  const { activeAfiliado, startSavingAfiliado, startUpdateAfiliado, startLoadingAfiliado } = useAfiliadoStore()
+  const [isParamsLoading, setIsParamsLoading] = useState(true)
+  const { activeAfiliado, startSavingAfiliado, startUpdateAfiliado, startLoadingAfiliado, startEditAfiliado } = useAfiliadoStore()
 
   const FormValidationSchema = yup.object().shape({
     legajo: yup.string().required('El legajo es requerido'),
@@ -37,11 +39,11 @@ export const Create = () => {
     resolver: yupResolver(FormValidationSchema)
   })
 
-  const onSubmit = async (afiliado) => {
+  const onSubmit = async (data) => {
     if (!activeAfiliado) {
-      await startSavingAfiliado(afiliado)
+      await startSavingAfiliado(data)
     } else {
-      await startUpdateAfiliado(afiliado)
+      await startUpdateAfiliado(data)
     }
   }
 
@@ -52,51 +54,67 @@ export const Create = () => {
     setIsLoading(false)
   }
 
+  const startGetInitial = async () => {
+    setIsParamsLoading(false)
+  }
+
   useEffect(() => {
     loadingAfiliado()
+    startGetInitial()
   }, [])
 
   useEffect(() => {
     if (activeAfiliado) {
-      console.log('Cargando datos de activeAfiliado:', activeAfiliado)
+      console.log('Active Afiliado data: ', activeAfiliado)
       Object.entries(activeAfiliado).forEach(([key, value]) => {
         setValue(key, value)
       })
+      setIsLoading(false)
     }
   }, [activeAfiliado, setValue])
 
+  useEffect(() => {
+    if (!id) return setIsLoading(false)
+    if (id && !isParamsLoading) {
+      console.log('Fetching afiliado with id: ', id)
+      startEditAfiliado(id)
+    }
+  }, [isParamsLoading, id])
+
   return (
     <>
-      {
-        (isLoading)
-          ? <Loading className='mt-28 md:mt-64' />
-          : (
-            <form onSubmit={handleSubmit(onSubmit)} className='space-y-4'>
-              <DatosPersonalesData register={register} errors={errors} setValue={setValue} watch={watch} />
+      {isLoading
+        ? (
+          <Loading className='mt-28 md:mt-64' />
+          )
+        : (
+          <form onSubmit={handleSubmit(onSubmit)} className='space-y-4'>
+            <DatosPersonalesData register={register} errors={errors} setValue={setValue} watch={watch} />
 
-              <AfiliadoDomicilioData register={register} setValue={setValue} />
+            <AfiliadoDomicilioData register={register} setValue={setValue} />
 
-              <InformacionLaboralData register={register} setValue={setValue} watch={watch} />
+            <InformacionLaboralData register={register} setValue={setValue} watch={watch} />
 
-              <ObraSocialAfiliadoData register={register} setValue={setValue} />
+            <ObraSocialAfiliadoData register={register} setValue={setValue} />
 
-              <FamiliarAcargoData register={register} setValue={setValue} watch={watch} />
+            <FamiliarAcargoData register={register} setValue={setValue} watch={watch} />
 
-              <DocumentacionAdicionalData register={register} setValue={setValue} />
+            <DocumentacionAdicionalData register={register} setValue={setValue} />
 
-              <SubsidioData register={register} setValue={setValue} />
+            <SubsidioData register={register} setValue={setValue} />
 
-              <div className='flex justify-end gap-4 mt-8'>
-                <div className='ltr:text-right rtl:text-left'>
-                  <button className='btn-danger items-center text-center py-2 px-6 rounded-lg' onClick={() => navigate('/afiliados')}>Volver</button>
-                </div>
-                <div className='ltr:text-right rtl:text-left'>
-                  <Button type='submit' text='Guardar' className='btn btn-success rounded-lg items-center text-center py-2 px-6' isLoading={isSubmitting} />
-                </div>
+            <div className='flex justify-end gap-4 mt-8'>
+              <div className='ltr:text-right rtl:text-left'>
+                <button className='btn-danger items-center text-center py-2 px-6 rounded-lg' onClick={() => navigate('/afiliados')}>
+                  Volver
+                </button>
               </div>
-            </form>
-            )
-      }
+              <div className='ltr:text-right rtl:text-left'>
+                <Button type='submit' text='Guardar' className='btn btn-success rounded-lg items-center text-center py-2 px-6' isLoading={isSubmitting} />
+              </div>
+            </div>
+          </form>
+          )}
     </>
   )
 }

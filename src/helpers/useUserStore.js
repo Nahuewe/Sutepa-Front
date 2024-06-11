@@ -51,9 +51,10 @@ export const useUserStore = () => {
       await sutepaApi.delete(`/user/${id}`)
       startLoadingUsers()
 
-      toast.success('Usuario desactivado con exito')
+      const message = activeUser.estado === 'ACTIVO' ? 'Usuario dado de baja con éxito' : 'Usuario reactivado con éxito'
+      toast.success(message)
     } catch (error) {
-      toast.error('No se pudo realizar la operacion')
+      toast.error('No se pudo realizar la operación')
     }
   }
 

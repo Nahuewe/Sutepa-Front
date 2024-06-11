@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Card from '@/components/ui/Card'
 import Textinput from '@/components/ui/Textinput'
@@ -15,10 +15,19 @@ const tipoObraSocial = [
   { id: 'PREPAGA', nombre: 'PREPAGA' }
 ]
 
-function ObraSocialAfiliadoData ({ register, disabled }) {
+function ObraSocialAfiliadoData ({ register, setValue, disabled }) {
   const dispatch = useDispatch()
-  const obraSocialState = useSelector((state) => state.afiliado.obra_social)
+  const obraSocialState = useSelector((state) => state.obra_social)
   const [formData, setFormData] = useState(obraSocialState || initialForm)
+
+  useEffect(() => {
+    if (obraSocialState) {
+      Object.entries(obraSocialState).forEach(([key, value]) => {
+        setValue(key, value)
+      })
+      setFormData(obraSocialState)
+    }
+  }, [obraSocialState, setValue])
 
   function onChange ({ target }) {
     const { name, value } = target

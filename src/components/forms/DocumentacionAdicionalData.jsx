@@ -116,7 +116,7 @@ function DocumentacionAdicionalData ({ register, disabled }) {
                 name='archivo'
                 onChange={handleInputChange}
                 disabled={disabled}
-                accept='.docx,.doc,.xlsx,.ppt,.jpeg,.jpg,.png'
+                accept='.docx,.doc,.xlsx,.ppt,.pdf,.jpeg,.jpg,.png'
               />
             </div>
           </div>
