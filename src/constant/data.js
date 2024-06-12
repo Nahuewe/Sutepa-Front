@@ -34,12 +34,6 @@ export const menuItems = [
     icon: 'heroicons-outline:users',
     link: 'usuarios'
   },
-
-  {
-    title: 'Roles',
-    icon: 'heroicons-outline:key',
-    link: 'roles'
-  }
 ]
 
 export const menuNormal = [

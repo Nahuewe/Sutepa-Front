@@ -5,8 +5,6 @@ import { handleAfiliado, onUpdateAfiliado, setErrorMessage, onShowAfiliado, clea
 import { sutepaApi } from '../api'
 import { useNavigate } from 'react-router-dom'
 
-// useAfiliadoStore.js
-
 export const useAfiliadoStore = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -35,6 +33,7 @@ export const useAfiliadoStore = () => {
       }
 
       const response = await sutepaApi.post('/personas', afiliado)
+      console.log(response)
       navigate('/afiliados')
       dispatch(cleanAfiliado())
 
@@ -84,7 +83,22 @@ export const useAfiliadoStore = () => {
       await sutepaApi.delete(`/personas/${activeAfiliado.id}`)
       startLoadingAfiliado()
 
-      const message = activeAfiliado.estado === 'ACTIVO' ? 'Afiliado dado de baja con éxito' : 'Afiliado reactivado con éxito'
+      let message = ''
+
+      switch (activeAfiliado.estado) {
+        case 'PENDIENTE':
+          message = 'Afiliado aprobado con éxito'
+          break
+        case 'ACTIVO':
+          message = 'Afiliado dado de baja con éxito'
+          break
+        case 'INACTIVO':
+          message = 'Afiliado reactivado con éxito'
+          break
+        default:
+          break
+      }
+
       toast.success(message)
     } catch (error) {
       toast.error('No se pudo eliminar los datos')

@@ -28,7 +28,7 @@ const tipoDocumento = [
 function FamiliarAcargoData ({ register, disabled, watch, setValue, reset }) {
   const dispatch = useDispatch()
   const { familiares } = useSelector(state => state.afiliado)
-  const { user } = useSelector(state => state.auth)
+  const { user } = useSelector(state => state.auth.user)
   const [picker, setPicker] = useState(null)
   const [dni, setDni] = useState('')
   const [formData, setFormData] = useState(initialForm)
@@ -64,7 +64,7 @@ function FamiliarAcargoData ({ register, disabled, watch, setValue, reset }) {
       parentesco_id: parseInt(watch('parentesco_id')) || null,
       fecha_nacimiento_familiar: picker ? moment.utc(picker[0]).format('YYYY-MM-DD') : null,
       fecha_carga: moment.utc().format('DD/MM/YYYY'),
-      usuario_carga: user.nombre
+      user_id: user.id
     }
 
     if (isEditing) {
@@ -251,7 +251,7 @@ function FamiliarAcargoData ({ register, disabled, watch, setValue, reset }) {
                   <td className='px-4 py-2 text-center dark:text-white'>
                     {getParentescoNameById(fam.parentesco_id)}
                   </td>
-                  <td className='px-4 py-2 text-center dark:text-white'>{user.nombre}</td>
+                  <td className='px-4 py-2 text-center dark:text-white'>{user.username}</td>
                   <td className='text-center py-2 gap-4 flex justify-center'>
                     <Tooltip content='Editar'>
                       <button

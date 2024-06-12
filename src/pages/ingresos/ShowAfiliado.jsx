@@ -1,117 +1,12 @@
 import React from 'react'
 import { useAfiliadoStore } from '@/helpers'
 import { Card } from 'flowbite-react'
-// import * as XLSX from 'xlsx'
 import { useNavigate } from 'react-router-dom'
 import { formatDate, getTipoContrato } from '@/constant/datos-id'
 
 export const ShowAfiliado = () => {
   const { activeAfiliado } = useAfiliadoStore()
   const navigate = useNavigate()
-
-  const exportToExcel = () => {
-    if (!activeAfiliado) return
-
-    const afiliadoData = activeAfiliado.persona
-      ? [
-          {
-            Legajo: activeAfiliado.persona.legajo,
-            Nombre: activeAfiliado.persona.nombre,
-            Apellido: activeAfiliado.persona.apellido,
-            'Correo Electrónico': activeAfiliado.persona.email,
-            'Tipo de Documento': activeAfiliado.persona.tipo_documento || '',
-            DNI: activeAfiliado.persona.dni,
-            CUIL: activeAfiliado.persona.cuil,
-            Teléfono: activeAfiliado.persona.telefono,
-            Sexo: activeAfiliado.persona.sexo,
-            'Fecha de Nacimiento': formatDate(activeAfiliado.persona.fecha_nacimiento),
-            'Fecha de Afiliación': formatDate(activeAfiliado.persona.fecha_afiliacion),
-            'Estado Civil': activeAfiliado.persona.estado_civil,
-            Nacionalidad: activeAfiliado.persona.nacionalidad
-          }
-        ]
-      : []
-
-    const domicilioData = activeAfiliado.domicilios
-      ? [
-          {
-            Domicilio: activeAfiliado.domicilios.domicilio,
-            Provincia: activeAfiliado.domicilios.provincia,
-            Localidad: activeAfiliado.domicilios.localidad,
-            'Código Postal': activeAfiliado.domicilios.codigo_postal
-          }
-        ]
-      : []
-
-    const datosLaboralesData = activeAfiliado.datos_laborales
-      ? [
-          {
-            'Tipo de Contrato': getTipoContrato(activeAfiliado.datos_laborales.tipo_contrato_id),
-            UGL: activeAfiliado.datos_laborales.ugl_id,
-            Agencia: activeAfiliado.datos_laborales.agencia,
-            'Domicilio de Trabajo': activeAfiliado.datos_laborales.domicilio,
-            Seccional: activeAfiliado.datos_laborales.seccional,
-            Agrupamiento: activeAfiliado.datos_laborales.agrupamiento,
-            Tramo: activeAfiliado.datos_laborales.tramo_id,
-            'Carga Horaria': activeAfiliado.datos_laborales.carga_horaria,
-            'Fecha de Ingreso': formatDate(activeAfiliado.datos_laborales.fecha_ingreso),
-            'Correo Electrónico Laboral': activeAfiliado.datos_laborales.email_laboral,
-            Teléfono: activeAfiliado.datos_laborales.telefono_laboral
-          }
-        ]
-      : []
-
-    const obraSocialData = activeAfiliado.obraSociales
-      ? [
-          {
-            'Tipo de Obra Social': activeAfiliado.obraSociales.tipo_obra,
-            'Obra Social': activeAfiliado.obraSociales.obra_social
-          }
-        ]
-      : []
-
-    const documentacionesData = activeAfiliado.documentaciones.map(doc => ({
-      'Tipo de Archivo': doc.tipo_documento || '',
-      'Nombre de Archivo': doc.archivo
-    }))
-
-    const familiaresData = activeAfiliado.familiares.map(fam => ({
-      'Nombre y Apellido': fam.nombre_familiar,
-      'Fecha de Nacimiento': formatDate(fam.fecha_nacimiento_familiar),
-      'Tipo de Documento': fam.tipo_documento_familiar || '',
-      Documento: fam.documento,
-      Parentesco: fam.parentesco
-    }))
-
-    const subsidiosData = activeAfiliado.subsidios
-      ? activeAfiliado.subsidios.map(subsidio => ({
-        'Tipo de Subsidio': subsidio.tipo_subsidio,
-        'Fecha de Solicitud': formatDate(subsidio.fecha_solicitud),
-        'Fecha de Otorgamiento': formatDate(subsidio.fecha_otorgamiento),
-        Observaciones: subsidio.observaciones
-      }))
-      : []
-
-    const wb = XLSX.utils.book_new()
-    const afiliadoSheet = XLSX.utils.json_to_sheet(afiliadoData)
-    const domicilioSheet = XLSX.utils.json_to_sheet(domicilioData)
-    const datosLaboralesSheet = XLSX.utils.json_to_sheet(datosLaboralesData)
-    const obraSocialSheet = XLSX.utils.json_to_sheet(obraSocialData)
-    const documentacionesSheet = XLSX.utils.json_to_sheet(documentacionesData)
-    const familiaresSheet = XLSX.utils.json_to_sheet(familiaresData)
-    const subsidiosSheet = XLSX.utils.json_to_sheet(subsidiosData)
-
-    XLSX.utils.book_append_sheet(wb, afiliadoSheet, 'Afiliado')
-    XLSX.utils.book_append_sheet(wb, domicilioSheet, 'Domicilio')
-    XLSX.utils.book_append_sheet(wb, datosLaboralesSheet, 'Datos Laborales')
-    XLSX.utils.book_append_sheet(wb, obraSocialSheet, 'Obra Social')
-    XLSX.utils.book_append_sheet(wb, documentacionesSheet, 'Documentaciones')
-    XLSX.utils.book_append_sheet(wb, familiaresSheet, 'Familiares')
-    XLSX.utils.book_append_sheet(wb, subsidiosSheet, 'Subsidios')
-
-    const fileName = `Datos del Afiliado ${activeAfiliado.persona.nombre} ${activeAfiliado.persona.apellido}.xlsx`
-    XLSX.writeFile(wb, fileName)
-  }
 
   return (
     activeAfiliado && (
@@ -344,6 +239,8 @@ export const ShowAfiliado = () => {
                     <th className='px-4 py-2 text-center dark:text-white'>Fecha de Otorgamiento</th>
                     <th className='px-4 py-2 text-center dark:text-white'>Observaciones</th>
                     <th className='px-4 py-2 text-center dark:text-white'>Ultimo Cambio</th>
+                    <th className='px-4 py-2 text-center dark:text-white'>Usuario de carga</th>
+
                   </tr>
                 </thead>
                 <tbody className='divide-y dark:divide-gray-700'>
@@ -355,6 +252,7 @@ export const ShowAfiliado = () => {
                       <td className='px-4 py-2 text-center dark:text-white'>{formatDate(subsidio.fecha_otorgamiento)}</td>
                       <td className='px-4 py-2 text-center dark:text-white'>{subsidio.observaciones}</td>
                       <td className='px-4 py-2 text-center dark:text-white'>{formatDate(subsidio.updated_at)}</td>
+                      <td className='px-4 py-2 text-center dark:text-white'>{subsidio.user_id}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -367,9 +265,6 @@ export const ShowAfiliado = () => {
 
         <div className='mt-4 flex justify-end gap-4'>
           <button className='bg-red-500 hover:bg-red-800 text-white px-4 py-2 rounded' onClick={() => navigate('/afiliados')}>Volver</button>
-          {/* <button onClick={exportToExcel} className='bg-green-500 hover:bg-green-800 text-white px-4 py-2 rounded'>
-            Exportar a Excel
-          </button> */}
         </div>
 
       </Card>

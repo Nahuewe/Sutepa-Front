@@ -15,7 +15,8 @@ const initialForm = {
   tipo_subsidio_id: null,
   fecha_solicitud: null,
   fecha_otorgamiento: null,
-  observaciones: ''
+  observaciones: '',
+  user_id: null
 }
 
 function SubsidioData ({ disabled }) {
@@ -118,7 +119,7 @@ function SubsidioData ({ disabled }) {
       ...formData,
       fecha_carga: new Date(),
       id: isEditing ? editingSubsidioId : idCounter,
-      usuario_carga: user.nombre
+      user_id: user.id
     }
 
     if (isEditing) {
@@ -258,7 +259,7 @@ function SubsidioData ({ disabled }) {
                   <td className='px-4 py-2 text-center dark:text-white'>{formatDate(subsidio.fecha_solicitud)}</td>
                   <td className='px-4 py-2 text-center dark:text-white'>{formatDate(subsidio.fecha_otorgamiento)}</td>
                   <td className='px-4 py-2 text-center dark:text-white mayuscula'>{subsidio.observaciones}</td>
-                  <td className='px-4 py-2 text-center dark:text-white'>{subsidio.usuario_carga}</td>
+                  <td className='px-4 py-2 text-center dark:text-white'>{user.username}</td>
                   <td className='text-center py-2 gap-4 flex justify-center'>
                     <Tooltip content='Editar'>
                       <button

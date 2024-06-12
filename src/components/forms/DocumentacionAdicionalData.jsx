@@ -18,7 +18,7 @@ const initialForm = {
 function DocumentacionAdicionalData ({ register, disabled }) {
   const dispatch = useDispatch()
   const [documentos, setDocumentos] = useState([])
-  const { user } = useSelector(state => state.auth)
+  const { user } = useSelector(state => state.auth.user)
   const [formData, setFormData] = useState(initialForm)
   const formRef = useRef()
   const [archivoOptions, setArchivoOptions] = useState([])
@@ -70,7 +70,8 @@ function DocumentacionAdicionalData ({ register, disabled }) {
         id: idCounter,
         archivo: URL.createObjectURL(formData.archivo),
         nombre_archivo: formData.archivo.name,
-        fecha_carga: new Date().toLocaleDateString('es-ES')
+        fecha_carga: new Date().toLocaleDateString('es-ES'),
+        user_id: user.id
       }
       dispatch(onAddDocumento(nuevoDocumento))
       setDocumentos([...documentos, nuevoDocumento])
@@ -165,7 +166,7 @@ function DocumentacionAdicionalData ({ register, disabled }) {
                       {documento.nombre_archivo}
                     </a>
                   </td>
-                  <td className='px-4 py-2 text-center dark:text-white'>{user.nombre}</td>
+                  <td className='px-4 py-2 text-center dark:text-white'>{user.username}</td>
                   <td className='text-center py-2'>
                     <Tooltip content='Eliminar'>
                       <button

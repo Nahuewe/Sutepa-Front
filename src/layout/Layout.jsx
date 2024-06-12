@@ -1,28 +1,23 @@
-import React, { useEffect, Suspense, Fragment, useRef } from 'react'
-import { Outlet, useNavigate } from 'react-router-dom'
+import React, { Suspense } from 'react'
+import { Outlet } from 'react-router-dom'
 import Header from '@/components/partials/header'
 import Sidebar from '@/components/partials/sidebar'
-import Settings from '@/components/partials/settings'
 import useWidth from '@/hooks/useWidth'
 import useSidebar from '@/hooks/useSidebar'
 import useContentWidth from '@/hooks/useContentWidth'
 import useMenulayout from '@/hooks/useMenulayout'
 import useMenuHidden from '@/hooks/useMenuHidden'
 import Footer from '@/components/partials/footer'
-import Breadcrumbs from '@/components/ui/Breadcrumbs'
 import MobileMenu from '../components/partials/sidebar/MobileMenu'
 import useMobileMenu from '@/hooks/useMobileMenu'
-import MobileFooter from '@/components/partials/footer/MobileFooter'
 import { ToastContainer } from 'react-toastify'
-import { useSelector } from 'react-redux'
 import Loading from '@/components/Loading'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { useAuthStore } from '../helpers'
 const Layout = () => {
   const { user } = useAuthStore()
   const { width, breakpoints } = useWidth()
   const [collapsed] = useSidebar()
-  const navigate = useNavigate()
 
   const switchHeaderClass = () => {
     if (menuType === 'horizontal' || menuHidden) {
@@ -39,7 +34,6 @@ const Layout = () => {
   const [menuHidden] = useMenuHidden()
   // mobile menu
   const [mobileMenu, setMobileMenu] = useMobileMenu()
-  const nodeRef = useRef(null)
 
   return (
     <>
@@ -103,7 +97,6 @@ const Layout = () => {
                   duration: 0.5
                 }}
               >
-                <Breadcrumbs />
                 <Outlet />
               </motion.div>
             </Suspense>

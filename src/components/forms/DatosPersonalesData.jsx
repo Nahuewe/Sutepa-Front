@@ -17,8 +17,7 @@ const tipoDocumento = [
 const initialForm = {
   sexo_id: null,
   estado_civil_id: null,
-  nacionalidad_id: null,
-  estados_id: 1
+  nacionalidad_id: null
 }
 
 function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
@@ -27,7 +26,6 @@ function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
   const [cuil, setCuil] = useState('')
   const [dni, setDni] = useState('')
   const [legajo, setLegajo] = useState('')
-  // eslint-disable-next-line no-unused-vars
   const [formData, setFormData] = useState(initialForm)
   const [correoElectronico, setCorreoElectronico] = useState('')
   const [telefono, setTelefono] = useState('')
@@ -86,10 +84,16 @@ function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
       cuil,
       email: correoElectronico || null,
       telefono,
-      nacionalidad_id: parseInt(watch('nacionalidad_id')) || null,
-      estados_id: 1
+      nacionalidad_id: parseInt(watch('nacionalidad_id')) || null
     }
-    dispatch(updatePersona(personaData))
+    // Verificar si al menos un campo necesario ha sido rellenado
+    if (
+      personaData.nombre || personaData.apellido || personaData.sexo_id ||
+      personaData.estado_civil_id || personaData.tipo_documento || personaData.dni ||
+      personaData.cuil || personaData.nacionalidad_id
+    ) {
+      dispatch(updatePersona(personaData))
+    }
   }
 
   useEffect(() => {

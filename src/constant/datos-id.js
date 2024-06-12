@@ -12,8 +12,15 @@ export const tipoRoles = {
 }
 
 export const formatDate = (dateString) => {
+  if (!dateString) {
+    return ''
+  }
+  const date = new Date(dateString)
+  if (isNaN(date)) {
+    return ''
+  }
   const options = { year: 'numeric', month: 'long', day: 'numeric' }
-  return new Date(dateString).toLocaleDateString(undefined, options)
+  return date.toLocaleDateString(undefined, options)
 }
 
 export const getTipoContrato = (id) => {
