@@ -9,109 +9,109 @@ export const ShowAfiliado = () => {
   const { activeAfiliado } = useAfiliadoStore()
   const navigate = useNavigate()
 
-  // const exportToExcel = () => {
-  //   if (!activeAfiliado) return
+  const exportToExcel = () => {
+    if (!activeAfiliado) return
 
-  //   const afiliadoData = activeAfiliado.persona
-  //     ? [
-  //         {
-  //           Legajo: activeAfiliado.persona.legajo,
-  //           Nombre: activeAfiliado.persona.nombre,
-  //           Apellido: activeAfiliado.persona.apellido,
-  //           'Correo Electrónico': activeAfiliado.persona.email,
-  //           'Tipo de Documento': activeAfiliado.persona.tipo_documento || '',
-  //           DNI: activeAfiliado.persona.dni,
-  //           CUIL: activeAfiliado.persona.cuil,
-  //           Teléfono: activeAfiliado.persona.telefono,
-  //           Sexo: activeAfiliado.persona.sexo,
-  //           'Fecha de Nacimiento': formatDate(activeAfiliado.persona.fecha_nacimiento),
-  //           'Fecha de Afiliación': formatDate(activeAfiliado.persona.fecha_afiliacion),
-  //           'Estado Civil': activeAfiliado.persona.estado_civil,
-  //           Nacionalidad: activeAfiliado.persona.nacionalidad
-  //         }
-  //       ]
-  //     : []
+    const afiliadoData = activeAfiliado.persona
+      ? [
+          {
+            Legajo: activeAfiliado.persona.legajo,
+            Nombre: activeAfiliado.persona.nombre,
+            Apellido: activeAfiliado.persona.apellido,
+            'Correo Electrónico': activeAfiliado.persona.email,
+            'Tipo de Documento': activeAfiliado.persona.tipo_documento || '',
+            DNI: activeAfiliado.persona.dni,
+            CUIL: activeAfiliado.persona.cuil,
+            Teléfono: activeAfiliado.persona.telefono,
+            Sexo: activeAfiliado.persona.sexo,
+            'Fecha de Nacimiento': formatDate(activeAfiliado.persona.fecha_nacimiento),
+            'Fecha de Afiliación': formatDate(activeAfiliado.persona.fecha_afiliacion),
+            'Estado Civil': activeAfiliado.persona.estado_civil,
+            Nacionalidad: activeAfiliado.persona.nacionalidad
+          }
+        ]
+      : []
 
-  //   const domicilioData = activeAfiliado.domicilios
-  //     ? [
-  //         {
-  //           Domicilio: activeAfiliado.domicilios.domicilio,
-  //           Provincia: activeAfiliado.domicilios.provincia,
-  //           Localidad: activeAfiliado.domicilios.localidad,
-  //           'Código Postal': activeAfiliado.domicilios.codigo_postal
-  //         }
-  //       ]
-  //     : []
+    const domicilioData = activeAfiliado.domicilios
+      ? [
+          {
+            Domicilio: activeAfiliado.domicilios.domicilio,
+            Provincia: activeAfiliado.domicilios.provincia,
+            Localidad: activeAfiliado.domicilios.localidad,
+            'Código Postal': activeAfiliado.domicilios.codigo_postal
+          }
+        ]
+      : []
 
-  //   const datosLaboralesData = activeAfiliado.datos_laborales
-  //     ? [
-  //         {
-  //           'Tipo de Contrato': getTipoContrato(activeAfiliado.datos_laborales.tipo_contrato_id),
-  //           UGL: activeAfiliado.datos_laborales.ugl_id,
-  //           Agencia: activeAfiliado.datos_laborales.agencia,
-  //           'Domicilio de Trabajo': activeAfiliado.datos_laborales.domicilio,
-  //           Seccional: activeAfiliado.datos_laborales.seccional,
-  //           Agrupamiento: activeAfiliado.datos_laborales.agrupamiento,
-  //           Tramo: activeAfiliado.datos_laborales.tramo_id,
-  //           'Carga Horaria': activeAfiliado.datos_laborales.carga_horaria,
-  //           'Fecha de Ingreso': formatDate(activeAfiliado.datos_laborales.fecha_ingreso),
-  //           'Correo Electrónico Laboral': activeAfiliado.datos_laborales.email_laboral,
-  //           Teléfono: activeAfiliado.datos_laborales.telefono_laboral
-  //         }
-  //       ]
-  //     : []
+    const datosLaboralesData = activeAfiliado.datos_laborales
+      ? [
+          {
+            'Tipo de Contrato': getTipoContrato(activeAfiliado.datos_laborales.tipo_contrato_id),
+            UGL: activeAfiliado.datos_laborales.ugl_id,
+            Agencia: activeAfiliado.datos_laborales.agencia,
+            'Domicilio de Trabajo': activeAfiliado.datos_laborales.domicilio,
+            Seccional: activeAfiliado.datos_laborales.seccional,
+            Agrupamiento: activeAfiliado.datos_laborales.agrupamiento,
+            Tramo: activeAfiliado.datos_laborales.tramo_id,
+            'Carga Horaria': activeAfiliado.datos_laborales.carga_horaria,
+            'Fecha de Ingreso': formatDate(activeAfiliado.datos_laborales.fecha_ingreso),
+            'Correo Electrónico Laboral': activeAfiliado.datos_laborales.email_laboral,
+            Teléfono: activeAfiliado.datos_laborales.telefono_laboral
+          }
+        ]
+      : []
 
-  //   const obraSocialData = activeAfiliado.obraSociales
-  //     ? [
-  //         {
-  //           'Tipo de Obra Social': activeAfiliado.obraSociales.tipo_obra,
-  //           'Obra Social': activeAfiliado.obraSociales.obra_social
-  //         }
-  //       ]
-  //     : []
+    const obraSocialData = activeAfiliado.obraSociales
+      ? [
+          {
+            'Tipo de Obra Social': activeAfiliado.obraSociales.tipo_obra,
+            'Obra Social': activeAfiliado.obraSociales.obra_social
+          }
+        ]
+      : []
 
-  //   const documentacionesData = activeAfiliado.documentaciones.map(doc => ({
-  //     'Tipo de Archivo': doc.tipo_documento || '',
-  //     'Nombre de Archivo': doc.archivo
-  //   }))
+    const documentacionesData = activeAfiliado.documentaciones.map(doc => ({
+      'Tipo de Archivo': doc.tipo_documento || '',
+      'Nombre de Archivo': doc.archivo
+    }))
 
-  //   const familiaresData = activeAfiliado.familiares.map(fam => ({
-  //     'Nombre y Apellido': fam.nombre_familiar,
-  //     'Fecha de Nacimiento': formatDate(fam.fecha_nacimiento_familiar),
-  //     'Tipo de Documento': fam.tipo_documento_familiar || '',
-  //     Documento: fam.documento,
-  //     Parentesco: fam.parentesco
-  //   }))
+    const familiaresData = activeAfiliado.familiares.map(fam => ({
+      'Nombre y Apellido': fam.nombre_familiar,
+      'Fecha de Nacimiento': formatDate(fam.fecha_nacimiento_familiar),
+      'Tipo de Documento': fam.tipo_documento_familiar || '',
+      Documento: fam.documento,
+      Parentesco: fam.parentesco
+    }))
 
-  //   const subsidiosData = activeAfiliado.subsidios
-  //     ? activeAfiliado.subsidios.map(subsidio => ({
-  //       'Tipo de Subsidio': subsidio.tipo_subsidio,
-  //       'Fecha de Solicitud': formatDate(subsidio.fecha_solicitud),
-  //       'Fecha de Otorgamiento': formatDate(subsidio.fecha_otorgamiento),
-  //       Observaciones: subsidio.observaciones
-  //     }))
-  //     : []
+    const subsidiosData = activeAfiliado.subsidios
+      ? activeAfiliado.subsidios.map(subsidio => ({
+        'Tipo de Subsidio': subsidio.tipo_subsidio,
+        'Fecha de Solicitud': formatDate(subsidio.fecha_solicitud),
+        'Fecha de Otorgamiento': formatDate(subsidio.fecha_otorgamiento),
+        Observaciones: subsidio.observaciones
+      }))
+      : []
 
-  //   const wb = XLSX.utils.book_new()
-  //   const afiliadoSheet = XLSX.utils.json_to_sheet(afiliadoData)
-  //   const domicilioSheet = XLSX.utils.json_to_sheet(domicilioData)
-  //   const datosLaboralesSheet = XLSX.utils.json_to_sheet(datosLaboralesData)
-  //   const obraSocialSheet = XLSX.utils.json_to_sheet(obraSocialData)
-  //   const documentacionesSheet = XLSX.utils.json_to_sheet(documentacionesData)
-  //   const familiaresSheet = XLSX.utils.json_to_sheet(familiaresData)
-  //   const subsidiosSheet = XLSX.utils.json_to_sheet(subsidiosData)
+    const wb = XLSX.utils.book_new()
+    const afiliadoSheet = XLSX.utils.json_to_sheet(afiliadoData)
+    const domicilioSheet = XLSX.utils.json_to_sheet(domicilioData)
+    const datosLaboralesSheet = XLSX.utils.json_to_sheet(datosLaboralesData)
+    const obraSocialSheet = XLSX.utils.json_to_sheet(obraSocialData)
+    const documentacionesSheet = XLSX.utils.json_to_sheet(documentacionesData)
+    const familiaresSheet = XLSX.utils.json_to_sheet(familiaresData)
+    const subsidiosSheet = XLSX.utils.json_to_sheet(subsidiosData)
 
-  //   XLSX.utils.book_append_sheet(wb, afiliadoSheet, 'Afiliado')
-  //   XLSX.utils.book_append_sheet(wb, domicilioSheet, 'Domicilio')
-  //   XLSX.utils.book_append_sheet(wb, datosLaboralesSheet, 'Datos Laborales')
-  //   XLSX.utils.book_append_sheet(wb, obraSocialSheet, 'Obra Social')
-  //   XLSX.utils.book_append_sheet(wb, documentacionesSheet, 'Documentaciones')
-  //   XLSX.utils.book_append_sheet(wb, familiaresSheet, 'Familiares')
-  //   XLSX.utils.book_append_sheet(wb, subsidiosSheet, 'Subsidios')
+    XLSX.utils.book_append_sheet(wb, afiliadoSheet, 'Afiliado')
+    XLSX.utils.book_append_sheet(wb, domicilioSheet, 'Domicilio')
+    XLSX.utils.book_append_sheet(wb, datosLaboralesSheet, 'Datos Laborales')
+    XLSX.utils.book_append_sheet(wb, obraSocialSheet, 'Obra Social')
+    XLSX.utils.book_append_sheet(wb, documentacionesSheet, 'Documentaciones')
+    XLSX.utils.book_append_sheet(wb, familiaresSheet, 'Familiares')
+    XLSX.utils.book_append_sheet(wb, subsidiosSheet, 'Subsidios')
 
-  //   const fileName = `Datos del Afiliado ${activeAfiliado.persona.nombre} ${activeAfiliado.persona.apellido}.xlsx`
-  //   XLSX.writeFile(wb, fileName)
-  // }
+    const fileName = `Datos del Afiliado ${activeAfiliado.persona.nombre} ${activeAfiliado.persona.apellido}.xlsx`
+    XLSX.writeFile(wb, fileName)
+  }
 
   return (
     activeAfiliado && (

@@ -92,6 +92,14 @@ function DocumentacionAdicionalData ({ register, disabled }) {
     dispatch(onDeleteDocumento(index))
   }
 
+  useEffect(() => {
+    if (activeAfiliado?.documentacion) {
+      activeAfiliado.documentacion.forEach(item => {
+        dispatch(onAddDocumento(item))
+      })
+    }
+  }, [])
+
   return (
     <>
       <h4 className='card-title text-center bg-red-500 dark:bg-gray-700 text-white rounded-md p-2'>

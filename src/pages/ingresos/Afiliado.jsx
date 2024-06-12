@@ -10,9 +10,14 @@ import { DeleteModal } from '@/components/ui/DeleteModal'
 import { handleShowDelete } from '@/store/layout'
 import * as XLSX from 'xlsx'
 import { cleanAfiliado, setActiveAfiliado } from '@/store/afiliado'
+import { sutepaApi } from '../../api'
+import { formatDate } from '@/constant/datos-id'
 
 const columns = [
-  // Agregar LEGAJO
+  {
+    label: 'Legajo',
+    field: 'legajo'
+  },
   {
     label: 'Nombre',
     field: 'nombre'
@@ -22,13 +27,9 @@ const columns = [
     field: 'apellido'
   },
   {
-    label: 'CUIL',
-    field: 'cuil'
+    label: 'DNI',
+    field: 'dni'
   },
-  // {
-  //   label: 'Correo',
-  //   field: 'email'
-  // },
   {
     label: 'UGL/Nivel Central',
     field: 'ugl'
@@ -111,12 +112,126 @@ export const Afiliado = () => {
     loadingAfiliado()
   }, [])
 
+  async function handlePersonalista () {
+    try {
+      const response = await sutepaApi.get('personalista')
+      const { data } = response.data
+      return data
+    } catch (error) {
+      console.error('Error al obtener los datos:', error)
+      return []
+    }
+  }
+
   // Función para exportar los datos a Excel
-  const exportToExcel = () => {
-    const worksheet = XLSX.utils.json_to_sheet(afiliados)
-    const workbook = XLSX.utils.book_new()
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Afiliados')
-    XLSX.writeFile(workbook, 'afiliados.xlsx')
+  async function exportToExcel () {
+    const afiliados = await handlePersonalista()
+
+    if (afiliados.length === 0) {
+      console.log('No hay datos para exportar.')
+      return
+    }
+
+    const personasData = []
+    const domiciliosData = []
+    const datosLaboralesData = []
+    const obraSocialData = []
+    const documentacionesData = []
+    const familiaresData = []
+    const subsidiosData = []
+
+    afiliados.forEach((activeAfiliado) => {
+      if (activeAfiliado.persona) {
+        personasData.push({
+          Legajo: activeAfiliado.persona.legajo,
+          Nombre: activeAfiliado.persona.nombre,
+          Apellido: activeAfiliado.persona.apellido,
+          'Correo Electrónico': activeAfiliado.persona.email,
+          'Tipo de Documento': activeAfiliado.persona.tipo_documento || '',
+          DNI: activeAfiliado.persona.dni,
+          CUIL: activeAfiliado.persona.cuil,
+          Teléfono: activeAfiliado.persona.telefono,
+          Sexo: activeAfiliado.persona.sexo,
+          'Fecha de Nacimiento': formatDate(activeAfiliado.persona.fecha_nacimiento),
+          'Fecha de Afiliación': formatDate(activeAfiliado.persona.fecha_afiliacion),
+          'Estado Civil': activeAfiliado.persona.estado_civil,
+          Nacionalidad: activeAfiliado.persona.nacionalidad
+        })
+      }
+
+      if (activeAfiliado.domicilios) {
+        domiciliosData.push({
+          Domicilio: activeAfiliado.domicilios.domicilio,
+          Provincia: activeAfiliado.domicilios.provincia,
+          Localidad: activeAfiliado.domicilios.localidad,
+          'Código Postal': activeAfiliado.domicilios.codigo_postal
+        })
+      }
+
+      if (activeAfiliado.datos_laborales) {
+        datosLaboralesData.push({
+          'Tipo de Contrato': activeAfiliado.datos_laborales.tipo_contrato_id,
+          UGL: activeAfiliado.datos_laborales.ugl_id,
+          Agencia: activeAfiliado.datos_laborales.agencia,
+          'Domicilio de Trabajo': activeAfiliado.datos_laborales.domicilio,
+          Seccional: activeAfiliado.datos_laborales.seccional,
+          Agrupamiento: activeAfiliado.datos_laborales.agrupamiento,
+          Tramo: activeAfiliado.datos_laborales.tramo_id,
+          'Carga Horaria': activeAfiliado.datos_laborales.carga_horaria,
+          'Fecha de Ingreso': formatDate(activeAfiliado.datos_laborales.fecha_ingreso),
+          'Correo Electrónico Laboral': activeAfiliado.datos_laborales.email_laboral,
+          Teléfono: activeAfiliado.datos_laborales.telefono_laboral
+        })
+      }
+
+      if (activeAfiliado.obraSociales) {
+        obraSocialData.push({
+          'Tipo de Obra Social': activeAfiliado.obraSociales.tipo_obra,
+          'Obra Social': activeAfiliado.obraSociales.obra_social
+        })
+      }
+
+      documentacionesData.push(...activeAfiliado.documentaciones.map(doc => ({
+        'Tipo de Archivo': doc.tipo_documento || '',
+        'Nombre de Archivo': doc.archivo
+      })))
+
+      familiaresData.push(...activeAfiliado.familiares.map(fam => ({
+        'Nombre y Apellido': fam.nombre_familiar,
+        'Fecha de Nacimiento': formatDate(fam.fecha_nacimiento_familiar),
+        'Tipo de Documento': fam.tipo_documento_familiar || '',
+        Documento: fam.documento,
+        Parentesco: fam.parentesco
+      })))
+
+      if (activeAfiliado.subsidios) {
+        subsidiosData.push(...activeAfiliado.subsidios.map(subsidio => ({
+          'Tipo de Subsidio': subsidio.tipo_subsidio,
+          'Fecha de Solicitud': formatDate(subsidio.fecha_solicitud),
+          'Fecha de Otorgamiento': formatDate(subsidio.fecha_otorgamiento),
+          Observaciones: subsidio.observaciones
+        })))
+      }
+    })
+
+    const wb = XLSX.utils.book_new()
+    const personasSheet = XLSX.utils.json_to_sheet(personasData)
+    const domiciliosSheet = XLSX.utils.json_to_sheet(domiciliosData)
+    const datosLaboralesSheet = XLSX.utils.json_to_sheet(datosLaboralesData)
+    const obraSocialSheet = XLSX.utils.json_to_sheet(obraSocialData)
+    const documentacionesSheet = XLSX.utils.json_to_sheet(documentacionesData)
+    const familiaresSheet = XLSX.utils.json_to_sheet(familiaresData)
+    const subsidiosSheet = XLSX.utils.json_to_sheet(subsidiosData)
+
+    XLSX.utils.book_append_sheet(wb, personasSheet, 'Personas')
+    XLSX.utils.book_append_sheet(wb, domiciliosSheet, 'Domicilios')
+    XLSX.utils.book_append_sheet(wb, datosLaboralesSheet, 'Datos Laborales')
+    XLSX.utils.book_append_sheet(wb, obraSocialSheet, 'Obra Social')
+    XLSX.utils.book_append_sheet(wb, documentacionesSheet, 'Documentaciones')
+    XLSX.utils.book_append_sheet(wb, familiaresSheet, 'Familiares')
+    XLSX.utils.book_append_sheet(wb, subsidiosSheet, 'Subsidios')
+
+    XLSX.writeFile(wb, 'afiliados.xlsx')
   }
 
   return (
@@ -180,10 +295,10 @@ export const Afiliado = () => {
                         {
                           (afiliados.length > 0) && afiliados.map((afiliado) => (
                             <tr key={afiliado.id}>
+                              <td className='table-td'>{afiliado.legajo}</td>
                               <td className='table-td'>{afiliado.nombre}</td>
                               <td className='table-td'>{afiliado.apellido}</td>
-                              <td className='table-td'>{afiliado.cuil}</td>
-                              {/* <td className='table-td'>{afiliado.email}</td> */}
+                              <td className='table-td'>{afiliado.dni}</td>
                               <td className='table-td'>{afiliado.ugl}</td>
                               <td className='table-td'>{afiliado.seccional}</td>
                               <td className='table-td'>
