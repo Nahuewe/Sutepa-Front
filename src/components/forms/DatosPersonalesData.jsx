@@ -27,6 +27,8 @@ function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
   const [cuil, setCuil] = useState('')
   const [dni, setDni] = useState('')
   const [legajo, setLegajo] = useState('')
+  // eslint-disable-next-line no-unused-vars
+  const [formData, setFormData] = useState(initialForm)
   const [correoElectronico, setCorreoElectronico] = useState('')
   const [telefono, setTelefono] = useState('')
   const dispatch = useDispatch()

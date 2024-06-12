@@ -26,36 +26,35 @@ function App () {
     <main className='App relative'>
       <Routes>
         {
-          // (status === 'not-authenticated')
-          //   ? (
-          //     <>
-          //       {/* Login */}
-          //       <Route path='/login' element={<Login />} />
-          //       <Route path='/*' element={<Navigate to='/login' />} />
-          //     </>
-          //     )
-          //   :
-          (
-            <>
-              <Route path='/' element={<Navigate to='/dashboard' />} />
+          (status === 'not-authenticated')
+            ? (
+              <>
+                {/* Login */}
+                <Route path='/login' element={<Login />} />
+                <Route path='/*' element={<Navigate to='/login' />} />
+              </>
+              )
+            : (
+              <>
+                <Route path='/' element={<Navigate to='/dashboard' />} />
 
-              <Route path='/*' element={<Layout />}>
-                <Route path='dashboard' element={<Dashboard />} />
-                <Route path='*' element={<Navigate to='/404' />} />
+                <Route path='/*' element={<Layout />}>
+                  <Route path='dashboard' element={<Dashboard />} />
+                  <Route path='*' element={<Navigate to='/404' />} />
 
-                {/* Nuevas Rutas */}
-                <Route path='usuarios' element={<Users />} />
+                  {/* Nuevas Rutas */}
+                  <Route path='usuarios' element={<Users />} />
 
-                {/* Afiliados */}
-                <Route path='afiliados' element={<Afiliado />} />
-                <Route path='afiliados/crear' element={<Create />} />
-                <Route path='afiliados/editar/:id' element={<Create />} />
-                <Route path='afiliados/ver/:id' element={<ShowAfiliado />} />
-              </Route>
+                  {/* Afiliados */}
+                  <Route path='afiliados' element={<Afiliado />} />
+                  <Route path='afiliados/crear' element={<Create />} />
+                  <Route path='afiliados/editar/:id' element={<Create />} />
+                  <Route path='afiliados/ver/:id' element={<ShowAfiliado />} />
+                </Route>
 
-              <Route path='/404' element={<Error />} />
-            </>
-          )
+                <Route path='/404' element={<Error />} />
+              </>
+              )
         }
       </Routes>
     </main>

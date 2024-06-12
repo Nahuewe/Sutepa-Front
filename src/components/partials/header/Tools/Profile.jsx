@@ -1,12 +1,14 @@
 import React from 'react'
 import Dropdown from '@/components/ui/Dropdown'
 import Icon from '@/components/ui/Icon'
-import { Menu, Transition } from '@headlessui/react'
-import { useNavigate } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
-
-import UserAvatar from '@/assets/images/all-img/user.png'
+import { Menu } from '@headlessui/react'
 import { useAuthStore } from '@/helpers/useAuthStore'
+import { useSelector, useDispatch } from 'react-redux'
+import EditModal from '@/components/ui/EditModal'
+import ChangePasswordForm from '../../../sutepa/forms/ChangePasswordForm'
+import { handleShowEdit } from '@/store/layout'
+import { updateUserPassword, setActiveUser } from '../../../../store/user'
+import { getTipoRoles } from '@/constant/datos-id'
 
 const profileLabel = () => {
   const { user } = useSelector(state => state.auth)
@@ -21,8 +23,8 @@ const profileLabel = () => {
       </div>
 
       <div className='flex-none text-slate-600 dark:text-white text-sm font-normal items-center lg:flex hidden overflow-hidden text-ellipsis whitespace-nowrap'>
-        <span className='overflow-hidden text-ellipsis whitespace-nowrap max-w-[120px] block'> {/* w-[85px] */}
-          {user.nombre}
+        <span className='overflow-hidden text-ellipsis whitespace-nowrap max-w-[120px] block'>
+          {user.nombre} {user.apellido}
         </span>
         <span className='text-base inline-block ltr:ml-[10px] rtl:mr-[10px]'>
           <Icon icon='heroicons-outline:chevron-down' />
@@ -33,61 +35,26 @@ const profileLabel = () => {
 }
 
 const Profile = () => {
-  const navigate = useNavigate()
-  const dispatch = useDispatch()
   const { startLogout } = useAuthStore()
+  const dispatch = useDispatch()
+  const { showEdit } = useSelector(state => state.layout)
+  const { user } = useSelector(state => state.auth)
+  const activeUser = useSelector(state => state.user.activeUser)
 
   const ProfileMenu = [
-    /* {
-      label: "Profile",
-      icon: "heroicons-outline:user",
-
-      action: () => {
-        console.log("profile");
-      },
+    {
+      label: ` ${getTipoRoles(user.roles_id)}`,
+      icon: 'heroicons-outline:badge-check',
+      action: null
     },
     {
-      label: "Chat",
-      icon: "heroicons-outline:chat",
+      label: 'Cambiar contraseña',
+      icon: 'heroicons-outline:key',
       action: () => {
-        console.log("chat");
-      },
+        dispatch(setActiveUser(user.id))
+        dispatch(handleShowEdit())
+      }
     },
-    {
-      label: "Email",
-      icon: "heroicons-outline:mail",
-      action: () => {
-        console.log("email");
-      },
-    },
-    {
-      label: "Todo",
-      icon: "heroicons-outline:clipboard-check",
-      action: () => {
-        console.log("todo");
-      },
-    },
-    {
-      label: "Settings",
-      icon: "heroicons-outline:cog",
-      action: () => {
-        console.log("settings");
-      },
-    },
-    {
-      label: "Price",
-      icon: "heroicons-outline:credit-card",
-      action: () => {
-        console.log("price");
-      },
-    },
-    {
-      label: "Faq",
-      icon: "heroicons-outline:information-circle",
-      action: () => {
-        console.log("faq");
-      },
-    }, */
     {
       label: 'Cerrar Sesión',
       icon: 'heroicons-outline:login',
@@ -97,36 +64,48 @@ const Profile = () => {
     }
   ]
 
+  const handlePasswordChange = async (data) => {
+    if (activeUser) {
+      dispatch(updateUserPassword({ id: activeUser.id, password: data.newPassword }))
+      dispatch(handleShowEdit())
+    }
+  }
+
   return (
-    <Dropdown label={profileLabel()} classMenuItems='w-[180px] top-[58px]'>
-      {ProfileMenu.map((item, index) => (
-        <Menu.Item key={index}>
-          {({ active }) => (
-            <div
-              onClick={() => item.action()}
-              className={`${
-                active
-                  ? 'bg-slate-100 text-slate-900 dark:bg-slate-600 dark:text-slate-300 dark:bg-opacity-50'
-                  : 'text-slate-600 dark:text-slate-300'
-              } block     ${
-                item.hasDivider
-                  ? 'border-t border-slate-100 dark:border-slate-700'
-                  : ''
-              }`}
-            >
-              <div className='block cursor-pointer px-4 py-2'>
-                <div className='flex items-center'>
-                  <span className='block text-xl ltr:mr-3 rtl:ml-3'>
-                    <Icon icon={item.icon} />
-                  </span>
-                  <span className='block text-sm'>{item.label}</span>
+    <>
+      <Dropdown label={profileLabel()} classMenuItems='w-[180px] top-[58px]'>
+        {ProfileMenu.map((item, index) => (
+          <Menu.Item key={index}>
+            {({ active }) => (
+              <div
+                onClick={() => item.action()}
+                className={`${
+                  active
+                    ? 'bg-slate-100 text-slate-900 dark:bg-slate-600 dark:text-slate-300 dark:bg-opacity-50'
+                    : 'text-slate-600 dark:text-slate-300'
+                } block     ${
+                  item.hasDivider
+                    ? 'border-t border-slate-100 dark:border-slate-700'
+                    : ''
+                }`}
+              >
+                <div className='block cursor-pointer px-4 py-2'>
+                  <div className='flex items-center'>
+                    <span className='block text-xl ltr:mr-3 rtl:ml-3'>
+                      <Icon icon={item.icon} />
+                    </span>
+                    <span className='block text-sm'>{item.label}</span>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
-        </Menu.Item>
-      ))}
-    </Dropdown>
+            )}
+          </Menu.Item>
+        ))}
+      </Dropdown>
+      <EditModal isOpen={showEdit} onClose={() => dispatch(handleShowEdit())} title='Cambiar Contraseña' centered>
+        <ChangePasswordForm onSubmit={handlePasswordChange} />
+      </EditModal>
+    </>
   )
 }
 

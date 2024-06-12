@@ -257,7 +257,7 @@ function SubsidioData ({ disabled }) {
                   <td className='px-4 py-2 text-center dark:text-white'>{getTipoSubsidioNombre(subsidio.tipo_subsidio_id)}</td>
                   <td className='px-4 py-2 text-center dark:text-white'>{formatDate(subsidio.fecha_solicitud)}</td>
                   <td className='px-4 py-2 text-center dark:text-white'>{formatDate(subsidio.fecha_otorgamiento)}</td>
-                  <td className='px-4 py-2 text-center dark:text-white'>{subsidio.observaciones}</td>
+                  <td className='px-4 py-2 text-center dark:text-white mayuscula'>{subsidio.observaciones}</td>
                   <td className='px-4 py-2 text-center dark:text-white'>{subsidio.usuario_carga}</td>
                   <td className='text-center py-2 gap-4 flex justify-center'>
                     <Tooltip content='Editar'>

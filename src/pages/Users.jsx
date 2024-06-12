@@ -162,8 +162,8 @@ export const Users = () => {
                               <td className='table-td'>
                                 <span
                                   className={`inline-block px-3 min-w-[90px] text-center py-1 rounded-full bg-opacity-25 ${usuario.estado === 'ACTIVO'
-                                      ? 'text-green-800 bg-green-500 dark:text-green-200 dark:bg-green-700'
-                                      : 'text-orange-800 bg-orange-500 dark:text-orange-200 dark:bg-orange-700'
+                                      ? 'text-black bg-success-500 dark:text-black dark:bg-success-400'
+                                      : 'text-black bg-danger-500 dark:text-black dark:bg-danger-500'
                                     }`}
                                 >
                                   {usuario.estado === 'ACTIVO' ? 'ACTIVO' : 'INACTIVO'}

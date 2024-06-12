@@ -4,7 +4,7 @@ import Textinput from '@/components/ui/Textinput'
 import Numberinput from '@/components/ui/Numberinput'
 import { SelectForm } from '@/components/sutepa/forms'
 import { useSelector, useDispatch } from 'react-redux'
-import { onAddFamiliar, onDeleteFamiliar } from '../../store/afiliado'
+import { onAddOrUpdateFamiliar, onDeleteFamiliar } from '../../store/afiliado'
 import { Icon } from '@iconify/react'
 import { Tooltip } from 'flowbite-react'
 import { sutepaApi } from '../../api'
@@ -16,7 +16,8 @@ const initialForm = {
   nombre_familiar: '',
   tipo_documento_familiar: '',
   documento: '',
-  parentesco_id: ''
+  parentesco_id: '',
+  fecha_nacimiento_familiar: null
 }
 
 const tipoDocumento = [
@@ -24,7 +25,7 @@ const tipoDocumento = [
   { id: 'PASAPORTE', nombre: 'PASAPORTE' }
 ]
 
-function FamiliarAcargoData ({ register, disabled, watch, setValue }) {
+function FamiliarAcargoData ({ register, disabled, watch, setValue, reset }) {
   const dispatch = useDispatch()
   const { familiares } = useSelector(state => state.afiliado)
   const { user } = useSelector(state => state.auth)
@@ -33,7 +34,8 @@ function FamiliarAcargoData ({ register, disabled, watch, setValue }) {
   const [formData, setFormData] = useState(initialForm)
   const formRef = useRef()
   const [parentesco, setParentesco] = useState([])
-  const [idCounter, setIdCounter] = useState(0)
+  const [editingFamiliarId, setEditingFamiliarId] = useState(null)
+  const [isEditing, setIsEditing] = useState(false)
 
   async function handleParentesco () {
     const response = await sutepaApi.get('familia')
@@ -50,28 +52,41 @@ function FamiliarAcargoData ({ register, disabled, watch, setValue }) {
     setDni('')
     setPicker(null)
     setFormData(initialForm)
+    setIsEditing(false)
+    setEditingFamiliarId(null)
+    reset()
   }
 
   const addFamiliar = () => {
     const newFamiliar = {
       ...formData,
-      id: idCounter,
+      id: isEditing ? editingFamiliarId : familiares.length + 1,
       parentesco_id: parseInt(watch('parentesco_id')) || null,
-      fecha_nacimiento_familiar: picker ? moment(picker[0]).format('YYYY-MM-DD') : null,
-      fecha_carga: moment().format('DD/MM/YYYY')
+      fecha_nacimiento_familiar: picker ? moment.utc(picker[0]).format('YYYY-MM-DD') : null,
+      fecha_carga: moment.utc().format('DD/MM/YYYY'),
+      usuario_carga: user.nombre
     }
-    dispatch(onAddFamiliar(newFamiliar))
-    setIdCounter(idCounter + 1)
+
+    if (isEditing) {
+      dispatch(onAddOrUpdateFamiliar(newFamiliar))
+    } else {
+      dispatch(onAddOrUpdateFamiliar(newFamiliar))
+    }
+
     onReset()
   }
 
   function formatDate (date) {
-    return date ? new Date(date).toLocaleDateString() : ''
+    return date ? moment.utc(date).format('DD/MM/YYYY') : ''
   }
 
   const handleDateChange = (date) => {
     setPicker(date)
     setValue('fecha_nacimiento_familiar', date[0])
+    setFormData((prevState) => ({
+      ...prevState,
+      fecha_nacimiento_familiar: moment.utc(date[0]).format('YYYY-MM-DD')
+    }))
   }
 
   const handleInputChange = e => {
@@ -109,6 +124,23 @@ function FamiliarAcargoData ({ register, disabled, watch, setValue }) {
     return parentescoObj ? parentescoObj.nombre : ''
   }
 
+  const handleEdit = (familiar) => {
+    setFormData({
+      ...familiar,
+      fecha_nacimiento_familiar: familiar.fecha_nacimiento_familiar ? moment.utc(familiar.fecha_nacimiento_familiar).format('YYYY-MM-DD') : null
+    })
+    setEditingFamiliarId(familiar.id)
+    setIsEditing(true)
+    setPicker(new Date(familiar.fecha_nacimiento_familiar))
+    setDni(familiar.documento)
+
+    setValue('nombre_familiar', familiar.nombre_familiar)
+    setValue('tipo_documento_familiar', familiar.tipo_documento_familiar)
+    setValue('documento', familiar.documento)
+    setValue('parentesco_id', familiar.parentesco_id)
+    setValue('fecha_nacimiento_familiar', familiar.fecha_nacimiento_familiar ? moment.utc(familiar.fecha_nacimiento_familiar).format('YYYY-MM-DD') : '')
+  }
+
   useEffect(() => {
     handleParentesco()
   }, [])
@@ -129,7 +161,7 @@ function FamiliarAcargoData ({ register, disabled, watch, setValue }) {
               <Textinput
                 name='nombre_familiar'
                 type='text'
-              className='mayuscula'
+                className='mayuscula'
                 register={register}
                 placeholder='Ingrese el nombre y apellido'
                 value={formData.nombre_familiar}
@@ -145,7 +177,7 @@ function FamiliarAcargoData ({ register, disabled, watch, setValue }) {
               <DatePicker
                 value={picker}
                 id='fecha_nacimiento_familiar'
-              className='mayuscula'
+                className='mayuscula'
                 onChange={handleDateChange}
                 placeholder='Ingrese la fecha de nacimiento'
                 disabled={disabled}
@@ -187,7 +219,7 @@ function FamiliarAcargoData ({ register, disabled, watch, setValue }) {
               onClick={addFamiliar}
               disabled={disabled}
             >
-              Agregar Familiar
+              {isEditing ? 'Terminar Edición' : 'Agregar Familiar'}
             </button>
           </div>
         </form>
@@ -212,7 +244,7 @@ function FamiliarAcargoData ({ register, disabled, watch, setValue }) {
               {familiares.map(fam => (
                 <tr key={fam.id} className='bg-white dark:bg-gray-800 dark:border-gray-700'>
                   <td className='px-4 py-2 text-center dark:text-white'>{fam.fecha_carga}</td>
-                  <td className='px-4 py-2 text-center dark:text-white'>{fam.nombre_familiar}</td>
+                  <td className='px-4 py-2 text-center dark:text-white mayuscula'>{fam.nombre_familiar}</td>
                   <td className='px-4 py-2 text-center dark:text-white'>{formatDate(fam.fecha_nacimiento_familiar)}</td>
                   <td className='px-4 py-2 text-center dark:text-white'>{fam.tipo_documento_familiar}</td>
                   <td className='px-4 py-2 text-center dark:text-white'>{fam.documento}</td>
@@ -220,12 +252,21 @@ function FamiliarAcargoData ({ register, disabled, watch, setValue }) {
                     {getParentescoNameById(fam.parentesco_id)}
                   </td>
                   <td className='px-4 py-2 text-center dark:text-white'>{user.nombre}</td>
-                  <td className='text-center py-2'>
+                  <td className='text-center py-2 gap-4 flex justify-center'>
+                    <Tooltip content='Editar'>
+                      <button
+                        type='button'
+                        onClick={() => handleEdit(fam)}
+                        className='text-purple-600 hover:text-purple-900'
+                      >
+                        <Icon icon='heroicons:pencil-square' width='24' height='24' />
+                      </button>
+                    </Tooltip>
                     <Tooltip content='Eliminar'>
                       <button
                         type='button'
                         onClick={() => onDelete(fam.id)}
-                        className=' text-red-600 hover:text-red-900'
+                        className='text-red-600 hover:text-red-900'
                       >
                         <Icon icon='heroicons:trash' width='24' height='24' />
                       </button>

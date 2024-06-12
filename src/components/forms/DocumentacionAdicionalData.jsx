@@ -68,9 +68,9 @@ function DocumentacionAdicionalData ({ register, disabled }) {
         ...formData,
         tipo_documento_id: tipoArchivoOption.id,
         id: idCounter,
-        archivo: formData.archivo.name,
-        fecha_carga: new Date().toLocaleDateString('es-ES'),
-        url: URL.createObjectURL(formData.archivo)
+        archivo: URL.createObjectURL(formData.archivo),
+        nombre_archivo: formData.archivo.name,
+        fecha_carga: new Date().toLocaleDateString('es-ES')
       }
       dispatch(onAddDocumento(nuevoDocumento))
       setDocumentos([...documentos, nuevoDocumento])
@@ -153,8 +153,8 @@ function DocumentacionAdicionalData ({ register, disabled }) {
                     {getDocumentoByName(documento.tipo_documento_id)}
                   </td>
                   <td className='px-4 py-2 text-center dark:text-white'>
-                    <a href={documento.url} target='_blank' rel='noopener noreferrer' className='text-blue-500 underline'>
-                      {documento.archivo}
+                    <a href={documento.archivo} target='_blank' rel='noopener noreferrer' className='text-blue-500 underline'>
+                      {documento.nombre_archivo}
                     </a>
                   </td>
                   <td className='px-4 py-2 text-center dark:text-white'>{user.nombre}</td>

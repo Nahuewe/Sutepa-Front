@@ -38,10 +38,12 @@ export const afiliadoSlice = createSlice({
     onShowAfiliado: (state, { payload }) => {
       state.activeAfiliado = payload
     },
-    onAddFamiliar: (state, { payload }) => {
-      const existe = state.familiares.find((familiar) => familiar.id === payload.id)
-      if (!existe) {
-        state.familiares = [...state.familiares, payload]
+    onAddOrUpdateFamiliar: (state, { payload }) => {
+      const index = state.familiares.findIndex((familiar) => familiar.id === payload.id)
+      if (index !== -1) {
+        state.familiares[index] = payload
+      } else {
+        state.familiares.push(payload)
       }
     },
     onDeleteFamiliar: (state, { payload }) => {
@@ -59,9 +61,9 @@ export const afiliadoSlice = createSlice({
     onAddOrUpdateSubsidio: (state, { payload }) => {
       const index = state.subsidios.findIndex((subsidio) => subsidio.id === payload.id)
       if (index !== -1) {
-        state.subsidios[index] = payload // Update existing subsidio
+        state.subsidios[index] = payload
       } else {
-        state.subsidios.push(payload) // Add new subsidio
+        state.subsidios.push(payload)
       }
     },
     onDeleteSubsidio: (state, { payload }) => {
@@ -103,7 +105,7 @@ export const {
   onUpdateAfiliado,
   onDeleteAfiliado,
   onShowAfiliado,
-  onAddFamiliar,
+  onAddOrUpdateFamiliar,
   onDeleteFamiliar,
   onAddDocumento,
   onDeleteDocumento,

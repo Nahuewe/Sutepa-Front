@@ -34,7 +34,8 @@ export const Create = () => {
     formState: { errors, isSubmitting },
     handleSubmit,
     setValue,
-    watch
+    watch,
+    reset
   } = useForm({
     resolver: yupResolver(FormValidationSchema)
   })
@@ -97,11 +98,11 @@ export const Create = () => {
 
             <ObraSocialAfiliadoData register={register} setValue={setValue} />
 
-            <FamiliarAcargoData register={register} setValue={setValue} watch={watch} />
+            <FamiliarAcargoData register={register} setValue={setValue} watch={watch} reset={reset} />
 
-            <DocumentacionAdicionalData register={register} setValue={setValue} />
+            <DocumentacionAdicionalData register={register} setValue={setValue} reset={reset} />
 
-            <SubsidioData register={register} setValue={setValue} />
+            <SubsidioData register={register} setValue={setValue} reset={reset} />
 
             <div className='flex justify-end gap-4 mt-8'>
               <div className='ltr:text-right rtl:text-left'>
