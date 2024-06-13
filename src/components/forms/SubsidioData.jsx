@@ -114,7 +114,7 @@ function SubsidioData ({ disabled }) {
     return subsidioEncontrado ? subsidioEncontrado.nombre : ''
   }
 
-  function addItem () {
+  function addSubsidio () {
     const newSubsidio = {
       ...formData,
       fecha_carga: new Date(),
@@ -224,14 +224,14 @@ function SubsidioData ({ disabled }) {
               />
             </div>
           </div>
-          <div className='flex justify-end mt-4'>
+          <div className='flex justify-end mt-4 gap-4'>
             <button
               type='button'
-              className='btn btn-primary rounded-lg'
-              onClick={addItem}
+              className={`btn rounded-lg ${isEditing ? 'btn-purple' : 'btn-primary'}`}
+              onClick={addSubsidio}
               disabled={disabled}
             >
-              {isEditing ? 'Terminar Edición' : 'Agregar Subsidio'}
+              {isEditing ? 'Terminar Edición' : 'Agregar Familiar'}
             </button>
           </div>
         </form>

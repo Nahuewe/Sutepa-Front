@@ -18,7 +18,7 @@ const initialForm = {
 function DocumentacionAdicionalData ({ register, disabled }) {
   const dispatch = useDispatch()
   const [documentos, setDocumentos] = useState([])
-  const { user } = useSelector(state => state.auth.user)
+  const { user } = useSelector(state => state.auth)
   const [formData, setFormData] = useState(initialForm)
   const formRef = useRef()
   const [archivoOptions, setArchivoOptions] = useState([])

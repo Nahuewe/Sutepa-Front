@@ -31,6 +31,9 @@
 .btn-warning {
   @apply bg-[#FA916B] dark:hover:bg-opacity-70  text-white hover:ring-2 hover:ring-opacity-80 ring-[#FA916B] hover:ring-offset-1 dark:hover:ring-0 dark:hover:ring-offset-0;
 }
+.btn-purple {
+  @apply bg-[#7e3af2] dark:hover:bg-opacity-70  text-white hover:ring-2 hover:ring-opacity-80 ring-[#7e3af2] hover:ring-offset-1 dark:hover:ring-0 dark:hover:ring-offset-0;
+}
 .btn-danger {
   @apply bg-danger-500 dark:hover:bg-opacity-70  text-white hover:ring-2 hover:ring-opacity-80 ring-danger-500 hover:ring-offset-1 dark:hover:ring-0 dark:hover:ring-offset-0;
 }

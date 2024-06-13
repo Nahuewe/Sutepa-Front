@@ -49,10 +49,9 @@ const columns = [
 ]
 
 export const Users = () => {
-  const { users, paginate, activeUser, startLoadingUsers, startSavingUser, startDeleteUser, startUpdateUser, startSearchUser } = useUserStore()
+  const { users, paginate, activeUser, startLoadingUsers, startSavingUser, startDeleteUser, startUpdateUser } = useUserStore()
   const dispatch = useDispatch()
   const [isLoading, setIsLoading] = useState(true)
-  const [search, setSearch] = useState('')
 
   function onEdit (id) {
     dispatch(setActiveUser(id))
@@ -62,13 +61,6 @@ export const Users = () => {
   function onDelete (id) {
     dispatch(setActiveUser(id))
     dispatch(handleShowDelete())
-  }
-
-  async function onSearch ({ target: { value } }) {
-    setSearch(value)
-    if (value.length === 0) await loadingUsers()
-    if (value.length <= 3) return false
-    await startSearchUser(value)
   }
 
   async function loadingUsers (page = 1) {
@@ -92,14 +84,6 @@ export const Users = () => {
               title='Listado de Usuarios'
               headerslot={
                 <div className='flex gap-2'>
-                  <input
-                    type='text'
-                    placeholder='Buscar'
-                    onChange={onSearch}
-                    value={search}
-                    className='form-control px-2 py-1 rounded-lg border border-gray-400'
-                  />
-
                   <Modal
                     title='Agregar Usuario'
                     label='Agregar'
@@ -230,9 +214,7 @@ export const Users = () => {
                           <Pagination
                             paginate={paginate}
                             onPageChange={(page) =>
-                              search !== ''
-                                ? startSearchUser(search, page)
-                                : loadingUsers(page)}
+                              loadingUsers(page)}
                             text
                           />
                         </div>

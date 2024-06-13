@@ -1,15 +1,16 @@
-import React, { useEffect, useRef, useState } from 'react'
-import Card from '@/components/ui/Card'
-import Textinput from '@/components/ui/Textinput'
-import Numberinput from '@/components/ui/Numberinput'
-import { SelectForm } from '@/components/sutepa/forms'
+import React, { useRef, useState, useEffect } from 'react'
+import { useForm } from 'react-hook-form'
 import { useSelector, useDispatch } from 'react-redux'
 import { onAddOrUpdateFamiliar, onDeleteFamiliar } from '../../store/afiliado'
-import { Icon } from '@iconify/react'
+import Numberinput from '@/components/ui/Numberinput'
+import Card from '@/components/ui/Card'
+import Textinput from '@/components/ui/Textinput'
+import { SelectForm } from '@/components/sutepa/forms'
 import { Tooltip } from 'flowbite-react'
+import { Icon } from '@iconify/react'
 import { sutepaApi } from '../../api'
-import moment from 'moment'
 import DatePicker from '../ui/DatePicker'
+import moment from 'moment'
 
 const initialForm = {
   id: null,
@@ -25,55 +26,57 @@ const tipoDocumento = [
   { id: 'PASAPORTE', nombre: 'PASAPORTE' }
 ]
 
-function FamiliarAcargoData ({ register, disabled, watch, setValue, reset }) {
+function FamiliaresaCargo ({ disabled }) {
   const dispatch = useDispatch()
-  const { familiares } = useSelector(state => state.afiliado)
-  const { user } = useSelector(state => state.auth.user)
+  const { register, setValue, reset, watch } = useForm()
   const [picker, setPicker] = useState(null)
-  const [dni, setDni] = useState('')
   const [formData, setFormData] = useState(initialForm)
-  const formRef = useRef()
-  const [parentesco, setParentesco] = useState([])
+  const [familiares, setFamiliares] = useState([])
   const [editingFamiliarId, setEditingFamiliarId] = useState(null)
   const [isEditing, setIsEditing] = useState(false)
+  const { user } = useSelector(state => state.auth)
+  const formRef = useRef()
+  const [idCounter, setIdCounter] = useState(0)
+  const [dni, setDni] = useState('')
+  const [parentesco, setParentesco] = useState([])
 
-  async function handleParentesco () {
+  async function handleParentescos () {
     const response = await sutepaApi.get('familia')
     const { data } = response.data
     setParentesco(data)
   }
 
-  function onDelete (id) {
+  const handleEdit = (familiar) => {
+    setFormData({
+      ...familiar,
+      fecha_nacimiento_familiar: familiar.fecha_nacimiento_familiar ? moment.utc(familiar.fecha_nacimiento_familiar).format('YYYY-MM-DD') : null
+    })
+    setEditingFamiliarId(familiar.id)
+    setIsEditing(true)
+    setPicker(new Date(familiar.fecha_nacimiento_familiar))
+    setDni(familiar.documento)
+
+    setValue('nombre_familiar', familiar.nombre_familiar)
+    setValue('tipo_documento_familiar', familiar.tipo_documento_familiar)
+    setValue('documento', familiar.documento)
+    setValue('parentesco_id', familiar.parentesco_id)
+    setValue('fecha_nacimiento_familiar', familiar.fecha_nacimiento_familiar ? moment.utc(familiar.fecha_nacimiento_familiar).format('YYYY-MM-DD') : '')
+  }
+
+  const onDelete = (id) => {
+    const newFamiliares = familiares.filter(familiar => familiar.id !== id)
+    setFamiliares(newFamiliares)
     dispatch(onDeleteFamiliar(id))
   }
 
   const onReset = () => {
     formRef.current.reset()
-    setDni('')
     setPicker(null)
     setFormData(initialForm)
     setIsEditing(false)
     setEditingFamiliarId(null)
+    setDni('')
     reset()
-  }
-
-  const addFamiliar = () => {
-    const newFamiliar = {
-      ...formData,
-      id: isEditing ? editingFamiliarId : familiares.length + 1,
-      parentesco_id: parseInt(watch('parentesco_id')) || null,
-      fecha_nacimiento_familiar: picker ? moment.utc(picker[0]).format('YYYY-MM-DD') : null,
-      fecha_carga: moment.utc().format('DD/MM/YYYY'),
-      user_id: user.id
-    }
-
-    if (isEditing) {
-      dispatch(onAddOrUpdateFamiliar(newFamiliar))
-    } else {
-      dispatch(onAddOrUpdateFamiliar(newFamiliar))
-    }
-
-    onReset()
   }
 
   function formatDate (date) {
@@ -119,30 +122,38 @@ function FamiliarAcargoData ({ register, disabled, watch, setValue, reset }) {
     setFormData(prevData => ({ ...prevData, documento: formattedDni }))
   }
 
-  const getParentescoNameById = id => {
+  const getParentescoNombre = id => {
     const parentescoObj = parentesco.find(item => item.id === id)
     return parentescoObj ? parentescoObj.nombre : ''
   }
 
-  const handleEdit = (familiar) => {
-    setFormData({
-      ...familiar,
-      fecha_nacimiento_familiar: familiar.fecha_nacimiento_familiar ? moment.utc(familiar.fecha_nacimiento_familiar).format('YYYY-MM-DD') : null
-    })
-    setEditingFamiliarId(familiar.id)
-    setIsEditing(true)
-    setPicker(new Date(familiar.fecha_nacimiento_familiar))
-    setDni(familiar.documento)
+  function addFamiliar () {
+    const newFamiliar = {
+      ...formData,
+      id: isEditing ? editingFamiliarId : idCounter,
+      parentesco_id: parseInt(watch('parentesco_id')) || null,
+      fecha_nacimiento_familiar: picker ? moment.utc(picker[0]).format('YYYY-MM-DD') : null,
+      fecha_carga: moment.utc().format('DD/MM/YYYY'),
+      user_id: user.id
+    }
 
-    setValue('nombre_familiar', familiar.nombre_familiar)
-    setValue('tipo_documento_familiar', familiar.tipo_documento_familiar)
-    setValue('documento', familiar.documento)
-    setValue('parentesco_id', familiar.parentesco_id)
-    setValue('fecha_nacimiento_familiar', familiar.fecha_nacimiento_familiar ? moment.utc(familiar.fecha_nacimiento_familiar).format('YYYY-MM-DD') : '')
+    if (isEditing) {
+      setFamiliares((prevFamiliares) =>
+        prevFamiliares.map((familiar) =>
+          familiar.id === editingFamiliarId ? newFamiliar : familiar
+        )
+      )
+    } else {
+      setFamiliares((prevFamiliares) => [...prevFamiliares, newFamiliar])
+      setIdCounter(idCounter + 1)
+    }
+
+    dispatch(onAddOrUpdateFamiliar(newFamiliar))
+    onReset()
   }
 
   useEffect(() => {
-    handleParentesco()
+    handleParentescos()
   }, [])
 
   return (
@@ -209,13 +220,16 @@ function FamiliarAcargoData ({ register, disabled, watch, setValue, reset }) {
               register={register('parentesco_id')}
               title='Parentesco'
               options={parentesco}
+              value={formData.parentesco_id}
+              onChange={e => handleInputChange(e)}
               disabled={disabled}
             />
+
           </div>
           <div className='flex justify-end mt-4 gap-4'>
             <button
               type='button'
-              className='btn btn-primary rounded-lg'
+              className={`btn rounded-lg ${isEditing ? 'btn-purple' : 'btn-primary'}`}
               onClick={addFamiliar}
               disabled={disabled}
             >
@@ -249,7 +263,7 @@ function FamiliarAcargoData ({ register, disabled, watch, setValue, reset }) {
                   <td className='px-4 py-2 text-center dark:text-white'>{fam.tipo_documento_familiar}</td>
                   <td className='px-4 py-2 text-center dark:text-white'>{fam.documento}</td>
                   <td className='px-4 py-2 text-center dark:text-white'>
-                    {getParentescoNameById(fam.parentesco_id)}
+                    {getParentescoNombre(fam.parentesco_id)}
                   </td>
                   <td className='px-4 py-2 text-center dark:text-white'>{user.username}</td>
                   <td className='text-center py-2 gap-4 flex justify-center'>
@@ -282,4 +296,4 @@ function FamiliarAcargoData ({ register, disabled, watch, setValue, reset }) {
   )
 }
 
-export default FamiliarAcargoData
+export default FamiliaresaCargo
