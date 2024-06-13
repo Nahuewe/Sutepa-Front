@@ -20,6 +20,16 @@ export const useAfiliadoStore = () => {
     }
   }
 
+  const startGetAfiliadosSinPaginar = async () => {
+    try {
+      const response = await sutepaApi.get('/personaAll')
+      const { data } = response.data
+      dispatch(onShowAfiliado(data))
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   const startSavingAfiliado = async () => {
     try {
       const afiliado = {
@@ -107,7 +117,7 @@ export const useAfiliadoStore = () => {
 
   const startSearchAfiliado = async (search, page = 1) => {
     try {
-      const response = await sutepaApi.get(`/personas/buscar/${search}?page=${page}`)
+      const response = await sutepaApi.get(`/buscar-persona/${search}?page=${page}`)
       const { data, meta } = response.data
       dispatch(handleAfiliado({ data, meta }))
     } catch (error) {
@@ -123,6 +133,7 @@ export const useAfiliadoStore = () => {
 
     // Métodos
     startLoadingAfiliado,
+    startGetAfiliadosSinPaginar,
     startEditAfiliado,
     startSavingAfiliado,
     startUpdateAfiliado,

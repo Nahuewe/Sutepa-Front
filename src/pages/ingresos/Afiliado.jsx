@@ -13,6 +13,9 @@ import { cleanAfiliado, setActiveAfiliado } from '@/store/afiliado'
 import { sutepaApi } from '@/api'
 import { formatDate, getTipoContrato } from '@/constant/datos-id'
 import EstadisticasAfiliados from '@/components/partials/widget/chart/EstadisticasAfiliados'
+import EditButton from '../../components/buttons/EditButton'
+import ViewButton from '../../components/buttons/ViewButton'
+import AfiliadoButton from '../../components/buttons/AfiliadoButton'
 
 const columns = [
   {
@@ -308,186 +311,61 @@ export const Afiliado = () => {
                           </tr>
                         </thead>
                         <tbody className='bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700'>
-                          {afiliados.length > 0 &&
-                            afiliados.map((afiliado) => (
-                              <tr key={afiliado.id}>
-                                <td className='table-td'>{afiliado.legajo}</td>
-                                <td className='table-td'>{afiliado.nombre}</td>
-                                <td className='table-td'>{afiliado.apellido}</td>
-                                <td className='table-td'>{afiliado.dni}</td>
-                                <td className='table-td'>{afiliado.ugl}</td>
-                                <td className='table-td'>{afiliado.seccional}</td>
-                                <td className='table-td'>
-                                  <span
-                                    className={`inline-block px-3 min-w-[90px] text-center py-1 rounded-full bg-opacity-25 ${
-                                      afiliado.estado === 'ACTIVO'
+                          {
+                            (afiliados.length > 0)
+                              ? (afiliados.map((afiliado) => (
+                                <tr key={afiliado.id}>
+                                  <td className='table-td'>{afiliado.legajo}</td>
+                                  <td className='table-td mayuscula'>{afiliado.nombre}</td>
+                                  <td className='table-td mayuscula'>{afiliado.apellido}</td>
+                                  <td className='table-td'>{afiliado.dni}</td>
+                                  <td className='table-td'>{afiliado.ugl}</td>
+                                  <td className='table-td'>{afiliado.seccional}</td>
+                                  <td className='table-td'>
+                                    <span
+                                      className={`inline-block px-3 min-w-[90px] text-center py-1 rounded-full bg-opacity-25 ${afiliado.estado === 'ACTIVO'
                                         ? 'text-black bg-success-500 dark:text-black dark:bg-success-400'
                                         : afiliado.estado === 'PENDIENTE'
-                                        ? 'text-black bg-warning-500 dark:text-black dark:bg-warning-500'
-                                        : 'text-black bg-danger-500 dark:text-black dark:bg-danger-500'
-                                    }`}
-                                  >
-                                    {afiliado.estado}
-                                  </span>
-                                </td>
-                                <td className='table-td flex justify-start gap-2'>
-                                  <Tooltip content='Ver' placement='top' arrow animation='shift-away'>
-                                    <button
-                                      className='bg-indigo-500 text-white p-2 rounded-lg hover:bg-blue-700'
-                                      onClick={() => showAfiliado(afiliado.id)}
-                                    >
-                                      <svg
-                                        xmlns='http://www.w3.org/2000/svg'
-                                        className='icon icon-tabler icon-tabler-eye'
-                                        width='24'
-                                        height='24'
-                                        viewBox='0 0 24 24'
-                                        strokeWidth='1.5'
-                                        stroke='#ffffff'
-                                        fill='none'
-                                        strokeLinecap='round'
-                                        strokeLinejoin='round'
-                                      >
-                                        <path stroke='none' d='M0 0h24v24H0z' fill='none' />
-                                        <path d='M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0' />
-                                        <path d='M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6' />
-                                      </svg>
-                                    </button>
-                                  </Tooltip>
-
-                                  {auth.roles_id !== 5 && (
-                                    <Tooltip content='Editar' placement='top' arrow animation='shift-away'>
-                                      <button
-                                        className={`bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-700 ${
-                                          afiliado.estado === 'INACTIVO' ? 'opacity-50 cursor-not-allowed' : ''
+                                          ? 'text-black bg-warning-500 dark:text-black dark:bg-warning-500'
+                                          : 'text-black bg-danger-500 dark:text-black dark:bg-danger-500'
                                         }`}
-                                        onClick={() => afiliado.estado === 'ACTIVO' && onEdit(afiliado.id)}
-                                        disabled={afiliado.estado === 'INACTIVO'}
-                                      >
-                                        <svg
-                                          xmlns='http://www.w3.org/2000/svg'
-                                          className='icon icon-tabler icon-tabler-pencil'
-                                          width='24'
-                                          height='24'
-                                          viewBox='0 0 24 24'
-                                          strokeWidth='2'
-                                          stroke='currentColor'
-                                          fill='none'
-                                          strokeLinecap='round'
-                                          strokeLinejoin='round'
-                                        >
-                                          <path stroke='none' d='M0 0h24v24H0z' fill='none' />
-                                          <path d='M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4' />
-                                          <path d='M13.5 6.5l4 4' />
-                                        </svg>
-                                      </button>
-                                    </Tooltip>
-                                  )}
+                                    >
+                                      {afiliado.estado}
+                                    </span>
+                                  </td>
+                                  <td className='table-td flex justify-start gap-2'>
+                                    <ViewButton afiliado={afiliado} onView={showAfiliado} />
 
-                                  {auth.roles_id === 1 && (
-                                    <>
-                                      {afiliado.estado === 'PENDIENTE'
-                                        ? (
-                                          <Tooltip content='Autorizar' placement='top' arrow animation='shift-away'>
-                                            <button
-                                              className='bg-green-500 text-white p-2 rounded-lg hover:bg-green-700'
-                                              onClick={() => onDelete(afiliado.id)}
-                                            >
-                                              <svg
-                                                xmlns='http://www.w3.org/2000/svg'
-                                                className='icon icon-tabler icon-tabler-check'
-                                                width='24'
-                                                height='24'
-                                                viewBox='0 0 24 24'
-                                                strokeWidth='2'
-                                                stroke='currentColor'
-                                                fill='none'
-                                                strokeLinecap='round'
-                                                strokeLinejoin='round'
-                                              >
-                                                <path stroke='none' d='M0 0h24v24H0z' fill='none' />
-                                                <path d='M5 12l5 5l10 -10' />
-                                              </svg>
-                                            </button>
-                                          </Tooltip>
-                                          )
-                                        : afiliado.estado === 'INACTIVO'
-                                          ? (
-                                            <Tooltip content='Reactivar' placement='top' arrow animation='shift-away'>
-                                              <button
-                                                className='bg-warning-500 text-white p-2 rounded-lg hover:bg-warning-700'
-                                                onClick={() => onDelete(afiliado.id)}
-                                              >
-                                                <svg
-                                                  xmlns='http://www.w3.org/2000/svg'
-                                                  className='icon icon-tabler icon-tabler-arrow-back-up'
-                                                  width='24'
-                                                  height='24'
-                                                  viewBox='0 0 24 24'
-                                                  strokeWidth='1.5'
-                                                  stroke='currentColor'
-                                                  fill='none'
-                                                  strokeLinecap='round'
-                                                  strokeLinejoin='round'
-                                                >
-                                                  <path stroke='none' d='M0 0h24v24H0z' fill='none' />
-                                                  <path d='M9 14l-4 -4l4 -4' />
-                                                  <path d='M5 10h11a4 4 0 1 1 0 8h-1' />
-                                                </svg>
-                                              </button>
-                                            </Tooltip>
-                                            )
-                                          : (
-                                            <Tooltip content='Eliminar' placement='top' arrow animation='shift-away'>
-                                              <button
-                                                className='bg-red-500 text-white p-2 rounded-lg hover:bg-red-700'
-                                                onClick={() => onDelete(afiliado.id)}
-                                              >
-                                                <svg
-                                                  xmlns='http://www.w3.org/2000/svg'
-                                                  className='icon icon-tabler icon-tabler-trash'
-                                                  width='24'
-                                                  height='24'
-                                                  viewBox='0 0 24 24'
-                                                  strokeWidth='1.5'
-                                                  stroke='currentColor'
-                                                  fill='none'
-                                                  strokeLinecap='round'
-                                                  strokeLinejoin='round'
-                                                >
-                                                  <path stroke='none' d='M0 0h24v24H0z' fill='none' />
-                                                  <path d='M4 7l16 0' />
-                                                  <path d='M10 11l0 6' />
-                                                  <path d='M14 11l0 6' />
-                                                  <path d='M5 7l1 12.5a1 1 0 0 0 1 0.5h10a1 1 0 0 0 1 -0.5l1 -12.5' />
-                                                  <path d='M9 7l0 -3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1l0 3' />
-                                                </svg>
-                                              </button>
-                                            </Tooltip>
-                                            )}
-                                    </>
-                                  )}
-                                </td>
-                              </tr>
-                            ))}
+                                    {auth.roles_id !== 5 && (
+                                      <EditButton afiliado={afiliado} onEdit={onEdit} />
+                                    )}
+
+                                    {auth.roles_id === 1 && (
+                                      <AfiliadoButton afiliado={afiliado} onDelete={onDelete} />
+                                    )}
+                                  </td>
+                                </tr>
+                                )))
+                              : (<tr><td colSpan='10' className='text-center py-2 dark:bg-gray-800'>No se encontraron resultados</td></tr>)
+                          }
                         </tbody>
                       </table>
 
                       {/* Paginado */}
                       {
-                      paginate && (
-                        <div className='flex justify-center mt-8'>
-                          <Pagination
-                            paginate={paginate}
-                            onPageChange={(page) =>
-                              search !== ''
-                                ? startSearchAfiliado(search, page)
-                                : startLoadingAfiliado(page)}
-                            text
-                          />
-                        </div>
-                      )
-                    }
+                        paginate && (
+                          <div className='flex justify-center mt-8'>
+                            <Pagination
+                              paginate={paginate}
+                              onPageChange={(page) =>
+                                search !== ''
+                                  ? startSearchAfiliado(search, page)
+                                  : startLoadingAfiliado(page)}
+                              text
+                            />
+                          </div>
+                        )
+                      }
 
                     </div>
                   </div>

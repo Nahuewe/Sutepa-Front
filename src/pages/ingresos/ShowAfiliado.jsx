@@ -23,10 +23,10 @@ export const ShowAfiliado = () => {
               <div className='border-b py-2 px-4'>
                 <strong>Legajo:</strong> {activeAfiliado.persona.legajo}
               </div>
-              <div className='border-b py-2 px-4'>
+              <div className='border-b py-2 px-4 mayuscula'>
                 <strong>Nombre:</strong> {activeAfiliado.persona.nombre}
               </div>
-              <div className='border-b py-2 px-4'>
+              <div className='border-b py-2 px-4 mayuscula'>
                 <strong>Apellido:</strong> {activeAfiliado.persona.apellido}
               </div>
               <div className='border-b py-2 px-4'>
@@ -143,7 +143,7 @@ export const ShowAfiliado = () => {
               <div className='border-b py-2 px-4'>
                 <strong>Tipo de Obra Social:</strong> {activeAfiliado.obraSociales.tipo_obra}
               </div>
-              <div className='border-b py-2 px-4'>
+              <div className='border-b py-2 px-4 mayuscula'>
                 <strong>Obra Social:</strong> {activeAfiliado.obraSociales.obra_social}
               </div>
             </div>
@@ -210,7 +210,7 @@ export const ShowAfiliado = () => {
                   {activeAfiliado.familiares.map(fam => (
                     <tr key={fam.id} className='bg-white dark:bg-gray-800 dark:border-gray-700'>
                       <td className='px-4 py-2 text-center dark:text-white'>{formatDate(fam.created_at)}</td>
-                      <td className='px-4 py-2 text-center dark:text-white'>{fam.nombre_familiar}</td>
+                      <td className='px-4 py-2 text-center dark:text-white mayuscula'>{fam.nombre_familiar}</td>
                       <td className='px-4 py-2 text-center dark:text-white'>{formatDate(fam.fecha_nacimiento_familiar)}</td>
                       <td className='px-4 py-2 text-center dark:text-white'>{fam.tipo_documento_familiar || ''}</td>
                       <td className='px-4 py-2 text-center dark:text-white'>{fam.documento}</td>

@@ -58,16 +58,6 @@ export const useUserStore = () => {
     }
   }
 
-  const startSearchUser = async (search, page = 1) => {
-    try {
-      const response = await sutepaApi.get(`/user/buscar/${search}?page=${page}`)
-      const { data, meta } = response.data
-      dispatch(handleUser({ data, meta }))
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
   return {
     //* Propiedades
     users,
@@ -78,7 +68,6 @@ export const useUserStore = () => {
     startLoadingUsers,
     startSavingUser,
     startDeleteUser,
-    startUpdateUser,
-    startSearchUser
+    startUpdateUser
   }
 }

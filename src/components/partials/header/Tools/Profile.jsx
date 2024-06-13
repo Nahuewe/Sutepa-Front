@@ -78,7 +78,7 @@ const Profile = () => {
           <Menu.Item key={index}>
             {({ active }) => (
               <div
-                onClick={() => item.action()}
+                onClick={item.action}
                 className={`${
                   active
                     ? 'bg-slate-100 text-slate-900 dark:bg-slate-600 dark:text-slate-300 dark:bg-opacity-50'
