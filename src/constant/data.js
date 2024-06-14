@@ -28,12 +28,11 @@ export const menuItems = [
     icon: 'heroicons-outline:user-plus',
     link: 'afiliados'
   },
-
   {
     title: 'Usuarios',
     icon: 'heroicons-outline:users',
     link: 'usuarios'
-  },
+  }
 ]
 
 export const menuNormal = [
@@ -42,24 +41,17 @@ export const menuNormal = [
     title: 'menu'
   },
 
-  {
-    title: 'Dashboard',
-    icon: 'heroicons-outline:square-2-stack',
-    link: 'dashboard'
-  },
+  // {
+  //   title: 'Dashboard',
+  //   icon: 'heroicons-outline:square-2-stack',
+  //   link: 'dashboard'
+  // },
 
   {
     title: 'Afiliados',
     icon: 'heroicons-outline:user-plus',
     link: 'afiliados'
-  },
-
-  {
-    title: 'Usuarios',
-    icon: 'heroicons-outline:users',
-    link: 'usuarios'
   }
-
 ]
 
 export const topMenu = [

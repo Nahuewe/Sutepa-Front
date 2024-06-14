@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { useAfiliadoStore } from '@/helpers'
 import Card from '@/components/ui/Card'
-import Tooltip from '@/components/ui/Tooltip'
 import Pagination from '@/components/ui/Pagination'
 import Loading from '@/components/Loading'
 import { DeleteModal } from '@/components/ui/DeleteModal'
@@ -69,7 +68,7 @@ const columns = [
 export const Afiliado = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  const auth = useSelector((state) => state.auth.user)
+  const { user } = useSelector((state) => state.auth)
   const [isLoading, setIsLoading] = useState(true)
   const [search, setSearch] = useState('')
   const {
@@ -80,6 +79,8 @@ export const Afiliado = () => {
     startDeleteAfiliado,
     startSearchAfiliado
   } = useAfiliadoStore()
+
+  const filteredAfiliados = user.roles_id === 1 ? afiliados : afiliados.filter(afiliado => afiliado.seccional_id === user.seccional_id)
 
   function addAfiliado () {
     navigate('/afiliados/crear')
@@ -278,7 +279,7 @@ export const Afiliado = () => {
                         Exportar
                       </button>
 
-                      {(auth.roles_id === 1 || auth.roles_id === 3) && (
+                      {(user.roles_id === 1 || user.roles_id === 3) && (
                         <button
                           type='button'
                           onClick={addAfiliado}
@@ -292,7 +293,7 @@ export const Afiliado = () => {
                 </div>
 
                 <div className='mt-4 grid sm:grid-cols-2 md:grid-cols-3 grid-cols-1 gap-4'>
-                  <EstadisticasAfiliados afiliados={afiliados} />
+                  <EstadisticasAfiliados afiliados={filteredAfiliados} />
                 </div>
               </Card>
 
@@ -312,8 +313,8 @@ export const Afiliado = () => {
                         </thead>
                         <tbody className='bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700'>
                           {
-                            (afiliados.length > 0)
-                              ? (afiliados.map((afiliado) => (
+                            (filteredAfiliados.length > 0)
+                              ? (filteredAfiliados.map((afiliado) => (
                                 <tr key={afiliado.id}>
                                   <td className='table-td'>{afiliado.legajo}</td>
                                   <td className='table-td mayuscula'>{afiliado.nombre}</td>
@@ -336,11 +337,11 @@ export const Afiliado = () => {
                                   <td className='table-td flex justify-start gap-2'>
                                     <ViewButton afiliado={afiliado} onView={showAfiliado} />
 
-                                    {auth.roles_id !== 5 && (
+                                    {user.roles_id !== 5 && (
                                       <EditButton afiliado={afiliado} onEdit={onEdit} />
                                     )}
 
-                                    {auth.roles_id === 1 && (
+                                    {user.roles_id === 1 && (
                                       <AfiliadoButton afiliado={afiliado} onDelete={onDelete} />
                                     )}
                                   </td>

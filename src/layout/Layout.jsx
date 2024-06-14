@@ -13,9 +13,9 @@ import useMobileMenu from '@/hooks/useMobileMenu'
 import { ToastContainer } from 'react-toastify'
 import Loading from '@/components/Loading'
 import { motion } from 'framer-motion'
-import { useAuthStore } from '../helpers'
+import { useSelector } from 'react-redux'
 const Layout = () => {
-  const { user } = useAuthStore()
+  const { user } = useSelector(state => state.auth)
   const { width, breakpoints } = useWidth()
   const [collapsed] = useSidebar()
 

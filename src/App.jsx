@@ -36,7 +36,7 @@ function App () {
               )
             : (
               <>
-                <Route path='/' element={<Navigate to='/dashboard' />} />
+                <Route path='/' element={<Navigate to='/afiliados' />} />
 
                 <Route path='/*' element={<Layout />}>
                   <Route path='dashboard' element={<Dashboard />} />
