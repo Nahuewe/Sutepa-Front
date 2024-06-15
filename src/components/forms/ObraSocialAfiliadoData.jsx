@@ -15,7 +15,7 @@ const tipoObraSocial = [
   { id: 'PREPAGA', nombre: 'PREPAGA' }
 ]
 
-function ObraSocialAfiliadoData ({ register, setValue, disabled }) {
+function ObraSocialAfiliadoData ({ register, setValue }) {
   const dispatch = useDispatch()
   const obraSocialState = useSelector((state) => state.obra_social)
   const [formData, setFormData] = useState(obraSocialState || initialForm)
@@ -53,8 +53,7 @@ function ObraSocialAfiliadoData ({ register, setValue, disabled }) {
             <SelectForm
               register={register('tipo_obra')}
               options={tipoObraSocial}
-              disabled={disabled}
-              onChange={onChange} // Aquí se mantiene el cambio
+              onChange={onChange}
             />
           </div>
 
@@ -64,7 +63,6 @@ function ObraSocialAfiliadoData ({ register, setValue, disabled }) {
             className='mayuscula'
             register={register}
             placeholder='Especifique la obra social'
-            disabled={disabled}
             onChange={onChange}
           />
         </div>

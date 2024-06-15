@@ -154,7 +154,6 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
             register={register('tipo_contrato_id')}
             title='Tipo de Contrato'
             options={tipoContrato}
-            disabled={disabled}
           />
 
           <SelectForm
@@ -162,7 +161,6 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
             title='UGL'
             options={ugl}
             onChange={handleUglChange}
-            disabled={disabled}
           />
 
           <SelectForm
@@ -192,14 +190,12 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
             register={register('seccional_id')}
             title='Seccional SUTEPA'
             options={seccional}
-            disabled={disabled}
           />
 
           <SelectForm
             register={register('agrupamiento_id')}
             title='Agrupamiento'
             options={agrupamiento}
-            disabled={disabled}
           />
 
           <SelectForm
@@ -207,7 +203,6 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
             title='Tramo'
             options={tramo}
             onChange={handleTramoChange}
-            disabled={disabled}
           />
 
           <div>
@@ -220,7 +215,6 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
               placeholder='Ingrese la carga horaria'
               value={cargaHoraria}
               onChange={handleCargaHorarioChange}
-              disabled={disabled}
               readOnly
             />
           </div>
@@ -237,7 +231,7 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
               placeholder='Ingrese la fecha de ingreso'
               className='form-control'
               clearable
-              disabled={disabled}
+
             />
           </div>
 
@@ -248,7 +242,6 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
               type='email'
               register={register}
               placeholder='Ingrese el correo electrónico laboral'
-              disabled={disabled}
               value={correoElectronicoLaboral}
               onChange={handleCorreoElectronicoChange}
             />

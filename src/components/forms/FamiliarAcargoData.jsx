@@ -26,7 +26,7 @@ const tipoDocumento = [
   { id: 'PASAPORTE', nombre: 'PASAPORTE' }
 ]
 
-function FamiliaresaCargo ({ disabled }) {
+function FamiliaresaCargo () {
   const dispatch = useDispatch()
   const { register, setValue, reset, watch } = useForm()
   const [picker, setPicker] = useState(null)
@@ -177,7 +177,6 @@ function FamiliaresaCargo ({ disabled }) {
                 placeholder='Ingrese el nombre y apellido'
                 value={formData.nombre_familiar}
                 onChange={handleInputChange}
-                disabled={disabled}
               />
             </div>
 
@@ -191,7 +190,7 @@ function FamiliaresaCargo ({ disabled }) {
                 className='mayuscula'
                 onChange={handleDateChange}
                 placeholder='Ingrese la fecha de nacimiento'
-                disabled={disabled}
+
               />
               <input type='hidden' {...register('fecha_nacimiento_familiar')} />
             </div>
@@ -203,7 +202,6 @@ function FamiliaresaCargo ({ disabled }) {
               options={tipoDocumento}
               value={formData.tipo_documento_familiar}
               onChange={e => setFormData({ ...formData, tipo_documento_familiar: e.target.value })}
-              disabled={disabled}
             />
 
             <Numberinput
@@ -213,7 +211,6 @@ function FamiliaresaCargo ({ disabled }) {
               placeholder='Ingrese el documento'
               value={dni}
               onChange={handleDniChange}
-              disabled={disabled}
             />
 
             <SelectForm
@@ -222,7 +219,6 @@ function FamiliaresaCargo ({ disabled }) {
               options={parentesco}
               value={formData.parentesco_id}
               onChange={e => handleInputChange(e)}
-              disabled={disabled}
             />
 
           </div>
@@ -231,7 +227,6 @@ function FamiliaresaCargo ({ disabled }) {
               type='button'
               className={`btn rounded-lg ${isEditing ? 'btn-purple' : 'btn-primary'}`}
               onClick={addFamiliar}
-              disabled={disabled}
             >
               {isEditing ? 'Terminar Edición' : 'Agregar Familiar'}
             </button>

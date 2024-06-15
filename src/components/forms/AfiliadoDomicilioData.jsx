@@ -84,7 +84,6 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
             className='mayuscula'
             register={register}
             placeholder='Ingrese el domicilio'
-            disabled={disabled}
             onChange={handleDomicilioChange}
           />
 
@@ -92,7 +91,6 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
             register={register('provincia_id')}
             title='Provincia'
             options={provincias}
-            disabled={disabled}
             onChange={handleProvinciaChange}
           />
 
@@ -115,7 +113,6 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
               placeholder='Ingrese el código postal'
               value={codigoPostal}
               onChange={handleCodigoPostalChange}
-              disabled={disabled}
             />
           </div>
         </div>

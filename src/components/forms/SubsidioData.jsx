@@ -19,7 +19,7 @@ const initialForm = {
   user_id: null
 }
 
-function SubsidioData ({ disabled }) {
+function SubsidioData () {
   const dispatch = useDispatch()
   const { register, setValue, reset } = useForm()
   const [picker, setPicker] = useState(null)
@@ -177,7 +177,6 @@ function SubsidioData ({ disabled }) {
               register={register('tipo_subsidio_id')}
               title='Tipo de Subsidio'
               options={subsidio}
-              disabled={disabled}
               onChange={handleSelectChange}
             />
 
@@ -191,7 +190,6 @@ function SubsidioData ({ disabled }) {
                 name='fecha_solicitud'
                 placeholder='Ingrese la fecha de solicitud'
                 onChange={(date) => handleDateChange(date, 'fecha_solicitud')}
-                disabled={disabled}
               />
               <input type='hidden' {...register('fecha_solicitud')} />
             </div>
@@ -205,7 +203,6 @@ function SubsidioData ({ disabled }) {
                 name='fecha_otorgamiento'
                 placeholder='Ingrese la fecha de otorgamiento'
                 onChange={(date) => handleDateChange(date, 'fecha_otorgamiento')}
-                disabled={disabled}
               />
               <input type='hidden' {...register('fecha_otorgamiento')} />
             </div>
@@ -220,7 +217,6 @@ function SubsidioData ({ disabled }) {
                 onChange={onChange}
                 register={register}
                 placeholder='Ingrese algunas observaciones'
-                disabled={disabled}
               />
             </div>
           </div>
@@ -229,9 +225,8 @@ function SubsidioData ({ disabled }) {
               type='button'
               className={`btn rounded-lg ${isEditing ? 'btn-purple' : 'btn-primary'}`}
               onClick={addSubsidio}
-              disabled={disabled}
             >
-              {isEditing ? 'Terminar Edición' : 'Agregar Familiar'}
+              {isEditing ? 'Terminar Edición' : 'Agregar Subsidio'}
             </button>
           </div>
         </form>
@@ -252,8 +247,8 @@ function SubsidioData ({ disabled }) {
               </tr>
             </thead>
             <tbody className='divide-y dark:divide-gray-700'>
-              {subsidios.map((subsidio, index) => (
-                <tr key={index} className='bg-white dark:bg-gray-800 dark:border-gray-700'>
+              {subsidios.map((subsidio) => (
+                <tr key={subsidio.id} className='bg-white dark:bg-gray-800 dark:border-gray-700'>
                   <td className='px-4 py-2 text-center dark:text-white'>{formatDate(subsidio.fecha_carga)}</td>
                   <td className='px-4 py-2 text-center dark:text-white'>{getTipoSubsidioNombre(subsidio.tipo_subsidio_id)}</td>
                   <td className='px-4 py-2 text-center dark:text-white'>{formatDate(subsidio.fecha_solicitud)}</td>
@@ -286,6 +281,7 @@ function SubsidioData ({ disabled }) {
           </table>
         </div>
       )}
+
     </>
   )
 }

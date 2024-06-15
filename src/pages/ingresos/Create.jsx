@@ -13,6 +13,7 @@ import DocumentacionAdicionalData from '@/components/forms/DocumentacionAdiciona
 import SubsidioData from '@/components/forms/SubsidioData'
 import Loading from '@/components/Loading'
 import Button from '@/components/ui/Button'
+import { useSelector } from 'react-redux'
 
 export const Create = () => {
   const { id } = useParams()
@@ -20,6 +21,7 @@ export const Create = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [isParamsLoading, setIsParamsLoading] = useState(true)
   const { activeAfiliado, startSavingAfiliado, startUpdateAfiliado, startLoadingAfiliado, startEditAfiliado } = useAfiliadoStore()
+  const { user } = useSelector((state) => state.auth)
 
   const FormValidationSchema = yup.object().shape({
     legajo: yup.string().required('El legajo es requerido'),
@@ -68,6 +70,7 @@ export const Create = () => {
     if (activeAfiliado) {
       console.log('Active Afiliado data: ', activeAfiliado)
       Object.entries(activeAfiliado).forEach(([key, value]) => {
+        console.log(`Setting ${key} to ${value}`)
         setValue(key, value)
       })
       setIsLoading(false)
@@ -90,19 +93,33 @@ export const Create = () => {
           )
         : (
           <form onSubmit={handleSubmit(onSubmit)} className='space-y-4'>
-            <DatosPersonalesData register={register} errors={errors} setValue={setValue} watch={watch} />
+            {(user.roles_id === 1 || user.roles_id === 3) && (
+              <DatosPersonalesData register={register} errors={errors} setValue={setValue} watch={watch} />
+            )}
 
-            <AfiliadoDomicilioData register={register} setValue={setValue} />
+            {(user.roles_id === 1 || user.roles_id === 3) && (
+              <AfiliadoDomicilioData register={register} setValue={setValue} />
+            )}
 
-            <InformacionLaboralData register={register} setValue={setValue} watch={watch} />
+            {(user.roles_id === 1 || user.roles_id === 3) && (
+              <InformacionLaboralData register={register} setValue={setValue} watch={watch} />
+            )}
 
-            <ObraSocialAfiliadoData register={register} setValue={setValue} />
+            {(user.roles_id === 1 || user.roles_id === 3) && (
+              <ObraSocialAfiliadoData register={register} setValue={setValue} />
+            )}
 
-            <FamiliarAcargoData register={register} setValue={setValue} watch={watch} reset={reset} />
+            {(user.roles_id === 1 || user.roles_id === 3) && (
+              <FamiliarAcargoData register={register} setValue={setValue} watch={watch} reset={reset} />
+            )}
 
-            <DocumentacionAdicionalData register={register} setValue={setValue} reset={reset} />
+            {(user.roles_id === 1 || user.roles_id === 3) && (
+              <DocumentacionAdicionalData register={register} setValue={setValue} reset={reset} />
+            )}
 
-            <SubsidioData register={register} setValue={setValue} reset={reset} />
+            {(user.roles_id === 1 || user.roles_id === 4) && (
+              <SubsidioData register={register} setValue={setValue} reset={reset} />
+            )}
 
             <div className='flex justify-end gap-4 mt-8'>
               <div className='ltr:text-right rtl:text-left'>

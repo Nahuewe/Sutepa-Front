@@ -1,11 +1,12 @@
-import { createSlice } from '@reduxjs/toolkit'
 /* eslint-disable eqeqeq */
 /* eslint-disable array-callback-return */
 /* eslint-disable no-return-assign */
+import { createSlice } from '@reduxjs/toolkit'
+
 const initialState = {
   status: 'checking', // authenticated, not-authenticated
   user: {},
-  activeUser: null
+  errorMessage: ''
 }
 
 export const authSlice = createSlice({
@@ -19,24 +20,14 @@ export const authSlice = createSlice({
     handleLogin: (state, { payload }) => {
       state.user = payload
       state.status = 'authenticated'
-      state.activeUser = null
     },
     handleLogout: (state) => {
       state.status = 'not-authenticated'
       state.user = {}
+    },
+    setErrorMessage: (state, { payload }) => {
+      state.errorMessage = payload
     }
-  },
-  setActiveUser: (state, { payload }) => {
-    state.user.filter((user) => {
-      if (user.id == payload) { return state.activeUser = user }
-    })
-  },
-  onUpdateUser: (state, { payload }) => {
-    state.user = state.user.map((user) => {
-      if (user.id == payload.id) { return payload }
-      return user
-    })
-    state.activeUser = null
   }
 })
 
@@ -44,9 +35,7 @@ export const {
   onChecking,
   handleLogin,
   handleLogout,
-  clearErrorMessage,
-  setActiveUser,
-  onUpdateUser
+  setErrorMessage
 } = authSlice.actions
 
 export default authSlice.reducer

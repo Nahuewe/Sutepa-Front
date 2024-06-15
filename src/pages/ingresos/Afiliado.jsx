@@ -271,13 +271,15 @@ export const Afiliado = () => {
                     />
 
                     <div className='flex gap-4'>
-                      <button
-                        type='button'
-                        onClick={exportToExcel}
-                        className='bg-green-500 hover:bg-green-700 text-white items-center text-center py-2 px-6 rounded-lg'
-                      >
-                        Exportar
-                      </button>
+                      {user.roles_id === 1 && (
+                        <button
+                          type='button'
+                          onClick={exportToExcel}
+                          className='bg-green-500 hover:bg-green-700 text-white items-center text-center py-2 px-6 rounded-lg'
+                        >
+                          Exportar
+                        </button>
+                      )}
 
                       {(user.roles_id === 1 || user.roles_id === 3) && (
                         <button
@@ -292,7 +294,7 @@ export const Afiliado = () => {
                   </div>
                 </div>
 
-                <div className='mt-4 grid sm:grid-cols-2 md:grid-cols-3 grid-cols-1 gap-4'>
+                <div className='mt-4 grid sm:grid-cols-2 md:grid-cols-4 grid-cols-1 gap-4'>
                   <EstadisticasAfiliados afiliados={filteredAfiliados} />
                 </div>
               </Card>

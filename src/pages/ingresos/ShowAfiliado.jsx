@@ -3,10 +3,12 @@ import { useAfiliadoStore } from '@/helpers'
 import { Card } from 'flowbite-react'
 import { useNavigate } from 'react-router-dom'
 import { formatDate, getTipoContrato } from '@/constant/datos-id'
+import { useSelector } from 'react-redux'
 
 export const ShowAfiliado = () => {
   const { activeAfiliado } = useAfiliadoStore()
   const navigate = useNavigate()
+  const { user } = useSelector((state) => state.auth)
 
   return (
     activeAfiliado && (
@@ -164,6 +166,7 @@ export const ShowAfiliado = () => {
                     <th className='px-4 py-2 text-center dark:text-white'>Fecha de Carga</th>
                     <th className='px-4 py-2 text-center dark:text-white'>Tipo de Archivo</th>
                     <th className='px-4 py-2 text-center dark:text-white'>Enlace del Archivo</th>
+                    <th className='px-4 py-2 text-center dark:text-white'>Usuario de carga</th>
                     <th className='px-4 py-2 text-center dark:text-white'>Ultimo Cambio</th>
                   </tr>
                 </thead>
@@ -179,6 +182,7 @@ export const ShowAfiliado = () => {
                           {documento.archivo}
                         </a>
                       </td>
+                      <td className='px-4 py-2 text-center dark:text-white'>{user.user}</td>
                       <td className='px-4 py-2 text-center dark:text-white'>{formatDate(documento.updated_at)}</td>
                     </tr>
                   ))}
@@ -203,6 +207,7 @@ export const ShowAfiliado = () => {
                     <th className='px-4 py-2 text-center dark:text-white'>Tipo de Documento</th>
                     <th className='px-4 py-2 text-center dark:text-white'>Documento</th>
                     <th className='px-4 py-2 text-center dark:text-white'>Parentesco</th>
+                    <th className='px-4 py-2 text-center dark:text-white'>Usuario de carga</th>
                     <th className='px-4 py-2 text-center dark:text-white'>Ultimo Cambio</th>
                   </tr>
                 </thead>
@@ -215,6 +220,7 @@ export const ShowAfiliado = () => {
                       <td className='px-4 py-2 text-center dark:text-white'>{fam.tipo_documento_familiar || ''}</td>
                       <td className='px-4 py-2 text-center dark:text-white'>{fam.documento}</td>
                       <td className='px-4 py-2 text-center dark:text-white'>{fam.parentesco}</td>
+                      <td className='px-4 py-2 text-center dark:text-white'>{user.user}</td>
                       <td className='px-4 py-2 text-center dark:text-white'>{formatDate(fam.updated_at)}</td>
                     </tr>
                   ))}
@@ -238,8 +244,8 @@ export const ShowAfiliado = () => {
                     <th className='px-4 py-2 text-center dark:text-white'>Fecha de Solicitud</th>
                     <th className='px-4 py-2 text-center dark:text-white'>Fecha de Otorgamiento</th>
                     <th className='px-4 py-2 text-center dark:text-white'>Observaciones</th>
-                    <th className='px-4 py-2 text-center dark:text-white'>Ultimo Cambio</th>
                     <th className='px-4 py-2 text-center dark:text-white'>Usuario de carga</th>
+                    <th className='px-4 py-2 text-center dark:text-white'>Ultimo Cambio</th>
 
                   </tr>
                 </thead>
@@ -251,8 +257,8 @@ export const ShowAfiliado = () => {
                       <td className='px-4 py-2 text-center dark:text-white'>{formatDate(subsidio.fecha_solicitud)}</td>
                       <td className='px-4 py-2 text-center dark:text-white'>{formatDate(subsidio.fecha_otorgamiento)}</td>
                       <td className='px-4 py-2 text-center dark:text-white'>{subsidio.observaciones}</td>
+                      <td className='px-4 py-2 text-center dark:text-white'>{user.user}</td>
                       <td className='px-4 py-2 text-center dark:text-white'>{formatDate(subsidio.updated_at)}</td>
-                      <td className='px-4 py-2 text-center dark:text-white'>{subsidio.user_id}</td>
                     </tr>
                   ))}
                 </tbody>

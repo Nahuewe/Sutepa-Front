@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
-import { handleLogin, handleLogout, onChecking } from '@/store/auth'
+import { handleLogin, handleLogout, onChecking, setErrorMessage } from '@/store/auth'
 import { sutepaApi } from '../api'
 
 export const useAuthStore = () => {
@@ -20,8 +20,18 @@ export const useAuthStore = () => {
         startLogout()
       }
     } catch (error) {
-      toast.error('Error. No se pudo validar los datos')
+      let errorMessage = 'Error desconocido'
+      if (error.response && error.response.data && error.response.data.errors) {
+        const errors = error.response.data.errors
+        const firstErrorKey = Object.keys(errors)[0]
+        errorMessage = errors[firstErrorKey][0]
+      } else {
+        errorMessage = error.message
+      }
 
+      console.error('Error en el inicio de sesión:', errorMessage)
+      dispatch(setErrorMessage(errorMessage))
+      toast.error(`No se pudo iniciar sesión: ${errorMessage}`)
       startLogout()
     }
   }

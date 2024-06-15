@@ -12,10 +12,10 @@ import { onAddDocumento, onDeleteDocumento } from '../../store/afiliado'
 const initialForm = {
   tipo_documento_id: '',
   archivo: '',
-  url: null
+  user_id: 1
 }
 
-function DocumentacionAdicionalData ({ register, disabled }) {
+function DocumentacionAdicionalData ({ register }) {
   const dispatch = useDispatch()
   const [documentos, setDocumentos] = useState([])
   const { user } = useSelector(state => state.auth)
@@ -71,7 +71,7 @@ function DocumentacionAdicionalData ({ register, disabled }) {
         archivo: URL.createObjectURL(formData.archivo),
         nombre_archivo: formData.archivo.name,
         fecha_carga: new Date().toLocaleDateString('es-ES'),
-        user_id: user.id
+        user_id: 1
       }
       dispatch(onAddDocumento(nuevoDocumento))
       setDocumentos([...documentos, nuevoDocumento])
@@ -114,7 +114,6 @@ function DocumentacionAdicionalData ({ register, disabled }) {
               register={register('tipo_documento_id')}
               title='Tipo de Archivo'
               options={archivoOptions}
-              disabled={disabled}
               onChange={handleInputChange}
             />
             <div>
@@ -124,7 +123,6 @@ function DocumentacionAdicionalData ({ register, disabled }) {
                 id='archivo'
                 name='archivo'
                 onChange={handleInputChange}
-                disabled={disabled}
                 accept='.docx,.doc,.xlsx,.ppt,.pdf,.jpeg,.jpg,.png'
               />
             </div>
@@ -134,7 +132,6 @@ function DocumentacionAdicionalData ({ register, disabled }) {
               type='button'
               className='btn btn-primary rounded-lg'
               onClick={agregarDocumento}
-              disabled={disabled}
             >
               Agregar Documento
             </button>

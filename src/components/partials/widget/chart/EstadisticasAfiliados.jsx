@@ -4,6 +4,7 @@ import Icon from '@/components/ui/Icon'
 const EstadisticasAfiliados = ({ afiliados }) => {
   const countAfiliadosPorEstado = (data) => {
     return {
+      totales: data.length,
       activos: data.filter(a => a.estado === 'ACTIVO').length,
       inactivos: data.filter(a => a.estado === 'INACTIVO').length,
       pendiente: data.filter(a => a.estado === 'PENDIENTE').length
@@ -14,11 +15,18 @@ const EstadisticasAfiliados = ({ afiliados }) => {
 
   const statistics = [
     {
+      title: 'Afiliados Totales',
+      count: totalsByEstado.totales || 0,
+      bg: 'bg-info-500',
+      text: 'text-info-500',
+      icon: 'heroicons-solid:user-group'
+    },
+    {
       title: 'Afiliados Activos',
       count: totalsByEstado.activos || 0,
       bg: 'bg-success-500',
       text: 'text-success-500',
-      icon: 'heroicons-solid:user-group'
+      icon: 'heroicons-solid:user-plus'
     },
     {
       title: 'Afiliados Inactivos',

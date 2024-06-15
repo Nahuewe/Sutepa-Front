@@ -8,7 +8,7 @@ const Logo = () => {
 
   return (
     <div>
-      <Link to='/dashboard'>
+      <Link to='/afiliados'>
         {width >= breakpoints.xl
           ? (
             <img src={LogoSutepa} alt='' className='w-32 rounded-md' />

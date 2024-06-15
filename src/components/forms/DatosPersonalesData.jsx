@@ -20,7 +20,7 @@ const initialForm = {
   nacionalidad_id: null
 }
 
-function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
+function DatosPersonalesData ({ register, setValue, errors, watch }) {
   const [picker, setPicker] = useState(null)
   const [picker2, setPicker2] = useState(null)
   const [cuil, setCuil] = useState('')
@@ -67,6 +67,11 @@ function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
       setCuil(activeAfiliado.cuil || '')
       setCorreoElectronico(activeAfiliado.email || '')
       setTelefono(activeAfiliado.telefono || '')
+      setFormData({
+        sexo_id: activeAfiliado.sexo_id || null,
+        estado_civil_id: activeAfiliado.estado_civil_id || null,
+        nacionalidad_id: activeAfiliado.nacionalidad_id || null
+      })
     }
   }, [activeAfiliado, setValue])
 
@@ -180,6 +185,7 @@ function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
       ...prevState,
       [field]: fieldValue
     }))
+    setValue(field, fieldValue)
   }
 
   return (
@@ -202,7 +208,6 @@ function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
               onChange={handleLegajoChange}
               placeholder='Ingrese el número de legajo'
               error={errors.legajo}
-              disabled={disabled}
             />
           </div>
 
@@ -216,7 +221,6 @@ function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
               className='mayuscula'
               placeholder='Seleccione la fecha de afiliación'
               onChange={(date) => handleDateChange(date, 'fecha_afiliacion')}
-              disabled={disabled}
             />
             <input type='hidden' {...register('fecha_afiliacion')} />
           </div>
@@ -233,7 +237,6 @@ function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
               register={register}
               placeholder='Ingrese el nombre'
               error={errors.nombre}
-              disabled={disabled}
             />
           </div>
 
@@ -249,7 +252,6 @@ function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
               register={register}
               placeholder='Ingrese el apellido'
               error={errors.apellido}
-              disabled={disabled}
             />
           </div>
 
@@ -257,8 +259,7 @@ function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
             register={register('sexo_id')}
             title='Sexo'
             options={sexo}
-            disabled={disabled}
-            onChange={handleChange}
+            onChange={(e) => handleSelectChange('sexo_id', e)}
           />
 
           <div>
@@ -270,7 +271,6 @@ function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
               id='fecha_nacimiento'
               placeholder='Seleccione la fecha de nacimiento'
               onChange={(date) => handleDateChange(date, 'fecha_nacimiento')}
-              disabled={disabled}
             />
             <input type='hidden' {...register('fecha_nacimiento')} />
           </div>
@@ -279,7 +279,6 @@ function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
             register={register('estado_civil_id')}
             title='Estado Civil'
             options={estadoCivil}
-            disabled={disabled}
             onChange={(e) => handleSelectChange('estado_civil_id', e)}
           />
 
@@ -287,7 +286,6 @@ function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
             register={register('nacionalidad_id')}
             title='Nacionalidad'
             options={nacionalidad}
-            disabled={disabled}
             onChange={(e) => handleSelectChange('nacionalidad_id', e)}
           />
 
@@ -298,7 +296,6 @@ function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
             <SelectForm
               register={register('tipo_documento')}
               options={tipoDocumento}
-              disabled={disabled}
             />
           </div>
 
@@ -314,7 +311,6 @@ function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
               value={dni}
               error={errors.dni}
               onChange={handleDniChange}
-              disabled={disabled}
             />
           </div>
 
@@ -330,7 +326,6 @@ function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
               value={cuil}
               error={errors.cuil}
               onChange={handleCuilChange}
-              disabled={disabled}
             />
           </div>
 
@@ -342,7 +337,6 @@ function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
             placeholder='Ingrese el correo electrónico'
             value={correoElectronico}
             onChange={handleChange(setCorreoElectronico)}
-            disabled={disabled}
           />
 
           <Numberinput
@@ -353,7 +347,6 @@ function DatosPersonalesData ({ register, setValue, errors, disabled, watch }) {
             placeholder='Ingrese el número de teléfono'
             value={telefono}
             onChange={handleChange(setTelefono)}
-            disabled={disabled}
           />
         </div>
       </Card>

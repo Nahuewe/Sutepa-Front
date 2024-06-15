@@ -9,6 +9,7 @@ export const useAfiliadoStore = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const { afiliados, paginate, activeAfiliado, persona, domicilio, datos_laborales, obra_social, documentacion, familiares, subsidios } = useSelector(state => state.afiliado)
+  const { user } = useSelector((state) => state.auth)
 
   const startLoadingAfiliado = async (page) => {
     try {
@@ -42,9 +43,10 @@ export const useAfiliadoStore = () => {
         subsidios
       }
 
-      const response = await sutepaApi.post('/personas', afiliado)
+      const response = await sutepaApi.post('/personas', { ...afiliado, user_id: user.id })
       console.log(response)
       navigate('/afiliados')
+      startLoadingAfiliado()
       dispatch(cleanAfiliado())
 
       toast.success('Afiliado agregado con éxito')
@@ -76,15 +78,34 @@ export const useAfiliadoStore = () => {
 
   const startUpdateAfiliado = async () => {
     try {
+      const afiliado = {
+        persona,
+        domicilio,
+        datos_laborales,
+        obra_social,
+        documentacion,
+        familiares,
+        subsidios
+      }
       const { id } = activeAfiliado
-      const response = await sutepaApi.put(`/personas/${id}`)
-      const { data } = response
-      dispatch(onUpdateAfiliado(data))
+      const response = await sutepaApi.put(`/personas/${id}`, { ...afiliado, user_id: user })
+      dispatch(onUpdateAfiliado(response.afiliado))
       navigate('/afiliados')
 
       toast.success('Afiliado editado con éxito')
     } catch (error) {
-      toast.error('No se pudo editar los datos')
+      let errorMessage = 'Error desconocido'
+      if (error.response && error.response.data && error.response.data.errors) {
+        const errors = error.response.data.errors
+        const firstErrorKey = Object.keys(errors)[0]
+        errorMessage = errors[firstErrorKey][0]
+      } else {
+        errorMessage = error.message
+      }
+
+      console.error('Error en la carga de Afiliado:', errorMessage)
+      dispatch(setErrorMessage(errorMessage))
+      toast.error(`No se pudo editar los datos: ${errorMessage}`)
     }
   }
 
