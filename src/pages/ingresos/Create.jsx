@@ -66,16 +66,24 @@ export const Create = () => {
     startGetInitial()
   }, [])
 
+  // useEffect(() => {
+  //   if (activeAfiliado) {
+  //     console.log('Active Afiliado data: ', activeAfiliado)
+  //     Object.entries(activeAfiliado).forEach(([key, value]) => {
+  //       console.log(`Setting ${key} to ${value}`)
+  //       setValue(key, value)
+  //     })
+  //     setIsLoading(false)
+  //   }
+  // }, [activeAfiliado, setValue])
+
   useEffect(() => {
     if (activeAfiliado) {
-      console.log('Active Afiliado data: ', activeAfiliado)
       Object.entries(activeAfiliado).forEach(([key, value]) => {
-        console.log(`Setting ${key} to ${value}`)
         setValue(key, value)
       })
-      setIsLoading(false)
     }
-  }, [activeAfiliado, setValue])
+  }, [])
 
   useEffect(() => {
     if (!id) return setIsLoading(false)

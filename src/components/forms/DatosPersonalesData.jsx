@@ -33,6 +33,7 @@ function DatosPersonalesData ({ register, setValue, errors, watch }) {
   const [estadoCivil, setEstadoCivil] = useState([])
   const [nacionalidad, setNacionalidad] = useState([])
   const [sexo, setSexo] = useState([])
+  const { user } = useSelector(state => state.auth)
 
   const { activeAfiliado } = useSelector(state => state.afiliado)
 
@@ -89,7 +90,8 @@ function DatosPersonalesData ({ register, setValue, errors, watch }) {
       cuil,
       email: correoElectronico || null,
       telefono,
-      nacionalidad_id: parseInt(watch('nacionalidad_id')) || null
+      nacionalidad_id: parseInt(watch('nacionalidad_id')) || null,
+      users_id: user.id
     }
     // Verificar si al menos un campo necesario ha sido rellenado
     if (

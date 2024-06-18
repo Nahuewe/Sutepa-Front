@@ -66,8 +66,8 @@ export const UserForm = ({ fnAction, activeUser = null }) => {
         setValue(key, value)
       })
 
-      setValue('roles_id', activeUser.rol)
-      setValue('seccional_id', activeUser.seccional)
+      setValue('roles_id', activeUser.roles_id)
+      setValue('seccional_id', activeUser.seccional_id)
       setValue('username', activeUser.user)
     } else {
       setValue('password', 'SUTEPA$123')

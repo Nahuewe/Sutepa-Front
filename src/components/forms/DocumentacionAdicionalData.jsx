@@ -12,7 +12,7 @@ import { onAddDocumento, onDeleteDocumento } from '../../store/afiliado'
 const initialForm = {
   tipo_documento_id: '',
   archivo: '',
-  user_id: 1
+  users_id: null
 }
 
 function DocumentacionAdicionalData ({ register }) {
@@ -71,7 +71,7 @@ function DocumentacionAdicionalData ({ register }) {
         archivo: URL.createObjectURL(formData.archivo),
         nombre_archivo: formData.archivo.name,
         fecha_carga: new Date().toLocaleDateString('es-ES'),
-        user_id: 1
+        users_id: user.id
       }
       dispatch(onAddDocumento(nuevoDocumento))
       setDocumentos([...documentos, nuevoDocumento])

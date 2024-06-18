@@ -18,7 +18,8 @@ const initialForm = {
   tipo_documento_familiar: '',
   documento: '',
   parentesco_id: '',
-  fecha_nacimiento_familiar: null
+  fecha_nacimiento_familiar: null,
+  users_id: null
 }
 
 const tipoDocumento = [
@@ -134,7 +135,7 @@ function FamiliaresaCargo () {
       parentesco_id: parseInt(watch('parentesco_id')) || null,
       fecha_nacimiento_familiar: picker ? moment.utc(picker[0]).format('YYYY-MM-DD') : null,
       fecha_carga: moment.utc().format('DD/MM/YYYY'),
-      user_id: user.id
+      users_id: user.id
     }
 
     if (isEditing) {

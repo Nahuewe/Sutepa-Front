@@ -139,7 +139,9 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
       telefono_laboral: watch('telefono_laboral') || null
     }
     const filteredDatosLaborales = filterEmptyValues(datosLaborales)
-    dispatch(updateDatosLaborales(filteredDatosLaborales))
+    if (Object.keys(filteredDatosLaborales).length > 0) {
+      dispatch(updateDatosLaborales(filteredDatosLaborales))
+    }
   }, [watch, picker, dispatch, watch('email_laboral')])
 
   return (
@@ -231,7 +233,6 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
               placeholder='Ingrese la fecha de ingreso'
               className='form-control'
               clearable
-
             />
           </div>
 

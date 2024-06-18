@@ -16,12 +16,13 @@ const initialForm = {
   fecha_solicitud: null,
   fecha_otorgamiento: null,
   observaciones: '',
-  user_id: null
+  users_id: null
 }
 
 function SubsidioData () {
   const dispatch = useDispatch()
   const { register, setValue, reset } = useForm()
+  const { activeAfiliado } = useSelector(state => state.afiliado)
   const [picker, setPicker] = useState(null)
   const [picker2, setPicker2] = useState(null)
   const [formData, setFormData] = useState(initialForm)
@@ -119,7 +120,7 @@ function SubsidioData () {
       ...formData,
       fecha_carga: new Date(),
       id: isEditing ? editingSubsidioId : idCounter,
-      user_id: user.id
+      users_id: user.id
     }
 
     if (isEditing) {
@@ -161,6 +162,14 @@ function SubsidioData () {
 
   useEffect(() => {
     handleSubsidio()
+  }, [])
+
+  useEffect(() => {
+    if (activeAfiliado?.subsidios.length > 0) {
+      activeAfiliado.subsidios.forEach(item => {
+        dispatch(addSubsidio(item))
+      })
+    }
   }, [])
 
   return (
