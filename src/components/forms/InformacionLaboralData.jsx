@@ -131,7 +131,7 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
         tipo_contrato_id,
         ugl_id,
         agencia_id,
-        domicilio_trabajo,
+        domicilio,
         seccional_id,
         agrupamiento_id,
         tramo_id,
@@ -144,7 +144,7 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
       setValue('tipo_contrato_id', tipo_contrato_id)
       setValue('ugl_id', ugl_id)
       setValue('agencia_id', agencia_id)
-      setValue('domicilio_trabajo', domicilio_trabajo)
+      setValue('domicilio_trabajo', domicilio)
       setValue('seccional_id', seccional_id)
       setValue('agrupamiento_id', agrupamiento_id)
       setValue('tramo_id', tramo_id)
@@ -153,7 +153,7 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
       setValue('email_laboral', email_laboral)
       setValue('telefono_laboral', telefono_laboral)
 
-      setDomicilioTrabajo(domicilio_trabajo)
+      setDomicilioTrabajo(domicilio)
       setTelefonoLaboral(telefono_laboral)
       setCargaHoraria(carga_horaria)
       setCorreoElectronicoLaboral(email_laboral)

@@ -29,11 +29,14 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
     const response = await sutepaApi.get(`localidad/${id}`)
     const { data } = response.data
     setLocalidades(data)
+    // Actualiza el valor de localidad_id cuando se cargan las localidades
+    setValue('localidad_id', data.length > 0 ? data[0].id : null)
   }
 
   const handleDomicilioChange = (e) => {
     const value = e.target.value
     setDomicilio(value)
+    setValue('domicilio', value)
   }
 
   const handleCodigoPostalChange = (e) => {
@@ -52,6 +55,7 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
   const handleProvinciaChange = (e) => {
     const value = parseInt(e.target.value)
     setSelectedProvincia(value)
+    setValue('provincia_id', value)
     handleLocalidad(value)
   }
 
@@ -60,10 +64,9 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
       const domicilioData = {
         domicilio,
         provincia_id: selectedProvincia,
-        localidad_id: localidades[0].id,
+        localidad_id: localidades.length > 0 ? localidades[0].id : null,
         codigo_postal: codigoPostal
       }
-
       dispatch(updateDomicilio(domicilioData))
     }
   }, [codigoPostal, selectedProvincia, localidades, domicilio, dispatch])
@@ -84,9 +87,8 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
 
   async function loadingAfiliado () {
     !isLoading && setIsLoading(true)
-
     await handleProvincia()
-    await handleProvincia()
+    await handleLocalidad()
     setIsLoading(false)
   }
 

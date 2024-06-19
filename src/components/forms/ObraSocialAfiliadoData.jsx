@@ -23,8 +23,8 @@ function ObraSocialAfiliadoData ({ register }) {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    if (activeAfiliado?.obraSociales.length > 0) {
-      const firstObraSocial = activeAfiliado.obraSociales[0] // Assuming only one obra social is active at a time
+    if (activeAfiliado?.obraSociales && activeAfiliado.obraSociales.length > 0) {
+      const firstObraSocial = activeAfiliado.obraSociales[0]
       setFormData({
         tipo_obra: firstObraSocial.tipo_obra,
         obra_social: firstObraSocial.obra_social
@@ -32,6 +32,7 @@ function ObraSocialAfiliadoData ({ register }) {
     } else {
       setFormData(initialForm)
     }
+    setIsLoading(false)
   }, [activeAfiliado])
 
   const onChange = ({ target }) => {
@@ -43,16 +44,6 @@ function ObraSocialAfiliadoData ({ register }) {
     setFormData(newFormData)
     dispatch(updateObraSocial(newFormData))
   }
-
-  async function loadingAfiliado () {
-    !isLoading && setIsLoading(true)
-
-    setIsLoading(false)
-  }
-
-  useEffect(() => {
-    loadingAfiliado()
-  }, [])
 
   return (
     <>
@@ -68,7 +59,7 @@ function ObraSocialAfiliadoData ({ register }) {
             <Card>
               <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                 <div>
-                  <label htmlFor='default-picker' className='form-label'>
+                  <label htmlFor='tipo_obra' className='form-label'>
                     Tipo de Obra Social
                   </label>
                   <SelectForm
