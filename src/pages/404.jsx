@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import Illustration from '@/assets/images/logo/favicon-sutepa.png'
+import Illustration from '@/assets/images/logo/logo.png'
 function Error () {
   return (
     <div className='min-h-screen flex flex-col justify-center items-center text-center py-20 dark:bg-slate-900'>

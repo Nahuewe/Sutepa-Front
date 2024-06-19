@@ -15,6 +15,7 @@ import EstadisticasAfiliados from './EstadisticasAfiliados'
 import EditButton from '@/components/buttons/EditButton'
 import ViewButton from '@/components/buttons/ViewButton'
 import AfiliadoButton from '@/components/buttons/AfiliadoButton'
+import Tooltip from '@/components/ui/Tooltip'
 
 const columns = [
   {
@@ -70,6 +71,7 @@ export const Afiliado = () => {
   const dispatch = useDispatch()
   const { user } = useSelector((state) => state.auth)
   const [isLoading, setIsLoading] = useState(true)
+  const [showEstadisticas, setShowEstadisticas] = useState(false)
   const [search, setSearch] = useState('')
   const {
     afiliados,
@@ -270,6 +272,17 @@ export const Afiliado = () => {
                       btnFunction={startDeleteAfiliado}
                     />
 
+                    {user.roles_id === 1 && (
+                      <Tooltip content={showEstadisticas ? 'Ocultar estadísticas' : 'Mostrar estadísticas'}>
+                        <button
+                          onClick={() => setShowEstadisticas(!showEstadisticas)}
+                          className='bg-blue-500 hover:bg-blue-700 text-white items-center text-center py-2 px-6 rounded-lg'
+                        >
+                          {showEstadisticas ? 'Estadísticas' : 'Estadísticas'}
+                        </button>
+                      </Tooltip>
+                    )}
+
                     <div className='flex gap-4'>
                       {user.roles_id === 1 && (
                         <button
@@ -295,7 +308,7 @@ export const Afiliado = () => {
                 </div>
 
                 <div className='mt-4 grid sm:grid-cols-2 md:grid-cols-4 grid-cols-1 gap-4'>
-                  <EstadisticasAfiliados afiliados={filteredAfiliados} />
+                  {showEstadisticas && <EstadisticasAfiliados afiliados={filteredAfiliados} />}
                 </div>
               </Card>
 

@@ -81,9 +81,6 @@ export const afiliadoSlice = createSlice({
     updateDatosLaborales: (state, { payload }) => {
       state.datos_laborales = payload
     },
-    cleanActiveAfiliado: (state) => {
-      state.activeAfiliado = null
-    },
     cleanAfiliado: (state) => {
       state.persona = {}
       state.domicilio = {}
@@ -115,7 +112,6 @@ export const {
   updateDomicilio,
   updateObraSocial,
   updateDatosLaborales,
-  cleanActiveAfiliado,
   cleanAfiliado,
   setErrorMessage
 } = afiliadoSlice.actions

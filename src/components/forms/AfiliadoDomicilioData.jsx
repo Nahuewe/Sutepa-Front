@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import { SelectForm } from '@/components/sutepa/forms'
 import { useState, useEffect } from 'react'
 import { updateDomicilio } from '@/store/afiliado'
@@ -6,6 +7,7 @@ import { sutepaApi } from '@/api'
 import Card from '@/components/ui/Card'
 import Textinput from '@/components/ui/Textinput'
 import Numberinput from '@/components/ui/Numberinput'
+import Loading from '@/components/Loading'
 
 function AfiliadoDomicilioData ({ register, disabled, setValue }) {
   const dispatch = useDispatch()
@@ -15,6 +17,7 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
   const [domicilio, setDomicilio] = useState('')
   const [selectedProvincia, setSelectedProvincia] = useState('')
   const { activeAfiliado } = useSelector(state => state.afiliado)
+  const [isLoading, setIsLoading] = useState(true)
 
   async function handleProvincia () {
     const response = await sutepaApi.get('provincia')
@@ -66,64 +69,88 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
   }, [codigoPostal, selectedProvincia, localidades, domicilio, dispatch])
 
   useEffect(() => {
-    if (activeAfiliado?.domicilio) {
-      activeAfiliado.domicilio.forEach(item => {
-        dispatch(updateDomicilio(item))
-      })
+    if (activeAfiliado?.domicilios) {
+      const { domicilio, provincia_id, localidad_id, codigo_postal } = activeAfiliado.domicilios
+      setDomicilio(domicilio)
+      setSelectedProvincia(provincia_id)
+      setCodigoPostal(codigo_postal)
+      setValue('domicilio', domicilio)
+      setValue('provincia_id', provincia_id)
+      setValue('localidad_id', localidad_id)
+      setValue('codigo_postal', codigo_postal)
+      handleLocalidad(provincia_id)
     }
-  }, [])
+  }, [activeAfiliado, setValue])
+
+  async function loadingAfiliado () {
+    !isLoading && setIsLoading(true)
+
+    await handleProvincia()
+    await handleProvincia()
+    setIsLoading(false)
+  }
 
   useEffect(() => {
-    handleProvincia()
+    loadingAfiliado()
   }, [])
 
   return (
     <>
-      <h4 className='card-title text-center bg-red-500 dark:bg-gray-700 text-white rounded-md p-2'>
-        Datos del Domicilio
-      </h4>
-
-      <Card>
-        <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-          <Textinput
-            name='domicilio'
-            label='Domicilio'
-            className='mayuscula'
-            register={register}
-            placeholder='Ingrese el domicilio'
-            onChange={handleDomicilioChange}
-          />
-
-          <SelectForm
-            register={register('provincia_id')}
-            title='Provincia'
-            options={provincias}
-            onChange={handleProvinciaChange}
-          />
-
+      {isLoading
+        ? (
+          <Loading className='mt-28 md:mt-64' />
+          )
+        : (
           <div>
-            <SelectForm
-              register={register('localidad_id')}
-              title='Localidad'
-              options={localidades}
-              disabled={disabled || !selectedProvincia}
-            />
-          </div>
+            <h4 className='card-title text-center bg-red-500 dark:bg-gray-700 text-white rounded-md p-2'>
+              Datos del Domicilio
+            </h4>
 
-          <div>
-            <label htmlFor='default-picker' className='form-label'>
-              Código Postal
-            </label>
-            <Numberinput
-              register={register}
-              id='codigo_postal'
-              placeholder='Ingrese el código postal'
-              value={codigoPostal}
-              onChange={handleCodigoPostalChange}
-            />
+            <Card>
+              <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                <Textinput
+                  name='domicilio'
+                  label='Domicilio'
+                  className='mayuscula'
+                  register={register}
+                  placeholder='Ingrese el domicilio'
+                  value={domicilio}
+                  onChange={handleDomicilioChange}
+                />
+
+                <SelectForm
+                  register={register('provincia_id')}
+                  title='Provincia'
+                  options={provincias}
+                  value={selectedProvincia}
+                  onChange={handleProvinciaChange}
+                />
+
+                <div>
+                  <SelectForm
+                    register={register('localidad_id')}
+                    title='Localidad'
+                    options={localidades}
+                    disabled={disabled || !selectedProvincia}
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor='default-picker' className='form-label'>
+                    Código Postal
+                  </label>
+                  <Numberinput
+                    register={register}
+                    id='codigo_postal'
+                    placeholder='Ingrese el código postal'
+                    value={codigoPostal}
+                    onChange={handleCodigoPostalChange}
+                  />
+                </div>
+              </div>
+            </Card>
           </div>
-        </div>
-      </Card>
+          )}
     </>
   )
 }

@@ -16,6 +16,7 @@ const schema = yup
 
 function LoginForm () {
   const [showPassword, setShowPassword] = useState(false)
+  const navigate = useNavigate()
   const { startLogin } = useAuthStore()
   const {
     formState: { errors },
@@ -25,7 +26,6 @@ function LoginForm () {
   } = useForm({
     resolver: yupResolver(schema)
   })
-  const navigate = useNavigate()
 
   const onSubmit = async (data) => {
     try {

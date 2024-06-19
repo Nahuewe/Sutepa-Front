@@ -1,15 +1,16 @@
 /* eslint-disable camelcase */
 import React, { useState, useEffect } from 'react'
-import { useDispatch } from 'react-redux'
-import { sutepaApi } from '../../api'
+import { useDispatch, useSelector } from 'react-redux'
+import { sutepaApi } from '@/api'
+import { updateDatosLaborales } from '@/store/afiliado'
+import { SelectForm } from '@/components/sutepa/forms'
 import Card from '@/components/ui/Card'
 import Textinput from '@/components/ui/Textinput'
 import Numberinput from '@/components/ui/Numberinput'
-import { SelectForm } from '@/components/sutepa/forms'
 import DatePicker from '../ui/DatePicker'
-import { updateDatosLaborales } from '../../store/afiliado'
 import moment from 'moment'
-import useFetchData from '../../helpers/useFetchData'
+import useFetchData from '@/helpers/useFetchData'
+import Loading from '@/components/Loading'
 
 const tipoContrato = [
   { id: 1, nombre: 'PLANTA PERMANENTE' },
@@ -33,6 +34,8 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
   const [agenciaDisabled, setAgenciaDisabled] = useState(true)
   const { agrupamiento, seccional, ugl, tramo } = useFetchData()
   const dispatch = useDispatch()
+  const { activeAfiliado } = useSelector(state => state.afiliado)
+  const [isLoading, setIsLoading] = useState(true)
 
   const handleDateChange = (date) => {
     setPicker(date)
@@ -112,7 +115,7 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
       agrupamiento_id: parseInt(watch('agrupamiento_id')) || null,
       tramo_id: parseInt(watch('tramo_id')) || null,
       carga_horaria: watch('carga_horaria') || null,
-      fecha_ingreso: picker ? moment(picker[0]).format('YYYY-MM-DD') : null,
+      fecha_ingreso: picker ? moment(picker[0]).format('YYYY-MM-DD:mm:ss') : null,
       email_laboral: watch('email_laboral') || null,
       telefono_laboral: watch('telefono_laboral') || null
     }
@@ -120,128 +123,179 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
     if (Object.keys(filteredDatosLaborales).length > 0) {
       dispatch(updateDatosLaborales(filteredDatosLaborales))
     }
-  }, [watch, picker, dispatch, watch('email_laboral')])
+  }, [watch, picker, dispatch])
+
+  useEffect(() => {
+    if (activeAfiliado?.datos_laborales) {
+      const {
+        tipo_contrato_id,
+        ugl_id,
+        agencia_id,
+        domicilio_trabajo,
+        seccional_id,
+        agrupamiento_id,
+        tramo_id,
+        carga_horaria,
+        fecha_ingreso,
+        email_laboral,
+        telefono_laboral
+      } = activeAfiliado.datos_laborales
+
+      setValue('tipo_contrato_id', tipo_contrato_id)
+      setValue('ugl_id', ugl_id)
+      setValue('agencia_id', agencia_id)
+      setValue('domicilio_trabajo', domicilio_trabajo)
+      setValue('seccional_id', seccional_id)
+      setValue('agrupamiento_id', agrupamiento_id)
+      setValue('tramo_id', tramo_id)
+      setValue('carga_horaria', carga_horaria)
+      setValue('fecha_ingreso', fecha_ingreso)
+      setValue('email_laboral', email_laboral)
+      setValue('telefono_laboral', telefono_laboral)
+
+      setDomicilioTrabajo(domicilio_trabajo)
+      setTelefonoLaboral(telefono_laboral)
+      setCargaHoraria(carga_horaria)
+      setCorreoElectronicoLaboral(email_laboral)
+      setPicker([moment(fecha_ingreso).toDate()])
+      handleAgencia(ugl_id)
+    }
+  }, [activeAfiliado, setValue])
+
+  useEffect(() => {
+    if (agrupamiento.length && seccional.length && ugl.length && tramo.length) {
+      setIsLoading(false)
+    }
+  }, [agrupamiento, seccional, ugl, tramo])
 
   return (
     <>
-      <h4 className='card-title text-center bg-red-500 dark:bg-gray-700 text-white rounded-md p-2'>
-        Información Laboral
-      </h4>
-
-      <Card>
-        <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-          <SelectForm
-            register={register('tipo_contrato_id')}
-            title='Tipo de Contrato'
-            options={tipoContrato}
-          />
-
-          <SelectForm
-            register={register('ugl_id')}
-            title='UGL'
-            options={ugl}
-            onChange={handleUglChange}
-          />
-
-          <SelectForm
-            register={register('agencia_id')}
-            title='Agencia'
-            options={filteredAgencias}
-            onChange={handleAgenciaChange}
-            disabled={disabled || agenciaDisabled}
-          />
-
+      {isLoading
+        ? (
+          <Loading className='mt-28 md:mt-64' />
+          )
+        : (
           <div>
-            <Textinput
-              label='Domicilio de Trabajo'
-              name='domicilio_trabajo'
-              register={register}
-              placeholder='Ingrese el domicilio de trabajo'
-              disabled
-              value={domicilioTrabajo}
-              onChange={(e) => {
-                setDomicilioTrabajo(e.target.value)
-                setValue('domicilio_trabajo', e.target.value)
-              }}
-            />
+            <h4 className='card-title text-center bg-red-500 dark:bg-gray-700 text-white rounded-md p-2'>
+              Información Laboral
+            </h4>
+
+            <Card>
+              <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                <SelectForm
+                  register={register('tipo_contrato_id')}
+                  title='Tipo de Contrato'
+                  options={tipoContrato}
+                />
+
+                <SelectForm
+                  register={register('ugl_id')}
+                  title='UGL'
+                  options={ugl}
+                  onChange={handleUglChange}
+                />
+
+                <SelectForm
+                  register={register('agencia_id')}
+                  title='Agencia'
+                  options={filteredAgencias}
+                  onChange={handleAgenciaChange}
+                  disabled={disabled || agenciaDisabled}
+                />
+
+                <div>
+                  <Textinput
+                    label='Domicilio de Trabajo'
+                    name='domicilio_trabajo'
+                    register={register}
+                    placeholder='Ingrese el domicilio de trabajo'
+                    disabled
+                    value={domicilioTrabajo}
+                    onChange={(e) => {
+                      setDomicilioTrabajo(e.target.value)
+                      setValue('domicilio_trabajo', e.target.value)
+                    }}
+                  />
+                </div>
+
+                <SelectForm
+                  register={register('seccional_id')}
+                  title='Seccional SUTEPA'
+                  options={seccional}
+                />
+
+                <SelectForm
+                  register={register('agrupamiento_id')}
+                  title='Agrupamiento'
+                  options={agrupamiento}
+                />
+
+                <SelectForm
+                  register={register('tramo_id')}
+                  title='Tramo'
+                  options={tramo}
+                  onChange={handleTramoChange}
+                />
+
+                <div>
+                  <label htmlFor='default-picker' className='form-label'>
+                    Carga Horaria
+                  </label>
+                  <Numberinput
+                    name='carga_horaria'
+                    register={register}
+                    placeholder='Ingrese la carga horaria'
+                    value={cargaHoraria}
+                    onChange={handleCargaHorarioChange}
+                    readOnly
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor='fecha_ingreso' className='form-label'>
+                    Fecha de Ingreso
+                  </label>
+
+                  <DatePicker
+                    value={picker}
+                    onChange={handleDateChange}
+                    id='fecha_ingreso'
+                    placeholder='Ingrese la fecha de ingreso'
+                    className='form-control'
+                    clearable
+                  />
+                </div>
+
+                <div>
+                  <Textinput
+                    label='Correo Electrónico Laboral'
+                    name='email_laboral'
+                    type='email'
+                    register={register}
+                    placeholder='Ingrese el correo electrónico laboral'
+                    value={correoElectronicoLaboral}
+                    onChange={handleCorreoElectronicoChange}
+                  />
+                </div>
+
+                <div>
+                  <Textinput
+                    label='Teléfono de Trabajo'
+                    name='telefono_laboral'
+                    register={register}
+                    placeholder='Ingrese el teléfono de trabajo'
+                    disabled
+                    value={telefonoLaboral}
+                    onChange={(e) => {
+                      setTelefonoLaboral(e.target.value)
+                      setValue('telefono_laboral', e.target.value)
+                    }}
+                  />
+                </div>
+              </div>
+            </Card>
           </div>
-
-          <SelectForm
-            register={register('seccional_id')}
-            title='Seccional SUTEPA'
-            options={seccional}
-          />
-
-          <SelectForm
-            register={register('agrupamiento_id')}
-            title='Agrupamiento'
-            options={agrupamiento}
-          />
-
-          <SelectForm
-            register={register('tramo_id')}
-            title='Tramo'
-            options={tramo}
-            onChange={handleTramoChange}
-          />
-
-          <div>
-            <label htmlFor='default-picker' className='form-label'>
-              Carga Horaria
-            </label>
-            <Numberinput
-              name='carga_horaria'
-              register={register}
-              placeholder='Ingrese la carga horaria'
-              value={cargaHoraria}
-              onChange={handleCargaHorarioChange}
-              readOnly
-            />
-          </div>
-
-          <div>
-            <label htmlFor='fecha_ingreso' className='form-label'>
-              Fecha de Ingreso
-            </label>
-
-            <DatePicker
-              value={picker}
-              onChange={handleDateChange}
-              id='fecha_ingreso'
-              placeholder='Ingrese la fecha de ingreso'
-              className='form-control'
-              clearable
-            />
-          </div>
-
-          <div>
-            <Textinput
-              label='Correo Electrónico Laboral'
-              name='email_laboral'
-              type='email'
-              register={register}
-              placeholder='Ingrese el correo electrónico laboral'
-              value={correoElectronicoLaboral}
-              onChange={handleCorreoElectronicoChange}
-            />
-          </div>
-
-          <div>
-            <Textinput
-              label='Teléfono de Trabajo'
-              name='telefono_laboral'
-              register={register}
-              placeholder='Ingrese el teléfono de trabajo'
-              disabled
-              value={telefonoLaboral}
-              onChange={(e) => {
-                setTelefonoLaboral(e.target.value)
-                setValue('telefono_laboral', e.target.value)
-              }}
-            />
-          </div>
-        </div>
-      </Card>
+          )}
     </>
   )
 }
