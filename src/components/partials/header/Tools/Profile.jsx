@@ -1,16 +1,15 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 import Dropdown from '@/components/ui/Dropdown'
 import Icon from '@/components/ui/Icon'
 import { Menu } from '@headlessui/react'
 import { useAuthStore } from '@/helpers/useAuthStore'
 import { useSelector, useDispatch } from 'react-redux'
-import EditModal from '@/components/ui/EditModal'
-import ChangePasswordForm from '../../../sutepa/forms/ChangePasswordForm'
-import { handleShowEdit } from '@/store/layout'
-import { updateUserPassword, setActiveUser } from '../../../../store/user'
+import { setActiveUser } from '@/store/user'
 import { getTipoRoles } from '@/constant/datos-id'
 
 const profileLabel = () => {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const { user } = useSelector(state => state.auth)
   return (
     <div className='flex items-center'>
@@ -37,13 +36,12 @@ const profileLabel = () => {
 const Profile = () => {
   const { startLogout } = useAuthStore()
   const dispatch = useDispatch()
-  const { showEdit } = useSelector(state => state.layout)
   const { user } = useSelector(state => state.auth)
-  const activeUser = useSelector(state => state.user.activeUser)
+  const navigate = useNavigate()
 
   const ProfileMenu = [
     {
-      label: ` ${getTipoRoles(user.roles_id)}`,
+      label: `${getTipoRoles(user.roles_id)}`,
       icon: 'heroicons-outline:badge-check',
       action: null
     },
@@ -51,25 +49,18 @@ const Profile = () => {
       label: 'Cambiar contraseña',
       icon: 'heroicons-outline:key',
       action: () => {
+        navigate('/usuarios')
         dispatch(setActiveUser(user.id))
-        dispatch(handleShowEdit())
       }
     },
     {
       label: 'Cerrar Sesión',
-      icon: 'heroicons-outline:login',
+      icon: 'heroicons-outline:logout',
       action: () => {
         startLogout()
       }
     }
   ]
-
-  const handlePasswordChange = async (data) => {
-    if (activeUser) {
-      dispatch(updateUserPassword({ id: activeUser.id, password: data.newPassword }))
-      dispatch(handleShowEdit())
-    }
-  }
 
   return (
     <>
@@ -78,6 +69,7 @@ const Profile = () => {
           <Menu.Item key={index}>
             {({ active }) => (
               <div
+                // eslint-disable-next-line react/jsx-handler-names
                 onClick={item.action}
                 className={`${
                   active
@@ -102,9 +94,6 @@ const Profile = () => {
           </Menu.Item>
         ))}
       </Dropdown>
-      <EditModal isOpen={showEdit} onClose={() => dispatch(handleShowEdit())} title='Cambiar Contraseña' centered>
-        <ChangePasswordForm onSubmit={handlePasswordChange} />
-      </EditModal>
     </>
   )
 }

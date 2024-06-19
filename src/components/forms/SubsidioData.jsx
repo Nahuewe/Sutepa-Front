@@ -1,13 +1,14 @@
 import React, { useRef, useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useSelector, useDispatch } from 'react-redux'
-import { onAddOrUpdateSubsidio, onDeleteSubsidio } from '../../store/afiliado'
-import Card from '@/components/ui/Card'
-import Textarea from '@/components/ui/Textarea'
+import { onAddOrUpdateSubsidio, onDeleteSubsidio } from '@/store/afiliado'
 import { SelectForm } from '@/components/sutepa/forms'
 import { Tooltip } from 'flowbite-react'
 import { Icon } from '@iconify/react'
+import { formatDate } from '@/constant/datos-id'
 import { sutepaApi } from '../../api'
+import Card from '@/components/ui/Card'
+import Textarea from '@/components/ui/Textarea'
 import DatePicker from '../ui/DatePicker'
 import moment from 'moment'
 
@@ -64,29 +65,6 @@ function SubsidioData () {
     }
   }
 
-  const handleEdit = (subsidio) => {
-    setFormData({
-      ...subsidio,
-      fecha_solicitud: subsidio.fecha_solicitud ? moment(subsidio.fecha_solicitud).format('YYYY-MM-DD HH:mm:ss') : null,
-      fecha_otorgamiento: subsidio.fecha_otorgamiento ? moment(subsidio.fecha_otorgamiento).format('YYYY-MM-DD HH:mm:ss') : null
-    })
-    setEditingSubsidioId(subsidio.id)
-    setIsEditing(true)
-    setPicker(new Date(subsidio.fecha_solicitud))
-    setPicker2(new Date(subsidio.fecha_otorgamiento))
-
-    setValue('tipo_subsidio_id', subsidio.tipo_subsidio_id)
-    setValue('fecha_solicitud', subsidio.fecha_solicitud ? moment(subsidio.fecha_solicitud).format('YYYY-MM-DD HH:mm:ss') : '')
-    setValue('fecha_otorgamiento', subsidio.fecha_otorgamiento ? moment(subsidio.fecha_otorgamiento).format('YYYY-MM-DD HH:mm:ss') : '')
-    setValue('observaciones', subsidio.observaciones)
-  }
-
-  const onDelete = (id) => {
-    const newSubsidios = subsidios.filter(subsidio => subsidio.id !== id)
-    setSubsidios(newSubsidios)
-    dispatch(onDeleteSubsidio(id))
-  }
-
   const handleSelectChange = (e) => {
     const { value } = e.target
     const tipoSubsidioId = parseInt(value)
@@ -104,10 +82,6 @@ function SubsidioData () {
     setIsEditing(false)
     setEditingSubsidioId(null)
     reset()
-  }
-
-  function formatDate (date) {
-    return date ? new Date(date).toLocaleDateString() : ''
   }
 
   function getTipoSubsidioNombre (id) {
@@ -138,6 +112,29 @@ function SubsidioData () {
     onReset()
   }
 
+  const handleEdit = (subsidio) => {
+    setFormData({
+      ...subsidio,
+      fecha_solicitud: subsidio.fecha_solicitud ? moment(subsidio.fecha_solicitud).format('YYYY-MM-DD HH:mm:ss') : null,
+      fecha_otorgamiento: subsidio.fecha_otorgamiento ? moment(subsidio.fecha_otorgamiento).format('YYYY-MM-DD HH:mm:ss') : null
+    })
+    setEditingSubsidioId(subsidio.id)
+    setIsEditing(true)
+    setPicker(new Date(subsidio.fecha_solicitud))
+    setPicker2(new Date(subsidio.fecha_otorgamiento))
+
+    setValue('tipo_subsidio_id', subsidio.tipo_subsidio_id)
+    setValue('fecha_solicitud', subsidio.fecha_solicitud ? moment(subsidio.fecha_solicitud).format('YYYY-MM-DD HH:mm:ss') : '')
+    setValue('fecha_otorgamiento', subsidio.fecha_otorgamiento ? moment(subsidio.fecha_otorgamiento).format('YYYY-MM-DD HH:mm:ss') : '')
+    setValue('observaciones', subsidio.observaciones)
+  }
+
+  const onDelete = (id) => {
+    const newSubsidios = subsidios.filter(subsidio => subsidio.id !== id)
+    setSubsidios(newSubsidios)
+    dispatch(onDeleteSubsidio(id))
+  }
+
   useEffect(() => {
     if (isEditing && formData) {
       setValue('tipo_subsidio_id', formData.tipo_subsidio_id)
@@ -161,15 +158,15 @@ function SubsidioData () {
   }, [formData, isEditing, setValue])
 
   useEffect(() => {
-    handleSubsidio()
-  }, [])
-
-  useEffect(() => {
     if (activeAfiliado?.subsidios.length > 0) {
       activeAfiliado.subsidios.forEach(item => {
         dispatch(addSubsidio(item))
       })
     }
+  }, [])
+
+  useEffect(() => {
+    handleSubsidio()
   }, [])
 
   return (

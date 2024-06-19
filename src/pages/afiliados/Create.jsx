@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useAfiliadoStore } from '@/helpers'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { useSelector } from 'react-redux'
 import * as yup from 'yup'
 import DatosPersonalesData from '@/components/forms/DatosPersonalesData'
 import AfiliadoDomicilioData from '@/components/forms/AfiliadoDomicilioData'
@@ -13,7 +14,6 @@ import DocumentacionAdicionalData from '@/components/forms/DocumentacionAdiciona
 import SubsidioData from '@/components/forms/SubsidioData'
 import Loading from '@/components/Loading'
 import Button from '@/components/ui/Button'
-import { useSelector } from 'react-redux'
 
 export const Create = () => {
   const { id } = useParams()
@@ -43,11 +43,8 @@ export const Create = () => {
   })
 
   const onSubmit = async (data) => {
-    if (!activeAfiliado) {
-      await startSavingAfiliado(data)
-    } else {
-      await startUpdateAfiliado(data)
-    }
+    if (!activeAfiliado) await startSavingAfiliado(data)
+    else await startUpdateAfiliado(data)
   }
 
   async function loadingAfiliado (page = 1) {
@@ -66,16 +63,12 @@ export const Create = () => {
     startGetInitial()
   }, [])
 
-  // useEffect(() => {
-  //   if (activeAfiliado) {
-  //     console.log('Active Afiliado data: ', activeAfiliado)
-  //     Object.entries(activeAfiliado).forEach(([key, value]) => {
-  //       console.log(`Setting ${key} to ${value}`)
-  //       setValue(key, value)
-  //     })
-  //     setIsLoading(false)
-  //   }
-  // }, [activeAfiliado, setValue])
+  useEffect(() => {
+    if (!id) return setIsLoading(false)
+    if (id && !isParamsLoading) {
+      startEditAfiliado(id)
+    }
+  }, [isParamsLoading, id])
 
   useEffect(() => {
     if (activeAfiliado) {
@@ -84,14 +77,6 @@ export const Create = () => {
       })
     }
   }, [])
-
-  useEffect(() => {
-    if (!id) return setIsLoading(false)
-    if (id && !isParamsLoading) {
-      console.log('Fetching afiliado with id: ', id)
-      startEditAfiliado(id)
-    }
-  }, [isParamsLoading, id])
 
   return (
     <>
@@ -102,27 +87,19 @@ export const Create = () => {
         : (
           <form onSubmit={handleSubmit(onSubmit)} className='space-y-4'>
             {(user.roles_id === 1 || user.roles_id === 3) && (
-              <DatosPersonalesData register={register} errors={errors} setValue={setValue} watch={watch} />
-            )}
+              <div>
+                <DatosPersonalesData register={register} errors={errors} setValue={setValue} watch={watch} />
 
-            {(user.roles_id === 1 || user.roles_id === 3) && (
-              <AfiliadoDomicilioData register={register} setValue={setValue} />
-            )}
+                <AfiliadoDomicilioData register={register} setValue={setValue} />
 
-            {(user.roles_id === 1 || user.roles_id === 3) && (
-              <InformacionLaboralData register={register} setValue={setValue} watch={watch} />
-            )}
+                <InformacionLaboralData register={register} setValue={setValue} watch={watch} />
 
-            {(user.roles_id === 1 || user.roles_id === 3) && (
-              <ObraSocialAfiliadoData register={register} setValue={setValue} />
-            )}
+                <ObraSocialAfiliadoData register={register} setValue={setValue} />
 
-            {(user.roles_id === 1 || user.roles_id === 3) && (
-              <FamiliarAcargoData register={register} setValue={setValue} watch={watch} reset={reset} />
-            )}
+                <FamiliarAcargoData register={register} setValue={setValue} watch={watch} reset={reset} />
 
-            {(user.roles_id === 1 || user.roles_id === 3) && (
-              <DocumentacionAdicionalData register={register} setValue={setValue} reset={reset} />
+                <DocumentacionAdicionalData register={register} setValue={setValue} reset={reset} />
+              </div>
             )}
 
             {(user.roles_id === 1 || user.roles_id === 4) && (

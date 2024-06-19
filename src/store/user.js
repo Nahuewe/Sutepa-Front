@@ -38,17 +38,6 @@ export const userSlice = createSlice({
         return user
       })
       state.activeUser = null
-    },
-    updateUserPassword: (state, { payload }) => {
-      state.users = state.users.map((user) => {
-        if (user.id === payload.id) {
-          return { ...user, password: payload.password }
-        }
-        return user
-      })
-      if (state.activeUser && state.activeUser.id === payload.id) {
-        state.activeUser = { ...state.activeUser, password: payload.password }
-      }
     }
   }
 })
@@ -58,8 +47,7 @@ export const {
   onAddNewUser,
   setActiveUser,
   onDeleteUser,
-  onUpdateUser,
-  updateUserPassword
+  onUpdateUser
 } = userSlice.actions
 
 export default userSlice.reducer

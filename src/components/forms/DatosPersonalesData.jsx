@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { SelectForm } from '@/components/sutepa/forms'
+import { updatePersona } from '@/store/afiliado'
 import Card from '@/components/ui/Card'
 import Textinput from '@/components/ui/Textinput'
 import Numberinput from '@/components/ui/Numberinput'
-import { SelectForm } from '@/components/sutepa/forms'
-import { updatePersona } from '../../store/afiliado'
-import { sutepaApi } from '../../api'
 import DatePicker from '../ui/DatePicker'
 import moment from 'moment/moment'
+import useFetchData from '@/helpers/useFetchData'
 
 const tipoDocumento = [
   { id: 'DNI', nombre: 'DNI' },
@@ -21,6 +21,9 @@ const initialForm = {
 }
 
 function DatosPersonalesData ({ register, setValue, errors, watch }) {
+  const dispatch = useDispatch()
+  const { user } = useSelector(state => state.auth)
+  const { activeAfiliado } = useSelector(state => state.afiliado)
   const [picker, setPicker] = useState(null)
   const [picker2, setPicker2] = useState(null)
   const [cuil, setCuil] = useState('')
@@ -29,83 +32,7 @@ function DatosPersonalesData ({ register, setValue, errors, watch }) {
   const [formData, setFormData] = useState(initialForm)
   const [correoElectronico, setCorreoElectronico] = useState('')
   const [telefono, setTelefono] = useState('')
-  const dispatch = useDispatch()
-  const [estadoCivil, setEstadoCivil] = useState([])
-  const [nacionalidad, setNacionalidad] = useState([])
-  const [sexo, setSexo] = useState([])
-  const { user } = useSelector(state => state.auth)
-
-  const { activeAfiliado } = useSelector(state => state.afiliado)
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [estadoCivilResponse, nacionalidadResponse, sexoResponse] = await Promise.all([
-          sutepaApi.get('estadocivil'),
-          sutepaApi.get('nacionalidad'),
-          sutepaApi.get('sexo')
-        ])
-        setEstadoCivil(estadoCivilResponse.data.data)
-        setNacionalidad(nacionalidadResponse.data.data)
-        setSexo(sexoResponse.data.data)
-      } catch (error) {
-        console.error('Error fetching data:', error)
-      }
-    }
-    fetchData()
-  }, [])
-
-  useEffect(() => {
-    if (activeAfiliado) {
-      Object.entries(activeAfiliado).forEach(([key, value]) => {
-        setValue(key, value)
-      })
-
-      setLegajo(activeAfiliado.legajo || '')
-      setPicker(activeAfiliado.fecha_afiliacion ? [moment(activeAfiliado.fecha_afiliacion).toDate()] : null)
-      setPicker2(activeAfiliado.fecha_nacimiento ? [moment(activeAfiliado.fecha_nacimiento).toDate()] : null)
-      setDni(activeAfiliado.dni || '')
-      setCuil(activeAfiliado.cuil || '')
-      setCorreoElectronico(activeAfiliado.email || '')
-      setTelefono(activeAfiliado.telefono || '')
-      setFormData({
-        sexo_id: activeAfiliado.sexo_id || null,
-        estado_civil_id: activeAfiliado.estado_civil_id || null,
-        nacionalidad_id: activeAfiliado.nacionalidad_id || null
-      })
-    }
-  }, [activeAfiliado, setValue])
-
-  const handleUpdatePersona = () => {
-    const personaData = {
-      legajo,
-      fecha_afiliacion: picker ? moment(picker[0]).format('YYYY-MM-DD') : null,
-      nombre: watch('nombre'),
-      apellido: watch('apellido'),
-      sexo_id: parseInt(watch('sexo_id')) || null,
-      fecha_nacimiento: picker2 ? moment(picker2[0]).format('YYYY-MM-DD') : null,
-      estado_civil_id: parseInt(watch('estado_civil_id')) || null,
-      tipo_documento: watch('tipo_documento') || null,
-      dni,
-      cuil,
-      email: correoElectronico || null,
-      telefono,
-      nacionalidad_id: parseInt(watch('nacionalidad_id')) || null,
-      users_id: user.id
-    }
-    // Verificar si al menos un campo necesario ha sido rellenado
-    if (
-      personaData.nombre || personaData.apellido || personaData.sexo_id ||
-      personaData.estado_civil_id || personaData.tipo_documento || personaData.dni ||
-      personaData.cuil || personaData.nacionalidad_id
-    ) {
-      dispatch(updatePersona(personaData))
-    }
-  }
-
-  useEffect(() => {
-    handleUpdatePersona()
-  }, [picker, picker2, legajo, dni, cuil, correoElectronico, telefono, watch('nombre'), watch('apellido'), watch('sexo_id'), watch('estado_civil_id'), watch('tipo_documento'), watch('nacionalidad_id')])
+  const { estadoCivil, nacionalidad, sexo } = useFetchData()
 
   const handleDateChange = (date, field) => {
     if (field === 'fecha_afiliacion') {
@@ -189,6 +116,40 @@ function DatosPersonalesData ({ register, setValue, errors, watch }) {
     }))
     setValue(field, fieldValue)
   }
+
+  useEffect(() => {
+    const personaData = {
+      legajo,
+      fecha_afiliacion: picker ? moment(picker[0]).format('YYYY-MM-DD') : null,
+      nombre: watch('nombre'),
+      apellido: watch('apellido'),
+      sexo_id: parseInt(watch('sexo_id')) || null,
+      fecha_nacimiento: picker2 ? moment(picker2[0]).format('YYYY-MM-DD') : null,
+      estado_civil_id: parseInt(watch('estado_civil_id')) || null,
+      tipo_documento: watch('tipo_documento') || null,
+      dni,
+      cuil,
+      email: correoElectronico || null,
+      telefono,
+      nacionalidad_id: parseInt(watch('nacionalidad_id')) || null,
+      users_id: user.id
+    }
+    if (
+      personaData.nombre || personaData.apellido || personaData.sexo_id ||
+      personaData.estado_civil_id || personaData.tipo_documento || personaData.dni ||
+      personaData.cuil || personaData.nacionalidad_id
+    ) {
+      dispatch(updatePersona(personaData))
+    }
+  }, [picker, picker2, legajo, dni, cuil, correoElectronico, telefono, watch('nombre'), watch('apellido'), watch('sexo_id'), watch('estado_civil_id'), watch('tipo_documento'), watch('nacionalidad_id')])
+
+  useEffect(() => {
+    if (activeAfiliado?.persona) {
+      activeAfiliado.persona.forEach(item => {
+        dispatch(updatePersona(item))
+      })
+    }
+  }, [])
 
   return (
     <>

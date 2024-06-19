@@ -7,6 +7,7 @@ import Select from '@/components/ui/Select'
 import Button from '@/components/ui/Button'
 import Loading from '@/components/Loading'
 import { useGetParameters } from '@/helpers'
+import { useSelector } from 'react-redux'
 
 const FormValidationSaving = yup
   .object({
@@ -34,6 +35,7 @@ const FormValidationUpdate = yup
   .required()
 
 export const UserForm = ({ fnAction, activeUser = null }) => {
+  const { user } = useSelector((state) => state.auth)
   const [roles, setRoles] = useState([])
   const [seccionales, setSeccionales] = useState([])
   const [isLoading, setIsLoading] = useState(true)
@@ -95,6 +97,8 @@ export const UserForm = ({ fnAction, activeUser = null }) => {
     setShowPassword(!showPassword)
   }
 
+  const isEditable = user.roles_id === 1 || (activeUser && activeUser.estado !== 'ACTIVO')
+
   return (
     <>
       {isLoading
@@ -113,6 +117,7 @@ export const UserForm = ({ fnAction, activeUser = null }) => {
                   placeholder='Nombre'
                   register={register}
                   error={errors.nombre}
+                  disabled={!isEditable}
                 />
               </label>
             </div>
@@ -127,6 +132,7 @@ export const UserForm = ({ fnAction, activeUser = null }) => {
                   placeholder='Apellido'
                   register={register}
                   error={errors.apellido}
+                  disabled={!isEditable}
                 />
               </label>
             </div>
@@ -152,10 +158,10 @@ export const UserForm = ({ fnAction, activeUser = null }) => {
                 <strong className='obligatorio'>(*)</strong>
                 <Textinput
                   name='password'
-                  disabled={!activeUser}
                   type={showPassword ? 'text' : 'password'}
                   placeholder='Contraseña'
                   register={register}
+                  disabled={!activeUser}
                   error={errors.password}
                 />
                 <button
@@ -195,6 +201,7 @@ export const UserForm = ({ fnAction, activeUser = null }) => {
                   placeholder='Correo'
                   register={register}
                   error={errors.correo}
+                  disabled={!isEditable}
                 />
               </label>
             </div>
@@ -205,6 +212,7 @@ export const UserForm = ({ fnAction, activeUser = null }) => {
               placeholder='Teléfono'
               register={register}
               error={errors.telefono}
+              disabled={!isEditable}
             />
 
             <div>
@@ -217,6 +225,7 @@ export const UserForm = ({ fnAction, activeUser = null }) => {
                   register={register}
                   error={errors.roles_id}
                   placeholder='Seleccione un rol'
+                  disabled={!isEditable}
                 />
               </label>
             </div>
@@ -231,6 +240,7 @@ export const UserForm = ({ fnAction, activeUser = null }) => {
                   register={register}
                   error={errors.seccional_id}
                   placeholder='Seleccione una seccional'
+                  disabled={!isEditable}
                 />
               </label>
             </div>

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { SelectForm } from '@/components/sutepa/forms'
+import { updateObraSocial } from '@/store/afiliado'
 import Card from '@/components/ui/Card'
 import Textinput from '@/components/ui/Textinput'
-import { SelectForm } from '@/components/sutepa/forms'
-import { updateObraSocial } from '../../store/afiliado'
 
 const initialForm = {
   tipo_obra: '',
@@ -15,19 +15,10 @@ const tipoObraSocial = [
   { id: 'PREPAGA', nombre: 'PREPAGA' }
 ]
 
-function ObraSocialAfiliadoData ({ register, setValue }) {
+function ObraSocialAfiliadoData ({ register }) {
   const dispatch = useDispatch()
-  const obraSocialState = useSelector((state) => state.obra_social)
-  const [formData, setFormData] = useState(obraSocialState || initialForm)
-
-  useEffect(() => {
-    if (obraSocialState) {
-      Object.entries(obraSocialState).forEach(([key, value]) => {
-        setValue(key, value)
-      })
-      setFormData(obraSocialState)
-    }
-  }, [obraSocialState, setValue])
+  const { activeAfiliado } = useSelector(state => state.afiliado)
+  const [formData, setFormData] = useState(initialForm)
 
   function onChange ({ target }) {
     const { name, value } = target
@@ -38,6 +29,14 @@ function ObraSocialAfiliadoData ({ register, setValue }) {
     setFormData(newFormData)
     dispatch(updateObraSocial(newFormData))
   }
+
+  useEffect(() => {
+    if (activeAfiliado?.obra_social.length > 0) {
+      activeAfiliado.obra_social.forEach(item => {
+        dispatch(updateObraSocial(item))
+      })
+    }
+  }, [])
 
   return (
     <>

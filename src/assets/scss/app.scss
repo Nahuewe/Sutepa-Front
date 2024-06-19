@@ -126,45 +126,6 @@ textarea {
   field-sizing: content;
 }
 
-/* Para navegadores webkit (Chrome, Safari, Opera) */
-::placeholder {
-  color: black; /* Color del texto en modo normal */
-}
-
-/* Para navegadores mozilla (Firefox) */
-:-moz-placeholder {
-  color: black; /* Color del texto en modo normal */
-}
-
-/* Para navegadores que usan el motor de Internet Explorer */
-::-ms-input-placeholder {
-  color: black; /* Color del texto en modo normal */
-}
-
-/* Para el modo oscuro */
-@media (prefers-color-scheme: dark) {
-  /* Para navegadores webkit (Chrome, Safari, Opera) */
-  ::placeholder {
-    color: white; /* Color del texto en modo oscuro */
-  }
-
-  /* Para navegadores mozilla (Firefox) */
-  :-moz-placeholder {
-    color: white; /* Color del texto en modo oscuro */
-  }
-
-  /* Para navegadores que usan el motor de Internet Explorer */
-  ::-ms-input-placeholder {
-    color: white; /* Color del texto en modo oscuro */
-  }
-}
-
-/* Textinput.css */
-.lowercase-placeholder::placeholder {
-  text-transform: none; /* Para mantener el placeholder en minúsculas */
-  color: inherit; /* Para heredar el color del placeholder en diferentes temas */
-}
-
 .mayuscula {
   text-transform: uppercase !important;
 }

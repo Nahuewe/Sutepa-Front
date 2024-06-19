@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
+import { useAfiliadoStore } from '@/helpers'
+import { sutepaApi } from '@/api'
 import Card from '@/components/ui/Card'
-import EstadisticasDashboard from '@/components/partials/widget/chart/EstadisticasDashboard'
+import Loading from '@/components/Loading'
+import EstadisticasDashboard from './EstadisticasDashboard'
 import RevenueBarChart from './RevenueBarChart'
 import DonutChart from './DonutChart'
-import { useAfiliadoStore } from '../../helpers'
-import Loading from '@/components/Loading'
-import { sutepaApi } from '@/api'
 
 const Dashboard = () => {
   const { afiliados, startLoadingAfiliado } = useAfiliadoStore()

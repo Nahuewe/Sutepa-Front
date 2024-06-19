@@ -9,7 +9,6 @@ export const useAfiliadoStore = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const { afiliados, paginate, activeAfiliado, persona, domicilio, datos_laborales, obra_social, documentacion, familiares, subsidios } = useSelector(state => state.afiliado)
-  const { user } = useSelector((state) => state.auth)
 
   const startLoadingAfiliado = async (page) => {
     try {
@@ -43,7 +42,7 @@ export const useAfiliadoStore = () => {
         subsidios
       }
 
-      const response = await sutepaApi.post('/personas', { ...afiliado, user_id: user.id })
+      const response = await sutepaApi.post('/personas', afiliado)
       console.log(response)
       navigate('/afiliados')
       startLoadingAfiliado()
@@ -88,7 +87,7 @@ export const useAfiliadoStore = () => {
         subsidios
       }
       const { id } = activeAfiliado
-      const response = await sutepaApi.put(`/personas/${id}`, { ...afiliado, user_id: user })
+      const response = await sutepaApi.put(`/personas/${id}`, afiliado)
       dispatch(onUpdateAfiliado(response.afiliado))
       navigate('/afiliados')
 

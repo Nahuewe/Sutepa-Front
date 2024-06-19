@@ -71,13 +71,13 @@ export const ShowAfiliado = () => {
               Datos del Domicilio
             </h4>
             <div className='grid grid-cols-1 md:grid-cols-2 gap-4 p-4'>
-              <div className='border-b py-2 px-4'>
+              <div className='border-b py-2 px-4 mayuscula'>
                 <strong>Domicilio:</strong> {activeAfiliado.domicilios.domicilio}
               </div>
-              <div className='border-b py-2 px-4'>
+              <div className='border-b py-2 px-4 mayuscula'>
                 <strong>Provincia:</strong> {activeAfiliado.domicilios.provincia}
               </div>
-              <div className='border-b py-2 px-4'>
+              <div className='border-b py-2 px-4 mayuscula'>
                 <strong>localidad:</strong> {activeAfiliado.domicilios.localidad}
               </div>
               <div className='border-b py-2 px-4'>
@@ -254,7 +254,7 @@ export const ShowAfiliado = () => {
                       <td className='px-4 py-2 text-center dark:text-white'>{subsidio.tipo_subsidio}</td>
                       <td className='px-4 py-2 text-center dark:text-white'>{formatDate(subsidio.fecha_solicitud)}</td>
                       <td className='px-4 py-2 text-center dark:text-white'>{formatDate(subsidio.fecha_otorgamiento)}</td>
-                      <td className='px-4 py-2 text-center dark:text-white'>{subsidio.observaciones}</td>
+                      <td className='px-4 py-2 text-center dark:text-white mayuscula'>{subsidio.observaciones}</td>
                       <td className='px-4 py-2 text-center dark:text-white'>{subsidio.users_nombre}</td>
                       <td className='px-4 py-2 text-center dark:text-white'>{formatDate(subsidio.updated_at)}</td>
                     </tr>

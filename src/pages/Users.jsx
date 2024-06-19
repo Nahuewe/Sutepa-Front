@@ -4,7 +4,7 @@ import Card from '@/components/ui/Card'
 import Modal from '@/components/ui/Modal'
 import EditModal from '@/components/ui/EditModal'
 import { DeleteModal } from '@/components/ui/DeleteModal'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { handleShowDelete, handleShowEdit } from '@/store/layout'
 import { useUserStore } from '@/helpers'
 import { setActiveUser } from '@/store/user'
@@ -51,7 +51,10 @@ const columns = [
 export const Users = () => {
   const { users, paginate, activeUser, startLoadingUsers, startSavingUser, startDeleteUser, startUpdateUser } = useUserStore()
   const dispatch = useDispatch()
+  const { user } = useSelector((state) => state.auth)
   const [isLoading, setIsLoading] = useState(true)
+
+  const filteredUsers = user.roles_id === 1 ? users : users.filter(users => users.id === user.id)
 
   function onEdit (id) {
     dispatch(setActiveUser(id))
@@ -84,17 +87,19 @@ export const Users = () => {
               title='Listado de Usuarios'
               headerslot={
                 <div className='flex gap-2'>
-                  <Modal
-                    title='Agregar Usuario'
-                    label='Agregar'
-                    labelClass='bg-red-600 hover:bg-red-800 text-white items-center text-center py-2 px-6 rounded-lg'
-                    centered
-                    children={
-                      <UserForm
-                        fnAction={startSavingUser}
-                      />
+                  {user.roles_id === 1 && (
+                    <Modal
+                      title='Agregar Usuario'
+                      label='Agregar'
+                      labelClass='bg-red-600 hover:bg-red-800 text-white items-center text-center py-2 px-6 rounded-lg'
+                      centered
+                      children={
+                        <UserForm
+                          fnAction={startSavingUser}
+                        />
                     }
-                  />
+                    />
+                  )}
 
                   <EditModal
                     title='Editar Usuario'
@@ -135,7 +140,7 @@ export const Users = () => {
                       </thead>
                       <tbody className='bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700'>
                         {
-                          (users.length > 0) && users.map((usuario) => (
+                          (filteredUsers.length > 0) && filteredUsers.map((usuario) => (
                             <tr key={usuario.id}>
                               <td className='table-td'>{usuario.nombre}</td>
                               <td className='table-td'>{usuario.apellido}</td>
@@ -146,8 +151,8 @@ export const Users = () => {
                               <td className='table-td'>
                                 <span
                                   className={`inline-block px-3 min-w-[90px] text-center py-1 rounded-full bg-opacity-25 ${usuario.estado === 'ACTIVO'
-                                      ? 'text-black bg-success-500 dark:text-black dark:bg-success-400'
-                                      : 'text-black bg-danger-500 dark:text-black dark:bg-danger-500'
+                                    ? 'text-black bg-success-500 dark:text-black dark:bg-success-400'
+                                    : 'text-black bg-danger-500 dark:text-black dark:bg-danger-500'
                                     }`}
                                 >
                                   {usuario.estado === 'ACTIVO' ? 'ACTIVO' : 'INACTIVO'}
@@ -169,36 +174,38 @@ export const Users = () => {
                                   </button>
                                 </Tooltip>
 
-                                <Tooltip
-                                  content={usuario.estado === 'ACTIVO' ? 'Eliminar' : 'Reactivar'}
-                                  placement='top'
-                                  arrow
-                                  animation='shift-away'
-                                >
-                                  <button
-                                    className={`p-2 rounded-lg ${usuario.estado === 'ACTIVO' ? 'bg-red-500 hover:bg-red-700' : 'bg-green-500 hover:bg-green-700'} text-white`}
-                                    onClick={() => onDelete(usuario.id)}
+                                {user.roles_id === 1 && (
+                                  <Tooltip
+                                    content={usuario.estado === 'ACTIVO' ? 'Eliminar' : 'Reactivar'}
+                                    placement='top'
+                                    arrow
+                                    animation='shift-away'
                                   >
-                                    {usuario.estado === 'ACTIVO'
-                                      ? (
-                                        <svg xmlns='http://www.w3.org/2000/svg' className='icon icon-tabler icon-tabler-trash' width='24' height='24' viewBox='0 0 24 24' strokeWidth='2' stroke='currentColor' fill='none' strokeLinecap='round' strokeLinejoin='round'>
-                                          <path stroke='none' d='M0 0h24v24H0z' fill='none' />
-                                          <path d='M4 7l16 0' />
-                                          <path d='M10 11l0 6' />
-                                          <path d='M14 11l0 6' />
-                                          <path d='M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12' />
-                                          <path d='M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3' />
-                                        </svg>
-                                        )
-                                      : (
-                                        <svg xmlns='http://www.w3.org/2000/svg' className='icon icon-tabler icon-tabler-arrow-back-up' width='24' height='24' viewBox='0 0 24 24' strokeWidth='1.5' stroke='currentColor' fill='none' strokeLinecap='round' strokeLinejoin='round'>
-                                          <path stroke='none' d='M0 0h24v24H0z' fill='none' />
-                                          <path d='M9 14l-4 -4l4 -4' />
-                                          <path d='M5 10h11a4 4 0 1 1 0 8h-1' />
-                                        </svg>
-                                        )}
-                                  </button>
-                                </Tooltip>
+                                    <button
+                                      className={`p-2 rounded-lg ${usuario.estado === 'ACTIVO' ? 'bg-red-500 hover:bg-red-700' : 'bg-green-500 hover:bg-green-700'} text-white`}
+                                      onClick={() => onDelete(usuario.id)}
+                                    >
+                                      {usuario.estado === 'ACTIVO'
+                                        ? (
+                                          <svg xmlns='http://www.w3.org/2000/svg' className='icon icon-tabler icon-tabler-trash' width='24' height='24' viewBox='0 0 24 24' strokeWidth='2' stroke='currentColor' fill='none' strokeLinecap='round' strokeLinejoin='round'>
+                                            <path stroke='none' d='M0 0h24v24H0z' fill='none' />
+                                            <path d='M4 7l16 0' />
+                                            <path d='M10 11l0 6' />
+                                            <path d='M14 11l0 6' />
+                                            <path d='M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12' />
+                                            <path d='M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3' />
+                                          </svg>
+                                          )
+                                        : (
+                                          <svg xmlns='http://www.w3.org/2000/svg' className='icon icon-tabler icon-tabler-arrow-back-up' width='24' height='24' viewBox='0 0 24 24' strokeWidth='1.5' stroke='currentColor' fill='none' strokeLinecap='round' strokeLinejoin='round'>
+                                            <path stroke='none' d='M0 0h24v24H0z' fill='none' />
+                                            <path d='M9 14l-4 -4l4 -4' />
+                                            <path d='M5 10h11a4 4 0 1 1 0 8h-1' />
+                                          </svg>
+                                          )}
+                                    </button>
+                                  </Tooltip>
+                                )}
 
                               </td>
                             </tr>
@@ -209,12 +216,11 @@ export const Users = () => {
 
                     {/* Paginado */}
                     {
-                      paginate && (
+                      user.roles_id === 1 && paginate && (
                         <div className='flex justify-center mt-8'>
                           <Pagination
                             paginate={paginate}
-                            onPageChange={(page) =>
-                              loadingUsers(page)}
+                            onPageChange={(page) => loadingUsers(page)}
                             text
                           />
                         </div>

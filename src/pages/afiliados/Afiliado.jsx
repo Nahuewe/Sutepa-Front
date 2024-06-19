@@ -2,19 +2,19 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { useAfiliadoStore } from '@/helpers'
-import Card from '@/components/ui/Card'
-import Pagination from '@/components/ui/Pagination'
-import Loading from '@/components/Loading'
-import { DeleteModal } from '@/components/ui/DeleteModal'
-import { handleShowDelete } from '@/store/layout'
-import * as XLSX from 'xlsx'
 import { cleanAfiliado, setActiveAfiliado } from '@/store/afiliado'
 import { sutepaApi } from '@/api'
 import { formatDate, getTipoContrato } from '@/constant/datos-id'
-import EstadisticasAfiliados from '@/components/partials/widget/chart/EstadisticasAfiliados'
-import EditButton from '../../components/buttons/EditButton'
-import ViewButton from '../../components/buttons/ViewButton'
-import AfiliadoButton from '../../components/buttons/AfiliadoButton'
+import { DeleteModal } from '@/components/ui/DeleteModal'
+import { handleShowDelete } from '@/store/layout'
+import * as XLSX from 'xlsx'
+import Card from '@/components/ui/Card'
+import Pagination from '@/components/ui/Pagination'
+import Loading from '@/components/Loading'
+import EstadisticasAfiliados from './EstadisticasAfiliados'
+import EditButton from '@/components/buttons/EditButton'
+import ViewButton from '@/components/buttons/ViewButton'
+import AfiliadoButton from '@/components/buttons/AfiliadoButton'
 
 const columns = [
   {
@@ -105,7 +105,7 @@ export const Afiliado = () => {
   async function onSearch ({ target: { value } }) {
     setSearch(value)
     if (value.length === 0) await loadingAfiliado()
-    if (value.length <= 3) return false
+    if (value.length <= 2) return false
     await startSearchAfiliado(value)
   }
 
@@ -281,7 +281,7 @@ export const Afiliado = () => {
                         </button>
                       )}
 
-                      {(user.roles_id === 1 || user.roles_id === 3) && (
+                      {(user.roles_id === 1 || user.roles_id === 2 || user.roles_id === 3) && (
                         <button
                           type='button'
                           onClick={addAfiliado}
@@ -326,11 +326,11 @@ export const Afiliado = () => {
                                   <td className='table-td'>{afiliado.seccional}</td>
                                   <td className='table-td'>
                                     <span
-                                      className={`inline-block px-3 min-w-[90px] text-center py-1 rounded-full bg-opacity-25 ${afiliado.estado === 'ACTIVO'
-                                        ? 'text-black bg-success-500 dark:text-black dark:bg-success-400'
+                                      className={`inline-block text-black px-3 min-w-[90px] text-center py-1 rounded-full bg-opacity-25 ${afiliado.estado === 'ACTIVO'
+                                        ? 'text-black bg-success-500 dark:bg-success-400'
                                         : afiliado.estado === 'PENDIENTE'
-                                          ? 'text-black bg-warning-500 dark:text-black dark:bg-warning-500'
-                                          : 'text-black bg-danger-500 dark:text-black dark:bg-danger-500'
+                                          ? 'text-black bg-warning-500 dark:bg-warning-500'
+                                          : 'text-black bg-danger-500 dark:bg-danger-500'
                                         }`}
                                     >
                                       {afiliado.estado}

@@ -1,21 +1,15 @@
 import React from 'react'
 import Icon from '@/components/ui/Icon'
 import SwitchDark from './Tools/SwitchDark'
-import HorizentalMenu from './Tools/HorizentalMenu'
 import useWidth from '@/hooks/useWidth'
 import useSidebar from '@/hooks/useSidebar'
 import useNavbarType from '@/hooks/useNavbarType'
 import useMenulayout from '@/hooks/useMenulayout'
 import useSkin from '@/hooks/useSkin'
 import Logo from './Tools/Logo'
-import SearchModal from './Tools/SearchModal'
 import Profile from './Tools/Profile'
-import Notification from './Tools/Notification'
-import Message from './Tools/Message'
-import Language from './Tools/Language'
 import useRtl from '@/hooks/useRtl'
 import useMobileMenu from '@/hooks/useMobileMenu'
-import MonoChrome from './Tools/MonoChrome'
 
 const Header = ({ className = 'custom-class' }) => {
   const [collapsed, setMenuCollapsed] = useSidebar()
@@ -113,13 +107,6 @@ const Header = ({ className = 'custom-class' }) => {
               )}
             </div>
           )}
-          {/*  Horizontal  Main Menu */}
-          {menuType === 'horizontal' && width >= breakpoints.xl
-            ? (
-              <HorizentalMenu />
-              )
-            : null}
-          {/* Nav Tools  */}
           <div className='nav-tools flex items-center space-x-3 rtl:space-x-reverse'>
             {/* <Language /> */}
             <SwitchDark />

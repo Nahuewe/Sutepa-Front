@@ -1,28 +1,27 @@
+import { SelectForm } from '@/components/sutepa/forms'
+import { useState, useEffect } from 'react'
+import { updateDomicilio } from '@/store/afiliado'
+import { useDispatch, useSelector } from 'react-redux'
+import { sutepaApi } from '@/api'
 import Card from '@/components/ui/Card'
 import Textinput from '@/components/ui/Textinput'
 import Numberinput from '@/components/ui/Numberinput'
-import { SelectForm } from '@/components/sutepa/forms'
-import { useState, useEffect } from 'react'
-import { updateDomicilio } from '../../store/afiliado'
-import { useDispatch } from 'react-redux'
-import { sutepaApi } from '../../api'
 
 function AfiliadoDomicilioData ({ register, disabled, setValue }) {
+  const dispatch = useDispatch()
   const [codigoPostal, setCodigoPostal] = useState('')
   const [provincias, setProvincias] = useState([])
   const [localidades, setLocalidades] = useState([])
   const [domicilio, setDomicilio] = useState('')
   const [selectedProvincia, setSelectedProvincia] = useState('')
-  const dispatch = useDispatch()
+  const { activeAfiliado } = useSelector(state => state.afiliado)
 
-  // Función para obtener las provincias
   async function handleProvincia () {
     const response = await sutepaApi.get('provincia')
     const { data } = response.data
     setProvincias(data)
   }
 
-  // Función para obtener las localidades según la provincia seleccionada
   async function handleLocalidad (id) {
     const response = await sutepaApi.get(`localidad/${id}`)
     const { data } = response.data
@@ -54,10 +53,6 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
   }
 
   useEffect(() => {
-    handleProvincia()
-  }, [])
-
-  useEffect(() => {
     if (codigoPostal && selectedProvincia && localidades.length > 0) {
       const domicilioData = {
         domicilio,
@@ -69,6 +64,18 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
       dispatch(updateDomicilio(domicilioData))
     }
   }, [codigoPostal, selectedProvincia, localidades, domicilio, dispatch])
+
+  useEffect(() => {
+    if (activeAfiliado?.domicilio) {
+      activeAfiliado.domicilio.forEach(item => {
+        dispatch(updateDomicilio(item))
+      })
+    }
+  }, [])
+
+  useEffect(() => {
+    handleProvincia()
+  }, [])
 
   return (
     <>

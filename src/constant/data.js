@@ -1,16 +1,3 @@
-import User1 from '@/assets/images/all-img/user.png'
-import User2 from '@/assets/images/all-img/user2.png'
-import User3 from '@/assets/images/all-img/user3.png'
-import User4 from '@/assets/images/all-img/user4.png'
-import meetsImage2 from '@/assets/images/svg/path.svg'
-import meetsImage3 from '@/assets/images/svg/dc.svg'
-import meetsImage4 from '@/assets/images/svg/sk.svg'
-import file1Img from '@/assets/images/icon/file-1.svg'
-import file2Img from '@/assets/images/icon/pdf-1.svg'
-import file3Img from '@/assets/images/icon/zip-1.svg'
-import file4Img from '@/assets/images/icon/pdf-2.svg'
-import file5Img from '@/assets/images/icon/scr-1.svg'
-
 export const menuItems = [
   {
     isHeadr: true,
@@ -40,12 +27,6 @@ export const menuNormal = [
     isHeadr: true,
     title: 'menu'
   },
-
-  // {
-  //   title: 'Dashboard',
-  //   icon: 'heroicons-outline:square-2-stack',
-  //   link: 'dashboard'
-  // },
 
   {
     title: 'Afiliados',
@@ -380,98 +361,6 @@ export const topMenu = [
     ]
   }
 ]
-export const notifications = [
-  {
-    title: 'Your order is placed',
-    desc: 'Amet minim mollit non deser unt ullamco est sit aliqua.',
-
-    image: User1,
-    link: '#'
-  },
-  {
-    title: 'Congratulations Darlene  🎉',
-    desc: 'Won the monthly best seller badge',
-    unread: true,
-    image: User2,
-    link: '#'
-  },
-  {
-    title: 'Revised Order 👋',
-    desc: 'Won the monthly best seller badge',
-
-    image: User3,
-    link: '#'
-  },
-  {
-    title: 'Brooklyn Simmons',
-    desc: 'Added you to Top Secret Project group...',
-
-    image: User4,
-    link: '#'
-  }
-]
-
-export const message = [
-  {
-    title: 'Wade Warren',
-    desc: 'Hi! How are you doing?.....',
-    active: true,
-    hasnotifaction: true,
-    notification_count: 1,
-    image: User1,
-    link: '#'
-  },
-  {
-    title: 'Savannah Nguyen',
-    desc: 'Hi! How are you doing?.....',
-    active: false,
-    hasnotifaction: false,
-    image: User2,
-    link: '#'
-  },
-  {
-    title: 'Ralph Edwards',
-    desc: 'Hi! How are you doing?.....',
-    active: false,
-    hasnotifaction: true,
-    notification_count: 8,
-    image: User3,
-    link: '#'
-  },
-  {
-    title: 'Cody Fisher',
-    desc: 'Hi! How are you doing?.....',
-    active: true,
-    hasnotifaction: false,
-    image: User4,
-    link: '#'
-  },
-  {
-    title: 'Savannah Nguyen',
-    desc: 'Hi! How are you doing?.....',
-    active: false,
-    hasnotifaction: false,
-    image: User2,
-    link: '#'
-  },
-  {
-    title: 'Ralph Edwards',
-    desc: 'Hi! How are you doing?.....',
-    active: false,
-    hasnotifaction: true,
-    notification_count: 8,
-    image: User3,
-    link: '#'
-  },
-  {
-    title: 'Cody Fisher',
-    desc: 'Hi! How are you doing?.....',
-    active: true,
-    hasnotifaction: false,
-    image: User4,
-    link: '#'
-  }
-]
 
 export const colors = {
   primary: '#4669FA',
@@ -556,54 +445,5 @@ export const bottomFilterLists = [
     name: 'Business',
     value: 'business',
     icon: 'heroicons:chevron-double-right'
-  }
-]
-
-export const meets = [
-  {
-    img: meetsImage2,
-    title: 'Design meeting (team)',
-    date: '01 Nov 2021',
-    meet: 'Skyp meeting'
-  },
-  {
-    img: meetsImage3,
-    title: 'Background research',
-    date: '01 Nov 2021',
-    meet: 'Google meeting'
-  },
-  {
-    img: meetsImage4,
-    title: 'Meeting with client',
-    date: '01 Nov 2021',
-    meet: 'Zoom meeting'
-  }
-]
-
-export const files = [
-  {
-    img: file1Img,
-    title: 'Dashboard.fig',
-    date: '06 June 2021 / 155MB'
-  },
-  {
-    img: file2Img,
-    title: 'Ecommerce.pdf',
-    date: '06 June 2021 / 155MB'
-  },
-  {
-    img: file3Img,
-    title: 'Job portal_app.zip',
-    date: '06 June 2021 / 155MB'
-  },
-  {
-    img: file4Img,
-    title: 'Ecommerce.pdf',
-    date: '06 June 2021 / 155MB'
-  },
-  {
-    img: file5Img,
-    title: 'Screenshot.jpg',
-    date: '06 June 2021 / 155MB'
   }
 ]

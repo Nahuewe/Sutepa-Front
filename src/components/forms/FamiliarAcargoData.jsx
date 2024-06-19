@@ -2,13 +2,14 @@ import React, { useRef, useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useSelector, useDispatch } from 'react-redux'
 import { onAddOrUpdateFamiliar, onDeleteFamiliar } from '../../store/afiliado'
-import Numberinput from '@/components/ui/Numberinput'
-import Card from '@/components/ui/Card'
-import Textinput from '@/components/ui/Textinput'
 import { SelectForm } from '@/components/sutepa/forms'
 import { Tooltip } from 'flowbite-react'
 import { Icon } from '@iconify/react'
 import { sutepaApi } from '../../api'
+import { formatDate } from '@/constant/datos-id'
+import Numberinput from '@/components/ui/Numberinput'
+import Card from '@/components/ui/Card'
+import Textinput from '@/components/ui/Textinput'
 import DatePicker from '../ui/DatePicker'
 import moment from 'moment'
 
@@ -29,45 +30,23 @@ const tipoDocumento = [
 
 function FamiliaresaCargo () {
   const dispatch = useDispatch()
+  const formRef = useRef()
   const { register, setValue, reset, watch } = useForm()
   const [picker, setPicker] = useState(null)
   const [formData, setFormData] = useState(initialForm)
   const [familiares, setFamiliares] = useState([])
   const [editingFamiliarId, setEditingFamiliarId] = useState(null)
   const [isEditing, setIsEditing] = useState(false)
-  const { user } = useSelector(state => state.auth)
-  const formRef = useRef()
   const [idCounter, setIdCounter] = useState(0)
   const [dni, setDni] = useState('')
   const [parentesco, setParentesco] = useState([])
+  const { user } = useSelector(state => state.auth)
+  const { activeAfiliado } = useSelector(state => state.afiliado)
 
   async function handleParentescos () {
     const response = await sutepaApi.get('familia')
     const { data } = response.data
     setParentesco(data)
-  }
-
-  const handleEdit = (familiar) => {
-    setFormData({
-      ...familiar,
-      fecha_nacimiento_familiar: familiar.fecha_nacimiento_familiar ? moment.utc(familiar.fecha_nacimiento_familiar).format('YYYY-MM-DD') : null
-    })
-    setEditingFamiliarId(familiar.id)
-    setIsEditing(true)
-    setPicker(new Date(familiar.fecha_nacimiento_familiar))
-    setDni(familiar.documento)
-
-    setValue('nombre_familiar', familiar.nombre_familiar)
-    setValue('tipo_documento_familiar', familiar.tipo_documento_familiar)
-    setValue('documento', familiar.documento)
-    setValue('parentesco_id', familiar.parentesco_id)
-    setValue('fecha_nacimiento_familiar', familiar.fecha_nacimiento_familiar ? moment.utc(familiar.fecha_nacimiento_familiar).format('YYYY-MM-DD') : '')
-  }
-
-  const onDelete = (id) => {
-    const newFamiliares = familiares.filter(familiar => familiar.id !== id)
-    setFamiliares(newFamiliares)
-    dispatch(onDeleteFamiliar(id))
   }
 
   const onReset = () => {
@@ -80,17 +59,14 @@ function FamiliaresaCargo () {
     reset()
   }
 
-  function formatDate (date) {
-    return date ? moment.utc(date).format('DD/MM/YYYY') : ''
-  }
-
-  const handleDateChange = (date) => {
+  const handleDateChange = (date, field) => {
+    const formattedDate = moment(date[0]).format('YYYY-MM-DD:mm:ss')
+    setFormData({
+      ...formData,
+      [field]: formattedDate
+    })
     setPicker(date)
-    setValue('fecha_nacimiento_familiar', date[0])
-    setFormData((prevState) => ({
-      ...prevState,
-      fecha_nacimiento_familiar: moment.utc(date[0]).format('YYYY-MM-DD')
-    }))
+    setValue(field, formattedDate)
   }
 
   const handleInputChange = e => {
@@ -133,8 +109,8 @@ function FamiliaresaCargo () {
       ...formData,
       id: isEditing ? editingFamiliarId : idCounter,
       parentesco_id: parseInt(watch('parentesco_id')) || null,
-      fecha_nacimiento_familiar: picker ? moment.utc(picker[0]).format('YYYY-MM-DD') : null,
-      fecha_carga: moment.utc().format('DD/MM/YYYY'),
+      fecha_nacimiento_familiar: picker ? moment(picker[0]).format('YYYY-MM-DD:mm:ss') : null,
+      fecha_carga: new Date(),
       users_id: user.id
     }
 
@@ -152,6 +128,38 @@ function FamiliaresaCargo () {
     dispatch(onAddOrUpdateFamiliar(newFamiliar))
     onReset()
   }
+
+  const handleEdit = (familiar) => {
+    const fechaNacimiento = moment(familiar.fecha_nacimiento_familiar, 'YYYY-MM-DD:mm:ss').toDate()
+    setFormData({
+      ...familiar,
+      fecha_nacimiento_familiar: fechaNacimiento ? moment(fechaNacimiento).format('YYYY-MM-DD:mm:ss') : null
+    })
+    setEditingFamiliarId(familiar.id)
+    setIsEditing(true)
+    setPicker(fechaNacimiento)
+    setDni(familiar.documento)
+
+    setValue('nombre_familiar', familiar.nombre_familiar)
+    setValue('tipo_documento_familiar', familiar.tipo_documento_familiar)
+    setValue('documento', familiar.documento)
+    setValue('parentesco_id', familiar.parentesco_id)
+    setValue('fecha_nacimiento_familiar', fechaNacimiento ? moment(fechaNacimiento).format('YYYY-MM-DD:mm:ss') : '')
+  }
+
+  const onDelete = (id) => {
+    const newFamiliares = familiares.filter(familiar => familiar.id !== id)
+    setFamiliares(newFamiliares)
+    dispatch(onDeleteFamiliar(id))
+  }
+
+  useEffect(() => {
+    if (activeAfiliado?.familiares) {
+      activeAfiliado.familiares.forEach(item => {
+        dispatch(onAddOrUpdateFamiliar(item))
+      })
+    }
+  }, [])
 
   useEffect(() => {
     handleParentescos()
@@ -253,7 +261,7 @@ function FamiliaresaCargo () {
             <tbody className='divide-y dark:divide-gray-700'>
               {familiares.map(fam => (
                 <tr key={fam.id} className='bg-white dark:bg-gray-800 dark:border-gray-700'>
-                  <td className='px-4 py-2 text-center dark:text-white'>{fam.fecha_carga}</td>
+                  <td className='px-4 py-2 text-center dark:text-white'>{formatDate(fam.fecha_carga)}</td>
                   <td className='px-4 py-2 text-center dark:text-white mayuscula'>{fam.nombre_familiar}</td>
                   <td className='px-4 py-2 text-center dark:text-white'>{formatDate(fam.fecha_nacimiento_familiar)}</td>
                   <td className='px-4 py-2 text-center dark:text-white'>{fam.tipo_documento_familiar}</td>

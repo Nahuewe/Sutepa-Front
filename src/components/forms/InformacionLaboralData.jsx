@@ -9,6 +9,7 @@ import { SelectForm } from '@/components/sutepa/forms'
 import DatePicker from '../ui/DatePicker'
 import { updateDatosLaborales } from '../../store/afiliado'
 import moment from 'moment'
+import useFetchData from '../../helpers/useFetchData'
 
 const tipoContrato = [
   { id: 1, nombre: 'PLANTA PERMANENTE' },
@@ -28,33 +29,10 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
   const [correoElectronicoLaboral, setCorreoElectronicoLaboral] = useState('')
   const [telefonoLaboral, setTelefonoLaboral] = useState('')
   const [domicilioTrabajo, setDomicilioTrabajo] = useState('')
-  const [agrupamiento, setAgrupamiento] = useState([])
-  const [seccional, setSeccional] = useState([])
-  const [ugl, setUgl] = useState([])
-  const [tramo, setTramo] = useState([])
   const [filteredAgencias, setFilteredAgencias] = useState([])
   const [agenciaDisabled, setAgenciaDisabled] = useState(true)
+  const { agrupamiento, seccional, ugl, tramo } = useFetchData()
   const dispatch = useDispatch()
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [agrupamientoResponse, seccionalResponse, uglResponse, tramoResponse] = await Promise.all([
-          sutepaApi.get('agrupamiento'),
-          sutepaApi.get('seccional'),
-          sutepaApi.get('ugl'),
-          sutepaApi.get('tramo')
-        ])
-        setAgrupamiento(agrupamientoResponse.data.data)
-        setSeccional(seccionalResponse.data.data)
-        setUgl(uglResponse.data.data)
-        setTramo(tramoResponse.data.data)
-      } catch (error) {
-        console.error('Error fetching data:', error)
-      }
-    }
-    fetchData()
-  }, [])
 
   const handleDateChange = (date) => {
     setPicker(date)
