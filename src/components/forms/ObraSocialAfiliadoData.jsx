@@ -23,17 +23,20 @@ function ObraSocialAfiliadoData ({ register }) {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    if (activeAfiliado?.obraSociales && activeAfiliado.obraSociales.length > 0) {
+    if (activeAfiliado && Array.isArray(activeAfiliado.obraSociales) && activeAfiliado.obraSociales.length > 0) {
       const firstObraSocial = activeAfiliado.obraSociales[0]
       setFormData({
         tipo_obra: firstObraSocial.tipo_obra,
         obra_social: firstObraSocial.obra_social
       })
+
+      // Actualizar el estado con updateObraSocial para el primer elemento de obraSociales
+      dispatch(updateObraSocial(firstObraSocial))
     } else {
       setFormData(initialForm)
     }
     setIsLoading(false)
-  }, [activeAfiliado])
+  }, [activeAfiliado, dispatch])
 
   const onChange = ({ target }) => {
     const { name, value } = target
@@ -42,48 +45,44 @@ function ObraSocialAfiliadoData ({ register }) {
       [name]: value
     }
     setFormData(newFormData)
-    dispatch(updateObraSocial(newFormData))
+    dispatch(updateObraSocial(newFormData)) // Aquí se llama a updateObraSocial con los nuevos datos del formulario
+  }
+
+  if (isLoading) {
+    return <Loading className='mt-28 md:mt-64' />
   }
 
   return (
-    <>
-      {isLoading
-        ? (
-          <Loading className='mt-28 md:mt-64' />
-          )
-        : (
+    <div>
+      <h4 className='card-title text-center bg-red-500 dark:bg-gray-700 text-white rounded-md p-2'>
+        Obra Social
+      </h4>
+      <Card>
+        <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
           <div>
-            <h4 className='card-title text-center bg-red-500 dark:bg-gray-700 text-white rounded-md p-2'>
-              Obra Social
-            </h4>
-            <Card>
-              <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-                <div>
-                  <label htmlFor='tipo_obra' className='form-label'>
-                    Tipo de Obra Social
-                  </label>
-                  <SelectForm
-                    register={register('tipo_obra')}
-                    options={tipoObraSocial}
-                    onChange={onChange}
-                    value={formData.tipo_obra}
-                  />
-                </div>
-
-                <Textinput
-                  label='Obra Social'
-                  name='obra_social'
-                  className='mayuscula'
-                  register={register}
-                  placeholder='Especifique la obra social'
-                  value={formData.obra_social}
-                  onChange={onChange}
-                />
-              </div>
-            </Card>
+            <label htmlFor='tipo_obra' className='form-label'>
+              Tipo de Obra Social
+            </label>
+            <SelectForm
+              register={register('tipo_obra')}
+              options={tipoObraSocial}
+              onChange={e => onChange(e)} // Llama a onChange con el evento completo
+              value={formData.tipo_obra}
+            />
           </div>
-          )}
-    </>
+
+          <Textinput
+            label='Obra Social'
+            name='obra_social'
+            className='mayuscula'
+            register={register}
+            placeholder='Especifique la obra social'
+            value={formData.obra_social}
+            onChange={e => onChange(e)} // Llama a onChange con el evento completo
+          />
+        </div>
+      </Card>
+    </div>
   )
 }
 

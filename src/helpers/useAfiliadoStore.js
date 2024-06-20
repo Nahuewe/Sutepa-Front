@@ -77,6 +77,11 @@ export const useAfiliadoStore = () => {
 
   const startUpdateAfiliado = async () => {
     try {
+      const { id } = activeAfiliado
+      if (!id) {
+        throw new Error('No hay un afiliado activo para actualizar')
+      }
+
       const afiliado = {
         persona,
         domicilio,
@@ -86,11 +91,10 @@ export const useAfiliadoStore = () => {
         familiares,
         subsidios
       }
-      const { id } = activeAfiliado
-      const response = await sutepaApi.put(`/personas/${id}`, afiliado)
-      dispatch(onUpdateAfiliado(response.afiliado))
-      navigate('/afiliados')
 
+      const response = await sutepaApi.put(`/personas/${id}`, afiliado)
+      dispatch(onUpdateAfiliado(response.data.afiliado))
+      navigate('/afiliados')
       toast.success('Afiliado editado con éxito')
     } catch (error) {
       let errorMessage = 'Error desconocido'
@@ -102,7 +106,7 @@ export const useAfiliadoStore = () => {
         errorMessage = error.message
       }
 
-      console.error('Error en la carga de Afiliado:', errorMessage)
+      console.error('Error en la actualización de Afiliado:', errorMessage)
       dispatch(setErrorMessage(errorMessage))
       toast.error(`No se pudo editar los datos: ${errorMessage}`)
     }

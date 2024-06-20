@@ -24,7 +24,9 @@ export const afiliadoSlice = createSlice({
       state.activeAfiliado = null
     },
     setActiveAfiliado: (state, { payload }) => {
-      state.activeAfiliado = state.afiliados.find((afiliado) => afiliado.id === payload)
+      (!payload)
+        ? state.activeAfiliado = null
+        : state.activeAfiliado = state.afiliados.find((afiliado) => afiliado.id === payload)
     },
     onUpdateAfiliado: (state, { payload }) => {
       state.afiliados = state.afiliados.map((afiliado) => {

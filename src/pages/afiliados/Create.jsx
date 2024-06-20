@@ -43,8 +43,11 @@ export const Create = () => {
   })
 
   const onSubmit = async (data) => {
-    if (!activeAfiliado) await startSavingAfiliado(data)
-    else await startUpdateAfiliado(data)
+    if (!activeAfiliado) {
+      await startSavingAfiliado(data)
+    } else {
+      await startUpdateAfiliado(data)
+    }
   }
 
   async function loadingAfiliado (page = 1) {
@@ -76,7 +79,7 @@ export const Create = () => {
         setValue(key, value)
       })
     }
-  }, [])
+  }, [activeAfiliado])
 
   return (
     <>

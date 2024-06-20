@@ -6,7 +6,7 @@ import Card from '@/components/ui/Card'
 import Textinput from '@/components/ui/Textinput'
 import Numberinput from '@/components/ui/Numberinput'
 import DatePicker from '../ui/DatePicker'
-import moment from 'moment/moment'
+import moment from 'moment'
 import useFetchData from '@/helpers/useFetchData'
 import Loading from '@/components/Loading'
 
@@ -46,13 +46,13 @@ function DatosPersonalesData ({ register, setValue, errors, watch }) {
     }
   }
 
-  const handleChange = (setter) => (e) => {
+  const handleChange = setter => e => {
     const value = e.target.value
     setter(value)
     setValue(e.target.name, value)
   }
 
-  const handleCuilChange = (e) => {
+  const handleCuilChange = e => {
     const value = e.target.value
     const cleanedValue = value.replace(/[^\d]/g, '')
     const cuilFormat = /^(\d{2})(\d{7}|\d{8})(\d{1})$/
@@ -73,7 +73,7 @@ function DatosPersonalesData ({ register, setValue, errors, watch }) {
     setValue('cuil', formattedCuil)
   }
 
-  const handleDniChange = (e) => {
+  const handleDniChange = e => {
     const value = e.target.value
     const cleanedValue = value.replace(/[^\d]/g, '')
     const dniFormat = /^(\d{1,2})(\d{3})(\d{3})$/
@@ -98,7 +98,7 @@ function DatosPersonalesData ({ register, setValue, errors, watch }) {
     setValue('dni', formattedDni)
   }
 
-  const handleLegajoChange = (e) => {
+  const handleLegajoChange = e => {
     const value = e.target.value
     const cleanedValue = value.replace(/[^\d]/g, '')
 
@@ -112,7 +112,7 @@ function DatosPersonalesData ({ register, setValue, errors, watch }) {
   const handleSelectChange = (field, e) => {
     const { value } = e.target
     const fieldValue = parseInt(value)
-    setFormData((prevState) => ({
+    setFormData(prevState => ({
       ...prevState,
       [field]: fieldValue
     }))
@@ -123,20 +123,25 @@ function DatosPersonalesData ({ register, setValue, errors, watch }) {
     if (activeAfiliado) {
       const { persona } = activeAfiliado
 
+      // Actualización de los estados individuales
       setLegajo(persona.legajo || '')
       setCuil(persona.cuil || '')
       setDni(persona.dni || '')
       setCorreoElectronico(persona.email || '')
       setTelefono(persona.telefono || '')
 
-      setPicker(persona.fecha_afiliacion ? moment(persona.fecha_afiliacion).toDate() : null)
-      setPicker2(persona.fecha_nacimiento ? moment(persona.fecha_nacimiento).toDate() : null)
+      // Actualización de los pickers de fecha
+      setPicker(persona.fecha_afiliacion ? new Date(persona.fecha_afiliacion) : null)
+      setPicker2(persona.fecha_nacimiento ? new Date(persona.fecha_nacimiento) : null)
+
+      // Actualización del estado formData
       setFormData({
         sexo_id: persona.sexo_id || null,
         estado_civil_id: persona.estado_civil_id || null,
         nacionalidad_id: persona.nacionalidad_id || null
       })
 
+      // Actualización de todos los valores con setValue
       for (const key in persona) {
         setValue(key, persona[key])
       }
@@ -146,11 +151,11 @@ function DatosPersonalesData ({ register, setValue, errors, watch }) {
   useEffect(() => {
     const personaData = {
       legajo,
-      fecha_afiliacion: picker ? moment(picker).format('YYYY-MM-DD') : null,
+      fecha_afiliacion: picker ? moment(picker[0]).format('YYYY-MM-DD') : null,
       nombre: watch('nombre'),
       apellido: watch('apellido'),
       sexo_id: parseInt(watch('sexo_id')) || null,
-      fecha_nacimiento: picker2 ? moment(picker2).format('YYYY-MM-DD') : null,
+      fecha_nacimiento: picker2 ? moment(picker2[0]).format('YYYY-MM-DD') : null,
       estado_civil_id: parseInt(watch('estado_civil_id')) || null,
       tipo_documento: watch('tipo_documento') || null,
       dni,
@@ -162,7 +167,7 @@ function DatosPersonalesData ({ register, setValue, errors, watch }) {
     }
 
     dispatch(updatePersona(personaData))
-  }, [picker, picker2, legajo, dni, cuil, correoElectronico, telefono, watch('nombre'), watch('apellido'), watch('sexo_id'), watch('estado_civil_id'), watch('tipo_documento'), watch('nacionalidad_id'), watch('email'), dispatch, user.id])
+  }, [picker, picker2, legajo, dni, cuil, correoElectronico, telefono, watch, dispatch, user.id])
 
   useEffect(() => {
     if (estadoCivil.length && nacionalidad.length && sexo.length) {

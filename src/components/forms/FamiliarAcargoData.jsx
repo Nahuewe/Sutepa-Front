@@ -111,7 +111,7 @@ function FamiliaresaCargo () {
       ...formData,
       id: isEditing ? editingFamiliarId : idCounter,
       parentesco_id: parseInt(watch('parentesco_id')) || null,
-      fecha_nacimiento_familiar: picker ? moment(picker[0]).format('YYYY-MM-DD:mm:ss') : null,
+      fecha_nacimiento_familiar: picker ? moment(picker[0]).format('YYYY-MM-DD') : null,
       fecha_carga: new Date(),
       users_id: user.id
     }
@@ -259,7 +259,7 @@ function FamiliaresaCargo () {
             </Card>
 
             {familiares.length > 0 && (
-              <div className='overflow-x-auto mt-4'>
+              <div className='overflow-x-auto mt-4 mb-4'>
                 <table className='table-auto w-full'>
                   <thead className='bg-gray-300 dark:bg-gray-700'>
                     <tr>

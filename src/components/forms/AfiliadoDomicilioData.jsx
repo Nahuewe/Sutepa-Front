@@ -16,8 +16,8 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
   const [localidades, setLocalidades] = useState([])
   const [domicilio, setDomicilio] = useState('')
   const [selectedProvincia, setSelectedProvincia] = useState('')
-  const { activeAfiliado } = useSelector(state => state.afiliado)
   const [isLoading, setIsLoading] = useState(true)
+  const { activeAfiliado } = useSelector(state => state.afiliado)
 
   async function handleProvincia () {
     const response = await sutepaApi.get('provincia')
@@ -29,8 +29,19 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
     const response = await sutepaApi.get(`localidad/${id}`)
     const { data } = response.data
     setLocalidades(data)
-    // Actualiza el valor de localidad_id cuando se cargan las localidades
-    setValue('localidad_id', data.length > 0 ? data[0].id : null)
+
+    // Si hay una localidad seleccionada para el afiliado activo, seleccionarla
+    if (activeAfiliado?.domicilios?.localidad_id) {
+      // Verifica si la localidad seleccionada sigue siendo válida para la nueva provincia
+      const selectedLocalidad = data.find(localidad => localidad.id === activeAfiliado.domicilios.localidad_id)
+      if (selectedLocalidad) {
+        setValue('localidad_id', activeAfiliado.domicilios.localidad_id)
+      } else {
+        setValue('localidad_id', data.length > 0 ? data[0].id : null)
+      }
+    } else {
+      setValue('localidad_id', data.length > 0 ? data[0].id : null)
+    }
   }
 
   const handleDomicilioChange = (e) => {
@@ -88,7 +99,9 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
   async function loadingAfiliado () {
     !isLoading && setIsLoading(true)
     await handleProvincia()
-    await handleLocalidad()
+    if (activeAfiliado?.domicilios?.provincia_id) {
+      await handleLocalidad(activeAfiliado.domicilios.provincia_id)
+    }
     setIsLoading(false)
   }
 

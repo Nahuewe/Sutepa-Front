@@ -115,7 +115,7 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
       agrupamiento_id: parseInt(watch('agrupamiento_id')) || null,
       tramo_id: parseInt(watch('tramo_id')) || null,
       carga_horaria: watch('carga_horaria') || null,
-      fecha_ingreso: picker ? moment(picker[0]).format('YYYY-MM-DD:mm:ss') : null,
+      fecha_ingreso: picker ? moment(picker[0]).format('YYYY-MM-DD') : null,
       email_laboral: watch('email_laboral') || null,
       telefono_laboral: watch('telefono_laboral') || null
     }
