@@ -257,7 +257,7 @@ export const Afiliado = () => {
                   <div className='flex flex-col md:flex-row items-start md:items-center gap-4'>
                     <input
                       type='text'
-                      placeholder='Buscar...'
+                      placeholder='Buscar por legajo'
                       onChange={onSearch}
                       value={search}
                       className='form-control px-4 py-2 border border-gray-300 focus:outline-none focus:border-blue-500'

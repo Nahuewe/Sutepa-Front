@@ -115,9 +115,8 @@ export const Users = () => {
                   <DeleteModal
                     themeClass='bg-slate-900 dark:bg-slate-800 dark:border-b dark:border-slate-700'
                     centered
-                    title={users.estado === 'ACTIVO' ? 'Eliminar Usuario' : 'Reactivar Usuario'}
-                    label={users.estado === 'ACTIVO' ? 'Eliminar' : 'Reactivar'}
-                    message={users.estado === 'ACTIVO' ? '¿Quieres eliminar este usuario?' : '¿Quieres reactivar este usuario?'}
+                    title='Acciones del Usuario'
+                    message='¿Estás seguro?'
                     labelBtn='Aceptar'
                     btnFunction={startDeleteUser}
                   />

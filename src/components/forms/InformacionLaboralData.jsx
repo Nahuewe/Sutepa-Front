@@ -252,6 +252,18 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
                 </div>
 
                 <div>
+                  <Textinput
+                    label='Correo Electrónico Laboral'
+                    name='email_laboral'
+                    type='email'
+                    register={register}
+                    placeholder='Ingrese el correo electrónico laboral'
+                    value={correoElectronicoLaboral}
+                    onChange={handleCorreoElectronicoChange}
+                  />
+                </div>
+
+                <div>
                   <label htmlFor='fecha_ingreso' className='form-label'>
                     Fecha de Ingreso
                   </label>
@@ -263,18 +275,6 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
                     placeholder='Ingrese la fecha de ingreso'
                     className='form-control'
                     clearable
-                  />
-                </div>
-
-                <div>
-                  <Textinput
-                    label='Correo Electrónico Laboral'
-                    name='email_laboral'
-                    type='email'
-                    register={register}
-                    placeholder='Ingrese el correo electrónico laboral'
-                    value={correoElectronicoLaboral}
-                    onChange={handleCorreoElectronicoChange}
                   />
                 </div>
 
