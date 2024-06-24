@@ -171,7 +171,13 @@ function DocumentacionAdicionalData ({ register }) {
                             {documento.archivo}
                           </a>
                         </td>
-                        <td className='px-4 py-2 text-center dark:text-white'>{user.username}</td>
+                        {activeAfiliado
+                          ? (
+                            <td className='px-4 py-2 text-center dark:text-white'>{documento.users_nombre}</td>
+                            )
+                          : (
+                            <td className='px-4 py-2 text-center dark:text-white'>{user.username}</td>
+                            )}
                         <td className='text-center py-2'>
                           <Tooltip content='Eliminar'>
                             <button

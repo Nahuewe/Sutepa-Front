@@ -107,7 +107,7 @@ export const Afiliado = () => {
   async function onSearch ({ target: { value } }) {
     setSearch(value)
     if (value.length === 0) await loadingAfiliado()
-    if (value.length <= 2) return false
+    if (value.length <= 1) return false
     await startSearchAfiliado(value)
   }
 
@@ -258,6 +258,7 @@ export const Afiliado = () => {
                     <input
                       type='text'
                       placeholder='Buscar por legajo'
+                      maxLength={5}
                       onChange={onSearch}
                       value={search}
                       className='form-control px-4 py-2 border border-gray-300 focus:outline-none focus:border-blue-500'

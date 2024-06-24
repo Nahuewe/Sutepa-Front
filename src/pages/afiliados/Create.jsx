@@ -89,7 +89,7 @@ export const Create = () => {
           )
         : (
           <form onSubmit={handleSubmit(onSubmit)} className='space-y-4'>
-            {(user.roles_id === 1 || user.roles_id === 3) && (
+            {(user.roles_id === 1 || user.roles_id === 2 || user.roles_id === 3) && (
               <div>
                 <DatosPersonalesData register={register} errors={errors} setValue={setValue} watch={watch} />
 
@@ -105,7 +105,7 @@ export const Create = () => {
               </div>
             )}
 
-            {(user.roles_id === 1 || user.roles_id === 4) && (
+            {(user.roles_id === 1 || user.roles_id === 2 || user.roles_id === 4) && (
               <SubsidioData register={register} setValue={setValue} reset={reset} />
             )}
 

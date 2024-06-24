@@ -16,6 +16,7 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
   const [localidades, setLocalidades] = useState([])
   const [domicilio, setDomicilio] = useState('')
   const [selectedProvincia, setSelectedProvincia] = useState('')
+  const [selectedLocalidad, setSelectedLocalidad] = useState('')
   const [isLoading, setIsLoading] = useState(true)
   const { activeAfiliado } = useSelector(state => state.afiliado)
 
@@ -30,9 +31,7 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
     const { data } = response.data
     setLocalidades(data)
 
-    // Si hay una localidad seleccionada para el afiliado activo, seleccionarla
     if (activeAfiliado?.domicilios?.localidad_id) {
-      // Verifica si la localidad seleccionada sigue siendo válida para la nueva provincia
       const selectedLocalidad = data.find(localidad => localidad.id === activeAfiliado.domicilios.localidad_id)
       if (selectedLocalidad) {
         setValue('localidad_id', activeAfiliado.domicilios.localidad_id)
@@ -70,23 +69,30 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
     handleLocalidad(value)
   }
 
+  const handleLocalidadChange = (e) => {
+    const value = parseInt(e.target.value)
+    setSelectedLocalidad(value)
+    setValue('localidad_id', value)
+  }
+
   useEffect(() => {
-    if (codigoPostal && selectedProvincia && localidades.length > 0) {
+    if (codigoPostal && selectedProvincia && selectedLocalidad) {
       const domicilioData = {
         domicilio,
         provincia_id: selectedProvincia,
-        localidad_id: localidades.length > 0 ? localidades[0].id : null,
+        localidad_id: selectedLocalidad,
         codigo_postal: codigoPostal
       }
       dispatch(updateDomicilio(domicilioData))
     }
-  }, [codigoPostal, selectedProvincia, localidades, domicilio, dispatch])
+  }, [codigoPostal, selectedProvincia, selectedLocalidad, domicilio, dispatch])
 
   useEffect(() => {
     if (activeAfiliado?.domicilios) {
       const { domicilio, provincia_id, localidad_id, codigo_postal } = activeAfiliado.domicilios
       setDomicilio(domicilio)
       setSelectedProvincia(provincia_id)
+      setSelectedLocalidad(localidad_id)
       setCodigoPostal(codigo_postal)
       setValue('domicilio', domicilio)
       setValue('provincia_id', provincia_id)
@@ -146,6 +152,8 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
                     register={register('localidad_id')}
                     title='Localidad'
                     options={localidades}
+                    value={selectedLocalidad}
+                    onChange={handleLocalidadChange}
                     disabled={disabled || !selectedProvincia}
                   />
                 </div>

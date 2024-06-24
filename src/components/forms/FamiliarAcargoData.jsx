@@ -289,7 +289,13 @@ function FamiliaresaCargo () {
                         <td className='px-4 py-2 text-center dark:text-white'>
                           {getParentescoNombre(fam.parentesco_id)}
                         </td>
-                        <td className='px-4 py-2 text-center dark:text-white'>{user.username}</td>
+                        {activeAfiliado
+                          ? (
+                            <td className='px-4 py-2 text-center dark:text-white'>{fam.users_nombre}</td>
+                            )
+                          : (
+                            <td className='px-4 py-2 text-center dark:text-white'>{user.username}</td>
+                            )}
                         <td className='text-center py-2 gap-4 flex justify-center'>
                           <Tooltip content='Editar'>
                             <button

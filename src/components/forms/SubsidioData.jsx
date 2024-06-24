@@ -283,7 +283,13 @@ function SubsidioData () {
                         <td className='px-4 py-2 text-center dark:text-white'>{formatDate(subsidio.fecha_solicitud)}</td>
                         <td className='px-4 py-2 text-center dark:text-white'>{formatDate(subsidio.fecha_otorgamiento)}</td>
                         <td className='px-4 py-2 text-center dark:text-white mayuscula'>{subsidio.observaciones}</td>
-                        <td className='px-4 py-2 text-center dark:text-white'>{user.username}</td>
+                        {activeAfiliado
+                          ? (
+                            <td className='px-4 py-2 text-center dark:text-white'>{subsidio.users_nombre}</td>
+                            )
+                          : (
+                            <td className='px-4 py-2 text-center dark:text-white'>{user.username}</td>
+                            )}
                         <td className='text-center py-2 gap-4 flex justify-center'>
                           <Tooltip content='Editar'>
                             <button

@@ -30,7 +30,7 @@ function DatosPersonalesData ({ register, setValue, errors, watch }) {
   const [cuil, setCuil] = useState('')
   const [dni, setDni] = useState('')
   const [legajo, setLegajo] = useState('')
-  const [formData, setFormData] = useState(initialForm)
+  const [, setFormData] = useState(initialForm)
   const [correoElectronico, setCorreoElectronico] = useState('')
   const [telefono, setTelefono] = useState('')
   const { estadoCivil, nacionalidad, sexo } = useFetchData()
