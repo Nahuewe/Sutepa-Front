@@ -273,7 +273,7 @@ export const Afiliado = () => {
                       btnFunction={startDeleteAfiliado}
                     />
 
-                    {user.roles_id === 1 && (
+                    {(user.roles_id === 1 || user.roles_id === 2) && (
                       <Tooltip content={showEstadisticas ? 'Ocultar estadísticas' : 'Mostrar estadísticas'}>
                         <button
                           onClick={() => setShowEstadisticas(!showEstadisticas)}

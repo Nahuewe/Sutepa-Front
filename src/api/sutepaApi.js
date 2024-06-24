@@ -1,7 +1,8 @@
 import axios from 'axios'
 
 const sutepaApi = axios.create({
-  baseURL: `${import.meta.env.VITE_API_URL}`
+  // baseURL: `${import.meta.env.VITE_API_URL}`
+  baseURL: 'https://sistema.sutepa.com.ar/api'
 })
 
 sutepaApi.interceptors.request.use(config => {
