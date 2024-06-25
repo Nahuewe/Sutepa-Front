@@ -30,8 +30,10 @@ function ObraSocialAfiliadoData ({ register }) {
         obra_social: firstObraSocial.obra_social
       })
 
-      // Actualizar el estado con updateObraSocial para el primer elemento de obraSociales
-      dispatch(updateObraSocial(firstObraSocial))
+      // Actualizar el estado con updateObraSocial para el primer elemento de obraSociales solo si el afiliado no está activo
+      if (!activeAfiliado.active) {
+        dispatch(updateObraSocial(firstObraSocial))
+      }
     } else {
       setFormData(initialForm)
     }
@@ -45,7 +47,11 @@ function ObraSocialAfiliadoData ({ register }) {
       [name]: value
     }
     setFormData(newFormData)
-    dispatch(updateObraSocial(newFormData)) // Aquí se llama a updateObraSocial con los nuevos datos del formulario
+
+    // Llamar a updateObraSocial solo si el afiliado no está activo
+    if (!activeAfiliado.active) {
+      dispatch(updateObraSocial(newFormData))
+    }
   }
 
   if (isLoading) {

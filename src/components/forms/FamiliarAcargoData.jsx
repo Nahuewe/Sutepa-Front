@@ -123,8 +123,11 @@ function FamiliaresaCargo () {
         )
       )
     } else {
-      setFamiliares((prevFamiliares) => [...prevFamiliares, newFamiliar])
-      setIdCounter(idCounter + 1)
+      const existingFamiliar = familiares.find(familiar => familiar.id === newFamiliar.id)
+      if (!existingFamiliar) {
+        setFamiliares((prevFamiliares) => [...prevFamiliares, newFamiliar])
+        setIdCounter(idCounter + 1)
+      }
     }
 
     dispatch(onAddOrUpdateFamiliar(newFamiliar))

@@ -52,9 +52,9 @@ export const afiliadoSlice = createSlice({
       state.familiares = state.familiares.filter((familiar) => familiar.id !== payload)
     },
     onAddDocumento: (state, { payload }) => {
-      const existe = state.documentacion.find((documento) => documento.id === payload.id)
-      if (!existe) {
-        state.documentacion = [...state.documentacion, payload]
+      const index = state.documentacion.findIndex((documento) => documento.id === payload.id)
+      if (index === -1) {
+        state.documentacion.push(payload)
       }
     },
     onDeleteDocumento: (state, { payload }) => {

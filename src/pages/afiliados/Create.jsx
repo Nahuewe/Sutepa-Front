@@ -46,7 +46,7 @@ export const Create = () => {
     if (!activeAfiliado) {
       await startSavingAfiliado(data)
     } else {
-      await startUpdateAfiliado(data)
+      await startUpdateAfiliado(activeAfiliado.persona.id)
     }
   }
 

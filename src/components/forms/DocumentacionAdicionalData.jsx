@@ -24,7 +24,6 @@ function DocumentacionAdicionalData ({ register }) {
   const [formData, setFormData] = useState(initialForm)
   const formRef = useRef()
   const [archivoOptions, setArchivoOptions] = useState([])
-  const [idCounter, setIdCounter] = useState(0)
   const { activeAfiliado } = useSelector(state => state.afiliado)
   const [isLoading, setIsLoading] = useState(true)
 
@@ -58,14 +57,19 @@ function DocumentacionAdicionalData ({ register }) {
       const nuevoDocumento = {
         ...formData,
         tipo_documento_id: tipoArchivoOption.id,
-        id: idCounter,
         archivo: URL.createObjectURL(formData.archivo),
         fecha_carga: new Date(),
         users_id: user.id
       }
-      dispatch(onAddDocumento(nuevoDocumento))
-      setDocumentos([...documentos, nuevoDocumento])
-      setIdCounter(idCounter + 1)
+
+      // Verificar si el documento ya existe en el estado local
+      if (!documentos.some(doc => doc.archivo === nuevoDocumento.archivo)) {
+        dispatch(onAddDocumento(nuevoDocumento))
+        setDocumentos([...documentos, nuevoDocumento])
+      } else {
+        toast.error('El documento ya está en la lista.')
+      }
+
       onReset()
     } else {
       toast.error('Selecciona un tipo de archivo y subí un documento')
@@ -73,19 +77,17 @@ function DocumentacionAdicionalData ({ register }) {
   }
 
   const onDelete = (index) => {
+    const documentoAEliminar = documentos[index]
     const newDocumentos = documentos.filter((_, i) => i !== index)
     setDocumentos(newDocumentos)
-    dispatch(onDeleteDocumento(index))
+    dispatch(onDeleteDocumento(documentoAEliminar.id))
   }
 
   useEffect(() => {
     if (activeAfiliado?.documentaciones) {
       setDocumentos(activeAfiliado.documentaciones)
-      activeAfiliado.documentaciones.forEach(item => {
-        dispatch(onAddDocumento(item))
-      })
     }
-  }, [activeAfiliado, dispatch])
+  }, [activeAfiliado])
 
   async function loadingAfiliado () {
     !isLoading && setIsLoading(true)

@@ -8,7 +8,8 @@ export const userSlice = createSlice({
   initialState: {
     users: [],
     paginate: null,
-    activeUser: null
+    activeUser: null,
+    errorMessage: ''
   },
   reducers: {
     handleUser: (state, { payload }) => {
@@ -38,6 +39,9 @@ export const userSlice = createSlice({
         return user
       })
       state.activeUser = null
+    },
+    setErrorMessage: (state, { payload }) => {
+      state.errorMessage = payload
     }
   }
 })
@@ -47,7 +51,8 @@ export const {
   onAddNewUser,
   setActiveUser,
   onDeleteUser,
-  onUpdateUser
+  onUpdateUser,
+  setErrorMessage
 } = userSlice.actions
 
 export default userSlice.reducer

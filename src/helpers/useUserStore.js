@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { useSelector, useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
-import { handleUser } from '@/store/user'
+import { handleUser, setErrorMessage } from '@/store/user'
 import { handleShowEdit, handleShowModal } from '@/store/layout'
 import { sutepaApi } from '../api'
 
@@ -27,7 +27,18 @@ export const useUserStore = () => {
 
       toast.success('Usuario agregado con exito')
     } catch (error) {
-      toast.error('No se pudo agregar los datos')
+      let errorMessage = 'Error desconocido'
+      if (error.response && error.response.data && error.response.data.errors) {
+        const errors = error.response.data.errors
+        const firstErrorKey = Object.keys(errors)[0]
+        errorMessage = errors[firstErrorKey][0]
+      } else {
+        errorMessage = error.message
+      }
+
+      console.error('Error en la actualización de Afiliado:', errorMessage)
+      dispatch(setErrorMessage(errorMessage))
+      toast.error(`No se pudo crear el usuario: ${errorMessage}`)
     }
   }
 
@@ -41,7 +52,18 @@ export const useUserStore = () => {
 
       toast.success('Usuario actualizado con exito')
     } catch (error) {
-      toast.error('No se pudo modificar los datos')
+      let errorMessage = 'Error desconocido'
+      if (error.response && error.response.data && error.response.data.errors) {
+        const errors = error.response.data.errors
+        const firstErrorKey = Object.keys(errors)[0]
+        errorMessage = errors[firstErrorKey][0]
+      } else {
+        errorMessage = error.message
+      }
+
+      console.error('Error en la actualización de Afiliado:', errorMessage)
+      dispatch(setErrorMessage(errorMessage))
+      toast.error(`No se pudo editar el usuario: ${errorMessage}`)
     }
   }
 

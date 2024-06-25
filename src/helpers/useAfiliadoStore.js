@@ -75,12 +75,9 @@ export const useAfiliadoStore = () => {
     }
   }
 
-  const startUpdateAfiliado = async () => {
+  const startUpdateAfiliado = async (id) => {
     try {
-      const { id } = activeAfiliado
-      if (!id) {
-        throw new Error('No hay un afiliado activo para actualizar')
-      }
+      // const { id } = activeAfiliado
 
       const afiliado = {
         persona,
@@ -91,10 +88,13 @@ export const useAfiliadoStore = () => {
         familiares,
         subsidios
       }
+      console.log(afiliado, 'afiliado')
 
       const response = await sutepaApi.put(`/personas/${id}`, afiliado)
-      dispatch(onUpdateAfiliado(response.data.afiliado))
+      const { data } = response
+      dispatch(onUpdateAfiliado(data))
       navigate('/afiliados')
+
       toast.success('Afiliado editado con éxito')
     } catch (error) {
       let errorMessage = 'Error desconocido'
