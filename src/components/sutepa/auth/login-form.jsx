@@ -42,31 +42,39 @@ function LoginForm () {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className='relative space-y-2'>
-      <Textinput
-        name='username'
-        label='usuario'
-        type='text'
-        register={register}
-        error={errors.username}
-        className='h-[48px]'
-        placeholder='Usuario'
-        onChange={(e) => {
-          setValue('username', e.target.value)
-        }}
-      />
+      <div>
+        <label htmlFor='default-picker' className='form-label text-white'>
+          Usuario
+        </label>
+        <Textinput
+          name='username'
+          type='text'
+          register={register}
+          error={errors.username}
+          className='h-[48px]'
+          placeholder='Usuario'
+          onChange={(e) => {
+            setValue('username', e.target.value)
+          }}
+        />
+      </div>
 
-      <Textinput
-        name='password'
-        label='Contraseña'
-        type={showPassword ? 'text' : 'password'}
-        register={register}
-        error={errors.password}
-        className='h-[48px]'
-        placeholder='Contraseña'
-        onChange={(e) => {
-          setValue('password', e.target.value)
-        }}
-      />
+      <div>
+        <label htmlFor='default-picker' className='form-label text-white'>
+          Contraseña
+        </label>
+        <Textinput
+          name='password'
+          type={showPassword ? 'text' : 'password'}
+          register={register}
+          error={errors.password}
+          className='h-[48px]'
+          placeholder='Contraseña'
+          onChange={(e) => {
+            setValue('password', e.target.value)
+          }}
+        />
+      </div>
 
       <button
         type='button'
