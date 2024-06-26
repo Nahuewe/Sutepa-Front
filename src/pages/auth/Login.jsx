@@ -27,7 +27,7 @@ const Login = () => {
                 <div className='text-center 2xl:mb-10 mb-4'>
                   <img src={LogoSutepa} alt='Logo SUTEPA' className='w-36 md:w-52 pb-6 inline-block mx-auto pointer-events-none' />
                   <h4 className='font-medium text-white'>Iniciar Sesión</h4>
-                  <div className='text-slate-500 text-base'>
+                  <div className='text-white text-base'>
                     Completa los datos para ingresar al sistema
                   </div>
                 </div>
@@ -35,7 +35,7 @@ const Login = () => {
               </div>
               <div className='auth-footer text-center'>
                 Copyright &copy; <span>{(new Date().getFullYear())}</span>
-                <a target='_blank' rel='noreferrer' className='animate--text dark:animate--text--dark' href='https://linktr.ee/Nahuel_Soria_Parodi'> → Nahuel Soria Parodi - Todos los derechos reservados ← </a>
+                <a target='_blank' rel='noreferrer' className='animate--text--dark' href='https://linktr.ee/Nahuel_Soria_Parodi'> → Nahuel Soria Parodi - Todos los derechos reservados ← </a>
               </div>
             </div>
           </div>

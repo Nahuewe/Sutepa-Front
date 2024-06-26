@@ -9,6 +9,7 @@
     "lint": "eslint . --ext js,jsx,ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
+  "homepage": "https://sistema.sutepa.com.ar",
   "dependencies": {
     "@headlessui/react": "^1.7.4",
     "@hookform/resolvers": "^2.9.10",

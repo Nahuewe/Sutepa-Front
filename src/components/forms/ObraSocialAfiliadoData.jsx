@@ -30,10 +30,7 @@ function ObraSocialAfiliadoData ({ register }) {
         obra_social: firstObraSocial.obra_social
       })
 
-      // Actualizar el estado con updateObraSocial para el primer elemento de obraSociales solo si el afiliado no está activo
-      if (!activeAfiliado.active) {
-        dispatch(updateObraSocial(firstObraSocial))
-      }
+      dispatch(updateObraSocial(firstObraSocial))
     } else {
       setFormData(initialForm)
     }
@@ -48,11 +45,24 @@ function ObraSocialAfiliadoData ({ register }) {
     }
     setFormData(newFormData)
 
-    // Llamar a updateObraSocial solo si el afiliado no está activo
-    if (!activeAfiliado.active) {
-      dispatch(updateObraSocial(newFormData))
-    }
+    dispatch(updateObraSocial(formData))
   }
+
+  useEffect(() => {
+    // Llamar a updateObraSocial cuando cambien tipo_obra o obra_social y el afiliado no esté activo
+    if (!activeAfiliado || activeAfiliado) {
+      dispatch(updateObraSocial(formData))
+    }
+  }, [formData.tipo_obra, formData.obra_social, activeAfiliado, dispatch])
+
+  useEffect(() => {
+    if (activeAfiliado?.ObraSociales) {
+      setFormData(activeAfiliado.ObraSociales)
+      activeAfiliado.ObraSociales.forEach(item => {
+        dispatch(updateObraSocial(item))
+      })
+    }
+  }, [activeAfiliado, dispatch])
 
   if (isLoading) {
     return <Loading className='mt-28 md:mt-64' />
@@ -72,7 +82,7 @@ function ObraSocialAfiliadoData ({ register }) {
             <SelectForm
               register={register('tipo_obra')}
               options={tipoObraSocial}
-              onChange={e => onChange(e)} // Llama a onChange con el evento completo
+              onChange={e => onChange(e)}
               value={formData.tipo_obra}
             />
           </div>
@@ -84,7 +94,7 @@ function ObraSocialAfiliadoData ({ register }) {
             register={register}
             placeholder='Especifique la obra social'
             value={formData.obra_social}
-            onChange={e => onChange(e)} // Llama a onChange con el evento completo
+            onChange={e => onChange(e)}
           />
         </div>
       </Card>
