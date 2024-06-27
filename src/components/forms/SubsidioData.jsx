@@ -96,7 +96,8 @@ function SubsidioData () {
       ...formData,
       fecha_carga: new Date(),
       id: isEditing ? editingSubsidioId : idCounter,
-      users_id: user.id
+      users_id: user.id,
+      users_nombre: user.username
     }
 
     if (isEditing) {
@@ -160,13 +161,17 @@ function SubsidioData () {
   }, [formData, isEditing, setValue])
 
   useEffect(() => {
-    if (activeAfiliado?.subsidios.length > 0) {
-      const subs = activeAfiliado.subsidios.map(subsidio => ({
-        ...subsidio,
-        fecha_solicitud: subsidio.fecha_solicitud ? moment(subsidio.fecha_solicitud).format('YYYY-MM-DD HH:mm:ss') : null,
-        fecha_otorgamiento: subsidio.fecha_otorgamiento ? moment(subsidio.fecha_otorgamiento).format('YYYY-MM-DD HH:mm:ss') : null
-      }))
-      setSubsidios(subs)
+    if (activeAfiliado) {
+      if (activeAfiliado.subsidios?.length > 0) {
+        const subs = activeAfiliado.subsidios.map(subsidio => ({
+          ...subsidio,
+          fecha_solicitud: subsidio.fecha_solicitud ? moment(subsidio.fecha_solicitud).format('YYYY-MM-DD HH:mm:ss') : null,
+          fecha_otorgamiento: subsidio.fecha_otorgamiento ? moment(subsidio.fecha_otorgamiento).format('YYYY-MM-DD HH:mm:ss') : null
+        }))
+        setSubsidios(subs)
+      } else {
+        setSubsidios([])
+      }
     }
   }, [activeAfiliado])
 
@@ -274,7 +279,7 @@ function SubsidioData () {
                     {subsidios.map((subsidio) => (
                       <tr key={subsidio.id} className='bg-white dark:bg-gray-800 dark:border-gray-700'>
                         {activeAfiliado && (
-                          <td className='px-4 py-2 text-center dark:text-white'>{formatDate(subsidio.created_at)}</td>
+                          <td className='px-4 py-2 text-center dark:text-white'>{formatDate(subsidio.created_at || subsidio.fecha_carga)}</td>
                         )}
                         {!activeAfiliado && (
                           <td className='px-4 py-2 text-center dark:text-white'>{formatDate(subsidio.fecha_carga)}</td>

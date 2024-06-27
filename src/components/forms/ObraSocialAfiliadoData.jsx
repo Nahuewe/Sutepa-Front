@@ -29,8 +29,11 @@ function ObraSocialAfiliadoData ({ register }) {
         tipo_obra: firstObraSocial.tipo_obra,
         obra_social: firstObraSocial.obra_social
       })
-
-      dispatch(updateObraSocial(firstObraSocial))
+      // Se despacha la acción después de que se establezca el formData
+      dispatch(updateObraSocial({
+        tipo_obra: firstObraSocial.tipo_obra,
+        obra_social: firstObraSocial.obra_social
+      }))
     } else {
       setFormData(initialForm)
     }
@@ -44,25 +47,8 @@ function ObraSocialAfiliadoData ({ register }) {
       [name]: value
     }
     setFormData(newFormData)
-
-    dispatch(updateObraSocial(formData))
+    dispatch(updateObraSocial(newFormData))
   }
-
-  useEffect(() => {
-    // Llamar a updateObraSocial cuando cambien tipo_obra o obra_social y el afiliado no esté activo
-    if (!activeAfiliado || activeAfiliado) {
-      dispatch(updateObraSocial(formData))
-    }
-  }, [formData.tipo_obra, formData.obra_social, activeAfiliado, dispatch])
-
-  useEffect(() => {
-    if (activeAfiliado?.ObraSociales) {
-      setFormData(activeAfiliado.ObraSociales)
-      activeAfiliado.ObraSociales.forEach(item => {
-        dispatch(updateObraSocial(item))
-      })
-    }
-  }, [activeAfiliado, dispatch])
 
   if (isLoading) {
     return <Loading className='mt-28 md:mt-64' />

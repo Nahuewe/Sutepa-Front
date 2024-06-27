@@ -106,9 +106,9 @@ const DonutChart = ({ afiliados, height = 350 }) => {
       <h4>Total de afiliados</h4>
       <p className='mt-2'>Cantidad: {totalAfiliados}</p>
       <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', marginBottom: '8px', marginTop: '8px' }}>
-        <button className={`btn ${chartType === 'active' ? 'btn-primary' : ''}`} style={{ backgroundColor: activeColor }} onClick={() => setChartType('active')}>Afiliados activos</button>
-        <button className={`btn ${chartType === 'inactive' ? 'btn-danger' : ''}`} style={{ backgroundColor: inactiveColor }} onClick={() => setChartType('inactive')}>Afiliados dados de baja</button>
-        <button className={`btn ${chartType === 'pending' ? 'btn-warning' : ''}`} style={{ backgroundColor: pendingColor }} onClick={() => setChartType('pending')}>Afiliados pendientes</button>
+        <button className={`btn ${chartType === 'active' ? 'btn-primary' : ''}`} style={{ backgroundColor: activeColor, padding: '8px' }} onClick={() => setChartType('active')}>Afiliados activos</button>
+        <button className={`btn ${chartType === 'inactive' ? 'btn-danger' : ''}`} style={{ backgroundColor: inactiveColor, padding: '8px' }} onClick={() => setChartType('inactive')}>Afiliados dados de baja</button>
+        <button className={`btn ${chartType === 'pending' ? 'btn-warning' : ''}`} style={{ backgroundColor: pendingColor, padding: '8px' }} onClick={() => setChartType('pending')}>Afiliados pendientes</button>
       </div>
       <div ref={chartRef}>
         <Chart options={options} series={series} type='pie' height={height} />

@@ -113,9 +113,11 @@ function FamiliaresaCargo () {
       parentesco_id: parseInt(watch('parentesco_id')) || null,
       fecha_nacimiento_familiar: picker ? moment(picker[0]).format('YYYY-MM-DD') : null,
       fecha_carga: new Date(),
-      users_id: user.id
+      users_id: user.id,
+      users_nombre: user.username
     }
 
+    const existingFamiliar = familiares.find(familiar => familiar.id === newFamiliar.id)
     if (isEditing) {
       setFamiliares((prevFamiliares) =>
         prevFamiliares.map((familiar) =>
@@ -123,7 +125,6 @@ function FamiliaresaCargo () {
         )
       )
     } else {
-      const existingFamiliar = familiares.find(familiar => familiar.id === newFamiliar.id)
       if (!existingFamiliar) {
         setFamiliares((prevFamiliares) => [...prevFamiliares, newFamiliar])
         setIdCounter(idCounter + 1)
@@ -160,12 +161,21 @@ function FamiliaresaCargo () {
 
   useEffect(() => {
     if (activeAfiliado?.familiares) {
-      setFamiliares(activeAfiliado.familiares)
-      activeAfiliado.familiares.forEach(item => {
-        dispatch(onAddOrUpdateFamiliar(item))
-      })
+      const uniqueFamiliares = activeAfiliado.familiares.reduce((acc, current) => {
+        const x = acc.find(item => item.id === current.id)
+        if (!x) {
+          return acc.concat([current])
+        } else {
+          return acc
+        }
+      }, [])
+      setFamiliares(uniqueFamiliares)
     }
-  }, [activeAfiliado, dispatch])
+  }, [activeAfiliado])
+
+  useEffect(() => {
+    loadingAfiliado()
+  }, [])
 
   async function loadingAfiliado () {
     !isLoading && setIsLoading(true)
@@ -173,10 +183,6 @@ function FamiliaresaCargo () {
     await handleParentescos()
     setIsLoading(false)
   }
-
-  useEffect(() => {
-    loadingAfiliado()
-  }, [])
 
   return (
     <>
@@ -280,7 +286,7 @@ function FamiliaresaCargo () {
                     {familiares.map(fam => (
                       <tr key={fam.id} className='bg-white dark:bg-gray-800 dark:border-gray-700'>
                         {activeAfiliado && (
-                          <td className='px-4 py-2 text-center dark:text-white'>{formatDate(fam.created_at)}</td>
+                          <td className='px-4 py-2 text-center dark:text-white'>{formatDate(fam.created_at || fam.fecha_carga)}</td>
                         )}
                         {!activeAfiliado && (
                           <td className='px-4 py-2 text-center dark:text-white'>{formatDate(fam.fecha_carga)}</td>

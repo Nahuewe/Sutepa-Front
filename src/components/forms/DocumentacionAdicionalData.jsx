@@ -59,7 +59,8 @@ function DocumentacionAdicionalData ({ register }) {
         tipo_documento_id: tipoArchivoOption.id,
         archivo: URL.createObjectURL(formData.archivo),
         fecha_carga: new Date(),
-        users_id: user.id
+        users_id: user.id,
+        users_nombre: user.username
       }
 
       // Verificar si el documento ya existe en el estado local
@@ -160,7 +161,7 @@ function DocumentacionAdicionalData ({ register }) {
                     {documentos.map((documento, index) => (
                       <tr key={index} className='bg-white dark:bg-gray-800 dark:border-gray-700'>
                         {activeAfiliado && (
-                          <td className='px-4 py-2 text-center dark:text-white'>{formatDate(documento.created_at)}</td>
+                          <td className='px-4 py-2 text-center dark:text-white'>{formatDate(documento.created_at || documento.fecha_carga)}</td>
                         )}
                         {!activeAfiliado && (
                           <td className='px-4 py-2 text-center dark:text-white'>{formatDate(documento.fecha_carga)}</td>
