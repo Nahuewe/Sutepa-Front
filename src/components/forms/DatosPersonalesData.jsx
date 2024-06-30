@@ -18,7 +18,8 @@ const tipoDocumento = [
 const initialForm = {
   sexo_id: null,
   estado_civil_id: null,
-  nacionalidad_id: null
+  nacionalidad_id: null,
+  users_id: null
 }
 
 function DatosPersonalesData ({ register, setValue, errors, watch }) {

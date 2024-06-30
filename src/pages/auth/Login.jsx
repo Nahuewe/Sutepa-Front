@@ -34,8 +34,8 @@ const Login = () => {
                 <LoginForm />
               </div>
               <div className='auth-footer text-center'>
-                Copyright &copy; <span>{(new Date().getFullYear())}</span>
-                <a target='_blank' rel='noreferrer' className='animate--text--dark' href='https://linktr.ee/Nahuel_Soria_Parodi'> → Nahuel Soria Parodi - Todos los derechos reservados ← </a>
+                Copyright &copy; <span>{(new Date().getFullYear())} Sindicato Unido de Trabajadores y Empleados de PAMI</span>
+                {/* <a target='_blank' rel='noreferrer' className='animate--text--dark' href='https://linktr.ee/Nahuel_Soria_Parodi'> → Nahuel Soria Parodi - Todos los derechos reservados ← </a> */}
               </div>
             </div>
           </div>

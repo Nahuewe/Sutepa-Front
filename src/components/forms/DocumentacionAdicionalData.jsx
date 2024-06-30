@@ -13,7 +13,7 @@ import Loading from '@/components/Loading'
 
 const initialForm = {
   tipo_documento_id: '',
-  archivo: '',
+  archivo: null,
   users_id: null
 }
 
