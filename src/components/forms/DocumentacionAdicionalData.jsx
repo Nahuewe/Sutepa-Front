@@ -26,6 +26,7 @@ function DocumentacionAdicionalData ({ register }) {
   const [archivoOptions, setArchivoOptions] = useState([])
   const { activeAfiliado } = useSelector(state => state.afiliado)
   const [isLoading, setIsLoading] = useState(true)
+  const idCounter = useRef(1)
 
   const handleArchivo = async () => {
     const response = await sutepaApi.get('documentacion')
@@ -55,16 +56,22 @@ function DocumentacionAdicionalData ({ register }) {
     const tipoArchivoOption = archivoOptions.find(option => option.id === parseInt(formData.tipo_documento_id))
     if (tipoArchivoOption && formData.archivo) {
       const nuevoDocumento = {
+        id: idCounter.current,
         ...formData,
         tipo_documento_id: tipoArchivoOption.id,
-        archivo: URL.createObjectURL(formData.archivo),
+        archivo: formData.archivo,
         fecha_carga: new Date(),
         users_id: user.id,
         users_nombre: user.username
       }
 
+      // Verificar el contenido del nuevo documento
+      console.log('Nuevo documento:', nuevoDocumento)
+
+      idCounter.current += 1
+
       // Verificar si el documento ya existe en el estado local
-      if (!documentos.some(doc => doc.archivo === nuevoDocumento.archivo)) {
+      if (!documentos.some(doc => doc.archivo.name === nuevoDocumento.archivo.name)) {
         dispatch(onAddDocumento(nuevoDocumento))
         setDocumentos([...documentos, nuevoDocumento])
       } else {
@@ -170,8 +177,8 @@ function DocumentacionAdicionalData ({ register }) {
                           {getDocumentoByName(documento.tipo_documento_id)}
                         </td>
                         <td className='px-4 py-2 text-center dark:text-white'>
-                          <a href={documento.archivo} target='_blank' rel='noopener noreferrer' className='text-blue-500 underline'>
-                            {documento.archivo}
+                          <a href={URL.createObjectURL(documento.archivo)} target='_blank' rel='noopener noreferrer' className='text-blue-500 underline'>
+                            {documento.archivo.name}
                           </a>
                         </td>
                         {activeAfiliado
@@ -186,7 +193,7 @@ function DocumentacionAdicionalData ({ register }) {
                             <button
                               type='button'
                               onClick={() => onDelete(index)}
-                              className=' text-red-600 hover:text-red-900'
+                              className='text-red-600 hover:text-red-900'
                             >
                               <Icon icon='heroicons:trash' width='24' height='24' />
                             </button>
