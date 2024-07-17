@@ -29,20 +29,24 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
   async function handleLocalidad (id) {
     const response = await sutepaApi.get(`localidad/${id}`)
     const { data } = response.data
-    setLocalidades(data)
+
+    // Ordenar las localidades alfabéticamente por nombre
+    const sortedData = data.sort((a, b) => a.nombre.localeCompare(b.nombre))
+
+    setLocalidades(sortedData)
 
     if (activeAfiliado?.domicilios?.localidad_id) {
-      const selectedLocalidad = data.find(localidad => localidad.id === activeAfiliado.domicilios.localidad_id)
+      const selectedLocalidad = sortedData.find(localidad => localidad.id === activeAfiliado.domicilios.localidad_id)
       if (selectedLocalidad) {
         setSelectedLocalidad(activeAfiliado.domicilios.localidad_id)
         setValue('localidad_id', activeAfiliado.domicilios.localidad_id)
       } else {
-        setSelectedLocalidad(data.length > 0 ? data[0].id : null)
-        setValue('localidad_id', data.length > 0 ? data[0].id : null)
+        setSelectedLocalidad(sortedData.length > 0 ? sortedData[0].id : null)
+        setValue('localidad_id', sortedData.length > 0 ? sortedData[0].id : null)
       }
     } else {
-      setSelectedLocalidad(data.length > 0 ? data[0].id : null)
-      setValue('localidad_id', data.length > 0 ? data[0].id : null)
+      setSelectedLocalidad(sortedData.length > 0 ? sortedData[0].id : null)
+      setValue('localidad_id', sortedData.length > 0 ? sortedData[0].id : null)
     }
   }
 

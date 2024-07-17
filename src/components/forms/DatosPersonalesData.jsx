@@ -328,7 +328,6 @@ function DatosPersonalesData ({ register, setValue, errors, watch }) {
                   register={register}
                   id='email'
                   name='email'
-                  type='email'
                   placeholder='Ingrese el correo electrónico'
                   onChange={(e) => setCorreoElectronico(e.target.value)}
                 />

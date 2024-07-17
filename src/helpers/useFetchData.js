@@ -31,13 +31,25 @@ const useFetchData = () => {
           sutepaApi.get('ugl'),
           sutepaApi.get('tramo')
         ])
+
+        // Función para ordenar alfabéticamente por nombre
+        const sortByNombre = (a, b) => {
+          if (a.nombre < b.nombre) {
+            return -1
+          }
+          if (a.nombre > b.nombre) {
+            return 1
+          }
+          return 0
+        }
+
         setEstadoCivil(estadoCivilResponse.data.data)
         setNacionalidad(nacionalidadResponse.data.data)
         setSexo(sexoResponse.data.data)
-        setAgrupamiento(agrupamientoResponse.data.data)
-        setSeccional(seccionalResponse.data.data)
-        setUgl(uglResponse.data.data)
-        setTramo(tramoResponse.data.data)
+        setAgrupamiento(agrupamientoResponse.data.data.sort(sortByNombre))
+        setSeccional(seccionalResponse.data.data.sort(sortByNombre))
+        setUgl(uglResponse.data.data.sort(sortByNombre))
+        setTramo(tramoResponse.data.data.sort(sortByNombre))
       } catch (error) {
         console.error('Error fetching data:', error)
       }

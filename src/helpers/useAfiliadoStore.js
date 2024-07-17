@@ -141,7 +141,7 @@ export const useAfiliadoStore = () => {
 
   const startSearchAfiliado = async (search, page = 1) => {
     try {
-      const response = await sutepaApi.get(`/buscar-persona/${search}?page=${page}`)
+      const response = await sutepaApi.get(`/buscar-persona?query=${search}&page=${page}`)
       const { data, meta } = response.data
       dispatch(handleAfiliado({ data, meta }))
     } catch (error) {

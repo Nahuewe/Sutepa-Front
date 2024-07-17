@@ -197,7 +197,6 @@ export const UserForm = ({ fnAction, activeUser = null }) => {
                 <strong className='obligatorio'>(*)</strong>
                 <Textinput
                   name='correo'
-                  type='email'
                   placeholder='Correo'
                   register={register}
                   error={errors.correo}

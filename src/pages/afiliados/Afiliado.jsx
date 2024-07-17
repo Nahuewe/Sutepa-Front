@@ -165,7 +165,8 @@ export const Afiliado = () => {
           'Fecha de Nacimiento': formatDate(activeAfiliado.persona.fecha_nacimiento),
           'Fecha de Afiliación': formatDate(activeAfiliado.persona.fecha_afiliacion),
           'Estado Civil': activeAfiliado.persona.estado_civil,
-          Nacionalidad: activeAfiliado.persona.nacionalidad
+          Nacionalidad: activeAfiliado.persona.nacionalidad,
+          Estado: activeAfiliado.persona.estados
         })
       }
 
@@ -257,8 +258,7 @@ export const Afiliado = () => {
                   <div className='flex flex-col md:flex-row items-start md:items-center gap-4'>
                     <input
                       type='text'
-                      placeholder='Buscar por legajo'
-                      maxLength={5}
+                      placeholder='Buscar'
                       onChange={onSearch}
                       value={search}
                       className='form-control px-4 py-2 border border-gray-300 focus:outline-none focus:border-blue-500'
