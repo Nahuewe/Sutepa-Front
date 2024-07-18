@@ -26,7 +26,6 @@ function DocumentacionAdicionalData ({ register }) {
   const [archivoOptions, setArchivoOptions] = useState([])
   const { activeAfiliado } = useSelector(state => state.afiliado)
   const [isLoading, setIsLoading] = useState(true)
-  const idCounter = useRef(1)
 
   const handleArchivo = async () => {
     const response = await sutepaApi.get('documentacion')
@@ -56,22 +55,15 @@ function DocumentacionAdicionalData ({ register }) {
     const tipoArchivoOption = archivoOptions.find(option => option.id === parseInt(formData.tipo_documento_id))
     if (tipoArchivoOption && formData.archivo) {
       const nuevoDocumento = {
-        id: idCounter.current,
         ...formData,
         tipo_documento_id: tipoArchivoOption.id,
-        archivo: formData.archivo,
+        archivo: URL.createObjectURL(formData.archivo),
         fecha_carga: new Date(),
-        users_id: user.id,
-        users_nombre: user.username
+        users_id: user.id
       }
 
-      // Verificar el contenido del nuevo documento
-      console.log('Nuevo documento:', nuevoDocumento)
-
-      idCounter.current += 1
-
       // Verificar si el documento ya existe en el estado local
-      if (!documentos.some(doc => doc.archivo.name === nuevoDocumento.archivo.name)) {
+      if (!documentos.some(doc => doc.archivo === nuevoDocumento.archivo)) {
         dispatch(onAddDocumento(nuevoDocumento))
         setDocumentos([...documentos, nuevoDocumento])
       } else {
@@ -96,13 +88,6 @@ function DocumentacionAdicionalData ({ register }) {
       setDocumentos(activeAfiliado.documentaciones)
     }
   }, [activeAfiliado])
-
-  useEffect(() => {
-    // Limpiar la URL del archivo al desmontar el componente para evitar memory leaks
-    return () => {
-      URL.revokeObjectURL(formData.archivo)
-    }
-  }, [formData.archivo])
 
   async function loadingAfiliado () {
     !isLoading && setIsLoading(true)
@@ -175,13 +160,13 @@ function DocumentacionAdicionalData ({ register }) {
                     {documentos.map((documento, index) => (
                       <tr key={index} className='bg-white dark:bg-gray-800 dark:border-gray-700'>
                         {activeAfiliado && (
-                          <td className='px-4 py-2 text-center dark:text-white'>{formatDate(documento.created_at || documento.fecha_carga)}</td>
+                          <td className='px-4 py-2 text-center dark:text-white'>{formatDate(documento.created_at)}</td>
                         )}
                         {!activeAfiliado && (
                           <td className='px-4 py-2 text-center dark:text-white'>{formatDate(documento.fecha_carga)}</td>
                         )}
                         <td className='px-4 py-2 whitespace-nowrap font-medium text-gray-900 dark:text-white text-center'>
-                          {documento.tipo_documento || getDocumentoByName(documento.tipo_documento_id)}
+                          {getDocumentoByName(documento.tipo_documento_id)}
                         </td>
                         <td className='px-4 py-2 text-center dark:text-white'>
                           <a href={documento.archivo} target='_blank' rel='noopener noreferrer' className='text-blue-500 underline'>
@@ -200,7 +185,7 @@ function DocumentacionAdicionalData ({ register }) {
                             <button
                               type='button'
                               onClick={() => onDelete(index)}
-                              className='text-red-600 hover:text-red-900'
+                              className=' text-red-600 hover:text-red-900'
                             >
                               <Icon icon='heroicons:trash' width='24' height='24' />
                             </button>
