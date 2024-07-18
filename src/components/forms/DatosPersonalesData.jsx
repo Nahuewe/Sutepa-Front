@@ -326,6 +326,7 @@ function DatosPersonalesData ({ register, setValue, errors, watch }) {
                 <Textinput
                   label='Correo Electrónico'
                   register={register}
+                  type='text'
                   id='email'
                   name='email'
                   placeholder='Ingrese el correo electrónico'

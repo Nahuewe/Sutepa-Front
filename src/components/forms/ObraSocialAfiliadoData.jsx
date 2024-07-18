@@ -29,12 +29,13 @@ function ObraSocialAfiliadoData ({ register }) {
         tipo_obra: firstObraSocial.tipo_obra,
         obra_social: firstObraSocial.obra_social
       })
-      // Se despacha la acción después de que se establezca el formData
+      // Despachar la acción para actualizar la obra social seleccionada
       dispatch(updateObraSocial({
         tipo_obra: firstObraSocial.tipo_obra,
         obra_social: firstObraSocial.obra_social
       }))
     } else {
+      // Si no hay datos válidos, reiniciar el formulario
       setFormData(initialForm)
     }
     setIsLoading(false)
@@ -47,6 +48,7 @@ function ObraSocialAfiliadoData ({ register }) {
       [name]: value
     }
     setFormData(newFormData)
+    // Despachar la acción para actualizar la obra social seleccionada
     dispatch(updateObraSocial(newFormData))
   }
 
@@ -73,15 +75,19 @@ function ObraSocialAfiliadoData ({ register }) {
             />
           </div>
 
-          <Textinput
-            label='Obra Social'
-            name='obra_social'
-            className='mayuscula'
-            register={register}
-            placeholder='Especifique la obra social'
-            value={formData.obra_social}
-            onChange={e => onChange(e)}
-          />
+          <div>
+            <label htmlFor='obra_social' className='form-label'>
+              Obra Social
+            </label>
+            <Textinput
+              name='obra_social'
+              className='mayuscula'
+              register={register}
+              placeholder='Especifique la obra social'
+              value={formData.obra_social}
+              onChange={e => onChange(e)}
+            />
+          </div>
         </div>
       </Card>
     </div>

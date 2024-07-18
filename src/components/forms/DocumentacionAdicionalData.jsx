@@ -13,7 +13,7 @@ import Loading from '@/components/Loading'
 
 const initialForm = {
   tipo_documento_id: '',
-  archivo: null,
+  archivo: '',
   users_id: null
 }
 
@@ -97,6 +97,13 @@ function DocumentacionAdicionalData ({ register }) {
     }
   }, [activeAfiliado])
 
+  useEffect(() => {
+    // Limpiar la URL del archivo al desmontar el componente para evitar memory leaks
+    return () => {
+      URL.revokeObjectURL(formData.archivo)
+    }
+  }, [formData.archivo])
+
   async function loadingAfiliado () {
     !isLoading && setIsLoading(true)
 
@@ -174,11 +181,11 @@ function DocumentacionAdicionalData ({ register }) {
                           <td className='px-4 py-2 text-center dark:text-white'>{formatDate(documento.fecha_carga)}</td>
                         )}
                         <td className='px-4 py-2 whitespace-nowrap font-medium text-gray-900 dark:text-white text-center'>
-                          {getDocumentoByName(documento.tipo_documento_id)}
+                          {documento.tipo_documento || getDocumentoByName(documento.tipo_documento_id)}
                         </td>
                         <td className='px-4 py-2 text-center dark:text-white'>
-                          <a href={URL.createObjectURL(documento.archivo)} target='_blank' rel='noopener noreferrer' className='text-blue-500 underline'>
-                            {documento.archivo.name}
+                          <a href={documento.archivo} target='_blank' rel='noopener noreferrer' className='text-blue-500 underline'>
+                            {documento.archivo}
                           </a>
                         </td>
                         {activeAfiliado
