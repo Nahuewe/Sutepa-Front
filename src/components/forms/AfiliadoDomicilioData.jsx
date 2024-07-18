@@ -82,17 +82,12 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
     setValue('localidad_id', value)
   }
 
+  // Nuevo useEffect para ejecutar handleLocalidad después de cargar todos los datos del afiliado
   useEffect(() => {
-    if (codigoPostal && selectedProvincia && selectedLocalidad) {
-      const domicilioData = {
-        domicilio,
-        provincia_id: selectedProvincia,
-        localidad_id: selectedLocalidad,
-        codigo_postal: codigoPostal
-      }
-      dispatch(updateDomicilio(domicilioData))
+    if (activeAfiliado?.domicilios?.provincia_id) {
+      handleLocalidad(activeAfiliado.domicilios.provincia_id)
     }
-  }, [codigoPostal, selectedProvincia, selectedLocalidad, domicilio, dispatch])
+  }, [activeAfiliado])
 
   useEffect(() => {
     if (activeAfiliado?.domicilios) {
@@ -105,16 +100,24 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
       setValue('provincia_id', provincia_id)
       setValue('localidad_id', localidad_id)
       setValue('codigo_postal', codigo_postal)
-      handleLocalidad(provincia_id)
     }
   }, [activeAfiliado, setValue])
+
+  useEffect(() => {
+    if (codigoPostal && selectedProvincia && selectedLocalidad) {
+      const domicilioData = {
+        domicilio,
+        provincia_id: selectedProvincia,
+        localidad_id: selectedLocalidad,
+        codigo_postal: codigoPostal
+      }
+      dispatch(updateDomicilio(domicilioData))
+    }
+  }, [codigoPostal, selectedProvincia, selectedLocalidad, domicilio, dispatch])
 
   async function loadingAfiliado () {
     !isLoading && setIsLoading(true)
     await handleProvincia()
-    if (activeAfiliado?.domicilios?.provincia_id) {
-      await handleLocalidad(activeAfiliado.domicilios.provincia_id)
-    }
     setIsLoading(false)
   }
 

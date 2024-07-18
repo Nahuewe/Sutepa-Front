@@ -4,7 +4,7 @@ import useDarkMode from '@/hooks/useDarkMode'
 import Card from '@/components/ui/Card'
 import * as htmlToImage from 'html-to-image'
 
-const DonutChart = ({ afiliados, height = 350 }) => {
+const DonutChart = ({ afiliadosSinPaginar, height = 350 }) => {
   const [isDark] = useDarkMode()
   const [chartType, setChartType] = useState('active')
   const [series, setSeries] = useState([0, 0, 0])
@@ -12,15 +12,15 @@ const DonutChart = ({ afiliados, height = 350 }) => {
   const chartRef = useRef(null)
 
   useEffect(() => {
-    if (afiliados) {
-      const activeCount = afiliados.filter(a => a.estado === 'ACTIVO').length
-      const inactiveCount = afiliados.filter(a => a.estado === 'INACTIVO').length
-      const pendingCount = afiliados.filter(a => a.estado === 'PENDIENTE').length
+    if (afiliadosSinPaginar) {
+      const activeCount = afiliadosSinPaginar.filter(a => a.estado === 'ACTIVO').length
+      const inactiveCount = afiliadosSinPaginar.filter(a => a.estado === 'INACTIVO').length
+      const pendingCount = afiliadosSinPaginar.filter(a => a.estado === 'PENDIENTE').length
       setSeries([activeCount, inactiveCount, pendingCount])
       const total = activeCount + inactiveCount + pendingCount
       setTotalAfiliados(total)
     }
-  }, [afiliados])
+  }, [afiliadosSinPaginar])
 
   const activeColor = isDark ? '#747ffc' : '#0CE7FA'
   const inactiveColor = isDark ? '#FF7F7F' : '#f48f8f'

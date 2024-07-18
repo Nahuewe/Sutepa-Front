@@ -1,14 +1,14 @@
 /* eslint-disable camelcase */
 import { useSelector, useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
-import { handleAfiliado, onUpdateAfiliado, setErrorMessage, onShowAfiliado, cleanAfiliado } from '@/store/afiliado'
+import { handleAfiliado, handleAfiliadosSinPaginar, onUpdateAfiliado, setErrorMessage, onShowAfiliado, cleanAfiliado } from '@/store/afiliado'
 import { sutepaApi } from '../api'
 import { useNavigate } from 'react-router-dom'
 
 export const useAfiliadoStore = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const { afiliados, paginate, activeAfiliado, persona, domicilio, datos_laborales, obra_social, documentacion, familiares, subsidios } = useSelector(state => state.afiliado)
+  const { afiliados, afiliadosSinPaginar, paginate, activeAfiliado, persona, domicilio, datos_laborales, obra_social, documentacion, familiares, subsidios } = useSelector(state => state.afiliado)
 
   const startLoadingAfiliado = async (page) => {
     try {
@@ -24,7 +24,7 @@ export const useAfiliadoStore = () => {
     try {
       const response = await sutepaApi.get('/personaAll')
       const { data } = response.data
-      dispatch(onShowAfiliado(data))
+      dispatch(handleAfiliadosSinPaginar(data))
     } catch (error) {
       console.log(error)
     }
@@ -116,6 +116,7 @@ export const useAfiliadoStore = () => {
     try {
       await sutepaApi.delete(`/personas/${activeAfiliado.id}`)
       startLoadingAfiliado()
+      startGetAfiliadosSinPaginar()
 
       let message = ''
 
@@ -152,6 +153,7 @@ export const useAfiliadoStore = () => {
   return {
     // Propiedades
     afiliados,
+    afiliadosSinPaginar,
     paginate,
     activeAfiliado,
 

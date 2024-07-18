@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import Icon from '@/components/ui/Icon'
 
-const EstadisticasAfiliados = ({ afiliados }) => {
+const EstadisticasAfiliados = ({ afiliadosSinPaginar }) => {
   const countAfiliadosPorEstado = (data) => {
     return {
       totales: data.length,
@@ -11,7 +11,7 @@ const EstadisticasAfiliados = ({ afiliados }) => {
     }
   }
 
-  const totalsByEstado = useMemo(() => countAfiliadosPorEstado(afiliados), [afiliados])
+  const totalsByEstado = useMemo(() => countAfiliadosPorEstado(afiliadosSinPaginar), [afiliadosSinPaginar])
 
   const statistics = [
     {

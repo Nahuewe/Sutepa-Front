@@ -8,7 +8,7 @@ import RevenueBarChart from './RevenueBarChart'
 import DonutChart from './DonutChart'
 
 const Dashboard = () => {
-  const { afiliados, startLoadingAfiliado } = useAfiliadoStore()
+  const { afiliadosSinPaginar, startLoadingAfiliado, startGetAfiliadosSinPaginar } = useAfiliadoStore()
   const [isLoading, setIsLoading] = useState(true)
   const [totalUsers, setTotalUsers] = useState(0)
   const [totalSeccionales, setTotalSeccionales] = useState(0)
@@ -45,6 +45,7 @@ const Dashboard = () => {
       setTotalUsers(usersData.length)
       setTotalSeccionales(seccionalesData.length)
       await startLoadingAfiliado()
+      await startGetAfiliadosSinPaginar()
       setIsLoading(false)
     }
 
@@ -67,15 +68,15 @@ const Dashboard = () => {
 
             <div className='mt-4 grid sm:grid-cols-2 md:grid-cols-3 grid-cols-1 gap-4'>
               <EstadisticasDashboard
-                afiliados={afiliados}
+                afiliadosSinPaginar={afiliadosSinPaginar}
                 totalUsers={totalUsers}
                 totalSeccionales={totalSeccionales}
               />
             </div>
 
             <div className='mt-4 grid sm:grid-cols-2 grid-cols-1 gap-4'>
-              <DonutChart afiliados={afiliados} />
-              <RevenueBarChart afiliados={afiliados} />
+              <DonutChart afiliadosSinPaginar={afiliadosSinPaginar} />
+              <RevenueBarChart afiliadosSinPaginar={afiliadosSinPaginar} />
             </div>
           </div>
           )}

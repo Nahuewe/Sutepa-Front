@@ -5,7 +5,7 @@ import useRtl from '@/hooks/useRtl'
 import Card from '@/components/ui/Card'
 import * as htmlToImage from 'html-to-image'
 
-const RevenueBarChart = ({ afiliados, height = 400 }) => {
+const RevenueBarChart = ({ afiliadosSinPaginar, height = 400 }) => {
   const chartRef = useRef(null)
   const [isDark] = useDarkMode()
   const [isRtl] = useRtl()
@@ -13,15 +13,15 @@ const RevenueBarChart = ({ afiliados, height = 400 }) => {
   const [totalData, setTotalData] = useState(0)
 
   useEffect(() => {
-    if (afiliados) {
+    if (afiliadosSinPaginar) {
       const seccionales = {}
 
-      afiliados.forEach(afiliado => {
+      afiliadosSinPaginar.forEach(afiliado => {
         const seccional = afiliado.seccional || 'Seccional no Asignada'
         seccionales[seccional] = (seccionales[seccional] || 0) + 1
       })
 
-      const totalAfiliados = afiliados.length
+      const totalAfiliados = afiliadosSinPaginar.length
       const seriesData = Object.keys(seccionales).map(seccional => ({
         name: seccional,
         data: [(seccionales[seccional] / totalAfiliados) * 100]
@@ -30,7 +30,7 @@ const RevenueBarChart = ({ afiliados, height = 400 }) => {
       setSeries(seriesData)
       setTotalData(totalAfiliados)
     }
-  }, [afiliados])
+  }, [afiliadosSinPaginar])
 
   const options = {
     chart: {

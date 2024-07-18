@@ -75,8 +75,10 @@ export const Afiliado = () => {
   const [search, setSearch] = useState('')
   const {
     afiliados,
+    afiliadosSinPaginar,
     paginate,
     startLoadingAfiliado,
+    startGetAfiliadosSinPaginar,
     startEditAfiliado,
     startDeleteAfiliado,
     startSearchAfiliado
@@ -114,6 +116,7 @@ export const Afiliado = () => {
   async function loadingAfiliado (page = 1) {
     !isLoading && setIsLoading(true)
 
+    await startGetAfiliadosSinPaginar()
     await startLoadingAfiliado(page)
     setIsLoading(false)
   }
@@ -309,7 +312,7 @@ export const Afiliado = () => {
                 </div>
 
                 <div className='mt-4 grid sm:grid-cols-2 md:grid-cols-4 grid-cols-1 gap-4'>
-                  {showEstadisticas && <EstadisticasAfiliados afiliados={filteredAfiliados} />}
+                  {showEstadisticas && <EstadisticasAfiliados afiliadosSinPaginar={afiliadosSinPaginar} />}
                 </div>
               </Card>
 
