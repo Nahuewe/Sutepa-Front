@@ -64,7 +64,7 @@ function FamiliaresaCargo () {
   }
 
   const handleDateChange = (date, field) => {
-    const formattedDate = moment(date[0]).format('YYYY-MM-DD:mm:ss')
+    const formattedDate = moment(date[0]).format('YYYY-MM-DD')
     setFormData({
       ...formData,
       [field]: formattedDate
@@ -131,10 +131,10 @@ function FamiliaresaCargo () {
   }
 
   const handleEdit = familiar => {
-    const fechaNacimiento = moment(familiar.fecha_nacimiento_familiar, 'YYYY-MM-DD:mm:ss').toDate()
+    const fechaNacimiento = moment(familiar.fecha_nacimiento_familiar, 'YYYY-MM-DD').toDate()
     setFormData({
       ...familiar,
-      fecha_nacimiento_familiar: fechaNacimiento ? moment(fechaNacimiento).format('YYYY-MM-DD:mm:ss') : null
+      fecha_nacimiento_familiar: fechaNacimiento ? moment(fechaNacimiento).format('YYYY-MM-DD') : null
     })
     setEditingFamiliarId(familiar.id)
     setIsEditing(true)
@@ -145,7 +145,7 @@ function FamiliaresaCargo () {
     setValue('tipo_documento_familiar', familiar.tipo_documento_familiar)
     setValue('documento', familiar.documento)
     setValue('parentesco_id', familiar.parentesco_id)
-    setValue('fecha_nacimiento_familiar', fechaNacimiento ? moment(fechaNacimiento).format('YYYY-MM-DD:mm:ss') : '')
+    setValue('fecha_nacimiento_familiar', fechaNacimiento ? moment(fechaNacimiento).format('YYYY-MM-DD') : '')
   }
 
   const onDelete = id => {
@@ -155,10 +155,8 @@ function FamiliaresaCargo () {
   }
 
   useEffect(() => {
-    if (activeAfiliado?.familiares) {
-      activeAfiliado.familiares.forEach(familiar => {
-        addOrUpdateFamiliar(familiar)
-      })
+    if (activeAfiliado?.familiares && familiares.length === 0) {
+      setFamiliares(activeAfiliado.familiares)
     }
   }, [activeAfiliado])
 
@@ -181,7 +179,7 @@ function FamiliaresaCargo () {
           )
         : (
           <div>
-            <h4 className='card-title text-center bg-red-500 dark:bg-gray-700 text-white rounded-md p-2'>
+            <h4 className='card-title text-center bg-red-500 dark:bg-gray-700 text-white rounded-md p-2 mt-4'>
               Familiares a Cargo
             </h4>
 

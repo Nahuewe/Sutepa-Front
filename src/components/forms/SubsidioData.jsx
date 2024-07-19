@@ -52,7 +52,7 @@ function SubsidioData () {
   }
 
   const handleDateChange = (date, field) => {
-    const formattedDate = moment(date[0]).format('YYYY-MM-DD HH:mm:ss')
+    const formattedDate = moment(date[0]).format('YYYY-MM-DD')
     setFormData({
       ...formData,
       [field]: formattedDate
@@ -118,8 +118,8 @@ function SubsidioData () {
   const handleEdit = (subsidio) => {
     setFormData({
       ...subsidio,
-      fecha_solicitud: subsidio.fecha_solicitud ? moment(subsidio.fecha_solicitud).format('YYYY-MM-DD HH:mm:ss') : null,
-      fecha_otorgamiento: subsidio.fecha_otorgamiento ? moment(subsidio.fecha_otorgamiento).format('YYYY-MM-DD HH:mm:ss') : null
+      fecha_solicitud: subsidio.fecha_solicitud ? moment(subsidio.fecha_solicitud).format('YYYY-MM-DD') : null,
+      fecha_otorgamiento: subsidio.fecha_otorgamiento ? moment(subsidio.fecha_otorgamiento).format('YYYY-MM-DD') : null
     })
     setEditingSubsidioId(subsidio.id)
     setIsEditing(true)
@@ -127,8 +127,8 @@ function SubsidioData () {
     setPicker2(new Date(subsidio.fecha_otorgamiento))
 
     setValue('tipo_subsidio_id', subsidio.tipo_subsidio_id)
-    setValue('fecha_solicitud', subsidio.fecha_solicitud ? moment(subsidio.fecha_solicitud).format('YYYY-MM-DD HH:mm:ss') : '')
-    setValue('fecha_otorgamiento', subsidio.fecha_otorgamiento ? moment(subsidio.fecha_otorgamiento).format('YYYY-MM-DD HH:mm:ss') : '')
+    setValue('fecha_solicitud', subsidio.fecha_solicitud ? moment(subsidio.fecha_solicitud).format('YYYY-MM-DD') : '')
+    setValue('fecha_otorgamiento', subsidio.fecha_otorgamiento ? moment(subsidio.fecha_otorgamiento).format('YYYY-MM-DD') : '')
     setValue('observaciones', subsidio.observaciones)
   }
 
@@ -139,39 +139,13 @@ function SubsidioData () {
   }
 
   useEffect(() => {
-    if (isEditing && formData) {
-      setValue('tipo_subsidio_id', formData.tipo_subsidio_id)
-
-      if (formData.fecha_solicitud) {
-        const fechaSolicitud = new Date(formData.fecha_solicitud)
-        if (!isNaN(fechaSolicitud)) {
-          setPicker(fechaSolicitud)
-          setValue('fecha_solicitud', fechaSolicitud)
-        }
-      }
-
-      if (formData.fecha_otorgamiento) {
-        const fechaOtorgamiento = new Date(formData.fecha_otorgamiento)
-        if (!isNaN(fechaOtorgamiento)) {
-          setPicker2(fechaOtorgamiento)
-          setValue('fecha_otorgamiento', fechaOtorgamiento)
-        }
-      }
-    }
-  }, [formData, isEditing, setValue])
-
-  useEffect(() => {
-    if (activeAfiliado) {
-      if (activeAfiliado.subsidios?.length > 0) {
-        const subs = activeAfiliado.subsidios.map(subsidio => ({
-          ...subsidio,
-          fecha_solicitud: subsidio.fecha_solicitud ? moment(subsidio.fecha_solicitud).format('YYYY-MM-DD HH:mm:ss') : null,
-          fecha_otorgamiento: subsidio.fecha_otorgamiento ? moment(subsidio.fecha_otorgamiento).format('YYYY-MM-DD HH:mm:ss') : null
-        }))
-        setSubsidios(subs)
-      } else {
-        setSubsidios([])
-      }
+    if (activeAfiliado && activeAfiliado.subsidios) {
+      const formattedSubsidios = activeAfiliado.subsidios.map(subsidio => ({
+        ...subsidio,
+        fecha_solicitud: subsidio.fecha_solicitud ? moment(subsidio.fecha_solicitud).format('YYYY-MM-DD') : null,
+        fecha_otorgamiento: subsidio.fecha_otorgamiento ? moment(subsidio.fecha_otorgamiento).format('YYYY-MM-DD') : null
+      }))
+      setSubsidios(formattedSubsidios)
     }
   }, [activeAfiliado])
 

@@ -18,32 +18,40 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
   const [selectedProvincia, setSelectedProvincia] = useState('')
   const [selectedLocalidad, setSelectedLocalidad] = useState('')
   const [isLoading, setIsLoading] = useState(true)
+  const [isDataLoading, setIsDataLoading] = useState(true)
   const { activeAfiliado } = useSelector(state => state.afiliado)
 
   async function handleProvincia () {
-    const response = await sutepaApi.get('provincia')
-    const { data } = response.data
-    setProvincias(data)
+    try {
+      const response = await sutepaApi.get('provincia')
+      const { data } = response.data
+      setProvincias(data)
+      console.log('Provincias cargadas:', data)
+    } catch (error) {
+      console.error('Error al obtener provincias:', error)
+    }
   }
 
   async function handleLocalidad (id) {
     try {
+      console.log('Cargando localidades para la provincia con id:', id)
       const response = await sutepaApi.get(`localidad/${id}`)
       const { data } = response.data
 
       const sortedData = data.sort((a, b) => a.nombre.localeCompare(b.nombre))
       setLocalidades(sortedData)
-      const selectedLocalidad = sortedData.find(localidad => localidad.id === id)
+      console.log('Localidades cargadas:', sortedData)
 
-      if (selectedLocalidad) {
-        setSelectedLocalidad(id)
-        setValue('localidad_id', id)
-      } else {
-        setSelectedLocalidad(null)
-        setValue('localidad_id', null)
+      // Si se ha seleccionado una localidad anteriormente, reestablecer el valor
+      if (selectedProvincia === id && activeAfiliado?.domicilios?.localidad_id) {
+        const localidad = sortedData.find(localidad => localidad.id === activeAfiliado.domicilios.localidad_id)
+        if (localidad) {
+          setSelectedLocalidad(localidad.id)
+          console.log('Localidad seleccionada automáticamente:', localidad.id)
+        }
       }
     } catch (error) {
-      console.error('Error al obtener la localidad:', error)
+      console.error('Error al obtener localidades:', error)
     }
   }
 
@@ -66,24 +74,35 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
     setValue('codigo_postal', cleanedValue)
   }
 
-  const handleProvinciaChange = (e) => {
+  const handleProvinciaChange = async (e) => {
     const value = parseInt(e.target.value)
     setSelectedProvincia(value)
     setValue('provincia_id', value)
-    handleLocalidad(value)
+    setLocalidades([])
+    await handleLocalidad(value)
   }
+
+  useEffect(() => {
+    if (selectedProvincia) {
+      handleLocalidad(selectedProvincia)
+    } else {
+      setLocalidades([])
+    }
+  }, [selectedProvincia])
 
   const handleLocalidadChange = (e) => {
     const value = parseInt(e.target.value)
+    console.log('Localidad seleccionada:', value)
     setSelectedLocalidad(value)
     setValue('localidad_id', value)
   }
 
   useEffect(() => {
     if (activeAfiliado?.domicilios?.provincia_id) {
+      console.log('Cargando localidades para provincia_id desde activeAfiliado:', activeAfiliado.domicilios.provincia_id)
       handleLocalidad(activeAfiliado.domicilios.provincia_id)
     }
-  }, [activeAfiliado])
+  }, [activeAfiliado?.domicilios?.provincia_id])
 
   useEffect(() => {
     if (activeAfiliado?.domicilios) {
@@ -96,17 +115,11 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
       setValue('provincia_id', provincia_id)
       setValue('localidad_id', localidad_id)
       setValue('codigo_postal', codigo_postal)
+      setIsDataLoading(false)
     }
   }, [activeAfiliado, setValue])
 
   useEffect(() => {
-    console.log('Valores actuales:', {
-      domicilio,
-      provincia_id: selectedProvincia,
-      localidad_id: selectedLocalidad,
-      codigo_postal: codigoPostal
-    })
-
     if (codigoPostal && selectedProvincia && selectedLocalidad) {
       const domicilioData = {
         domicilio,
@@ -114,6 +127,7 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
         localidad_id: selectedLocalidad,
         codigo_postal: codigoPostal
       }
+      console.log('Dispatching updateDomicilio con datos:', domicilioData)
       dispatch(updateDomicilio(domicilioData))
     }
   }, [codigoPostal, selectedProvincia, selectedLocalidad, domicilio, dispatch])
@@ -128,6 +142,20 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
     loadingAfiliado()
   }, [])
 
+  useEffect(() => {
+    if (!isLoading) {
+      const timer = setTimeout(async () => {
+        setIsDataLoading(true)
+        await handleProvincia()
+        if (selectedProvincia) {
+          await handleLocalidad(selectedProvincia)
+        }
+        setIsDataLoading(false)
+      }, 1000)
+      return () => clearTimeout(timer)
+    }
+  }, [isLoading, selectedProvincia])
+
   return (
     <>
       {isLoading
@@ -135,57 +163,63 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
           <Loading className='mt-28 md:mt-64' />
           )
         : (
-          <div>
-            <h4 className='card-title text-center bg-red-500 dark:bg-gray-700 text-white rounded-md p-2'>
-              Datos del Domicilio
-            </h4>
-
-            <Card>
-              <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-                <Textinput
-                  name='domicilio'
-                  label='Domicilio'
-                  className='mayuscula'
-                  register={register}
-                  placeholder='Ingrese el domicilio'
-                  value={domicilio}
-                  onChange={handleDomicilioChange}
-                />
-
-                <SelectForm
-                  register={register('provincia_id')}
-                  title='Provincia'
-                  options={provincias}
-                  value={selectedProvincia}
-                  onChange={handleProvinciaChange}
-                />
-
+            isDataLoading
+              ? (
+                <Loading className='mt-28 md:mt-64' /> // Segundo loading mientras se cargan los datos
+                )
+              : (
                 <div>
-                  <SelectForm
-                    register={register('localidad_id')}
-                    title='Localidad'
-                    options={localidades}
-                    value={selectedLocalidad}
-                    onChange={handleLocalidadChange}
-                    disabled={disabled || !selectedProvincia}
-                  />
-                </div>
+                  <h4 className='card-title text-center bg-red-500 dark:bg-gray-700 text-white rounded-md p-2'>
+                    Datos del Domicilio
+                  </h4>
 
-                <div>
-                  <label htmlFor='default-picker' className='form-label'>
-                    Código Postal
-                  </label>
-                  <Numberinput
-                    register={register}
-                    id='codigo_postal'
-                    placeholder='Ingrese el código postal'
-                    value={codigoPostal}
-                    onChange={handleCodigoPostalChange}
-                  />
+                  <Card>
+                    <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                      <Textinput
+                        name='domicilio'
+                        label='Domicilio'
+                        className='mayuscula'
+                        register={register}
+                        placeholder='Ingrese el domicilio'
+                        value={domicilio}
+                        onChange={handleDomicilioChange}
+                      />
+
+                      <SelectForm
+                        register={register('provincia_id')}
+                        title='Provincia'
+                        options={provincias}
+                        value={selectedProvincia}
+                        onChange={handleProvinciaChange}
+                      />
+
+                      <div>
+                        <SelectForm
+                          register={register('localidad_id')}
+                          title='Localidad'
+                          options={localidades}
+                          value={selectedLocalidad}
+                          onChange={handleLocalidadChange}
+                          disabled={disabled || !selectedProvincia}
+                        />
+                      </div>
+
+                      <div>
+                        <label htmlFor='default-picker' className='form-label'>
+                          Código Postal
+                        </label>
+                        <Numberinput
+                          register={register}
+                          id='codigo_postal'
+                          placeholder='Ingrese el código postal'
+                          value={codigoPostal}
+                          onChange={handleCodigoPostalChange}
+                        />
+                      </div>
+                    </div>
+                  </Card>
                 </div>
-              </div>
-            </Card>
-          </div>
+                )
           )}
     </>
   )

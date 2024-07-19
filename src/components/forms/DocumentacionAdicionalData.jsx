@@ -26,6 +26,7 @@ function DocumentacionAdicionalData ({ register }) {
   const [archivoOptions, setArchivoOptions] = useState([])
   const { activeAfiliado } = useSelector(state => state.afiliado)
   const [isLoading, setIsLoading] = useState(true)
+  const [idCounter, setIdCounter] = useState(0)
 
   const handleArchivo = async () => {
     const response = await sutepaApi.get('documentacion')
@@ -56,6 +57,7 @@ function DocumentacionAdicionalData ({ register }) {
     if (tipoArchivoOption && formData.archivo) {
       const nuevoDocumento = {
         ...formData,
+        id: idCounter,
         tipo_documento_id: tipoArchivoOption.id,
         archivo: URL.createObjectURL(formData.archivo),
         fecha_carga: new Date(),
@@ -66,6 +68,7 @@ function DocumentacionAdicionalData ({ register }) {
       if (!documentos.some(doc => doc.archivo === nuevoDocumento.archivo)) {
         dispatch(onAddDocumento(nuevoDocumento))
         setDocumentos([...documentos, nuevoDocumento])
+        setIdCounter(idCounter + 1)
       } else {
         toast.error('El documento ya está en la lista.')
       }
@@ -108,7 +111,7 @@ function DocumentacionAdicionalData ({ register }) {
           )
         : (
           <div>
-            <h4 className='card-title text-center bg-red-500 dark:bg-gray-700 text-white rounded-md p-2'>
+            <h4 className='card-title text-center bg-red-500 dark:bg-gray-700 text-white rounded-md p-2 mt-4'>
               Documentación Adicional
             </h4>
 

@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { SelectForm } from '@/components/sutepa/forms'
@@ -23,11 +24,11 @@ function ObraSocialAfiliadoData ({ register }) {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    if (activeAfiliado && Array.isArray(activeAfiliado.obraSociales) && activeAfiliado.obraSociales.length > 0) {
-      const firstObraSocial = activeAfiliado.obraSociales[0]
+    if (activeAfiliado && activeAfiliado.obraSociales) {
+      const { tipo_obra, obra_social } = activeAfiliado.obraSociales
       const updatedFormData = {
-        tipo_obra: firstObraSocial.tipo_obra,
-        obra_social: firstObraSocial.obra_social
+        tipo_obra,
+        obra_social
       }
       setFormData(updatedFormData)
       dispatch(updateObraSocial(updatedFormData))
@@ -67,6 +68,7 @@ function ObraSocialAfiliadoData ({ register }) {
               options={tipoObraSocial}
               onChange={onChange}
               value={formData.tipo_obra}
+              name='tipo_obra'
             />
           </div>
 
