@@ -27,26 +27,23 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
   }
 
   async function handleLocalidad (id) {
-    const response = await sutepaApi.get(`localidad/${id}`)
-    const { data } = response.data
+    try {
+      const response = await sutepaApi.get(`localidad/${id}`)
+      const { data } = response.data
 
-    // Ordenar las localidades alfabéticamente por nombre
-    const sortedData = data.sort((a, b) => a.nombre.localeCompare(b.nombre))
+      const sortedData = data.sort((a, b) => a.nombre.localeCompare(b.nombre))
+      setLocalidades(sortedData)
+      const selectedLocalidad = sortedData.find(localidad => localidad.id === id)
 
-    setLocalidades(sortedData)
-
-    if (activeAfiliado?.domicilios?.localidad_id) {
-      const selectedLocalidad = sortedData.find(localidad => localidad.id === activeAfiliado.domicilios.localidad_id)
       if (selectedLocalidad) {
-        setSelectedLocalidad(activeAfiliado.domicilios.localidad_id)
-        setValue('localidad_id', activeAfiliado.domicilios.localidad_id)
+        setSelectedLocalidad(id)
+        setValue('localidad_id', id)
       } else {
-        setSelectedLocalidad(sortedData.length > 0 ? sortedData[0].id : null)
-        setValue('localidad_id', sortedData.length > 0 ? sortedData[0].id : null)
+        setSelectedLocalidad(null)
+        setValue('localidad_id', null)
       }
-    } else {
-      setSelectedLocalidad(sortedData.length > 0 ? sortedData[0].id : null)
-      setValue('localidad_id', sortedData.length > 0 ? sortedData[0].id : null)
+    } catch (error) {
+      console.error('Error al obtener la localidad:', error)
     }
   }
 
@@ -82,7 +79,6 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
     setValue('localidad_id', value)
   }
 
-  // Nuevo useEffect para ejecutar handleLocalidad después de cargar todos los datos del afiliado
   useEffect(() => {
     if (activeAfiliado?.domicilios?.provincia_id) {
       handleLocalidad(activeAfiliado.domicilios.provincia_id)
@@ -104,6 +100,13 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
   }, [activeAfiliado, setValue])
 
   useEffect(() => {
+    console.log('Valores actuales:', {
+      domicilio,
+      provincia_id: selectedProvincia,
+      localidad_id: selectedLocalidad,
+      codigo_postal: codigoPostal
+    })
+
     if (codigoPostal && selectedProvincia && selectedLocalidad) {
       const domicilioData = {
         domicilio,

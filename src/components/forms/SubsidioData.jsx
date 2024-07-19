@@ -284,7 +284,7 @@ function SubsidioData () {
                         {!activeAfiliado && (
                           <td className='px-4 py-2 text-center dark:text-white'>{formatDate(subsidio.fecha_carga)}</td>
                         )}
-                        <td className='px-4 py-2 text-center dark:text-white'>{getTipoSubsidioNombre(subsidio.tipo_subsidio_id)}</td>
+                        <td className='px-4 py-2 text-center dark:text-white'>{subsidio.tipo_subsidio || getTipoSubsidioNombre(subsidio.tipo_subsidio_id)}</td>
                         <td className='px-4 py-2 text-center dark:text-white'>{formatDate(subsidio.fecha_solicitud)}</td>
                         <td className='px-4 py-2 text-center dark:text-white'>{formatDate(subsidio.fecha_otorgamiento)}</td>
                         <td className='px-4 py-2 text-center dark:text-white mayuscula'>{subsidio.observaciones}</td>
