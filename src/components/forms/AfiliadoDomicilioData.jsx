@@ -26,7 +26,6 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
       const response = await sutepaApi.get('provincia')
       const { data } = response.data
       setProvincias(data)
-      console.log('Provincias cargadas:', data)
     } catch (error) {
       console.error('Error al obtener provincias:', error)
     }
@@ -34,20 +33,17 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
 
   async function handleLocalidad (id) {
     try {
-      console.log('Cargando localidades para la provincia con id:', id)
       const response = await sutepaApi.get(`localidad/${id}`)
       const { data } = response.data
 
       const sortedData = data.sort((a, b) => a.nombre.localeCompare(b.nombre))
       setLocalidades(sortedData)
-      console.log('Localidades cargadas:', sortedData)
 
       // Si se ha seleccionado una localidad anteriormente, reestablecer el valor
       if (selectedProvincia === id && activeAfiliado?.domicilios?.localidad_id) {
         const localidad = sortedData.find(localidad => localidad.id === activeAfiliado.domicilios.localidad_id)
         if (localidad) {
           setSelectedLocalidad(localidad.id)
-          console.log('Localidad seleccionada automáticamente:', localidad.id)
         }
       }
     } catch (error) {
@@ -92,14 +88,12 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
 
   const handleLocalidadChange = (e) => {
     const value = parseInt(e.target.value)
-    console.log('Localidad seleccionada:', value)
     setSelectedLocalidad(value)
     setValue('localidad_id', value)
   }
 
   useEffect(() => {
     if (activeAfiliado?.domicilios?.provincia_id) {
-      console.log('Cargando localidades para provincia_id desde activeAfiliado:', activeAfiliado.domicilios.provincia_id)
       handleLocalidad(activeAfiliado.domicilios.provincia_id)
     }
   }, [activeAfiliado?.domicilios?.provincia_id])
@@ -127,7 +121,6 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
         localidad_id: selectedLocalidad,
         codigo_postal: codigoPostal
       }
-      console.log('Dispatching updateDomicilio con datos:', domicilioData)
       dispatch(updateDomicilio(domicilioData))
     }
   }, [codigoPostal, selectedProvincia, selectedLocalidad, domicilio, dispatch])
@@ -151,7 +144,7 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
           await handleLocalidad(selectedProvincia)
         }
         setIsDataLoading(false)
-      }, 1000)
+      }, 1)
       return () => clearTimeout(timer)
     }
   }, [isLoading, selectedProvincia])

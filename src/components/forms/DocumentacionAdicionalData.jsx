@@ -111,7 +111,7 @@ function DocumentacionAdicionalData ({ register }) {
           )
         : (
           <div>
-            <h4 className='card-title text-center bg-red-500 dark:bg-gray-700 text-white rounded-md p-2 mt-4'>
+            <h4 className='card-title text-center bg-red-500 dark:bg-gray-700 text-white rounded-md p-2'>
               Documentación Adicional
             </h4>
 
@@ -148,7 +148,7 @@ function DocumentacionAdicionalData ({ register }) {
             </Card>
 
             {documentos.length > 0 && (
-              <div className='overflow-x-auto mt-4'>
+              <div className='overflow-x-auto mt-4 mb-4'>
                 <table className='table-auto w-full'>
                   <thead className='bg-gray-300 dark:bg-gray-700'>
                     <tr>

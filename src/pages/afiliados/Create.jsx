@@ -88,7 +88,7 @@ export const Create = () => {
           <Loading className='mt-28 md:mt-64' />
           )
         : (
-          <form onSubmit={handleSubmit(onSubmit)} className='space-y-4'>
+          <form onSubmit={handleSubmit(onSubmit)}>
             {(user.roles_id === 1 || user.roles_id === 2 || user.roles_id === 3) && (
               <div>
                 <DatosPersonalesData register={register} errors={errors} setValue={setValue} watch={watch} />

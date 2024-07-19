@@ -179,7 +179,7 @@ function FamiliaresaCargo () {
           )
         : (
           <div>
-            <h4 className='card-title text-center bg-red-500 dark:bg-gray-700 text-white rounded-md p-2 mt-4'>
+            <h4 className='card-title text-center bg-red-500 dark:bg-gray-700 text-white rounded-md p-2'>
               Familiares a Cargo
             </h4>
 
