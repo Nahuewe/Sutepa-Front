@@ -52,7 +52,9 @@ function FamiliaresaCargo () {
   }
 
   const onReset = () => {
-    formRef.current.reset()
+    if (formRef.current) {
+      formRef.current.reset()
+    }
     setPicker(null)
     setFormData(initialForm)
     setIsEditing(false)
@@ -115,6 +117,8 @@ function FamiliaresaCargo () {
           familiar.id === editingFamiliarId ? newFamiliar : familiar
         )
       )
+      setIsEditing(false)
+      setEditingFamiliarId(null)
     } else {
       if (!existingFamiliar) {
         setFamiliares(prevFamiliares => [...prevFamiliares, newFamiliar])
@@ -152,15 +156,9 @@ function FamiliaresaCargo () {
 
   useEffect(() => {
     if (activeAfiliado?.familiares) {
-      const uniqueFamiliares = activeAfiliado.familiares.reduce((acc, current) => {
-        const x = acc.find(item => item.id === current.id)
-        if (!x) {
-          return acc.concat([current])
-        } else {
-          return acc
-        }
-      }, [])
-      setFamiliares(uniqueFamiliares)
+      activeAfiliado.familiares.forEach(familiar => {
+        addOrUpdateFamiliar(familiar)
+      })
     }
   }, [activeAfiliado])
 

@@ -166,7 +166,7 @@ function DocumentacionAdicionalData ({ register }) {
                           <td className='px-4 py-2 text-center dark:text-white'>{formatDate(documento.fecha_carga)}</td>
                         )}
                         <td className='px-4 py-2 whitespace-nowrap font-medium text-gray-900 dark:text-white text-center'>
-                          {getDocumentoByName(documento.tipo_documento_id)}
+                          {documento.tipo_documento || getDocumentoByName(documento.tipo_documento_id)}
                         </td>
                         <td className='px-4 py-2 text-center dark:text-white'>
                           <a href={documento.archivo} target='_blank' rel='noopener noreferrer' className='text-blue-500 underline'>

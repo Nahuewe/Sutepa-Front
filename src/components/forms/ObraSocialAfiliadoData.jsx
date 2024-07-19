@@ -25,17 +25,13 @@ function ObraSocialAfiliadoData ({ register }) {
   useEffect(() => {
     if (activeAfiliado && Array.isArray(activeAfiliado.obraSociales) && activeAfiliado.obraSociales.length > 0) {
       const firstObraSocial = activeAfiliado.obraSociales[0]
-      setFormData({
+      const updatedFormData = {
         tipo_obra: firstObraSocial.tipo_obra,
         obra_social: firstObraSocial.obra_social
-      })
-      // Despachar la acción para actualizar la obra social seleccionada
-      dispatch(updateObraSocial({
-        tipo_obra: firstObraSocial.tipo_obra,
-        obra_social: firstObraSocial.obra_social
-      }))
+      }
+      setFormData(updatedFormData)
+      dispatch(updateObraSocial(updatedFormData))
     } else {
-      // Si no hay datos válidos, reiniciar el formulario
       setFormData(initialForm)
     }
     setIsLoading(false)
@@ -48,7 +44,6 @@ function ObraSocialAfiliadoData ({ register }) {
       [name]: value
     }
     setFormData(newFormData)
-    // Despachar la acción para actualizar la obra social seleccionada
     dispatch(updateObraSocial(newFormData))
   }
 
@@ -70,7 +65,7 @@ function ObraSocialAfiliadoData ({ register }) {
             <SelectForm
               register={register('tipo_obra')}
               options={tipoObraSocial}
-              onChange={e => onChange(e)}
+              onChange={onChange}
               value={formData.tipo_obra}
             />
           </div>
@@ -85,7 +80,7 @@ function ObraSocialAfiliadoData ({ register }) {
               register={register}
               placeholder='Especifique la obra social'
               value={formData.obra_social}
-              onChange={e => onChange(e)}
+              onChange={onChange}
             />
           </div>
         </div>
