@@ -84,7 +84,7 @@ export const Afiliado = () => {
     startSearchAfiliado
   } = useAfiliadoStore()
 
-  const filteredAfiliados = user.roles_id === 1 ? afiliados : afiliados.filter(afiliado => afiliado.seccional_id === user.seccional_id)
+  const filteredAfiliados = (user.roles_id === 1 || user.roles_id === 2 || user.roles_id === 3) ? afiliados : afiliados.filter(afiliado => afiliado.seccional_id === user.seccional_id)
 
   function addAfiliado () {
     navigate('/afiliados/crear')
@@ -276,7 +276,7 @@ export const Afiliado = () => {
                       btnFunction={startDeleteAfiliado}
                     />
 
-                    {(user.roles_id === 1 || user.roles_id === 2) && (
+                    {(user.roles_id === 1 || user.roles_id === 2 || user.roles_id === 3) && (
                       <Tooltip content={showEstadisticas ? 'Ocultar estadísticas' : 'Mostrar estadísticas'}>
                         <button
                           onClick={() => setShowEstadisticas(!showEstadisticas)}
@@ -288,7 +288,7 @@ export const Afiliado = () => {
                     )}
 
                     <div className='flex gap-4'>
-                      {user.roles_id === 1 && (
+                      {(user.roles_id === 1 || user.roles_id === 2 || user.roles_id === 3) && (
                         <button
                           type='button'
                           onClick={exportToExcel}
