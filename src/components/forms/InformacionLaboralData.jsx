@@ -255,6 +255,7 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
                   <Textinput
                     label='Correo Electrónico Laboral'
                     name='email_laboral'
+                    className='minuscula'
                     type='text'
                     register={register}
                     placeholder='Ingrese el correo electrónico laboral'

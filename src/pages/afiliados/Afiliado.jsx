@@ -73,6 +73,8 @@ export const Afiliado = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [showEstadisticas, setShowEstadisticas] = useState(false)
   const [search, setSearch] = useState('')
+  const [isExporting, setIsExporting] = useState(false)
+  const [filterPendiente, setFilterPendiente] = useState(false)
   const {
     afiliados,
     afiliadosSinPaginar,
@@ -84,7 +86,11 @@ export const Afiliado = () => {
     startSearchAfiliado
   } = useAfiliadoStore()
 
-  const filteredAfiliados = (user.roles_id === 1 || user.roles_id === 2 || user.roles_id === 3) ? afiliados : afiliados.filter(afiliado => afiliado.seccional_id === user.seccional_id)
+  // const filteredAfiliados = (user.roles_id === 1 || user.roles_id === 2 || user.roles_id === 3) ? afiliados : afiliados.filter(afiliado => afiliado.seccional_id === user.seccional_id)
+
+  const filteredAfiliados = (user.roles_id === 1 || user.roles_id === 2 || user.roles_id === 3)
+    ? (filterPendiente ? afiliadosSinPaginar.filter(afiliado => afiliado.estado === 'PENDIENTE') : afiliados)
+    : (filterPendiente ? afiliados.filter(afiliado => afiliado.estado === 'PENDIENTE' && afiliado.seccional_id === user.seccional_id) : afiliados.filter(afiliado => afiliado.seccional_id === user.seccional_id))
 
   function addAfiliado () {
     navigate('/afiliados/crear')
@@ -138,10 +144,12 @@ export const Afiliado = () => {
 
   // Función para exportar los datos a Excel
   async function exportToExcel () {
+    setIsExporting(true)
     const afiliados = await handlePersonalista()
 
     if (afiliados.length === 0) {
       console.log('No hay datos para exportar.')
+      setIsExporting(false)
       return
     }
 
@@ -246,6 +254,7 @@ export const Afiliado = () => {
     XLSX.utils.book_append_sheet(wb, subsidiosSheet, 'Subsidios')
 
     XLSX.writeFile(wb, 'afiliados.xlsx')
+    setIsExporting(false)
   }
 
   return (
@@ -288,13 +297,24 @@ export const Afiliado = () => {
                     )}
 
                     <div className='flex gap-4'>
+                      {(user.roles_id === 1) && (
+                        <button
+                          type='button'
+                          onClick={() => setFilterPendiente(!filterPendiente)}
+                          className={`bg-yellow-500 ${filterPendiente ? 'bg-yellow-700' : 'hover:bg-yellow-700'} text-white items-center text-center py-2 px-6 rounded-lg`}
+                        >
+                          {filterPendiente ? 'Todos' : 'Pendientes'}
+                        </button>
+                      )}
+
                       {(user.roles_id === 1 || user.roles_id === 2 || user.roles_id === 3) && (
                         <button
                           type='button'
                           onClick={exportToExcel}
-                          className='bg-green-500 hover:bg-green-700 text-white items-center text-center py-2 px-6 rounded-lg'
+                          className={`bg-green-500 ${isExporting ? 'cursor-not-allowed opacity-50' : 'hover:bg-green-700'} text-white items-center text-center py-2 px-6 rounded-lg`}
+                          disabled={isExporting}
                         >
-                          Exportar
+                          {isExporting ? 'Exportando...' : 'Exportar'}
                         </button>
                       )}
 
