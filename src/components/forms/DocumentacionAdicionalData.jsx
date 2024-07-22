@@ -13,7 +13,7 @@ import Loading from '@/components/Loading'
 
 const initialForm = {
   tipo_documento_id: '',
-  archivo: '',
+  archivo: null, // Cambia esto a null
   users_id: null
 }
 
@@ -38,7 +38,8 @@ function DocumentacionAdicionalData ({ register }) {
     const { name, value, files } = e.target
     setFormData({
       ...formData,
-      [name]: files ? files[0] : value
+      [name]: files ? files[0] : value,
+      users_id: user.id
     })
   }
 
@@ -59,10 +60,12 @@ function DocumentacionAdicionalData ({ register }) {
         ...formData,
         id: idCounter,
         tipo_documento_id: tipoArchivoOption.id,
-        archivo: URL.createObjectURL(formData.archivo),
+        archivo: formData.archivo,
         fecha_carga: new Date(),
         users_id: user.id
       }
+
+      console.log(formData)
 
       // Verificar si el documento ya existe en el estado local
       if (!documentos.some(doc => doc.archivo === nuevoDocumento.archivo)) {
@@ -78,6 +81,53 @@ function DocumentacionAdicionalData ({ register }) {
       toast.error('Selecciona un tipo de archivo y subí un documento')
     }
   }
+
+  // const agregarDocumento = async () => {
+  //   const tipoArchivoOption = archivoOptions.find(option => option.id === parseInt(formData.tipo_documento_id));
+  //   if (tipoArchivoOption && formData.archivo) {
+  //     const nuevoDocumento = {
+  //       ...formData,
+  //       id: idCounter,
+  //       tipo_documento_id: tipoArchivoOption.id,
+  //       archivo: formData.archivo,
+  //       fecha_carga: new Date(),
+  //       users_id: user.id
+  //     };
+
+  //     // Verificar si el documento ya existe en el estado local
+  //     if (!documentos.some(doc => doc.archivo === nuevoDocumento.archivo)) {
+  //       const formDataToSend = new FormData();
+  //       formDataToSend.append('tipo_documento_id', nuevoDocumento.tipo_documento_id);
+  //       formDataToSend.append('archivo', nuevoDocumento.archivo);
+  //       formDataToSend.append('users_id', nuevoDocumento.users_id);
+
+  //       try {
+  //         const response = await sutepaApi.post('/ruta-de-tu-api', formDataToSend, {
+  //           headers: {
+  //             'Content-Type': 'multipart/form-data'
+  //           }
+  //         });
+
+  //         if (response.status === 200) {
+  //           dispatch(onAddDocumento(nuevoDocumento));
+  //           setDocumentos([...documentos, nuevoDocumento]);
+  //           setIdCounter(idCounter + 1);
+  //           toast.success('Documento agregado exitosamente');
+  //         } else {
+  //           toast.error('Error al agregar documento');
+  //         }
+  //       } catch (error) {
+  //         toast.error('Error al agregar documento');
+  //       }
+  //     } else {
+  //       toast.error('El documento ya está en la lista.');
+  //     }
+
+  //     onReset();
+  //   } else {
+  //     toast.error('Selecciona un tipo de archivo y subí un documento');
+  //   }
+  // };
 
   const onDelete = (index) => {
     const documentoAEliminar = documentos[index]
@@ -172,8 +222,8 @@ function DocumentacionAdicionalData ({ register }) {
                           {documento.tipo_documento || getDocumentoByName(documento.tipo_documento_id)}
                         </td>
                         <td className='px-4 py-2 text-center dark:text-white'>
-                          <a href={documento.archivo} target='_blank' rel='noopener noreferrer' className='text-blue-500 underline'>
-                            {documento.archivo}
+                          <a href={URL.createObjectURL(documento.archivo)} target='_blank' rel='noopener noreferrer' className='text-blue-500 underline'>
+                            {documento.archivo.name}
                           </a>
                         </td>
                         {activeAfiliado
