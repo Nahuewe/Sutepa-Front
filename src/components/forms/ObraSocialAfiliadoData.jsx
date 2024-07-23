@@ -32,14 +32,16 @@ function ObraSocialAfiliadoData ({ register }) {
         setFormData(initialForm)
       }
       setIsLoading(false)
-    }, 1000)
+    }, 1000) // Tiempo de carga de 1 segundo
 
     return () => clearTimeout(timer)
   }, [activeAfiliado])
 
   useEffect(() => {
-    dispatch(updateObraSocial(formData))
-  }, [formData, dispatch])
+    if (!isLoading) {
+      dispatch(updateObraSocial(formData))
+    }
+  }, [formData, dispatch, isLoading])
 
   const onChange = (e) => {
     const { name, value } = e.target

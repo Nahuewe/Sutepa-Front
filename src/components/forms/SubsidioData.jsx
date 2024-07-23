@@ -36,6 +36,7 @@ function SubsidioData () {
   const [subsidio, setSubsidio] = useState([])
   const [idCounter, setIdCounter] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
+  const [loadingSubsidios, setLoadingSubsidios] = useState(false)
 
   function onChange ({ target }) {
     const { name, value } = target
@@ -111,7 +112,6 @@ function SubsidioData () {
       setIdCounter(idCounter + 1)
     }
 
-    dispatch(onAddOrUpdateSubsidio(newSubsidio))
     onReset()
   }
 
@@ -149,6 +149,23 @@ function SubsidioData () {
     }
   }, [activeAfiliado])
 
+  useEffect(() => {
+    const timer = setTimeout(async () => {
+      if (activeAfiliado?.subsidios) {
+        if (subsidios.length === 0) {
+          setSubsidios(activeAfiliado.subsidios)
+        } else {
+          const subsidiosExistentesIds = subsidios.map(subsidio => subsidio.id)
+          const nuevosSubsidios = activeAfiliado.subsidios.filter(subsidio => !subsidiosExistentesIds.includes(subsidio.id))
+          setSubsidios(prevSubsidios => [...prevSubsidios, ...nuevosSubsidios])
+        }
+      }
+      setLoadingSubsidios(false)
+    }, 1)
+
+    return () => clearTimeout(timer)
+  }, [activeAfiliado])
+
   async function loadingAfiliado () {
     !isLoading && setIsLoading(true)
 
@@ -159,6 +176,14 @@ function SubsidioData () {
   useEffect(() => {
     loadingAfiliado()
   }, [])
+
+  useEffect(() => {
+    if (!loadingSubsidios) {
+      subsidios.forEach(subsidio => {
+        dispatch(onAddOrUpdateSubsidio(subsidio))
+      })
+    }
+  }, [subsidios, loadingSubsidios, dispatch])
 
   return (
     <>

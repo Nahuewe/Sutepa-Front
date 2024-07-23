@@ -44,6 +44,7 @@ function FamiliaresaCargo () {
   const { user } = useSelector(state => state.auth)
   const { activeAfiliado } = useSelector(state => state.afiliado)
   const [isLoading, setIsLoading] = useState(true)
+  const [loadingFamiliares, setLoadingFamiliares] = useState(false)
 
   async function handleParentescos () {
     const response = await sutepaApi.get('familia')
@@ -155,18 +156,36 @@ function FamiliaresaCargo () {
   }
 
   useEffect(() => {
-    if (activeAfiliado?.familiares && familiares.length === 0) {
-      setFamiliares(activeAfiliado.familiares)
-    }
+    const timer = setTimeout(() => {
+      if (activeAfiliado?.familiares) {
+        if (familiares.length === 0) {
+          setFamiliares(activeAfiliado.familiares)
+        } else {
+          const familiaresExistentesIds = familiares.map(fam => fam.id)
+          const nuevosFamiliares = activeAfiliado.familiares.filter(fam => !familiaresExistentesIds.includes(fam.id))
+          setFamiliares(prevFamiliares => [...prevFamiliares, ...nuevosFamiliares])
+        }
+      }
+      setLoadingFamiliares(false)
+    }, 1)
+
+    return () => clearTimeout(timer)
   }, [activeAfiliado])
 
   useEffect(() => {
     loadingAfiliado()
   }, [])
 
-  async function loadingAfiliado () {
-    !isLoading && setIsLoading(true)
+  useEffect(() => {
+    if (!loadingFamiliares) {
+      familiares.forEach(familiar => {
+        dispatch(onAddOrUpdateFamiliar(familiar))
+      })
+    }
+  }, [familiares, loadingFamiliares, dispatch])
 
+  async function loadingAfiliado () {
+    setIsLoading(true)
     await handleParentescos()
     setIsLoading(false)
   }
@@ -261,6 +280,10 @@ function FamiliaresaCargo () {
                 </div>
               </form>
             </Card>
+
+            {loadingFamiliares && (
+              <Loading className='mt-28 md:mt-64' />
+            )}
 
             {familiares.length > 0 && (
               <div className='overflow-x-auto mt-4 mb-4'>
