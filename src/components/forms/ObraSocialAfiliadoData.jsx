@@ -8,8 +8,8 @@ import Textinput from '@/components/ui/Textinput'
 import Loading from '@/components/Loading'
 
 const initialForm = {
-  tipo_obra: null,
-  obra_social: null
+  tipo_obra: '',
+  obra_social: ''
 }
 
 const tipoObraSocial = [
@@ -32,14 +32,16 @@ function ObraSocialAfiliadoData ({ register }) {
         setFormData(initialForm)
       }
       setIsLoading(false)
-    }, 1000) // Tiempo de carga de 1 segundo
+    }, 1)
 
     return () => clearTimeout(timer)
   }, [activeAfiliado])
 
   useEffect(() => {
     if (!isLoading) {
-      dispatch(updateObraSocial(formData))
+      if (formData.tipo_obra || formData.obra_social) {
+        dispatch(updateObraSocial(formData))
+      }
     }
   }, [formData, dispatch, isLoading])
 
@@ -69,11 +71,9 @@ function ObraSocialAfiliadoData ({ register }) {
                     Tipo de Obra Social
                   </label>
                   <SelectForm
-                    name='tipo_obra'
-                    register={register ? register('tipo_obra') : {}}
+                    register={register('tipo_obra')}
                     options={tipoObraSocial}
                     onChange={onChange}
-                    value={formData.tipo_obra}
                   />
                 </div>
 
@@ -86,7 +86,6 @@ function ObraSocialAfiliadoData ({ register }) {
                     className='mayuscula'
                     register={register}
                     placeholder='Especifique la obra social'
-                    value={formData.obra_social}
                     onChange={onChange}
                   />
                 </div>
