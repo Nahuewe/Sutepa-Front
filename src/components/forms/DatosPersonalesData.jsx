@@ -9,6 +9,7 @@ import DatePicker from '../ui/DatePicker'
 import moment from 'moment'
 import useFetchData from '@/helpers/useFetchData'
 import Loading from '@/components/Loading'
+import sutepaApi from '../../api/sutepaApi'
 
 const tipoDocumento = [
   { id: 'DNI', nombre: 'DNI' },
@@ -31,6 +32,8 @@ function DatosPersonalesData ({ register, setValue, errors, watch }) {
   const [cuil, setCuil] = useState('')
   const [dni, setDni] = useState('')
   const [legajo, setLegajo] = useState('')
+  const [legajoError, setLegajoError] = useState(null)
+  const [legajos, setLegajos] = useState([])
   const [, setFormData] = useState(initialForm)
   const [correoElectronico, setCorreoElectronico] = useState('')
   const [telefono, setTelefono] = useState('')
@@ -108,7 +111,29 @@ function DatosPersonalesData ({ register, setValue, errors, watch }) {
 
     setLegajo(legajoLimited)
     setValue('legajo', legajoLimited)
+
+    // Validar si el legajo ya existe
+    if (legajos.includes(legajoLimited)) {
+      setLegajoError('El legajo ya existe')
+    } else {
+      setLegajoError(null)
+    }
   }
+
+  useEffect(() => {
+    // Obtener todos los legajos al montar el componente
+    const fetchLegajos = async () => {
+      try {
+        const response = await sutepaApi.get('personaAll')
+        const legajos = response.data.data.map(persona => persona.legajo)
+        setLegajos(legajos)
+      } catch (error) {
+        console.error('Error al obtener los legajos:', error)
+      }
+    }
+
+    fetchLegajos()
+  }, [])
 
   const handleSelectChange = (field, e) => {
     const { value } = e.target
@@ -201,8 +226,9 @@ function DatosPersonalesData ({ register, setValue, errors, watch }) {
                     value={legajo}
                     onChange={handleLegajoChange}
                     placeholder='Ingrese el número de legajo'
-                    error={errors.legajo}
+                    error={errors.legajo || legajoError}
                   />
+                  {legajoError && <span className='text-red-500'>{legajoError}</span>}
                 </div>
 
                 <div>
