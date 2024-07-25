@@ -28,9 +28,18 @@ export const afiliadoSlice = createSlice({
       state.afiliadosSinPaginar = payload
     },
     setActiveAfiliado: (state, { payload }) => {
-      (!payload)
-        ? state.activeAfiliado = null
-        : state.activeAfiliado = state.afiliados.find((afiliado) => afiliado.id === payload)
+      if (!payload) {
+        state.activeAfiliado = null
+      } else {
+        // Buscar en afiliados
+        const afiliadoEnAfiliados = state.afiliados.find((afiliado) => afiliado.id === payload)
+        if (afiliadoEnAfiliados) {
+          state.activeAfiliado = afiliadoEnAfiliados
+        } else {
+          // Buscar en afiliadosSinPaginar
+          state.activeAfiliado = state.afiliadosSinPaginar.find((afiliado) => afiliado.id === payload) || null
+        }
+      }
     },
     onUpdateAfiliado: (state, { payload }) => {
       state.afiliados = state.afiliados.map((afiliado) => {
@@ -57,7 +66,9 @@ export const afiliadoSlice = createSlice({
     },
     onAddDocumento: (state, { payload }) => {
       const index = state.documentacion.findIndex((documento) => documento.id === payload.id)
-      if (index === -1) {
+      if (index !== -1) {
+        state.documentacion[index] = payload
+      } else {
         state.documentacion.push(payload)
       }
     },
