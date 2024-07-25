@@ -89,7 +89,7 @@ export const Afiliado = () => {
   // const filteredAfiliados = (user.roles_id === 1 || user.roles_id === 2 || user.roles_id === 3) ? afiliados : afiliados.filter(afiliado => afiliado.seccional_id === user.seccional_id)
 
   const filteredAfiliados = (user.roles_id === 1 || user.roles_id === 2 || user.roles_id === 3)
-    ? (filterPendiente ? afiliadosSinPaginar.filter(afiliado => afiliado.estado === 'PENDIENTE') : afiliadosSinPaginar)
+    ? (filterPendiente ? afiliadosSinPaginar.filter(afiliado => afiliado.estado === 'PENDIENTE') : afiliados)
     : (filterPendiente ? afiliados.filter(afiliado => afiliado.estado === 'PENDIENTE' && afiliado.seccional_id === user.seccional_id) : afiliados.filter(afiliado => afiliado.seccional_id === user.seccional_id))
 
   function addAfiliado () {
