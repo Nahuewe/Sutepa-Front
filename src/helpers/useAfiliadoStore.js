@@ -77,8 +77,6 @@ export const useAfiliadoStore = () => {
 
   const startUpdateAfiliado = async (id) => {
     try {
-      // const { id } = activeAfiliado
-
       const afiliado = {
         persona,
         domicilio,
@@ -88,7 +86,6 @@ export const useAfiliadoStore = () => {
         familiares,
         subsidios
       }
-      console.log(afiliado, 'afiliado')
 
       const response = await sutepaApi.put(`/personas/${id}`, afiliado)
       const { data } = response

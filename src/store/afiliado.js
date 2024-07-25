@@ -31,12 +31,10 @@ export const afiliadoSlice = createSlice({
       if (!payload) {
         state.activeAfiliado = null
       } else {
-        // Buscar en afiliados
         const afiliadoEnAfiliados = state.afiliados.find((afiliado) => afiliado.id === payload)
         if (afiliadoEnAfiliados) {
           state.activeAfiliado = afiliadoEnAfiliados
         } else {
-          // Buscar en afiliadosSinPaginar
           state.activeAfiliado = state.afiliadosSinPaginar.find((afiliado) => afiliado.id === payload) || null
         }
       }

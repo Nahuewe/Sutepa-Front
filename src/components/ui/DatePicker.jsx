@@ -3,7 +3,7 @@ import Flatpickr from 'react-flatpickr'
 import 'flatpickr/dist/themes/material_red.css'
 
 const flatpickrOptions = {
-  dateFormat: 'd/m/Y', // Cambia el formato de fecha a 'd/m/Y' para que coincida con tu aplicación
+  dateFormat: 'd/m/Y',
   locale: {
     firstDayOfWeek: 1,
     weekdays: {
@@ -25,7 +25,7 @@ const DatePicker = ({ value, onChange, id, placeholder, disabled }) => {
       value={value}
       id={id}
       placeholder={placeholder}
-      onChange={(dates) => onChange(dates)} // Modificado para enviar la fecha directamente
+      onChange={(dates) => onChange(dates)}
       disabled={disabled}
     />
   )

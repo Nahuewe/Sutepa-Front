@@ -132,27 +132,22 @@ function FamiliaresaCargo () {
   }
 
   const handleEdit = familiar => {
-    // Convertir la fecha de nacimiento a un objeto de fecha si existe
     const fechaNacimiento = familiar.fecha_nacimiento_familiar ? moment(familiar.fecha_nacimiento_familiar, 'YYYY-MM-DD').toDate() : null
-
-    // Actualizar el estado del formulario
     setFormData({
       ...familiar,
-      fecha_nacimiento_familiar: familiar.fecha_nacimiento_familiar // Mantener la fecha existente
+      fecha_nacimiento_familiar: familiar.fecha_nacimiento_familiar
     })
 
-    // Configurar el estado de edición
     setEditingFamiliarId(familiar.id)
     setIsEditing(true)
-    setPicker(fechaNacimiento ? [fechaNacimiento] : []) // Establecer el valor del picker
+    setPicker(fechaNacimiento ? [fechaNacimiento] : [])
     setDni(familiar.documento)
 
-    // Establecer los valores del formulario
     setValue('nombre_familiar', familiar.nombre_familiar)
     setValue('tipo_documento_familiar', familiar.tipo_documento_familiar)
     setValue('documento', familiar.documento)
     setValue('parentesco_id', familiar.parentesco_id)
-    setValue('fecha_nacimiento_familiar', familiar.fecha_nacimiento_familiar) // Usar la fecha original
+    setValue('fecha_nacimiento_familiar', familiar.fecha_nacimiento_familiar)
   }
 
   const onDelete = id => {

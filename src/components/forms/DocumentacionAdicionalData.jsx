@@ -43,6 +43,13 @@ function DocumentacionAdicionalData ({ register }) {
     })
   }
 
+  const handleFileChange = (e) => {
+    setFormData({
+      ...formData,
+      archivo: e.target.files[0]
+    })
+  }
+
   const onReset = () => {
     formRef.current.reset()
     setFormData(initialForm)
@@ -52,6 +59,60 @@ function DocumentacionAdicionalData ({ register }) {
     const documentoObj = archivoOptions.find(item => item.id === id)
     return documentoObj ? documentoObj.nombre : ''
   }
+
+  // const enviarArchivo = async (documento) => {
+  //   const formDataToSend = new FormData()
+  //   formDataToSend.append('archivo', documento.archivo)
+
+  //   for (const pair of formDataToSend.entries()) {
+  //     console.log(pair[0] + ': ' + pair[1])
+  //   }
+
+  //   try {
+  //     const response = await sutepaApi.post('personas', formDataToSend, {
+  //       headers: {
+  //         'Content-Type': 'multipart/form-data'
+  //       }
+  //     })
+  //     toast.success('Documento enviado correctamente')
+  //     return response.data.data.archivoUrl
+  //   } catch (error) {
+  //     toast.error('Error al enviar el documento')
+  //     throw error
+  //   }
+  // }
+
+  // const agregarDocumento = () => {
+  //   const tipoArchivoOption = archivoOptions.find(option => option.id === parseInt(formData.tipo_documento_id))
+  //   if (tipoArchivoOption && formData.archivo) {
+  //     const nuevoDocumento = {
+  //       ...formData,
+  //       id: idCounter,
+  //       tipo_documento_id: tipoArchivoOption.id,
+  //       archivo: formData.archivo,
+  //       archivoUrl: URL.createObjectURL(formData.archivo),
+  //       fecha_carga: new Date(),
+  //       users_id: user.id,
+  //       users_nombre: user.username
+  //     }
+
+  //     console.log(nuevoDocumento)
+
+  //     // Verificar si el documento ya existe en el estado local
+  //     if (!documentos.some(doc => doc.archivoUrl === nuevoDocumento.archivoUrl)) {
+  //       dispatch(onAddDocumento(nuevoDocumento))
+  //       setDocumentos([...documentos, nuevoDocumento])
+  //       setIdCounter(idCounter + 1)
+  //       enviarArchivo(nuevoDocumento)
+  //     } else {
+  //       toast.error('El documento ya está en la lista.')
+  //     }
+
+  //     onReset()
+  //   } else {
+  //     toast.error('Selecciona un tipo de archivo y subí un documento')
+  //   }
+  // }
 
   const agregarDocumento = () => {
     const tipoArchivoOption = archivoOptions.find(option => option.id === parseInt(formData.tipo_documento_id))
@@ -157,7 +218,7 @@ function DocumentacionAdicionalData ({ register }) {
                       type='file'
                       id='archivo'
                       name='archivo'
-                      onChange={handleInputChange}
+                      onChange={handleFileChange}
                       accept='.docx,.doc,.xlsx,.ppt,.pdf,.jpeg,.jpg,.png'
                     />
                   </div>
@@ -199,6 +260,9 @@ function DocumentacionAdicionalData ({ register }) {
                           {documento.tipo_documento || getDocumentoByName(documento.tipo_documento_id)}
                         </td>
                         <td className='px-4 py-2 text-center dark:text-white'>
+                          {/* <a href={documento.archivoUrl} target='_blank' rel='noopener noreferrer' className='text-blue-500 underline'>
+                            {documento.archivoUrl}
+                          </a> */}
                           <a href={documento.archivo} target='_blank' rel='noopener noreferrer' className='text-blue-500 underline'>
                             {documento.archivo}
                           </a>

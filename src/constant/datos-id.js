@@ -15,12 +15,18 @@ export const formatDate = (dateString) => {
   if (!dateString) {
     return ''
   }
+
   const date = new Date(dateString)
   if (isNaN(date)) {
     return ''
   }
+
+  // Ajustar la fecha para evitar problemas de huso horario
+  const userTimezoneOffset = date.getTimezoneOffset() * 60000
+  const adjustedDate = new Date(date.getTime() + userTimezoneOffset)
+
   const options = { year: 'numeric', month: 'long', day: 'numeric' }
-  return date.toLocaleDateString(undefined, options)
+  return adjustedDate.toLocaleDateString(undefined, options)
 }
 
 export const getTipoContrato = (id) => {
