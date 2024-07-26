@@ -315,7 +315,7 @@ function FamiliaresaCargo () {
                         <td className='px-4 py-2 text-center dark:text-white'>{fam.tipo_documento_familiar}</td>
                         <td className='px-4 py-2 text-center dark:text-white'>{fam.documento}</td>
                         <td className='px-4 py-2 text-center dark:text-white'>
-                          {getParentescoNombre(fam.parentesco_id)}
+                          {fam.parentesco || getParentescoNombre(fam.parentesco_id)}
                         </td>
                         {activeAfiliado
                           ? (

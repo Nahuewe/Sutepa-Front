@@ -148,6 +148,8 @@ function DatosPersonalesData ({ register, setValue, errors, watch }) {
   useEffect(() => {
     if (activeAfiliado) {
       const { persona } = activeAfiliado
+      const fechaAfiliacion = persona.fecha_afiliacion ? moment(persona.fecha_afiliacion, 'YYYY-MM-DD').toDate() : null
+      const fechaNacimiento = persona.fecha_nacimiento ? moment(persona.fecha_nacimiento, 'YYYY-MM-DD').toDate() : null
 
       // Actualización de los estados individuales
       setLegajo(persona.legajo || '')
@@ -157,8 +159,8 @@ function DatosPersonalesData ({ register, setValue, errors, watch }) {
       setTelefono(persona.telefono || '')
 
       // Actualización de los pickers de fecha
-      setPicker(persona.fecha_afiliacion ? new Date(persona.fecha_afiliacion) : null)
-      setPicker2(persona.fecha_nacimiento ? new Date(persona.fecha_nacimiento) : null)
+      setPicker(fechaAfiliacion ? [fechaAfiliacion] : [])
+      setPicker2(fechaNacimiento ? [fechaNacimiento] : [])
 
       // Actualización del estado formData
       setFormData({

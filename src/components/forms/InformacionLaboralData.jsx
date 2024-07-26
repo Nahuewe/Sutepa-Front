@@ -106,23 +106,26 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
   }
 
   useEffect(() => {
-    const datosLaborales = {
-      tipo_contrato_id: parseInt(watch('tipo_contrato_id')) || null,
-      ugl_id: parseInt(watch('ugl_id')) || null,
-      agencia_id: parseInt(watch('agencia_id')) || null,
-      domicilio_trabajo: watch('domicilio_trabajo') || null,
-      seccional_id: parseInt(watch('seccional_id')) || null,
-      agrupamiento_id: parseInt(watch('agrupamiento_id')) || null,
-      tramo_id: parseInt(watch('tramo_id')) || null,
-      carga_horaria: watch('carga_horaria') || null,
-      fecha_ingreso: picker ? moment(picker[0]).format('YYYY-MM-DD') : null,
-      email_laboral: watch('email_laboral') || null,
-      telefono_laboral: watch('telefono_laboral') || null
-    }
-    const filteredDatosLaborales = filterEmptyValues(datosLaborales)
-    if (Object.keys(filteredDatosLaborales).length > 0) {
-      dispatch(updateDatosLaborales(filteredDatosLaborales))
-    }
+    const subscription = watch((values) => {
+      const datosLaborales = {
+        tipo_contrato_id: parseInt(values.tipo_contrato_id) || null,
+        ugl_id: parseInt(values.ugl_id) || null,
+        agencia_id: parseInt(values.agencia_id) || null,
+        domicilio_trabajo: values.domicilio_trabajo || null,
+        seccional_id: parseInt(values.seccional_id) || null,
+        agrupamiento_id: parseInt(values.agrupamiento_id) || null,
+        tramo_id: parseInt(values.tramo_id) || null,
+        carga_horaria: values.carga_horaria || null,
+        fecha_ingreso: picker ? moment(picker[0]).format('YYYY-MM-DD') : null,
+        email_laboral: values.email_laboral || null,
+        telefono_laboral: values.telefono_laboral || null
+      }
+      const filteredDatosLaborales = filterEmptyValues(datosLaborales)
+      if (Object.keys(filteredDatosLaborales).length > 0) {
+        dispatch(updateDatosLaborales(filteredDatosLaborales))
+      }
+    })
+    return () => subscription.unsubscribe()
   }, [watch, picker, dispatch])
 
   useEffect(() => {
@@ -222,12 +225,14 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
                   register={register('seccional_id')}
                   title='Seccional SUTEPA'
                   options={seccional}
+                  onChange={(e) => setValue('seccional_id', e.target.value)}
                 />
 
                 <SelectForm
                   register={register('agrupamiento_id')}
                   title='Agrupamiento'
                   options={agrupamiento}
+                  onChange={(e) => setValue('agrupamiento_id', e.target.value)}
                 />
 
                 <SelectForm

@@ -118,8 +118,8 @@ function SubsidioData () {
   const handleEdit = (subsidio) => {
     setFormData({
       ...subsidio,
-      fecha_solicitud: subsidio.fecha_solicitud ? moment(subsidio.fecha_solicitud).format('YYYY-MM-DD') : null,
-      fecha_otorgamiento: subsidio.fecha_otorgamiento ? moment(subsidio.fecha_otorgamiento).format('YYYY-MM-DD') : null
+      fecha_solicitud: subsidio.fecha_solicitud ? moment(subsidio.fecha_solicitud, 'YYYY-MM-DD').toDate() : null,
+      fecha_otorgamiento: subsidio.fecha_otorgamiento ? moment(subsidio.fecha_otorgamiento, 'YYYY-MM-DD').toDate() : null
     })
     setEditingSubsidioId(subsidio.id)
     setIsEditing(true)
@@ -127,8 +127,8 @@ function SubsidioData () {
     setPicker2(new Date(subsidio.fecha_otorgamiento))
 
     setValue('tipo_subsidio_id', subsidio.tipo_subsidio_id)
-    setValue('fecha_solicitud', subsidio.fecha_solicitud ? moment(subsidio.fecha_solicitud).format('YYYY-MM-DD') : '')
-    setValue('fecha_otorgamiento', subsidio.fecha_otorgamiento ? moment(subsidio.fecha_otorgamiento).format('YYYY-MM-DD') : '')
+    setValue('fecha_solicitud', subsidio.fecha_solicitud)
+    setValue('fecha_otorgamiento', subsidio.fecha_otorgamiento)
     setValue('observaciones', subsidio.observaciones)
   }
 
@@ -283,7 +283,7 @@ function SubsidioData () {
                         {!activeAfiliado && (
                           <td className='px-4 py-2 text-center dark:text-white'>{formatDate(subsidio.fecha_carga)}</td>
                         )}
-                        <td className='px-4 py-2 text-center dark:text-white'>{getTipoSubsidioNombre(subsidio.tipo_subsidio_id)}</td>
+                        <td className='px-4 py-2 text-center dark:text-white'>{subsidio.tipo_subsidio || getTipoSubsidioNombre(subsidio.tipo_subsidio_id)}</td>
                         <td className='px-4 py-2 text-center dark:text-white'>{formatDate(subsidio.fecha_solicitud)}</td>
                         <td className='px-4 py-2 text-center dark:text-white'>{formatDate(subsidio.fecha_otorgamiento)}</td>
                         <td className='px-4 py-2 text-center dark:text-white mayuscula'>{subsidio.observaciones}</td>
