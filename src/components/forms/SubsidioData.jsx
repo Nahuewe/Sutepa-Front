@@ -53,18 +53,12 @@ function SubsidioData () {
   }
 
   const handleDateChange = (date, field) => {
-    const formattedDate = moment(date[0]).format('YYYY-MM-DD')
-    setFormData({
-      ...formData,
-      [field]: formattedDate
-    })
-    setValue(field, formattedDate)
     if (field === 'fecha_solicitud') {
       setPicker(date)
-      setValue(field, formattedDate)
+      setValue(field, date)
     } else if (field === 'fecha_otorgamiento') {
       setPicker2(date)
-      setValue(field, formattedDate)
+      setValue(field, date)
     }
   }
 
@@ -116,15 +110,20 @@ function SubsidioData () {
   }
 
   const handleEdit = (subsidio) => {
+    const fechaSolicitud = subsidio.fecha_solicitud ? moment(subsidio.fecha_solicitud, 'YYYY-MM-DD').toDate() : null
+    const fechaOtorgamiento = subsidio.fecha_otorgamiento ? moment(subsidio.fecha_otorgamiento, 'YYYY-MM-DD').toDate() : null
+
     setFormData({
       ...subsidio,
-      fecha_solicitud: subsidio.fecha_solicitud ? moment(subsidio.fecha_solicitud, 'YYYY-MM-DD').toDate() : null,
-      fecha_otorgamiento: subsidio.fecha_otorgamiento ? moment(subsidio.fecha_otorgamiento, 'YYYY-MM-DD').toDate() : null
+      fecha_solicitud: subsidio.fecha_solicitud,
+      fecha_otorgamiento: subsidio.fecha_otorgamiento
     })
+
     setEditingSubsidioId(subsidio.id)
     setIsEditing(true)
-    setPicker(new Date(subsidio.fecha_solicitud))
-    setPicker2(new Date(subsidio.fecha_otorgamiento))
+
+    setPicker(fechaSolicitud ? [fechaSolicitud] : [])
+    setPicker2(fechaOtorgamiento ? [fechaOtorgamiento] : [])
 
     setValue('tipo_subsidio_id', subsidio.tipo_subsidio_id)
     setValue('fecha_solicitud', subsidio.fecha_solicitud)
@@ -143,7 +142,8 @@ function SubsidioData () {
       const formattedSubsidios = activeAfiliado.subsidios.map(subsidio => ({
         ...subsidio,
         fecha_solicitud: subsidio.fecha_solicitud ? moment(subsidio.fecha_solicitud).format('YYYY-MM-DD') : null,
-        fecha_otorgamiento: subsidio.fecha_otorgamiento ? moment(subsidio.fecha_otorgamiento).format('YYYY-MM-DD') : null
+        fecha_otorgamiento: subsidio.fecha_otorgamiento ? moment(subsidio.fecha_otorgamiento).format('YYYY-MM-DD') : null,
+        users_id: user.id
       }))
       setSubsidios(formattedSubsidios)
     }
