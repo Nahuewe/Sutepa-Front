@@ -4,6 +4,7 @@ import { toast } from 'react-toastify'
 import { handleAfiliado, handleAfiliadosSinPaginar, onUpdateAfiliado, setErrorMessage, onShowAfiliado, cleanAfiliado } from '@/store/afiliado'
 import { sutepaApi } from '../api'
 import { useNavigate } from 'react-router-dom'
+import sendEmail from '../components/EmailJs'
 
 export const useAfiliadoStore = () => {
   const dispatch = useDispatch()
@@ -44,6 +45,19 @@ export const useAfiliadoStore = () => {
 
       const response = await sutepaApi.post('/personas', afiliado)
       console.log(response)
+
+      // Envio de email
+      const email = persona.email || ''
+      const name = persona.nombre || ''
+      const lastName = persona.apellido || ''
+
+      await sendEmail(
+        email,
+        name,
+        lastName,
+        email
+      )
+
       navigate('/afiliados')
       startLoadingAfiliado()
       dispatch(cleanAfiliado())
@@ -91,6 +105,7 @@ export const useAfiliadoStore = () => {
       const { data } = response
       dispatch(onUpdateAfiliado(data))
       navigate('/afiliados')
+      dispatch(cleanAfiliado())
 
       toast.success('Afiliado editado con éxito')
     } catch (error) {

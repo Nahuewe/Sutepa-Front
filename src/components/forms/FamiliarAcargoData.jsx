@@ -131,6 +131,20 @@ function FamiliaresaCargo () {
     onReset()
   }
 
+  const handleAddOrUpdateFamiliar = () => {
+    const newFamiliar = {
+      ...formData,
+      id: isEditing ? editingFamiliarId : idCounter,
+      parentesco_id: parseInt(watch('parentesco_id')) || null,
+      fecha_nacimiento_familiar: picker ? moment(picker[0]).format('YYYY-MM-DD') : null,
+      fecha_carga: new Date(),
+      users_id: user.id,
+      users_nombre: user.username
+    }
+
+    addOrUpdateFamiliar(newFamiliar)
+  }
+
   const handleEdit = familiar => {
     const fechaNacimiento = familiar.fecha_nacimiento_familiar ? moment(familiar.fecha_nacimiento_familiar, 'YYYY-MM-DD').toDate() : null
     setFormData({
@@ -266,15 +280,7 @@ function FamiliaresaCargo () {
                   <button
                     type='button'
                     className={`btn rounded-lg ${isEditing ? 'btn-purple' : 'btn-primary'}`}
-                    onClick={() => addOrUpdateFamiliar({
-                      ...formData,
-                      id: isEditing ? editingFamiliarId : idCounter,
-                      parentesco_id: parseInt(watch('parentesco_id')) || null,
-                      fecha_nacimiento_familiar: picker ? moment(picker[0]).format('YYYY-MM-DD') : null,
-                      fecha_carga: new Date(),
-                      users_id: user.id,
-                      users_nombre: user.username
-                    })}
+                    onClick={handleAddOrUpdateFamiliar}
                   >
                     {isEditing ? 'Terminar Edición' : 'Agregar Familiar'}
                   </button>
