@@ -133,7 +133,7 @@ export const useAfiliadoStore = () => {
 
       toast.success(message)
     } catch (error) {
-      toast.error('No se pudo eliminar los datos')
+      toast.error('No se pudo cambiar el estado')
     }
   }
 

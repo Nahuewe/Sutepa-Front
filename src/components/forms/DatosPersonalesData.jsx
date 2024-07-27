@@ -145,6 +145,12 @@ function DatosPersonalesData ({ register, setValue, errors, watch }) {
     setValue(field, fieldValue)
   }
 
+  const handleCorreoElectronicoChange = (e) => {
+    const value = e.target.value
+    setCorreoElectronico(value)
+    setValue('email', value)
+  }
+
   useEffect(() => {
     if (activeAfiliado) {
       const { persona } = activeAfiliado
@@ -359,7 +365,8 @@ function DatosPersonalesData ({ register, setValue, errors, watch }) {
                   id='email'
                   name='email'
                   placeholder='Ingrese el correo electrónico'
-                  onChange={(e) => setCorreoElectronico(e.target.value)}
+                  value={correoElectronico}
+                  onChange={handleCorreoElectronicoChange}
                 />
 
                 <Numberinput

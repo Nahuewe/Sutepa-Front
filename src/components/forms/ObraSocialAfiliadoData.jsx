@@ -17,40 +17,37 @@ const tipoObraSocial = [
   { id: 'PREPAGA', nombre: 'PREPAGA' }
 ]
 
-function ObraSocialAfiliadoData ({ register }) {
+function ObraSocialAfiliadoData ({ register, setValue }) {
   const dispatch = useDispatch()
   const { activeAfiliado } = useSelector(state => state.afiliado)
   const [formData, setFormData] = useState(initialForm)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (activeAfiliado && activeAfiliado.obraSociales) {
-        const { tipo_obra, obra_social } = activeAfiliado.obraSociales
-        setFormData({ tipo_obra, obra_social })
-      } else {
-        setFormData(initialForm)
-      }
-      setIsLoading(false)
-    }, 1)
-
-    return () => clearTimeout(timer)
-  }, [activeAfiliado])
+    if (activeAfiliado && activeAfiliado.obraSociales) {
+      const { tipo_obra, obra_social } = activeAfiliado.obraSociales
+      setFormData({ tipo_obra, obra_social })
+      setValue('tipo_obra', tipo_obra)
+      setValue('obra_social', obra_social)
+    } else {
+      setFormData(initialForm)
+    }
+    setIsLoading(false)
+  }, [activeAfiliado, setValue])
 
   useEffect(() => {
-    if (!isLoading) {
-      if (formData.tipo_obra || formData.obra_social) {
-        dispatch(updateObraSocial(formData))
-      }
+    if (!isLoading && (formData.tipo_obra || formData.obra_social)) {
+      dispatch(updateObraSocial(formData))
     }
   }, [formData, dispatch, isLoading])
 
-  const onChange = (e) => {
+  const handleChange = (e) => {
     const { name, value } = e.target
     setFormData(prevFormData => ({
       ...prevFormData,
       [name]: value
     }))
+    setValue(name, value)
   }
 
   return (
@@ -73,7 +70,8 @@ function ObraSocialAfiliadoData ({ register }) {
                   <SelectForm
                     register={register('tipo_obra')}
                     options={tipoObraSocial}
-                    onChange={onChange}
+                    onChange={handleChange}
+                    value={formData.tipo_obra}
                   />
                 </div>
 
@@ -86,7 +84,8 @@ function ObraSocialAfiliadoData ({ register }) {
                     className='mayuscula'
                     register={register}
                     placeholder='Especifique la obra social'
-                    onChange={onChange}
+                    value={formData.obra_social}
+                    onChange={handleChange}
                   />
                 </div>
               </div>
