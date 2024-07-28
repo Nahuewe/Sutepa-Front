@@ -42,23 +42,28 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
     setValue('fecha_ingreso', date[0])
   }
 
+  const handleInputChange = (field, value) => {
+    setValue(field, value)
+    handleDatosLaboralesUpdate()
+  }
+
   const handleCargaHorarioChange = (e) => {
     const value = e.target.value
     setCargaHoraria(value)
-    setValue('carga_horaria', value)
+    handleInputChange('carga_horaria', value)
   }
 
   const handleCorreoElectronicoChange = (e) => {
     const value = e.target.value
     setCorreoElectronicoLaboral(value)
-    setValue('email_laboral', value)
+    handleInputChange('email_laboral', value)
   }
 
   const handleTramoChange = (e) => {
     const selectedTramo = e.target.value
     const horas = tramoHoras[selectedTramo] || ''
     setCargaHoraria(horas)
-    setValue('carga_horaria', horas)
+    handleInputChange('carga_horaria', horas)
   }
 
   async function handleAgencia (id) {
@@ -78,13 +83,13 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
           const { domicilio_trabajo, telefono_laboral } = data
           setDomicilioTrabajo(domicilio_trabajo)
           setTelefonoLaboral(telefono_laboral)
-          setValue('domicilio_trabajo', domicilio_trabajo)
-          setValue('telefono_laboral', telefono_laboral)
+          handleInputChange('domicilio_trabajo', domicilio_trabajo)
+          handleInputChange('telefono_laboral', telefono_laboral)
         } else {
           setDomicilioTrabajo('')
           setTelefonoLaboral('')
-          setValue('domicilio_trabajo', '')
-          setValue('telefono_laboral', '')
+          handleInputChange('domicilio_trabajo', '')
+          handleInputChange('telefono_laboral', '')
         }
       } catch (error) {
         console.error('Error fetching agency data:', error)
@@ -96,16 +101,12 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
     const selectedUglId = e.target.value
     if (selectedUglId) {
       handleAgencia(selectedUglId)
-      setValue('agencia_id', '')
+      handleInputChange('agencia_id', '')
       setAgenciaDisabled(true)
     }
   }
 
-  const filterEmptyValues = (data) => {
-    return Object.fromEntries(Object.entries(data).filter(([_, v]) => v != null && v !== ''))
-  }
-
-  useEffect(() => {
+  const handleDatosLaboralesUpdate = () => {
     const datosLaborales = {
       tipo_contrato_id: parseInt(watch('tipo_contrato_id')) || null,
       ugl_id: parseInt(watch('ugl_id')) || null,
@@ -119,11 +120,12 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
       email_laboral: watch('email_laboral') || null,
       telefono_laboral: watch('telefono_laboral') || null
     }
-    const filteredDatosLaborales = filterEmptyValues(datosLaborales)
-    if (Object.keys(filteredDatosLaborales).length > 0) {
-      dispatch(updateDatosLaborales(filteredDatosLaborales))
-    }
-  }, [watch, picker, dispatch])
+    dispatch(updateDatosLaborales(datosLaborales))
+  }
+
+  useEffect(() => {
+    handleDatosLaboralesUpdate()
+  }, [picker, cargaHoraria, correoElectronicoLaboral, telefonoLaboral, domicilioTrabajo, watch])
 
   useEffect(() => {
     if (activeAfiliado?.datos_laborales) {
@@ -186,6 +188,7 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
                   register={register('tipo_contrato_id')}
                   title='Tipo de Contrato'
                   options={tipoContrato}
+                  onChange={(e) => handleInputChange('tipo_contrato_id', e.target.value)}
                 />
 
                 <SelectForm
@@ -213,7 +216,7 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
                     value={domicilioTrabajo}
                     onChange={(e) => {
                       setDomicilioTrabajo(e.target.value)
-                      setValue('domicilio_trabajo', e.target.value)
+                      handleInputChange('domicilio_trabajo', e.target.value)
                     }}
                   />
                 </div>
@@ -222,14 +225,14 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
                   register={register('seccional_id')}
                   title='Seccional SUTEPA'
                   options={seccional}
-                  onChange={(e) => setValue('seccional_id', e.target.value)}
+                  onChange={(e) => handleInputChange('seccional_id', e.target.value)}
                 />
 
                 <SelectForm
                   register={register('agrupamiento_id')}
                   title='Agrupamiento'
                   options={agrupamiento}
-                  onChange={(e) => setValue('agrupamiento_id', e.target.value)}
+                  onChange={(e) => handleInputChange('agrupamiento_id', e.target.value)}
                 />
 
                 <SelectForm
@@ -291,7 +294,7 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
                     value={telefonoLaboral}
                     onChange={(e) => {
                       setTelefonoLaboral(e.target.value)
-                      setValue('telefono_laboral', e.target.value)
+                      handleInputChange('telefono_laboral', e.target.value)
                     }}
                   />
                 </div>

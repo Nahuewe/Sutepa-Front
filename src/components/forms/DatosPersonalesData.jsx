@@ -265,6 +265,7 @@ function DatosPersonalesData ({ register, setValue, errors, watch }) {
                     register={register}
                     placeholder='Ingrese el nombre'
                     error={errors.nombre}
+                    onChange={handleChange(setCorreoElectronico)}
                   />
                 </div>
 
@@ -280,6 +281,7 @@ function DatosPersonalesData ({ register, setValue, errors, watch }) {
                     register={register}
                     placeholder='Ingrese el apellido'
                     error={errors.apellido}
+                    onChange={handleChange(setCorreoElectronico)}
                   />
                 </div>
 

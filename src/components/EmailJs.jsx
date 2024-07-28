@@ -10,10 +10,10 @@ const sendEmail = (to, name, lastName, email, subject) => {
   }
 
   return emailjs.send(
-    'service_5yvvmdd',
-    'template_ep0vv1q',
+    'service_jz3v30b',
+    'template_2db1odf',
     templateParams,
-    'u1HZcSHJOPhUccD57'
+    'C_Smqye9-LkqWdy_N'
   )
 }
 
