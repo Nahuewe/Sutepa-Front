@@ -270,7 +270,7 @@ function SubsidioData () {
                       <th className='px-4 py-2 text-center dark:text-white'>Fecha de Solicitud</th>
                       <th className='px-4 py-2 text-center dark:text-white'>Fecha de Otorgamiento</th>
                       <th className='px-4 py-2 text-center dark:text-white'>Observaciones</th>
-                      <th className='px-4 py-2 text-center dark:text-white'>Usuario de Carga</th>
+                      {/* <th className='px-4 py-2 text-center dark:text-white'>Usuario de Carga</th> */}
                       <th className='px-4 py-2 text-center dark:text-white'>Acciones</th>
                     </tr>
                   </thead>
@@ -287,13 +287,13 @@ function SubsidioData () {
                         <td className='px-4 py-2 text-center dark:text-white'>{formatDate(subsidio.fecha_solicitud)}</td>
                         <td className='px-4 py-2 text-center dark:text-white'>{formatDate(subsidio.fecha_otorgamiento)}</td>
                         <td className='px-4 py-2 text-center dark:text-white mayuscula'>{subsidio.observaciones}</td>
-                        {activeAfiliado
+                        {/* {activeAfiliado
                           ? (
                             <td className='px-4 py-2 text-center dark:text-white'>{subsidio.users_nombre}</td>
                             )
                           : (
                             <td className='px-4 py-2 text-center dark:text-white'>{user.username}</td>
-                            )}
+                            )} */}
                         <td className='text-center py-2 gap-4 flex justify-center'>
                           <Tooltip content='Editar'>
                             <button

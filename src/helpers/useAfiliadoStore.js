@@ -51,12 +51,22 @@ export const useAfiliadoStore = () => {
       const name = persona.nombre || ''
       const lastName = persona.apellido || ''
 
-      await sendEmail(
-        email,
-        name,
-        lastName,
-        email
-      )
+      if (email) {
+        try {
+          await sendEmail(
+            email,
+            name,
+            lastName,
+            email
+          )
+          toast.success('Correo enviado con éxito')
+        } catch (error) {
+          console.error('Error enviando el correo:', error)
+          toast.error('No se pudo enviar el correo: ' + error.message)
+        }
+      } else {
+        toast.error('No se pudo enviar el correo porque no existe')
+      }
 
       navigate('/afiliados')
       startLoadingAfiliado()

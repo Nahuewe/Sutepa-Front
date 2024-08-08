@@ -243,7 +243,7 @@ function DocumentacionAdicionalData ({ register }) {
                       <th className='px-4 py-2 text-center dark:text-white'>Fecha de Carga</th>
                       <th className='px-4 py-2 text-center dark:text-white'>Tipo de Archivo</th>
                       <th className='px-4 py-2 text-center dark:text-white'>Enlace del Archivo</th>
-                      <th className='px-4 py-2 text-center dark:text-white'>Usuario de Carga</th>
+                      {/* <th className='px-4 py-2 text-center dark:text-white'>Usuario de Carga</th> */}
                       <th className='px-4 py-2 text-center dark:text-white'>Acciones</th>
                     </tr>
                   </thead>
@@ -267,13 +267,13 @@ function DocumentacionAdicionalData ({ register }) {
                             {documento.archivo}
                           </a>
                         </td>
-                        {activeAfiliado
+                        {/* {activeAfiliado
                           ? (
                             <td className='px-4 py-2 text-center dark:text-white'>{documento.users_nombre}</td>
                             )
                           : (
                             <td className='px-4 py-2 text-center dark:text-white'>{user.username}</td>
-                            )}
+                            )} */}
                         <td className='text-center py-2'>
                           <Tooltip content='Eliminar'>
                             <button

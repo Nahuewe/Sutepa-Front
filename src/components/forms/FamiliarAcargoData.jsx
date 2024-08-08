@@ -303,7 +303,7 @@ function FamiliaresaCargo () {
                       <th className='px-4 py-2 text-center dark:text-white'>Tipo de Documento</th>
                       <th className='px-4 py-2 text-center dark:text-white'>Documento</th>
                       <th className='px-4 py-2 text-center dark:text-white'>Parentesco</th>
-                      <th className='px-4 py-2 text-center dark:text-white'>Usuario de Carga</th>
+                      {/* <th className='px-4 py-2 text-center dark:text-white'>Usuario de Carga</th> */}
                       <th className='px-4 py-2 text-center dark:text-white'>Acciones</th>
                     </tr>
                   </thead>
@@ -323,13 +323,13 @@ function FamiliaresaCargo () {
                         <td className='px-4 py-2 text-center dark:text-white'>
                           {fam.parentesco || getParentescoNombre(fam.parentesco_id)}
                         </td>
-                        {activeAfiliado
+                        {/* {activeAfiliado
                           ? (
                             <td className='px-4 py-2 text-center dark:text-white'>{fam.users_nombre}</td>
                             )
                           : (
                             <td className='px-4 py-2 text-center dark:text-white'>{user.username}</td>
-                            )}
+                            )} */}
                         <td className='text-center py-2 gap-4 flex justify-center'>
                           <Tooltip content='Editar'>
                             <button
