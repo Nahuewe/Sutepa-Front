@@ -20,11 +20,11 @@ const initialForm = {
 function DocumentacionAdicionalData ({ register }) {
   const dispatch = useDispatch()
   const [documentos, setDocumentos] = useState([])
-  const { user } = useSelector(state => state.auth)
+  const { user } = useSelector((state) => state.auth)
   const [formData, setFormData] = useState(initialForm)
   const formRef = useRef()
   const [archivoOptions, setArchivoOptions] = useState([])
-  const { activeAfiliado } = useSelector(state => state.afiliado)
+  const { activeAfiliado } = useSelector((state) => state.afiliado)
   const [isLoading, setIsLoading] = useState(true)
   const [idCounter, setIdCounter] = useState(0)
   const [loadingDocumentos, setLoadingDocumentos] = useState(false)
@@ -44,10 +44,18 @@ function DocumentacionAdicionalData ({ register }) {
   }
 
   const handleFileChange = (e) => {
-    setFormData({
-      ...formData,
-      archivo: e.target.files[0]
-    })
+    const file = e.target.files[0]
+    if (file) {
+      setFormData({
+        ...formData,
+        archivo: file
+      })
+    } else {
+      setFormData({
+        ...formData,
+        archivo: ''
+      })
+    }
   }
 
   const onReset = () => {
@@ -55,80 +63,60 @@ function DocumentacionAdicionalData ({ register }) {
     setFormData(initialForm)
   }
 
-  const getDocumentoByName = id => {
-    const documentoObj = archivoOptions.find(item => item.id === id)
+  const getDocumentoByName = (id) => {
+    const documentoObj = archivoOptions.find((item) => item.id === id)
     return documentoObj ? documentoObj.nombre : ''
   }
 
-  // const enviarArchivo = async (documento) => {
-  //   const formDataToSend = new FormData()
-  //   formDataToSend.append('archivo', documento.archivo)
+  const enviarArchivo = async (documento) => {
+    const formDataToSend = new FormData()
 
-  //   for (const pair of formDataToSend.entries()) {
-  //     console.log(pair[0] + ': ' + pair[1])
-  //   }
+    if (documento.archivo instanceof File) {
+      formDataToSend.append('documentacion[0][archivo]', documento.archivo)
+    } else {
+      formDataToSend.append('documentacion[0][archivo]', documento.archivo)
+    }
 
-  //   try {
-  //     const response = await sutepaApi.post('personas', formDataToSend, {
-  //       headers: {
-  //         'Content-Type': 'multipart/form-data'
-  //       }
-  //     })
-  //     toast.success('Documento enviado correctamente')
-  //     return response.data.data.archivoUrl
-  //   } catch (error) {
-  //     toast.error('Error al enviar el documento')
-  //     throw error
-  //   }
-  // }
+    formDataToSend.append('documentacion[0][tipo_documento_id]', documento.tipo_documento_id)
+    formDataToSend.append('documentacion[0][users_id]', documento.users_id)
 
-  // const agregarDocumento = () => {
-  //   const tipoArchivoOption = archivoOptions.find(option => option.id === parseInt(formData.tipo_documento_id))
-  //   if (tipoArchivoOption && formData.archivo) {
-  //     const nuevoDocumento = {
-  //       ...formData,
-  //       id: idCounter,
-  //       tipo_documento_id: tipoArchivoOption.id,
-  //       archivo: formData.archivo,
-  //       archivoUrl: URL.createObjectURL(formData.archivo),
-  //       fecha_carga: new Date(),
-  //       users_id: user.id,
-  //       users_nombre: user.username
-  //     }
+    try {
+      const response = await sutepaApi.post('file', formDataToSend, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+      toast.success('Documento agregado correctamente')
+      return response.data
+    } catch (error) {
+      toast.error('Error al enviar el documento')
+      throw error
+    }
+  }
 
-  //     console.log(nuevoDocumento)
+  const agregarDocumento = async () => {
+    const tipoArchivoOption = archivoOptions.find(
+      (option) => option.id === parseInt(formData.tipo_documento_id)
+    )
 
-  //     // Verificar si el documento ya existe en el estado local
-  //     if (!documentos.some(doc => doc.archivoUrl === nuevoDocumento.archivoUrl)) {
-  //       dispatch(onAddDocumento(nuevoDocumento))
-  //       setDocumentos([...documentos, nuevoDocumento])
-  //       setIdCounter(idCounter + 1)
-  //       enviarArchivo(nuevoDocumento)
-  //     } else {
-  //       toast.error('El documento ya está en la lista.')
-  //     }
-
-  //     onReset()
-  //   } else {
-  //     toast.error('Selecciona un tipo de archivo y subí un documento')
-  //   }
-  // }
-
-  const agregarDocumento = () => {
-    const tipoArchivoOption = archivoOptions.find(option => option.id === parseInt(formData.tipo_documento_id))
     if (tipoArchivoOption && formData.archivo) {
       const nuevoDocumento = {
         ...formData,
         id: idCounter,
         tipo_documento_id: tipoArchivoOption.id,
-        archivo: URL.createObjectURL(formData.archivo),
+        archivo: formData.archivo,
         fecha_carga: new Date(),
         users_id: user.id,
-        users_nombre: user.username
+        users_nombre: user.username,
+        blobURL: URL.createObjectURL(formData.archivo)
       }
 
-      // Verificar si el documento ya existe en el estado local
-      if (!documentos.some(doc => doc.archivo === nuevoDocumento.archivo)) {
+      if (!documentos.some((doc) => doc.archivo === nuevoDocumento.archivo)) {
+        // Subir el archivo al servidor, enviando el temp_id
+        const response = await enviarArchivo(nuevoDocumento)
+        const documentoId = response.ids[0]
+
+        nuevoDocumento.id = documentoId
         dispatch(onAddDocumento(nuevoDocumento))
         setDocumentos([...documentos, nuevoDocumento])
         setIdCounter(idCounter + 1)
@@ -142,11 +130,22 @@ function DocumentacionAdicionalData ({ register }) {
     }
   }
 
-  const onDelete = (index) => {
+  const onDelete = async (index) => {
     const documentoAEliminar = documentos[index]
-    const newDocumentos = documentos.filter((_, i) => i !== index)
-    setDocumentos(newDocumentos)
-    dispatch(onDeleteDocumento(documentoAEliminar.id))
+
+    try {
+      // Hacer la solicitud DELETE al backend
+      await sutepaApi.delete(`file/${documentoAEliminar.id}`)
+
+      // Si la eliminación es exitosa, eliminar el documento del estado
+      const newDocumentos = documentos.filter((_, i) => i !== index)
+      setDocumentos(newDocumentos)
+
+      dispatch(onDeleteDocumento(documentoAEliminar.id))
+      toast.success('Documento eliminado correctamente')
+    } catch (error) {
+      toast.error('Error al eliminar el documento')
+    }
   }
 
   useEffect(() => {
@@ -161,9 +160,11 @@ function DocumentacionAdicionalData ({ register }) {
         if (documentos.length === 0) {
           setDocumentos(activeAfiliado.documentaciones)
         } else {
-          const documentosExistentesIds = documentos.map(doc => doc.id)
-          const nuevosDocumentos = activeAfiliado.documentaciones.filter(doc => !documentosExistentesIds.includes(doc.id))
-          setDocumentos(prevDocumentos => [...prevDocumentos, ...nuevosDocumentos])
+          const documentosExistentesIds = documentos.map((doc) => doc.id)
+          const nuevosDocumentos = activeAfiliado.documentaciones.filter(
+            (doc) => !documentosExistentesIds.includes(doc.id)
+          )
+          setDocumentos((prevDocumentos) => [...prevDocumentos, ...nuevosDocumentos])
         }
       }
       setLoadingDocumentos(false)
@@ -185,7 +186,7 @@ function DocumentacionAdicionalData ({ register }) {
 
   useEffect(() => {
     if (!loadingDocumentos) {
-      documentos.forEach(documento => {
+      documentos.forEach((documento) => {
         dispatch(onAddDocumento(documento))
       })
     }
@@ -213,7 +214,9 @@ function DocumentacionAdicionalData ({ register }) {
                     onChange={handleInputChange}
                   />
                   <div>
-                    <label htmlFor='archivo' className='form-label'>Archivo</label>
+                    <label htmlFor='archivo' className='form-label'>
+                      Archivo
+                    </label>
                     <FileInput
                       type='file'
                       id='archivo'
@@ -240,40 +243,50 @@ function DocumentacionAdicionalData ({ register }) {
                 <table className='table-auto w-full'>
                   <thead className='bg-gray-300 dark:bg-gray-700'>
                     <tr>
-                      <th className='px-4 py-2 text-center dark:text-white'>Fecha de Carga</th>
-                      <th className='px-4 py-2 text-center dark:text-white'>Tipo de Archivo</th>
-                      <th className='px-4 py-2 text-center dark:text-white'>Enlace del Archivo</th>
-                      {/* <th className='px-4 py-2 text-center dark:text-white'>Usuario de Carga</th> */}
-                      <th className='px-4 py-2 text-center dark:text-white'>Acciones</th>
+                      <th className='px-4 py-2 text-center dark:text-white'>
+                        Fecha de Carga
+                      </th>
+                      <th className='px-4 py-2 text-center dark:text-white'>
+                        Tipo de Archivo
+                      </th>
+                      <th className='px-4 py-2 text-center dark:text-white'>
+                        Vista Previa
+                      </th>
+                      <th className='px-4 py-2 text-center dark:text-white'>
+                        Acciones
+                      </th>
                     </tr>
                   </thead>
                   <tbody className='divide-y dark:divide-gray-700'>
                     {documentos.map((documento, index) => (
-                      <tr key={index} className='bg-white dark:bg-gray-800 dark:border-gray-700'>
+                      <tr
+                        key={index}
+                        className='bg-white dark:bg-gray-800 dark:border-gray-700'
+                      >
                         {activeAfiliado && (
-                          <td className='px-4 py-2 text-center dark:text-white'>{formatDate(documento.created_at || documento.fecha_carga)}</td>
+                          <td className='px-4 py-2 text-center dark:text-white'>
+                            {formatDate(documento.created_at || documento.fecha_carga)}
+                          </td>
                         )}
                         {!activeAfiliado && (
-                          <td className='px-4 py-2 text-center dark:text-white'>{formatDate(documento.fecha_carga)}</td>
+                          <td className='px-4 py-2 text-center dark:text-white'>
+                            {formatDate(documento.fecha_carga)}
+                          </td>
                         )}
                         <td className='px-4 py-2 whitespace-nowrap font-medium text-gray-900 dark:text-white text-center'>
-                          {documento.tipo_documento || getDocumentoByName(documento.tipo_documento_id)}
+                          {documento.tipo_documento ||
+                          getDocumentoByName(documento.tipo_documento_id)}
                         </td>
-                        <td className='px-4 py-2 text-center dark:text-white'>
-                          {/* <a href={documento.archivoUrl} target='_blank' rel='noopener noreferrer' className='text-blue-500 underline'>
-                            {documento.archivoUrl}
-                          </a> */}
-                          <a href={documento.archivo} target='_blank' rel='noopener noreferrer' className='text-blue-500 underline'>
-                            {documento.archivo}
+                        <td className='px-4 py-2 text-center'>
+                          <a
+                            href={documento.blobURL || documento.archivo}
+                            target='_blank'
+                            rel='noopener noreferrer'
+                            className='text-blue-600 hover:underline dark:text-blue-400'
+                          >
+                            Ver Documento
                           </a>
                         </td>
-                        {/* {activeAfiliado
-                          ? (
-                            <td className='px-4 py-2 text-center dark:text-white'>{documento.users_nombre}</td>
-                            )
-                          : (
-                            <td className='px-4 py-2 text-center dark:text-white'>{user.username}</td>
-                            )} */}
                         <td className='text-center py-2'>
                           <Tooltip content='Eliminar'>
                             <button
@@ -281,7 +294,11 @@ function DocumentacionAdicionalData ({ register }) {
                               onClick={() => onDelete(index)}
                               className=' text-red-600 hover:text-red-900'
                             >
-                              <Icon icon='heroicons:trash' width='24' height='24' />
+                              <Icon
+                                icon='heroicons:trash'
+                                width='24'
+                                height='24'
+                              />
                             </button>
                           </Tooltip>
                         </td>

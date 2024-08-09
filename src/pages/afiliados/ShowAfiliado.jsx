@@ -163,7 +163,7 @@ export const ShowAfiliado = () => {
                   <tr>
                     <th className='px-4 py-2 text-center dark:text-white'>Fecha de Carga</th>
                     <th className='px-4 py-2 text-center dark:text-white'>Tipo de Archivo</th>
-                    <th className='px-4 py-2 text-center dark:text-white'>Enlace del Archivo</th>
+                    <th className='px-4 py-2 text-center dark:text-white'>Vista Previa</th>
                     {/* <th className='px-4 py-2 text-center dark:text-white'>Usuario de carga</th> */}
                     <th className='px-4 py-2 text-center dark:text-white'>Ultimo Cambio</th>
                   </tr>
@@ -176,8 +176,13 @@ export const ShowAfiliado = () => {
                         {documento.tipo_documento || 'Desconocido'}
                       </td>
                       <td className='px-4 py-2 text-center dark:text-white'>
-                        <a href={documento.archivo} target='_blank' rel='noopener noreferrer' className='text-blue-500 underline'>
-                          {documento.archivo}
+                        <a
+                          href={documento.archivo}
+                          target='_blank'
+                          rel='noopener noreferrer'
+                          className='text-blue-600 hover:underline dark:text-blue-400'
+                        >
+                          Ver Documento
                         </a>
                       </td>
                       {/* <td className='px-4 py-2 text-center dark:text-white'>{documento.users_nombre}</td> */}

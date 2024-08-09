@@ -89,6 +89,8 @@ function SubsidioData () {
   function addSubsidio () {
     const newSubsidio = {
       ...formData,
+      fecha_solicitud: picker ? moment(picker[0]).format('YYYY-MM-DD') : null,
+      fecha_otorgamiento: picker ? moment(picker[0]).format('YYYY-MM-DD') : null,
       fecha_carga: new Date(),
       id: isEditing ? editingSubsidioId : idCounter,
       users_id: user.id,
