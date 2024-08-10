@@ -177,7 +177,7 @@ export const ShowAfiliado = () => {
                       </td>
                       <td className='px-4 py-2 text-center dark:text-white'>
                         <a
-                          href={documento.archivo}
+                          href={documento.archivo_url}
                           target='_blank'
                           rel='noopener noreferrer'
                           className='text-blue-600 hover:underline dark:text-blue-400'
