@@ -28,6 +28,7 @@ function DocumentacionAdicionalData ({ register }) {
   const [isLoading, setIsLoading] = useState(true)
   const [idCounter, setIdCounter] = useState(0)
   const [loadingDocumentos, setLoadingDocumentos] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false) // Nuevo estado para el loading
 
   const handleArchivo = async () => {
     const response = await sutepaApi.get('documentacion')
@@ -100,6 +101,8 @@ function DocumentacionAdicionalData ({ register }) {
     )
 
     if (tipoArchivoOption && formData.archivo) {
+      setIsSubmitting(true) // Inicia el estado de carga
+
       const nuevoDocumento = {
         ...formData,
         id: idCounter,
@@ -112,16 +115,23 @@ function DocumentacionAdicionalData ({ register }) {
       }
 
       if (!documentos.some((doc) => doc.archivo === nuevoDocumento.archivo)) {
-        // Subir el archivo al servidor, enviando el temp_id
-        const response = await enviarArchivo(nuevoDocumento)
-        const documentoId = response.ids[0]
+        try {
+          // Subir el archivo al servidor, enviando el temp_id
+          const response = await enviarArchivo(nuevoDocumento)
+          const documentoId = response.ids[0]
 
-        nuevoDocumento.id = documentoId
-        dispatch(onAddDocumento(nuevoDocumento))
-        setDocumentos([...documentos, nuevoDocumento])
-        setIdCounter(idCounter + 1)
+          nuevoDocumento.id = documentoId
+          dispatch(onAddDocumento(nuevoDocumento))
+          setDocumentos([...documentos, nuevoDocumento])
+          setIdCounter(idCounter + 1)
+        } catch (error) {
+          console.error('Error al agregar documento:', error)
+        } finally {
+          setIsSubmitting(false)
+        }
       } else {
         toast.error('El documento ya está en la lista.')
+        setIsSubmitting(false)
       }
 
       onReset()
@@ -229,10 +239,11 @@ function DocumentacionAdicionalData ({ register }) {
                 <div className='flex justify-end mt-4 gap-4'>
                   <button
                     type='button'
-                    className='btn btn-primary rounded-lg'
+                    className={`btn btn-primary ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'hover:bg-blue-600'} btn btn-primary rounded-lg`}
                     onClick={agregarDocumento}
+                    disabled={isSubmitting}
                   >
-                    Agregar Documento
+                    {isSubmitting ? 'Subiendo...' : 'Agregar Documento'}
                   </button>
                 </div>
               </form>
