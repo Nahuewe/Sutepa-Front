@@ -150,6 +150,46 @@ export const ShowAfiliado = () => {
           </div>
         )}
 
+        {/* Tabla de Familiares */}
+
+        {activeAfiliado.familiares && activeAfiliado.familiares.length > 0 && (
+          <div>
+            <h4 className='card-title text-center bg-red-500 dark:bg-gray-600 text-white rounded-md p-2'>
+              Datos de los Familiares
+            </h4>
+            <div className='overflow-x-auto mt-4'>
+              <table className='table-auto w-full'>
+                <thead className='bg-gray-300 dark:bg-gray-700'>
+                  <tr>
+                    <th className='px-4 py-2 text-center dark:text-white'>Fecha de Carga</th>
+                    <th className='px-4 py-2 text-center dark:text-white'>Nombre y Apellido</th>
+                    <th className='px-4 py-2 text-center dark:text-white'>Fecha de Nacimiento</th>
+                    <th className='px-4 py-2 text-center dark:text-white'>Tipo de Documento</th>
+                    <th className='px-4 py-2 text-center dark:text-white'>Documento</th>
+                    <th className='px-4 py-2 text-center dark:text-white'>Parentesco</th>
+                    {/* <th className='px-4 py-2 text-center dark:text-white'>Usuario de carga</th> */}
+                    <th className='px-4 py-2 text-center dark:text-white'>Ultimo Cambio</th>
+                  </tr>
+                </thead>
+                <tbody className='divide-y dark:divide-gray-700'>
+                  {activeAfiliado.familiares.map(fam => (
+                    <tr key={fam.id} className='bg-white dark:bg-gray-800 dark:border-gray-700'>
+                      <td className='px-4 py-2 text-center dark:text-white'>{formatDate(fam.created_at)}</td>
+                      <td className='px-4 py-2 text-center dark:text-white mayuscula'>{fam.nombre_familiar}</td>
+                      <td className='px-4 py-2 text-center dark:text-white'>{formatDate(fam.fecha_nacimiento_familiar)}</td>
+                      <td className='px-4 py-2 text-center dark:text-white'>{fam.tipo_documento_familiar || ''}</td>
+                      <td className='px-4 py-2 text-center dark:text-white'>{fam.documento}</td>
+                      <td className='px-4 py-2 text-center dark:text-white'>{fam.parentesco}</td>
+                      {/* <td className='px-4 py-2 text-center dark:text-white'>{fam.users_nombre}</td> */}
+                      <td className='px-4 py-2 text-center dark:text-white'>{formatDate(fam.updated_at)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
         {/* Tabla de Documentacion */}
 
         {activeAfiliado.documentaciones && activeAfiliado.documentaciones.length > 0 && (
@@ -195,43 +235,7 @@ export const ShowAfiliado = () => {
           </div>
         )}
 
-        {activeAfiliado.familiares && activeAfiliado.familiares.length > 0 && (
-          <div>
-            <h4 className='card-title text-center bg-red-500 dark:bg-gray-600 text-white rounded-md p-2'>
-              Datos de los Familiares
-            </h4>
-            <div className='overflow-x-auto mt-4'>
-              <table className='table-auto w-full'>
-                <thead className='bg-gray-300 dark:bg-gray-700'>
-                  <tr>
-                    <th className='px-4 py-2 text-center dark:text-white'>Fecha de Carga</th>
-                    <th className='px-4 py-2 text-center dark:text-white'>Nombre y Apellido</th>
-                    <th className='px-4 py-2 text-center dark:text-white'>Fecha de Nacimiento</th>
-                    <th className='px-4 py-2 text-center dark:text-white'>Tipo de Documento</th>
-                    <th className='px-4 py-2 text-center dark:text-white'>Documento</th>
-                    <th className='px-4 py-2 text-center dark:text-white'>Parentesco</th>
-                    {/* <th className='px-4 py-2 text-center dark:text-white'>Usuario de carga</th> */}
-                    <th className='px-4 py-2 text-center dark:text-white'>Ultimo Cambio</th>
-                  </tr>
-                </thead>
-                <tbody className='divide-y dark:divide-gray-700'>
-                  {activeAfiliado.familiares.map(fam => (
-                    <tr key={fam.id} className='bg-white dark:bg-gray-800 dark:border-gray-700'>
-                      <td className='px-4 py-2 text-center dark:text-white'>{formatDate(fam.created_at)}</td>
-                      <td className='px-4 py-2 text-center dark:text-white mayuscula'>{fam.nombre_familiar}</td>
-                      <td className='px-4 py-2 text-center dark:text-white'>{formatDate(fam.fecha_nacimiento_familiar)}</td>
-                      <td className='px-4 py-2 text-center dark:text-white'>{fam.tipo_documento_familiar || ''}</td>
-                      <td className='px-4 py-2 text-center dark:text-white'>{fam.documento}</td>
-                      <td className='px-4 py-2 text-center dark:text-white'>{fam.parentesco}</td>
-                      {/* <td className='px-4 py-2 text-center dark:text-white'>{fam.users_nombre}</td> */}
-                      <td className='px-4 py-2 text-center dark:text-white'>{formatDate(fam.updated_at)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
+        {/* Tabla de Subsidios */}
 
         {activeAfiliado.subsidios && activeAfiliado.subsidios.length > 0 && (
           <div>

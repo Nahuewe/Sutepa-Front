@@ -98,7 +98,13 @@ function DocumentacionAdicionalData ({ register }) {
   const cambiarEstadoAfiliado = async (estado) => {
     try {
       await sutepaApi.delete(`/personas/${activeAfiliado.persona.id}`, { estado })
-      toast.success(`Afiliado cambiado a ${estado} correctamente`)
+
+      // Cambiar el color del estado a rojo en el mensaje del toast
+      toast.success(
+        <>
+          Afiliado cambiado a <span style={{ color: 'red' }}>{estado}</span> correctamente
+        </>
+      )
     } catch (error) {
       toast.error('No se pudo cambiar el estado del afiliado')
     }
