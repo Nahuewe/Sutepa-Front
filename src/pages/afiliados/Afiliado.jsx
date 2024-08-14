@@ -167,9 +167,9 @@ export const Afiliado = () => {
       if (activeAfiliado.persona) {
         personasData.push({
           Legajo: activeAfiliado.persona.legajo,
-          Nombre: activeAfiliado.persona.nombre,
-          Apellido: activeAfiliado.persona.apellido,
-          'Correo Electrónico': activeAfiliado.persona.email,
+          Nombre: activeAfiliado.persona.nombre?.toUpperCase() || '',
+          Apellido: activeAfiliado.persona.apellido?.toUpperCase() || '',
+          'Correo Electrónico': activeAfiliado.persona.email ? activeAfiliado.persona.email.toLowerCase() : '',
           'Tipo de Documento': activeAfiliado.persona.tipo_documento || '',
           DNI: activeAfiliado.persona.dni,
           CUIL: activeAfiliado.persona.cuil,
@@ -185,7 +185,10 @@ export const Afiliado = () => {
 
       if (activeAfiliado.domicilios) {
         domiciliosData.push({
-          Domicilio: activeAfiliado.domicilios.domicilio,
+          Legajo: activeAfiliado.persona.legajo,
+          Nombre: activeAfiliado.persona.nombre?.toUpperCase() || '',
+          Apellido: activeAfiliado.persona.apellido?.toUpperCase() || '',
+          Domicilio: activeAfiliado.domicilios.domicilio?.toUpperCase() || '',
           Provincia: activeAfiliado.domicilios.provincia,
           Localidad: activeAfiliado.domicilios.localidad,
           'Código Postal': activeAfiliado.domicilios.codigo_postal
@@ -194,6 +197,9 @@ export const Afiliado = () => {
 
       if (activeAfiliado.datos_laborales) {
         datosLaboralesData.push({
+          Legajo: activeAfiliado.persona.legajo,
+          Nombre: activeAfiliado.persona.nombre?.toUpperCase() || '',
+          Apellido: activeAfiliado.persona.apellido?.toUpperCase() || '',
           'Tipo de Contrato': getTipoContrato(activeAfiliado.datos_laborales.tipo_contrato_id),
           UGL: activeAfiliado.datos_laborales.ugl,
           Agencia: activeAfiliado.datos_laborales.agencia,
@@ -203,25 +209,34 @@ export const Afiliado = () => {
           Tramo: activeAfiliado.datos_laborales.tramo,
           'Carga Horaria': activeAfiliado.datos_laborales.carga_horaria,
           'Fecha de Ingreso': formatDate(activeAfiliado.datos_laborales.fecha_ingreso),
-          'Correo Electrónico Laboral': activeAfiliado.datos_laborales.email_laboral,
+          'Correo Electrónico Laboral': activeAfiliado.datos_laborales.email_laboral ? activeAfiliado.datos_laborales.email_laboral.toLowerCase() : '',
           Teléfono: activeAfiliado.datos_laborales.telefono_laboral
         })
       }
 
       if (activeAfiliado.obraSociales) {
         obraSocialData.push({
+          Legajo: activeAfiliado.persona.legajo,
+          Nombre: activeAfiliado.persona.nombre?.toUpperCase() || '',
+          Apellido: activeAfiliado.persona.apellido?.toUpperCase() || '',
           'Tipo de Obra Social': activeAfiliado.obraSociales.tipo_obra,
-          'Obra Social': activeAfiliado.obraSociales.obra_social
+          'Obra Social': activeAfiliado.obraSociales.obra_social?.toUpperCase() || ''
         })
       }
 
       documentacionesData.push(...activeAfiliado.documentaciones.map(doc => ({
+        Legajo: activeAfiliado.persona.legajo,
+        Nombre: activeAfiliado.persona.nombre?.toUpperCase() || '',
+        Apellido: activeAfiliado.persona.apellido?.toUpperCase() || '',
         'Tipo de Archivo': doc.tipo_documento || '',
-        'Nombre de Archivo': doc.archivo
+        'Nombre de Archivo': `https://sistema.sutepa.com.ar/uploads/${doc.archivo}`
       })))
 
       familiaresData.push(...activeAfiliado.familiares.map(fam => ({
-        'Nombre y Apellido': fam.nombre_familiar,
+        Legajo: activeAfiliado.persona.legajo,
+        Nombre: activeAfiliado.persona.nombre?.toUpperCase() || '',
+        Apellido: activeAfiliado.persona.apellido?.toUpperCase() || '',
+        'Nombre y Apellido': fam.nombre_familiar?.toUpperCase() || '',
         'Fecha de Nacimiento': formatDate(fam.fecha_nacimiento_familiar),
         'Tipo de Documento': fam.tipo_documento_familiar || '',
         Documento: fam.documento,
@@ -230,10 +245,13 @@ export const Afiliado = () => {
 
       if (activeAfiliado.subsidios) {
         subsidiosData.push(...activeAfiliado.subsidios.map(subsidio => ({
+          Legajo: activeAfiliado.persona.legajo,
+          Nombre: activeAfiliado.persona.nombre?.toUpperCase() || '',
+          Apellido: activeAfiliado.persona.apellido?.toUpperCase() || '',
           'Tipo de Subsidio': subsidio.tipo_subsidio,
           'Fecha de Solicitud': formatDate(subsidio.fecha_solicitud),
           'Fecha de Otorgamiento': formatDate(subsidio.fecha_otorgamiento),
-          Observaciones: subsidio.observaciones
+          Observaciones: subsidio.observaciones?.toUpperCase() || ''
         })))
       }
     })
