@@ -116,7 +116,13 @@ export const Create = () => {
                 </button>
               </div>
               <div className='ltr:text-right rtl:text-left'>
-                <Button type='submit' text='Guardar' className='btn btn-success rounded-lg items-center text-center py-2 px-6' isLoading={isSubmitting} />
+                <Button
+                  type='submit'
+                  text={isSubmitting ? 'Guardando' : 'Guardar'}
+                  className={`bg-green-400 ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'hover:bg-green-500'} text-white items-center text-center py-2 px-6 rounded-lg`}
+                  disabled={isSubmitting}
+                  onClick={isSubmitting}
+                />
               </div>
             </div>
           </form>
