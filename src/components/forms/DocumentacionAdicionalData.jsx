@@ -95,13 +95,22 @@ function DocumentacionAdicionalData ({ register }) {
     }
   }
 
+  const cambiarEstadoAfiliado = async (estado) => {
+    try {
+      await sutepaApi.delete(`/personas/${activeAfiliado.persona.id}`, { estado })
+      toast.success(`Afiliado cambiado a ${estado} correctamente`)
+    } catch (error) {
+      toast.error('No se pudo cambiar el estado del afiliado')
+    }
+  }
+
   const agregarDocumento = async () => {
     const tipoArchivoOption = archivoOptions.find(
       (option) => option.id === parseInt(formData.tipo_documento_id)
     )
 
     if (tipoArchivoOption && formData.archivo) {
-      setIsSubmitting(true) // Inicia el estado de carga
+      setIsSubmitting(true)
 
       const nuevoDocumento = {
         ...formData,
@@ -124,6 +133,11 @@ function DocumentacionAdicionalData ({ register }) {
           dispatch(onAddDocumento(nuevoDocumento))
           setDocumentos([...documentos, nuevoDocumento])
           setIdCounter(idCounter + 1)
+
+          // Si el tipo de archivo es "TELEGRAMA DE BAJA", cambiar el estado del afiliado a "INACTIVO"
+          if (nuevoDocumento.tipo_documento_id === 7) {
+            await cambiarEstadoAfiliado('INACTIVO')
+          }
         } catch (error) {
           console.error('Error al agregar documento:', error)
         } finally {
