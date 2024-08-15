@@ -245,7 +245,13 @@ export const UserForm = ({ fnAction, activeUser = null }) => {
             </div>
 
             <div className='ltr:text-right rtl:text-left'>
-              <Button type='submit' text='Guardar' className='btn-dark' isLoading={isSubmitting} />
+              <Button
+                type='submit'
+                text={isSubmitting ? 'Guardando' : 'Guardar'}
+                className={`bg-green-500 ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'hover:bg-green-700'} text-white items-center text-center py-2 px-6 rounded-lg`}
+                disabled={isSubmitting}
+                onClick={isSubmitting ? undefined : handleSubmit}
+              />
             </div>
           </form>
           )}

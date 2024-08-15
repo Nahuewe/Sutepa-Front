@@ -19,6 +19,11 @@ export const menuItems = [
     title: 'Usuarios',
     icon: 'heroicons-outline:users',
     link: 'usuarios'
+  },
+  {
+    title: 'Seccionales',
+    icon: 'heroicons-outline:building-office',
+    link: 'seccionales'
   }
 ]
 
