@@ -1,12 +1,12 @@
 /* eslint-disable no-unused-vars */
 import { useSelector, useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
-import { handleSeccional, setErrorMessage } from '@/store/seccional'
+import { handleSeccional, handleSeccionalSinpaginar, setErrorMessage } from '@/store/seccional'
 import { handleShowEdit, handleShowModal } from '@/store/layout'
 import { sutepaApi } from '../api'
 
 export const useSeccionalStore = () => {
-  const { seccionales, paginate, activeSeccional } = useSelector(state => state.seccional)
+  const { seccionales, seccionalesSinPaginar, paginate, activeSeccional } = useSelector(state => state.seccional)
   const dispatch = useDispatch()
 
   const startLoadingSeccional = async (page) => {
@@ -14,6 +14,16 @@ export const useSeccionalStore = () => {
       const response = await sutepaApi.get(`/seccional?page=${page}`)
       const { data, meta } = response.data
       dispatch(handleSeccional({ data, meta }))
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const startGetSeccionalesSinPaginar = async () => {
+    try {
+      const response = await sutepaApi.get('/seccionalAll')
+      const { data } = response.data
+      dispatch(handleSeccionalSinpaginar(data))
     } catch (error) {
       console.log(error)
     }
@@ -100,11 +110,13 @@ export const useSeccionalStore = () => {
   return {
     //* Propiedades
     seccionales,
+    seccionalesSinPaginar,
     paginate,
     activeSeccional,
 
     //* Metodos
     startLoadingSeccional,
+    startGetSeccionalesSinPaginar,
     startSavingSeccional,
     startDeleteSeccional,
     startUpdateSeccional,

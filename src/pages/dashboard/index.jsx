@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useAfiliadoStore } from '@/helpers'
+import { useAfiliadoStore, useSeccionalStore } from '@/helpers'
 import { sutepaApi } from '@/api'
 import Card from '@/components/ui/Card'
 import Loading from '@/components/Loading'
@@ -9,9 +9,9 @@ import DonutChart from './DonutChart'
 
 const Dashboard = () => {
   const { afiliadosSinPaginar, startLoadingAfiliado, startGetAfiliadosSinPaginar } = useAfiliadoStore()
+  const { seccionalesSinPaginar, startLoadingSeccional, startGetSeccionalesSinPaginar } = useSeccionalStore()
   const [isLoading, setIsLoading] = useState(true)
   const [totalUsers, setTotalUsers] = useState(0)
-  const [totalSeccionales, setTotalSeccionales] = useState(0)
 
   const formatObject = (data) => {
     return data
@@ -27,25 +27,14 @@ const Dashboard = () => {
     }
   }
 
-  const startSelectSeccionales = async () => {
-    try {
-      const response = await sutepaApi.get('/seccional')
-      const { data } = response.data
-      return formatObject(data)
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
   useEffect(() => {
     const fetchData = async () => {
       const usersData = await startSelectUsers()
-      const seccionalesData = await startSelectSeccionales()
-
       setTotalUsers(usersData.length)
-      setTotalSeccionales(seccionalesData.length)
       await startLoadingAfiliado()
+      await startLoadingSeccional()
       await startGetAfiliadosSinPaginar()
+      await startGetSeccionalesSinPaginar()
       setIsLoading(false)
     }
 
@@ -70,7 +59,7 @@ const Dashboard = () => {
               <EstadisticasDashboard
                 afiliadosSinPaginar={afiliadosSinPaginar}
                 totalUsers={totalUsers}
-                totalSeccionales={totalSeccionales}
+                seccionalesSinPaginar={seccionalesSinPaginar}
               />
             </div>
 

@@ -33,8 +33,9 @@ const columns = [
 ]
 
 export const Seccionales = () => {
-  const { seccionales, paginate, activeSeccional, startLoadingSeccional, startSavingSeccional, startDeleteSeccional, startUpdateSeccional } = useSeccionalStore()
+  const { seccionales, paginate, activeSeccional, startLoadingSeccional, startSavingSeccional, startDeleteSeccional, startUpdateSeccional, startSearchSeccional } = useSeccionalStore()
   const dispatch = useDispatch()
+  const [search, setSearch] = useState('')
   const [isLoading, setIsLoading] = useState(true)
 
   function onEdit (id) {
@@ -45,6 +46,13 @@ export const Seccionales = () => {
   function onDelete (id) {
     dispatch(setActiveSeccional(id))
     dispatch(handleShowDelete())
+  }
+
+  async function onSearch ({ target: { value } }) {
+    setSearch(value)
+    if (value.length === 0) await loadingSeccional()
+    if (value.length <= 1) return false
+    await startSearchSeccional(value)
   }
 
   async function loadingSeccional (page = 1) {
@@ -70,6 +78,13 @@ export const Seccionales = () => {
                   <h1 className='text-2xl font-semibold dark:text-white mb-4 md:mb-0'>Listado de Seccionales</h1>
                   <div className='flex flex-col md:flex-row items-start md:items-center gap-4'>
                     <div className='flex gap-2'>
+                      <input
+                        type='text'
+                        placeholder='Buscar'
+                        onChange={onSearch}
+                        value={search}
+                        className='form-control px-4 py-2 border border-gray-300 focus:outline-none focus:border-blue-500'
+                      />
                       <Modal
                         title='Agregar Seccional'
                         label='Agregar'
@@ -186,13 +201,20 @@ export const Seccionales = () => {
                       </table>
 
                       {/* Paginado */}
-                      <div className='flex justify-center mt-8'>
-                        <Pagination
-                          paginate={paginate}
-                          onPageChange={(page) => loadingSeccional(page)}
-                          text
-                        />
-                      </div>
+                      {
+                        paginate && (
+                          <div className='flex justify-center mt-8'>
+                            <Pagination
+                              paginate={paginate}
+                              onPageChange={(page) =>
+                                search !== ''
+                                  ? startSearchSeccional(search, page)
+                                  : startLoadingSeccional(page)}
+                              text
+                            />
+                          </div>
+                        )
+                      }
 
                     </div>
                   </div>

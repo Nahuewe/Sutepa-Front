@@ -7,6 +7,7 @@ export const seccionalSlice = createSlice({
   name: 'seccional',
   initialState: {
     seccionales: [],
+    seccionalesSinPaginar: [],
     paginate: null,
     activeSeccional: null,
     errorMessage: ''
@@ -16,6 +17,9 @@ export const seccionalSlice = createSlice({
       state.seccionales = payload.data
       state.paginate = payload.meta
       state.activeSeccional = null
+    },
+    handleSeccionalSinpaginar: (state, { payload }) => {
+      state.seccionalesSinPaginar = payload
     },
     onAddNewSeccional: (state, { payload }) => {
       state.seccionales.push(payload)
@@ -48,6 +52,7 @@ export const seccionalSlice = createSlice({
 
 export const {
   handleSeccional,
+  handleSeccionalSinpaginar,
   onAddNewSeccional,
   setActiveSeccional,
   onDeleteSeccional,
