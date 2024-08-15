@@ -27,7 +27,7 @@ const useFetchData = () => {
           sutepaApi.get('nacionalidad'),
           sutepaApi.get('sexo'),
           sutepaApi.get('agrupamiento'),
-          sutepaApi.get('seccional'),
+          sutepaApi.get('seccionalAll'),
           sutepaApi.get('ugl'),
           sutepaApi.get('tramo')
         ])
