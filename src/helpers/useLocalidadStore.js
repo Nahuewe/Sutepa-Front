@@ -1,12 +1,12 @@
 /* eslint-disable no-unused-vars */
 import { useSelector, useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
-import { handleLocalidades, handleLocalidadesSinPaginar, setErrorMessage } from '@/store/localidad'
+import { handleLocalidades, setErrorMessage } from '@/store/localidad'
 import { handleShowEdit, handleShowModal } from '@/store/layout'
 import { sutepaApi } from '../api'
 
 export const useLocalidadStore = () => {
-  const { localidades = [], localidadesSinPaginar, paginate, activeLocalidad } = useSelector((state) => state.localidad)
+  const { localidades = [], paginate, activeLocalidad } = useSelector((state) => state.localidad)
   const dispatch = useDispatch()
 
   const startLoadingLocalidad = async (page = 1) => {
@@ -14,16 +14,6 @@ export const useLocalidadStore = () => {
       const response = await sutepaApi.get(`/localidad?page=${page}`)
       const { data, meta } = response.data
       dispatch(handleLocalidades({ data, meta }))
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  const startGetLocalidadesSinPaginar = async () => {
-    try {
-      const response = await sutepaApi.get('/localidadAll')
-      const { data } = response.data
-      dispatch(handleLocalidadesSinPaginar(data))
     } catch (error) {
       console.log(error)
     }
@@ -110,13 +100,11 @@ export const useLocalidadStore = () => {
   return {
     //* Propiedades
     localidades,
-    localidadesSinPaginar,
     paginate,
     activeLocalidad,
 
     //* Metodos
     startLoadingLocalidad,
-    startGetLocalidadesSinPaginar,
     startSavingLocalidad,
     startUpdateLocalidad,
     startDeleteLocalidad,

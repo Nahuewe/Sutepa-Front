@@ -58,7 +58,7 @@ export const SeccionalForm = ({ fnAction, activeSeccional = null }) => {
           <form onSubmit={handleSubmit(onSubmit)} className='space-y-4 relative'>
             <div>
               <label htmlFor='nombre' className='form-label space-y-2'>
-                Nombre
+                Nombre de la Seccional
                 <strong className='obligatorio'>(*)</strong>
                 <Textinput
                   name='nombre'

@@ -35,11 +35,9 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
     try {
       const response = await sutepaApi.get(`localidades/${provinciaId}`)
       const { data } = response.data
-
       const sortedData = data.sort((a, b) => a.nombre.localeCompare(b.nombre))
       setLocalidades(sortedData)
 
-      // Si se ha seleccionado una localidad anteriormente, reestablecer el valor
       if (selectedProvincia === provinciaId && activeAfiliado?.domicilios?.localidad_id) {
         const localidad = sortedData.find(localidad => localidad.id === activeAfiliado.domicilios.localidad_id)
         if (localidad) {
@@ -158,7 +156,7 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
         : (
             isDataLoading
               ? (
-                <Loading className='mt-28 md:mt-64' /> // Segundo loading mientras se cargan los datos
+                <Loading className='mt-28 md:mt-64' />
                 )
               : (
                 <div>
