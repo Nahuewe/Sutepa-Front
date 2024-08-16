@@ -16,6 +16,7 @@ import EditButton from '@/components/buttons/EditButton'
 import ViewButton from '@/components/buttons/ViewButton'
 import AfiliadoButton from '@/components/buttons/AfiliadoButton'
 import Tooltip from '@/components/ui/Tooltip'
+import { TextInput } from 'flowbite-react'
 
 const columns = [
   {
@@ -288,13 +289,25 @@ export const Afiliado = () => {
                 <div className='mb-4 md:flex md:justify-between'>
                   <h1 className='text-2xl font-semibold dark:text-white mb-4 md:mb-0'>Listado de Afiliados</h1>
                   <div className='flex flex-col md:flex-row items-start md:items-center gap-4'>
-                    <input
-                      type='text'
-                      placeholder='Buscar'
-                      onChange={onSearch}
-                      value={search}
-                      className='form-control px-4 py-2 border border-gray-300 focus:outline-none focus:border-blue-500'
-                    />
+                    <div className='relative'>
+                      <TextInput
+                        name='search'
+                        placeholder='Buscar'
+                        onChange={onSearch}
+                        value={search}
+                      />
+
+                      <div
+                        type='button'
+                        className='absolute top-3 right-2'
+                      >
+                        <svg xmlns='http://www.w3.org/2000/svg' className='icon icon-tabler icon-tabler-search dark:stroke-white' width='16' height='16' viewBox='0 0 24 24' strokeWidth='1.5' stroke='#000000' fill='none' strokeLinecap='round' strokeLinejoin='round'>
+                          <path stroke='none' d='M0 0h24v24H0z' fill='none' />
+                          <path d='M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0' />
+                          <path d='M21 21l-6 -6' />
+                        </svg>
+                      </div>
+                    </div>
 
                     <DeleteModal
                       themeClass='bg-slate-900 dark:bg-slate-800 dark:border-b dark:border-slate-700'

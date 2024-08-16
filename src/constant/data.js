@@ -24,6 +24,11 @@ export const menuItems = [
     title: 'Seccionales',
     icon: 'heroicons-outline:building-office',
     link: 'seccionales'
+  },
+  {
+    title: 'Localidades',
+    icon: 'heroicons-outline:identification',
+    link: 'localidades'
   }
 ]
 

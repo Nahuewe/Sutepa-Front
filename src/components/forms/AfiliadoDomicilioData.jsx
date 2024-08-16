@@ -31,16 +31,16 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
     }
   }
 
-  async function handleLocalidad (id) {
+  async function handleLocalidad (provinciaId) {
     try {
-      const response = await sutepaApi.get(`localidad/${id}`)
+      const response = await sutepaApi.get(`localidades/${provinciaId}`)
       const { data } = response.data
 
       const sortedData = data.sort((a, b) => a.nombre.localeCompare(b.nombre))
       setLocalidades(sortedData)
 
       // Si se ha seleccionado una localidad anteriormente, reestablecer el valor
-      if (selectedProvincia === id && activeAfiliado?.domicilios?.localidad_id) {
+      if (selectedProvincia === provinciaId && activeAfiliado?.domicilios?.localidad_id) {
         const localidad = sortedData.find(localidad => localidad.id === activeAfiliado.domicilios.localidad_id)
         if (localidad) {
           setSelectedLocalidad(localidad.id)

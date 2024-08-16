@@ -12,6 +12,7 @@ import Tooltip from '@/components/ui/Tooltip'
 import { useSeccionalStore } from '@/helpers'
 import { setActiveSeccional } from '../store/seccional'
 import { SeccionalForm } from '../components/sutepa/forms/'
+import { TextInput } from 'flowbite-react'
 
 const columns = [
   {
@@ -78,13 +79,25 @@ export const Seccionales = () => {
                   <h1 className='text-2xl font-semibold dark:text-white mb-4 md:mb-0'>Listado de Seccionales</h1>
                   <div className='flex flex-col md:flex-row items-start md:items-center gap-4'>
                     <div className='flex gap-2'>
-                      <input
-                        type='text'
-                        placeholder='Buscar'
-                        onChange={onSearch}
-                        value={search}
-                        className='form-control px-4 py-2 border border-gray-300 focus:outline-none focus:border-blue-500'
-                      />
+                      <div className='relative'>
+                        <TextInput
+                          name='search'
+                          placeholder='Buscar'
+                          onChange={onSearch}
+                          value={search}
+                        />
+
+                        <div
+                          type='button'
+                          className='absolute top-3 right-2'
+                        >
+                          <svg xmlns='http://www.w3.org/2000/svg' className='icon icon-tabler icon-tabler-search dark:stroke-white' width='16' height='16' viewBox='0 0 24 24' strokeWidth='1.5' stroke='#000000' fill='none' strokeLinecap='round' strokeLinejoin='round'>
+                            <path stroke='none' d='M0 0h24v24H0z' fill='none' />
+                            <path d='M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0' />
+                            <path d='M21 21l-6 -6' />
+                          </svg>
+                        </div>
+                      </div>
                       <Modal
                         title='Agregar Seccional'
                         label='Agregar'
@@ -137,66 +150,68 @@ export const Seccionales = () => {
                         </thead>
                         <tbody className='bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700'>
                           {
-                            (seccionales.length > 0) && seccionales.map((seccional) => (
-                              <tr key={seccional.id}>
-                                <td className='table-td'>{seccional.nombre}</td>
-                                <td className='table-td' />
-                                <td className='table-td' />
-                                <td className='table-td flex justify-start gap-2'>
-                                  <Tooltip content='Editar' placement='top' arrow animation='shift-away'>
-                                    <button
-                                      className='bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-700'
-                                      onClick={() => onEdit(seccional.id)}
-                                    >
-                                      <svg
-                                        xmlns='http://www.w3.org/2000/svg'
-                                        className='icon icon-tabler icon-tabler-pencil'
-                                        width='24'
-                                        height='24'
-                                        viewBox='0 0 24 24'
-                                        strokeWidth='2'
-                                        stroke='currentColor'
-                                        fill='none'
-                                        strokeLinecap='round'
-                                        strokeLinejoin='round'
+                            (seccionales.length > 0)
+                              ? (seccionales.map((seccional) => (
+                                <tr key={seccional.id}>
+                                  <td className='table-td'>{seccional.nombre}</td>
+                                  <td className='table-td' />
+                                  <td className='table-td' />
+                                  <td className='table-td flex justify-start gap-2'>
+                                    <Tooltip content='Editar' placement='top' arrow animation='shift-away'>
+                                      <button
+                                        className='bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-700'
+                                        onClick={() => onEdit(seccional.id)}
                                       >
-                                        <path stroke='none' d='M0 0h24v24H0z' fill='none' />
-                                        <path d='M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4' />
-                                        <path d='M13.5 6.5l4 4' />
-                                      </svg>
-                                    </button>
-                                  </Tooltip>
+                                        <svg
+                                          xmlns='http://www.w3.org/2000/svg'
+                                          className='icon icon-tabler icon-tabler-pencil'
+                                          width='24'
+                                          height='24'
+                                          viewBox='0 0 24 24'
+                                          strokeWidth='2'
+                                          stroke='currentColor'
+                                          fill='none'
+                                          strokeLinecap='round'
+                                          strokeLinejoin='round'
+                                        >
+                                          <path stroke='none' d='M0 0h24v24H0z' fill='none' />
+                                          <path d='M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4' />
+                                          <path d='M13.5 6.5l4 4' />
+                                        </svg>
+                                      </button>
+                                    </Tooltip>
 
-                                  <Tooltip content='Eliminar' placement='top' arrow animation='shift-away'>
-                                    <button
-                                      className='bg-red-500 text-white p-2 rounded-lg hover:bg-red-700'
-                                      onClick={() => onDelete(seccional.id)}
-                                    >
-                                      <svg
-                                        xmlns='http://www.w3.org/2000/svg'
-                                        className='icon icon-tabler icon-tabler-trash'
-                                        width='24'
-                                        height='24'
-                                        viewBox='0 0 24 24'
-                                        strokeWidth='1.5'
-                                        stroke='currentColor'
-                                        fill='none'
-                                        strokeLinecap='round'
-                                        strokeLinejoin='round'
+                                    <Tooltip content='Eliminar' placement='top' arrow animation='shift-away'>
+                                      <button
+                                        className='bg-red-500 text-white p-2 rounded-lg hover:bg-red-700'
+                                        onClick={() => onDelete(seccional.id)}
                                       >
-                                        <path stroke='none' d='M0 0h24v24H0z' fill='none' />
-                                        <path d='M4 7l16 0' />
-                                        <path d='M10 11l0 6' />
-                                        <path d='M14 11l0 6' />
-                                        <path d='M5 7l1 12.5a1 1 0 0 0 1 0.5h10a1 1 0 0 0 1 -0.5l1 -12.5' />
-                                        <path d='M9 7l0 -3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1l0 3' />
-                                      </svg>
-                                    </button>
-                                  </Tooltip>
-                                </td>
-                              </tr>
-                            ))
-                          }
+                                        <svg
+                                          xmlns='http://www.w3.org/2000/svg'
+                                          className='icon icon-tabler icon-tabler-trash'
+                                          width='24'
+                                          height='24'
+                                          viewBox='0 0 24 24'
+                                          strokeWidth='1.5'
+                                          stroke='currentColor'
+                                          fill='none'
+                                          strokeLinecap='round'
+                                          strokeLinejoin='round'
+                                        >
+                                          <path stroke='none' d='M0 0h24v24H0z' fill='none' />
+                                          <path d='M4 7l16 0' />
+                                          <path d='M10 11l0 6' />
+                                          <path d='M14 11l0 6' />
+                                          <path d='M5 7l1 12.5a1 1 0 0 0 1 0.5h10a1 1 0 0 0 1 -0.5l1 -12.5' />
+                                          <path d='M9 7l0 -3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1l0 3' />
+                                        </svg>
+                                      </button>
+                                    </Tooltip>
+                                  </td>
+                                </tr>
+                                )))
+                              : (<tr><td colSpan='10' className='text-center py-2 dark:bg-gray-800'>No se encontraron resultados</td></tr>)
+                        }
                         </tbody>
                       </table>
 
