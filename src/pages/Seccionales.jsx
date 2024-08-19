@@ -16,7 +16,7 @@ import { TextInput } from 'flowbite-react'
 
 const columns = [
   {
-    label: 'Nombre',
+    label: 'Seccional',
     field: 'nombre'
   },
   {

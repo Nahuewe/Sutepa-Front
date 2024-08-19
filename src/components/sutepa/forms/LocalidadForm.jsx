@@ -102,7 +102,7 @@ export const LocalidadForm = ({ fnAction, activeLocalidad = null }) => {
 
             <div className='mb-4'>
               <div className='mb-2 block dark:text-white'>
-                <Label color='gray' htmlFor='nombre' value='Nombre' />
+                <Label color='gray' htmlFor='nombre' value='Nombre de la Localidad' />
                 <strong className='obligatorio'>(*)</strong>
               </div>
               <Textinput

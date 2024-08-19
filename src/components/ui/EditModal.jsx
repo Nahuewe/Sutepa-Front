@@ -14,7 +14,7 @@ const EditModal = ({
   centered,
   scrollContent,
   themeClass = 'bg-slate-900 dark:bg-slate-800 dark:border-b dark:border-slate-700',
-  title = 'Basic Modal'
+  title = 'Edit Modal'
 }) => {
   const dispatch = useDispatch()
   const { showEdit } = useSelector(state => state.layout)

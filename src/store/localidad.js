@@ -4,7 +4,6 @@ export const localidadSlice = createSlice({
   name: 'localidad',
   initialState: {
     localidades: [],
-    localidadesSinPaginar: [],
     activeLocalidad: null,
     paginate: null,
     errorMessage: ''
@@ -17,9 +16,6 @@ export const localidadSlice = createSlice({
       }))
       state.paginate = payload.meta
       state.activeLocalidad = null
-    },
-    handleLocalidadesSinPaginar: (state, { payload }) => {
-      state.localidadesSinPaginar = payload
     },
     onAddNewLocalidad: (state, { payload }) => {
       state.localidades = [...state.localidades, payload]
@@ -46,7 +42,6 @@ export const localidadSlice = createSlice({
 // Action creators are generated for each case reducer function
 export const {
   handleLocalidades,
-  handleLocalidadesSinPaginar,
   onAddNewLocalidad,
   setActiveLocalidad,
   onUpdateLocalidad,

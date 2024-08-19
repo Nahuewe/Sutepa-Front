@@ -30,15 +30,10 @@ const columns = [
 ]
 
 export const Localidades = () => {
-  const { localidades, paginate, activeLocalidad, startLoadingLocalidad, startSavingLocalidad, startDeleteLocalidad, startUpdateLocalidad, startSearchLocalidad } = useLocalidadStore()
+  const { localidades, provincias, paginate, activeLocalidad, startLoadingLocalidad, startSavingLocalidad, startDeleteLocalidad, startUpdateLocalidad, startSearchLocalidad } = useLocalidadStore()
   const dispatch = useDispatch()
   const [search, setSearch] = useState('')
   const [isLoading, setIsLoading] = useState(true)
-  const [provincias] = useState([])
-
-  useEffect(() => {
-    loadingLocalidad()
-  }, [])
 
   const onEdit = (id) => {
     dispatch(setActiveLocalidad(id))
@@ -65,6 +60,10 @@ export const Localidades = () => {
     setIsLoading(false)
   }
 
+  useEffect(() => {
+    loadingLocalidad()
+  }, [])
+
   return (
     <>
       {isLoading
@@ -76,7 +75,7 @@ export const Localidades = () => {
             <Card>
               <div className='mb-4 md:flex md:justify-between'>
                 <h1 className='text-2xl font-semibold dark:text-white mb-4 md:mb-0'>
-                  Listado de localidades
+                  Listado de Localidades
                 </h1>
                 <div className='flex flex-col md:flex-row items-start md:items-center gap-4'>
                   <div className='flex gap-2'>
@@ -156,7 +155,7 @@ export const Localidades = () => {
                             (localidades.length > 0)
                               ? (localidades.map((localidad) => (
                                 <tr key={localidad.id}>
-                                  <td className='table-td'>{localidad.provincia ? localidad.provincia : 'Desconocida'}</td>
+                                  <td className='table-td'>{localidad.provincia || 'Desconocida'}</td>
                                   <td className='table-td'>{localidad.nombre}</td>
                                   <td className='table-td flex justify-start gap-2'>
                                     <Tooltip content='Editar' placement='top' arrow animation='shift-away'>
