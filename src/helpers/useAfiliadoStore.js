@@ -114,7 +114,11 @@ export const useAfiliadoStore = () => {
       const response = await sutepaApi.put(`/personas/${id}`, afiliado)
       const { data } = response
       dispatch(onUpdateAfiliado(data))
-      navigate('/afiliados')
+
+      const searchParams = new URLSearchParams(window.location.search)
+      const page = searchParams.get('page') || 1
+
+      navigate(`/afiliados?page=${page}`)
       dispatch(cleanAfiliado())
 
       toast.success('Afiliado editado con éxito')
@@ -136,8 +140,9 @@ export const useAfiliadoStore = () => {
 
   const startDeleteAfiliado = async () => {
     try {
+      const currentPage = paginate.current_page
       await sutepaApi.delete(`/personas/${activeAfiliado.id}`)
-      startLoadingAfiliado()
+      startLoadingAfiliado(currentPage)
       startGetAfiliadosSinPaginar()
 
       let message = ''

@@ -99,20 +99,24 @@ export const Afiliado = () => {
   }
 
   async function showAfiliado (id) {
+    const currentPage = paginate.current_page
     await startEditAfiliado(id)
-    navigate(`/afiliados/ver/${id}`)
+    navigate(`/afiliados/ver/${id}?page=${currentPage}`)
     dispatch(cleanAfiliado())
   }
 
   function onEdit (id) {
+    const currentPage = paginate.current_page
     startEditAfiliado(id)
-    navigate(`/afiliados/editar/${id}`)
+    navigate(`/afiliados/editar/${id}?page=${currentPage}`)
     dispatch(cleanAfiliado())
   }
 
   function onDelete (id) {
+    const currentPage = paginate.current_page
     dispatch(setActiveAfiliado(id))
     dispatch(handleShowDelete())
+    navigate(`/afiliados?page=${currentPage}`)
   }
 
   async function onSearch ({ target: { value } }) {
@@ -131,7 +135,9 @@ export const Afiliado = () => {
   }
 
   useEffect(() => {
-    loadingAfiliado()
+    const searchParams = new URLSearchParams(window.location.search)
+    const page = searchParams.get('page') || 1
+    loadingAfiliado(page)
   }, [])
 
   async function handlePersonalista () {

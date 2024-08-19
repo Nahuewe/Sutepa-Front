@@ -5,8 +5,9 @@ import { useNavigate } from 'react-router-dom'
 import { formatDate, getTipoContrato } from '@/constant/datos-id'
 
 export const ShowAfiliado = () => {
-  const { activeAfiliado } = useAfiliadoStore()
+  const { activeAfiliado, paginate } = useAfiliadoStore()
   const navigate = useNavigate()
+  const currentPage = paginate.current_page
 
   return (
     activeAfiliado && (
@@ -277,7 +278,7 @@ export const ShowAfiliado = () => {
         {/* Exportar a Excel lso datos de la vista */}
 
         <div className='mt-4 flex justify-end gap-4'>
-          <button className='bg-red-500 hover:bg-red-800 text-white px-4 py-2 rounded' onClick={() => navigate('/afiliados')}>Volver</button>
+          <button className='bg-red-500 hover:bg-red-800 text-white px-4 py-2 rounded' onClick={() => navigate(`/afiliados?page=${currentPage}`)}>Volver</button>
         </div>
 
       </Card>
