@@ -99,21 +99,21 @@ export const Afiliado = () => {
   }
 
   async function showAfiliado (id) {
-    const currentPage = paginate.current_page
+    const currentPage = paginate?.current_page
     await startEditAfiliado(id)
     navigate(`/afiliados/ver/${id}?page=${currentPage}`)
     dispatch(cleanAfiliado())
   }
 
   function onEdit (id) {
-    const currentPage = paginate.current_page
+    const currentPage = paginate?.current_page || 1
     startEditAfiliado(id)
     navigate(`/afiliados/editar/${id}?page=${currentPage}`)
     dispatch(cleanAfiliado())
   }
 
   function onDelete (id) {
-    const currentPage = paginate.current_page
+    const currentPage = paginate?.current_page || 1
     dispatch(setActiveAfiliado(id))
     dispatch(handleShowDelete())
     navigate(`/afiliados?page=${currentPage}`)

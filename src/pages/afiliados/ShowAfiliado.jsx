@@ -7,7 +7,7 @@ import { formatDate, getTipoContrato } from '@/constant/datos-id'
 export const ShowAfiliado = () => {
   const { activeAfiliado, paginate } = useAfiliadoStore()
   const navigate = useNavigate()
-  const currentPage = paginate.current_page
+  const currentPage = paginate?.current_page || 1
 
   return (
     activeAfiliado && (
@@ -278,7 +278,7 @@ export const ShowAfiliado = () => {
         {/* Exportar a Excel lso datos de la vista */}
 
         <div className='mt-4 flex justify-end gap-4'>
-          <button className='bg-red-500 hover:bg-red-800 text-white px-4 py-2 rounded' onClick={() => navigate(`/afiliados?page=${currentPage}`)}>Volver</button>
+          <button className='btn-danger items-center text-center py-2 px-6 rounded-lg' onClick={() => navigate(`/afiliados?page=${currentPage}`)}>Volver</button>
         </div>
 
       </Card>

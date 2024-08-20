@@ -27,14 +27,14 @@ const Pagination = ({
 
     const pageNumbers = []
 
-    // Crea las paginas anteriores a la actual
+    // Crea las páginas anteriores a la actual
     if (currentPage > 1) {
       for (let j = currentPage - PREVIUS_PAGES_TO_SHOW; j < currentPage; j++) {
         if (j > 0) pageNumbers.push(j)
       }
     }
 
-    // Crea las paginas siguentes a la actual
+    // Crea las páginas siguientes a la actual
     for (let i = currentPage; i < currentPage + totalPagesToShow; i++) {
       if (i > lastPage) break
       pageNumbers.push(i)
@@ -51,8 +51,10 @@ const Pagination = ({
   }
 
   const handleClickPage = (page) => {
-    setCurrentPage(page)
-    onPageChange(page)
+    if (typeof page === 'number') {
+      setCurrentPage(page)
+      onPageChange(page)
+    }
   }
 
   const handleNextPage = () => {
@@ -87,9 +89,9 @@ const Pagination = ({
               )}
         </li>
 
+        {/* Mostrar siempre la página 1 si hay más de 5 páginas */}
         {
-          // (currentPage !== INITIAL_PAGE && currentPage < currentPage + PREVIUS_PAGES_TO_SHOW) && (
-          (currentPage !== INITIAL_PAGE && currentPage > PAGES_TO_SHOW + 1) && (
+          (currentPage > PAGES_TO_SHOW + 1) && (
             <li key={INITIAL_PAGE} className='flex'>
               <button
                 className={`${INITIAL_PAGE === currentPage ? 'active' : ''} page-link`}
@@ -103,20 +105,35 @@ const Pagination = ({
           )
         }
 
+        {/* Páginas dinámicas */}
         {
-          pages.map((page) => (
-            (INITIAL_PAGE <= page <= lastPage) && (
-              <li key={page}>
-                <button
-                  className={`${page === currentPage ? 'active' : ''} page-link`}
-                  onClick={() => handleClickPage(page)}
-                  disabled={page === currentPage}
-                >
-                  {page}
-                </button>
-              </li>
-            )
+          pages.map((page, index) => (
+            <li key={index}>
+              <button
+                className={`${page === currentPage ? 'active' : ''} page-link`}
+                onClick={() => handleClickPage(page)}
+                disabled={page === currentPage}
+              >
+                {page}
+              </button>
+            </li>
           ))
+        }
+
+        {/* Mostrar siempre la última página si hay más de 5 páginas */}
+        {
+          (currentPage + PAGES_TO_SHOW < lastPage) && (
+            <li className='flex'>
+              <span className='mr-4'>...</span>
+              <button
+                className={`${lastPage === currentPage ? 'active' : ''} page-link`}
+                onClick={() => handleClickPage(lastPage)}
+                disabled={lastPage === currentPage}
+              >
+                {lastPage}
+              </button>
+            </li>
+          )
         }
 
         <li>

@@ -91,9 +91,10 @@ export const useAfiliadoStore = () => {
 
   const startEditAfiliado = async (id) => {
     try {
+      const currentPage = paginate?.current_page || 1
       const response = await sutepaApi.get(`/personas/${id}`)
       const { data } = response.data
-      dispatch(onShowAfiliado(data))
+      dispatch(onShowAfiliado(data, currentPage))
     } catch (error) {
       console.log(error)
     }
@@ -140,7 +141,7 @@ export const useAfiliadoStore = () => {
 
   const startDeleteAfiliado = async () => {
     try {
-      const currentPage = paginate.current_page
+      const currentPage = paginate?.current_page || 1
       await sutepaApi.delete(`/personas/${activeAfiliado.id}`)
       startLoadingAfiliado(currentPage)
       startGetAfiliadosSinPaginar()
