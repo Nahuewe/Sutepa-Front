@@ -24,14 +24,26 @@ export const ShowAfiliado = () => {
               <div className='border-b py-2 px-4'>
                 <strong>Legajo:</strong> {activeAfiliado.persona.legajo}
               </div>
-              <div className='border-b py-2 px-4 mayuscula'>
-                <strong>Nombre:</strong> {activeAfiliado.persona.nombre}
-              </div>
-              <div className='border-b py-2 px-4 mayuscula'>
-                <strong>Apellido:</strong> {activeAfiliado.persona.apellido}
+              <div className='border-b py-2 px-4'>
+                <strong>Fecha de Afiliación:</strong> {formatDate(activeAfiliado.persona.fecha_afiliacion)}
               </div>
               <div className='border-b py-2 px-4'>
-                <strong>Correo Electronico:</strong> {activeAfiliado.persona.email}
+                <strong>Nombre:</strong> <span className='mayuscula'>{activeAfiliado.persona.nombre}</span>
+              </div>
+              <div className='border-b py-2 px-4'>
+                <strong>Apellido:</strong> <span className='mayuscula'>{activeAfiliado.persona.apellido}</span>
+              </div>
+              <div className='border-b py-2 px-4'>
+                <strong>Sexo:</strong> {activeAfiliado.persona.sexo}
+              </div>
+              <div className='border-b py-2 px-4'>
+                <strong>Fecha de Nacimiento:</strong> {formatDate(activeAfiliado.persona.fecha_nacimiento)}
+              </div>
+              <div className='border-b py-2 px-4'>
+                <strong>Estado Civil:</strong> {activeAfiliado.persona.estado_civil}
+              </div>
+              <div className='border-b py-2 px-4'>
+                <strong>Nacionalidad:</strong> {activeAfiliado.persona.nacionalidad}
               </div>
               <div className='border-b py-2 px-4'>
                 <strong>Tipo de Documento:</strong> {activeAfiliado.persona.tipo_documento}
@@ -43,22 +55,10 @@ export const ShowAfiliado = () => {
                 <strong>CUIL:</strong> {activeAfiliado.persona.cuil}
               </div>
               <div className='border-b py-2 px-4'>
+                <strong>Correo Electronico:</strong> {activeAfiliado.persona.email}
+              </div>
+              <div className='border-b py-2 px-4'>
                 <strong>Teléfono:</strong> {activeAfiliado.persona.telefono}
-              </div>
-              <div className='border-b py-2 px-4'>
-                <strong>Sexo:</strong> {activeAfiliado.persona.sexo}
-              </div>
-              <div className='border-b py-2 px-4'>
-                <strong>Fecha de Nacimiento:</strong> {formatDate(activeAfiliado.persona.fecha_nacimiento)}
-              </div>
-              <div className='border-b py-2 px-4'>
-                <strong>Fecha de Afiliación:</strong> {formatDate(activeAfiliado.persona.fecha_afiliacion)}
-              </div>
-              <div className='border-b py-2 px-4'>
-                <strong>Estado Civil:</strong> {activeAfiliado.persona.estado_civil}
-              </div>
-              <div className='border-b py-2 px-4'>
-                <strong>Nacionalidad:</strong> {activeAfiliado.persona.nacionalidad}
               </div>
             </div>
           </div>
@@ -121,10 +121,10 @@ export const ShowAfiliado = () => {
                 <strong>Carga Horaria:</strong> {activeAfiliado.datos_laborales.carga_horaria}
               </div>
               <div className='border-b py-2 px-4'>
-                <strong>Fecha de Ingreso:</strong> {formatDate(activeAfiliado.datos_laborales.fecha_ingreso)}
+                <strong>Correo Electronico Laboral:</strong> {activeAfiliado.datos_laborales.email_laboral}
               </div>
               <div className='border-b py-2 px-4'>
-                <strong>Correo Electronico Laboral:</strong> {activeAfiliado.datos_laborales.email_laboral}
+                <strong>Fecha de Ingreso:</strong> {formatDate(activeAfiliado.datos_laborales.fecha_ingreso)}
               </div>
               <div className='border-b py-2 px-4'>
                 <strong>Teléfono:</strong> {activeAfiliado.datos_laborales.telefono_laboral}

@@ -36,6 +36,7 @@ function DatosPersonalesData ({ register, setValue, errors, watch }) {
   const [legajos, setLegajos] = useState([])
   const [, setFormData] = useState(initialForm)
   const [correoElectronico, setCorreoElectronico] = useState('')
+  const [correoError, setCorreoError] = useState(null)
   const [telefono, setTelefono] = useState('')
   const { estadoCivil, nacionalidad, sexo } = useFetchData()
   const [isLoading, setIsLoading] = useState(true)
@@ -121,11 +122,10 @@ function DatosPersonalesData ({ register, setValue, errors, watch }) {
   }
 
   useEffect(() => {
-    // Obtener todos los legajos al montar el componente
     const fetchLegajos = async () => {
       try {
-        const response = await sutepaApi.get('personaAll')
-        const legajos = response.data.data.map(persona => persona.legajo)
+        const response = await sutepaApi.get('personas/legajos')
+        const legajos = response.data
         setLegajos(legajos)
       } catch (error) {
         console.error('Error al obtener los legajos:', error)
@@ -145,10 +145,27 @@ function DatosPersonalesData ({ register, setValue, errors, watch }) {
     setValue(field, fieldValue)
   }
 
+  const extensionesPermitidas = [
+    'gmail.com',
+    'hotmail.com',
+    'yahoo.com.ar',
+    'pami.org.ar'
+  ]
+
+  const validarCorreoElectronico = (email) => {
+    const dominio = email.split('@')[1]
+    if (dominio && !extensionesPermitidas.includes(dominio)) {
+      setCorreoError('El correo electrónico puede estar mal escrito. Asegúrate de que termine en ".gmail.com", ".hotmail.com", ".yahoo.com.ar", o ".pami.org.ar".')
+    } else {
+      setCorreoError(null)
+    }
+  }
+
   const handleCorreoElectronicoChange = (e) => {
     const value = e.target.value
     setCorreoElectronico(value)
     setValue('email', value)
+    validarCorreoElectronico(value)
   }
 
   useEffect(() => {
@@ -369,7 +386,9 @@ function DatosPersonalesData ({ register, setValue, errors, watch }) {
                   placeholder='Ingrese el correo electrónico'
                   value={correoElectronico}
                   onChange={handleCorreoElectronicoChange}
+                  error={correoError}
                 />
+                {correoError && <span className='text-red-500'>{correoError}</span>}
 
                 <Numberinput
                   label='Teléfono'

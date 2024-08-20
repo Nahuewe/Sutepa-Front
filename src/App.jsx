@@ -1,7 +1,7 @@
 import React, { lazy, useEffect } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { useAuthStore } from './helpers/useAuthStore'
-import { Seccionales, Users, Localidades } from './pages'
+import { Seccionales, Users, Localidades, Agencias } from './pages'
 import { Create, Afiliado, ShowAfiliado } from './pages/afiliados'
 import Layout from './layout/Layout'
 import Login from './pages/auth/Login'
@@ -46,6 +46,7 @@ function App () {
                   <Route path='usuarios' element={<Users />} />
                   <Route path='seccionales' element={<Seccionales />} />
                   <Route path='localidades' element={<Localidades />} />
+                  <Route path='agencias' element={<Agencias />} />
 
                   {/* Afiliados */}
                   <Route path='afiliados' element={<Afiliado />} />

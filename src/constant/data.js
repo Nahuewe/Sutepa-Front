@@ -30,6 +30,11 @@ export const menuItems = [
     icon: 'heroicons-outline:identification',
     link: 'localidades'
   }
+  // {
+  //   title: 'Agencias',
+  //   icon: 'heroicons-outline:building-office-2',
+  //   link: 'agencias'
+  // }
 ]
 
 export const menuNormal = [
