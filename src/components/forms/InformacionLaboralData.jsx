@@ -91,6 +91,7 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
           handleInputChange('domicilio_trabajo', '')
           handleInputChange('telefono_laboral', '')
         }
+        handleInputChange('agencia_id', agenciaId)
       } catch (error) {
         console.error('Error fetching agency data:', error)
       }
