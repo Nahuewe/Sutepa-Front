@@ -105,6 +105,7 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
       handleInputChange('agencia_id', '')
       setAgenciaDisabled(true)
     }
+    handleInputChange('ugl_id', selectedUglId)
   }
 
   const handleDatosLaboralesUpdate = () => {

@@ -107,7 +107,7 @@ function DatosPersonalesData ({ register, setValue, errors, watch }) {
     const value = e.target.value
     const cleanedValue = value.replace(/[^\d]/g, '')
 
-    const maxLength = 5
+    const maxLength = 7
     const legajoLimited = cleanedValue.slice(0, maxLength)
 
     setLegajo(legajoLimited)
