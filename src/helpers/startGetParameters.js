@@ -24,7 +24,7 @@ export const useGetParameters = () => {
 
   const startSelectSeccionales = async () => {
     try {
-      const response = await sutepaApi.get('/seccional')
+      const response = await sutepaApi.get('/seccionalAll')
       const { data } = response.data
 
       return formatObject(data)
