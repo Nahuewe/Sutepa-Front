@@ -66,11 +66,15 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
     handleInputChange('carga_horaria', horas)
   }
 
-  async function handleAgencia (id) {
-    const response = await sutepaApi.get(`agencia/${id}`)
-    const { data } = response.data
-    setFilteredAgencias(data)
-    setAgenciaDisabled(false)
+  async function handleAgencia (ugl_id) {
+    try {
+      const response = await sutepaApi.get(`agencia?ugl_id=${ugl_id}`)
+      const { data } = response.data
+      setFilteredAgencias(data)
+      setAgenciaDisabled(false)
+    } catch (error) {
+      console.error('Error fetching agencies:', error)
+    }
   }
 
   const handleAgenciaChange = async (e) => {

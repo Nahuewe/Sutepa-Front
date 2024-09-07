@@ -9,7 +9,7 @@ export const useAgenciaStore = () => {
   const { agencias, agenciasSinPaginar, paginate, activeAgencia } = useSelector(state => state.agencia)
   const dispatch = useDispatch()
 
-  const startLoadingAgencia = async (page) => {
+  const startLoadingAgencia = async (page = 1) => {
     try {
       const response = await sutepaApi.get(`/agencia?page=${page}`)
       const { data, meta } = response.data
@@ -31,7 +31,7 @@ export const useAgenciaStore = () => {
 
   const startSavingAgencia = async (form) => {
     try {
-      const response = await sutepaApi.post('/agencias', form)
+      const response = await sutepaApi.post('/agencia', form)
       startLoadingAgencia()
       dispatch(handleShowModal())
 
@@ -55,7 +55,7 @@ export const useAgenciaStore = () => {
   const startUpdateAgencia = async (form) => {
     try {
       const id = activeAgencia.id
-      const response = await sutepaApi.put(`/agencias/${id}`, form)
+      const response = await sutepaApi.put(`/agencia/${id}`, form)
       const { data } = response.data
       startLoadingAgencia()
       dispatch(handleShowEdit())
@@ -80,7 +80,7 @@ export const useAgenciaStore = () => {
   const startDeleteAgencia = async () => {
     try {
       const id = activeAgencia.id
-      await sutepaApi.delete(`/agencias/${id}`)
+      await sutepaApi.delete(`/agencia/${id}`)
       startLoadingAgencia()
 
       toast.success('Agencia eliminada con exito')

@@ -53,16 +53,17 @@ export const Agencias = () => {
     dispatch(handleShowDelete())
   }
 
-  async function onSearch ({ target: { value } }) {
+  const onSearch = async ({ target: { value } }) => {
     setSearch(value)
-    if (value.length === 0) await loadingAgencia()
-    if (value.length <= 1) return false
+    if (value.length === 0) {
+      await loadingAgencia()
+    }
+    if (value.length <= 1) return
     await startSearchAgencia(value)
   }
 
-  async function loadingAgencia (page = 1) {
-    !isLoading && setIsLoading(true)
-
+  const loadingAgencia = async (page = 1) => {
+    if (!isLoading) setIsLoading(true)
     await startLoadingAgencia(page)
     setIsLoading(false)
   }
@@ -158,7 +159,7 @@ export const Agencias = () => {
                               ? (agencias.map((agencia) => (
                                 <tr key={agencia.id}>
                                   <td className='table-td'>{agencia.ugl}</td>
-                                  <td className='table-td'>{agencia.agencia}</td>
+                                  <td className='table-td'>{agencia.nombre}</td>
                                   <td className='table-td'>{agencia.domicilio_trabajo}</td>
                                   <td className='table-td'>{agencia.telefono_laboral}</td>
                                   <td className='table-td flex justify-start gap-2'>
@@ -221,20 +222,18 @@ export const Agencias = () => {
                       </table>
 
                       {/* Paginado */}
-                      {
-                        paginate && (
-                          <div className='flex justify-center mt-8'>
-                            <Pagination
-                              paginate={paginate}
-                              onPageChange={(page) =>
-                                search !== ''
-                                  ? startSearchAgencia(search, page)
-                                  : startLoadingAgencia(page)}
-                              text
-                            />
-                          </div>
-                        )
-                      }
+                      {paginate && (
+                        <div className='flex justify-center mt-8'>
+                          <Pagination
+                            paginate={paginate}
+                            onPageChange={(page) =>
+                              search !== ''
+                                ? startSearchAgencia(search, page)
+                                : startLoadingAgencia(page)}
+                            text
+                          />
+                        </div>
+                      )}
 
                     </div>
                   </div>
