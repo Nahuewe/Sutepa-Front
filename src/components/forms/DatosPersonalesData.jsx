@@ -124,7 +124,7 @@ function DatosPersonalesData ({ register, setValue, errors, watch }) {
   useEffect(() => {
     const fetchLegajos = async () => {
       try {
-        const response = await sutepaApi.get('personas/legajos')
+        const response = await sutepaApi.get('legajos')
         const legajos = response.data
         setLegajos(legajos)
       } catch (error) {
