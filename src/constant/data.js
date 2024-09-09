@@ -47,6 +47,11 @@ export const menuNormal = [
     title: 'Afiliados',
     icon: 'heroicons-outline:user-plus',
     link: 'afiliados'
+  },
+  {
+    title: 'Agencias',
+    icon: 'heroicons-outline:building-office-2',
+    link: 'agencias'
   }
 ]
 
