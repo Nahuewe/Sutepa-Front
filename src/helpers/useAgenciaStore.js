@@ -4,9 +4,11 @@ import { toast } from 'react-toastify'
 import { handleAgencia, handleAgenciaSinpaginar, setErrorMessage } from '@/store/agencia'
 import { handleShowEdit, handleShowModal } from '@/store/layout'
 import { sutepaApi } from '../api'
+import { useState } from 'react'
 
 export const useAgenciaStore = () => {
   const { agencias, agenciasSinPaginar, paginate, activeAgencia } = useSelector(state => state.agencia)
+  const [currentPage, setCurrentPage] = useState(1)
   const dispatch = useDispatch()
 
   const startLoadingAgencia = async (page = 1) => {
@@ -14,6 +16,7 @@ export const useAgenciaStore = () => {
       const response = await sutepaApi.get(`/agencia?page=${page}`)
       const { data, meta } = response.data
       dispatch(handleAgencia({ data, meta }))
+      setCurrentPage(page)
     } catch (error) {
       console.log(error)
     }
@@ -32,7 +35,7 @@ export const useAgenciaStore = () => {
   const startSavingAgencia = async (form) => {
     try {
       const response = await sutepaApi.post('/agencia', form)
-      startLoadingAgencia()
+      await startLoadingAgencia(currentPage)
       dispatch(handleShowModal())
 
       toast.success('Agencia agregada con exito')
@@ -57,7 +60,7 @@ export const useAgenciaStore = () => {
       const id = activeAgencia.id
       const response = await sutepaApi.put(`/agencia/${id}`, form)
       const { data } = response.data
-      startLoadingAgencia()
+      await startLoadingAgencia(currentPage)
       dispatch(handleShowEdit())
 
       toast.success('Agencia actualizada con exito')
@@ -81,7 +84,7 @@ export const useAgenciaStore = () => {
     try {
       const id = activeAgencia.id
       await sutepaApi.delete(`/agencia/${id}`)
-      startLoadingAgencia()
+      await startLoadingAgencia(currentPage)
 
       toast.success('Agencia eliminada con exito')
     } catch (error) {
