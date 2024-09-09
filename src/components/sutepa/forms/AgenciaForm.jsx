@@ -5,27 +5,39 @@ import * as yup from 'yup'
 import Textinput from '@/components/ui/Textinput'
 import Button from '@/components/ui/Button'
 import Loading from '@/components/Loading'
-import useFetchData from '@/helpers/useFetchData'
 import { SelectForm } from '@/components/sutepa/forms'
+import { sutepaApi } from '../../../api'
 
 const FormValidationSaving = yup
   .object({
-    ugl_id: yup.string().required('La ugl es requerida'),
+    ugl_id: yup.string().notOneOf([''], 'Debe seleccionar una ugl'),
     nombre: yup.string().required('La agencia es requerida')
   })
   .required()
 
 const FormValidationUpdate = yup
   .object({
-    ugl_id: yup.string().required('La ugl es requerida'),
+    ugl_id: yup.string().notOneOf([''], 'Debe seleccionar una ugl'),
     nombre: yup.string().required('La agencia es requerida')
   })
   .required()
 
 export const AgenciaForm = ({ fnAction, activeAgencia = null }) => {
   const [isLoading, setIsLoading] = useState(true)
-  const [isUglLoading, setIsUglLoading] = useState(true) // nuevo estado para UGL
-  const { ugl } = useFetchData()
+  const [isUglLoading, setIsUglLoading] = useState(true)
+  const [ugl, setUgl] = useState([])
+
+  async function handleUgl () {
+    try {
+      const response = await sutepaApi.get('ugl')
+      const { data } = response.data
+      setUgl(data)
+      setIsUglLoading(false)
+    } catch (error) {
+      console.error('Error al obtener UGLs:', error)
+      setIsUglLoading(false)
+    }
+  }
 
   const {
     register,
@@ -51,9 +63,12 @@ export const AgenciaForm = ({ fnAction, activeAgencia = null }) => {
   }
 
   useEffect(() => {
-    if (ugl.length > 0) { // Verifica si hay UGLs disponibles
+    handleUgl()
+  }, [])
+
+  useEffect(() => {
+    if (ugl.length > 0) {
       loadingInit()
-      setIsUglLoading(false) // Indica que las UGLs están listas
     }
   }, [ugl, activeAgencia])
 
@@ -66,7 +81,7 @@ export const AgenciaForm = ({ fnAction, activeAgencia = null }) => {
         : (
           <form onSubmit={handleSubmit(onSubmit)} className='space-y-4 relative'>
             <div>
-              <label htmlFor='nombre' className='form-label space-y-2'>
+              <label htmlFor='ugl_id' className='form-label space-y-2'>
                 UGL
                 <strong className='obligatorio'>(*)</strong>
                 <SelectForm
@@ -104,7 +119,7 @@ export const AgenciaForm = ({ fnAction, activeAgencia = null }) => {
 
             <div>
               <label htmlFor='telefono_laboral' className='form-label space-y-2'>
-                Telefono Laboral
+                Teléfono Laboral
                 <Textinput
                   name='telefono_laboral'
                   type='text'
