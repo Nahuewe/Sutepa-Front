@@ -141,7 +141,7 @@ function DocumentacionAdicionalData ({ register }) {
           setIdCounter(idCounter + 1)
 
           // Si el tipo de archivo es "TELEGRAMA DE BAJA", cambiar el estado del afiliado a "INACTIVO"
-          if (nuevoDocumento.tipo_documento_id === 7) {
+          if (nuevoDocumento.tipo_documento_id === 7 || nuevoDocumento.tipo_documento_id === 1) {
             await cambiarEstadoAfiliado('INACTIVO')
           }
         } catch (error) {
