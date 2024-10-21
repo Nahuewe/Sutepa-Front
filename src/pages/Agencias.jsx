@@ -53,13 +53,22 @@ export const Agencias = () => {
     dispatch(handleShowDelete())
   }
 
-  const onSearch = async ({ target: { value } }) => {
+  let searchTimeout
+
+  async function onSearch ({ target: { value } }) {
     setSearch(value)
-    if (value.length === 0) {
-      await loadingAgencia()
+
+    if (searchTimeout) {
+      clearTimeout(searchTimeout)
     }
-    if (value.length <= 1) return
-    await startSearchAgencia(value)
+
+    searchTimeout = setTimeout(async () => {
+      if (value.length === 0) {
+        await loadingAgencia()
+      } else if (value.length > 3) {
+        await startSearchAgencia(value)
+      }
+    }, 1000)
   }
 
   const loadingAgencia = async (page = 1) => {

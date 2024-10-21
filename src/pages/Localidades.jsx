@@ -45,13 +45,22 @@ export const Localidades = () => {
     dispatch(handleShowDelete())
   }
 
-  const onSearch = async ({ target: { value } }) => {
+  let searchTimeout
+
+  async function onSearch ({ target: { value } }) {
     setSearch(value)
-    if (value.length === 0) {
-      await loadingLocalidad()
+
+    if (searchTimeout) {
+      clearTimeout(searchTimeout)
     }
-    if (value.length <= 1) return
-    await startSearchLocalidad(value)
+
+    searchTimeout = setTimeout(async () => {
+      if (value.length === 0) {
+        await loadingLocalidad()
+      } else if (value.length > 3) {
+        await startSearchLocalidad(value)
+      }
+    }, 1000)
   }
 
   const loadingLocalidad = async (page = 1) => {

@@ -49,11 +49,22 @@ export const Seccionales = () => {
     dispatch(handleShowDelete())
   }
 
+  let searchTimeout
+
   async function onSearch ({ target: { value } }) {
     setSearch(value)
-    if (value.length === 0) await loadingSeccional()
-    if (value.length <= 1) return false
-    await startSearchSeccional(value)
+
+    if (searchTimeout) {
+      clearTimeout(searchTimeout)
+    }
+
+    searchTimeout = setTimeout(async () => {
+      if (value.length === 0) {
+        await loadingSeccional()
+      } else if (value.length > 3) {
+        await startSearchSeccional(value)
+      }
+    }, 1000)
   }
 
   async function loadingSeccional (page = 1) {

@@ -119,11 +119,22 @@ export const Afiliado = () => {
     navigate(`/afiliados?page=${currentPage}`)
   }
 
+  let searchTimeout
+
   async function onSearch ({ target: { value } }) {
     setSearch(value)
-    if (value.length === 0) await loadingAfiliado()
-    if (value.length <= 1) return false
-    await startSearchAfiliado(value)
+
+    if (searchTimeout) {
+      clearTimeout(searchTimeout)
+    }
+
+    searchTimeout = setTimeout(async () => {
+      if (value.length === 0) {
+        await loadingAfiliado()
+      } else if (value.length > 3) {
+        await startSearchAfiliado(value)
+      }
+    }, 1000)
   }
 
   async function loadingAfiliado (page = 1) {
