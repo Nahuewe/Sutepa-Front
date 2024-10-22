@@ -31,6 +31,7 @@ function DatosPersonalesData ({ register, setValue, errors, watch }) {
   const [picker2, setPicker2] = useState(null)
   const [cuil, setCuil] = useState('')
   const [dni, setDni] = useState('')
+  const [dniError, setDniError] = useState(null)
   const [legajo, setLegajo] = useState('')
   const [legajoError, setLegajoError] = useState(null)
   const [legajos, setLegajos] = useState([])
@@ -78,7 +79,7 @@ function DatosPersonalesData ({ register, setValue, errors, watch }) {
     setValue('cuil', formattedCuil)
   }
 
-  const handleDniChange = e => {
+  const handleDniChange = (e) => {
     const value = e.target.value
     const cleanedValue = value.replace(/[^\d]/g, '')
     const dniFormat = /^(\d{1,2})(\d{3})(\d{3})$/
@@ -90,20 +91,23 @@ function DatosPersonalesData ({ register, setValue, errors, watch }) {
     }
 
     if (cleanedValue.length > 1 && cleanedValue.length <= 9) {
-      if (cleanedValue.length <= 5) {
-        formattedDni = cleanedValue.replace(dniFormat, '$1.$2.$3')
-      } else {
-        formattedDni = cleanedValue.replace(dniFormat, '$1.$2.$3')
-      }
+      formattedDni = cleanedValue.replace(dniFormat, '$1.$2.$3')
     } else {
       formattedDni = cleanedValue
     }
 
     setDni(formattedDni)
     setValue('dni', formattedDni)
+
+    const dniExists = legajos.some((item) => item.dni === formattedDni)
+    if (dniExists) {
+      setDniError('El DNI ya existe')
+    } else {
+      setDniError(null)
+    }
   }
 
-  const handleLegajoChange = e => {
+  const handleLegajoChange = (e) => {
     const value = e.target.value
     const cleanedValue = value.replace(/[^\d]/g, '')
 
@@ -113,8 +117,8 @@ function DatosPersonalesData ({ register, setValue, errors, watch }) {
     setLegajo(legajoLimited)
     setValue('legajo', legajoLimited)
 
-    // Validar si el legajo ya existe
-    if (legajos.includes(legajoLimited)) {
+    const legajoExists = legajos.some((item) => item.legajo === legajoLimited)
+    if (legajoExists) {
       setLegajoError('El legajo ya existe')
     } else {
       setLegajoError(null)
@@ -356,9 +360,10 @@ function DatosPersonalesData ({ register, setValue, errors, watch }) {
                     id='dni'
                     placeholder='Ingrese el número de documento'
                     value={dni}
-                    error={errors.dni}
+                    error={errors.dni || dniError}
                     onChange={handleDniChange}
                   />
+                  {dniError && <span className='text-red-500'>{dniError}</span>}
                 </div>
 
                 <div>
