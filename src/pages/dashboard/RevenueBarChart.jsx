@@ -18,13 +18,29 @@ const RevenueBarChart = ({ afiliadosSinPaginar, height = 400 }) => {
 
       afiliadosSinPaginar.forEach(afiliado => {
         const seccional = afiliado.seccional || 'Seccional no Asignada'
-        seccionales[seccional] = (seccionales[seccional] || 0) + 1
+        const estado = afiliado.estado || 'INACTIVO' // Considera 'INACTIVO' si no hay estado
+
+        if (!seccionales[seccional]) {
+          seccionales[seccional] = { ACTIVO: 0, INACTIVO: 0 }
+        }
+
+        // Contar los afiliados por estado
+        seccionales[seccional][estado] += 1
       })
 
       const totalAfiliados = afiliadosSinPaginar.length
       const seriesData = Object.keys(seccionales).map(seccional => ({
         name: seccional,
-        data: [(seccionales[seccional] / totalAfiliados) * 100]
+        data: [
+          {
+            x: 'ACTIVO',
+            y: seccionales[seccional].ACTIVO
+          },
+          {
+            x: 'INACTIVO',
+            y: seccionales[seccional].INACTIVO
+          }
+        ]
       }))
 
       setSeries(seriesData)
@@ -46,7 +62,7 @@ const RevenueBarChart = ({ afiliadosSinPaginar, height = 400 }) => {
       }
     },
     title: {
-      text: 'Porcentaje de Afiliados Por Seccional',
+      text: 'Afiliados Activos e Inactivos por Seccional',
       align: 'left',
       offsetX: isRtl ? '0%' : 0,
       offsetY: 13,
@@ -76,7 +92,7 @@ const RevenueBarChart = ({ afiliadosSinPaginar, height = 400 }) => {
       }
     },
     xaxis: {
-      categories: ['Porcentaje de Afiliados'],
+      categories: ['ACTIVOS', 'INACTIVOS'],
       labels: {
         style: {
           colors: isDark ? '#CBD5E1' : '#475569',
@@ -96,7 +112,7 @@ const RevenueBarChart = ({ afiliadosSinPaginar, height = 400 }) => {
     tooltip: {
       y: {
         formatter: function (val) {
-          return val.toFixed(2) + '%'
+          return val + ' afiliados'
         }
       },
       theme: isDark ? 'dark' : 'light'
@@ -144,7 +160,7 @@ const RevenueBarChart = ({ afiliadosSinPaginar, height = 400 }) => {
       htmlToImage.toPng(chartRef.current)
         .then(function (dataUrl) {
           const link = document.createElement('a')
-          link.download = 'PorcentajeAfiliadosPorSeccional.png'
+          link.download = 'AfiliadosActivosInactivosPorSeccional.png'
           link.href = dataUrl
           link.click()
         })

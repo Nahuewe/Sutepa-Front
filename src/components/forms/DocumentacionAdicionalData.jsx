@@ -140,7 +140,7 @@ function DocumentacionAdicionalData ({ register }) {
           setDocumentos([...documentos, nuevoDocumento])
           setIdCounter(idCounter + 1)
 
-          // Si el tipo de archivo es "TELEGRAMA DE BAJA", cambiar el estado del afiliado a "INACTIVO"
+          // Si el tipo de archivo es "TELEGRAMA DE BAJA, JUBILADACION, ACTA DEFUNCION", cambiar el estado del afiliado a "INACTIVO"
           if (nuevoDocumento.tipo_documento_id === 1 || nuevoDocumento.tipo_documento_id === 7 || nuevoDocumento.tipo_documento_id === 8) {
             await cambiarEstadoAfiliado('INACTIVO')
           }
