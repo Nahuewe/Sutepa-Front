@@ -15,6 +15,12 @@ export const menuItems = [
     icon: 'heroicons-outline:user-plus',
     link: 'afiliados'
   },
+
+  {
+    isHeadr: true,
+    title: 'Pre-Carga'
+  },
+
   {
     title: 'Usuarios',
     icon: 'heroicons-outline:users',
@@ -48,6 +54,12 @@ export const menuNormal = [
     icon: 'heroicons-outline:user-plus',
     link: 'afiliados'
   },
+
+  {
+    isHeadr: true,
+    title: 'Pre-Carga'
+  },
+
   {
     title: 'Agencias',
     icon: 'heroicons-outline:building-office-2',

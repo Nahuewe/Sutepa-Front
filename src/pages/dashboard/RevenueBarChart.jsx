@@ -11,6 +11,7 @@ const RevenueBarChart = ({ afiliadosSinPaginar, height = 400 }) => {
   const [isRtl] = useRtl()
   const [series, setSeries] = useState([])
   const [totalData, setTotalData] = useState(0)
+  const [activeSeries, setActiveSeries] = useState({})
 
   useEffect(() => {
     if (afiliadosSinPaginar) {
@@ -18,13 +19,12 @@ const RevenueBarChart = ({ afiliadosSinPaginar, height = 400 }) => {
 
       afiliadosSinPaginar.forEach(afiliado => {
         const seccional = afiliado.seccional || 'Seccional no Asignada'
-        const estado = afiliado.estado || 'INACTIVO' // Considera 'INACTIVO' si no hay estado
+        const estado = afiliado.estado || 'INACTIVO'
 
         if (!seccionales[seccional]) {
           seccionales[seccional] = { ACTIVO: 0, INACTIVO: 0 }
         }
 
-        // Contar los afiliados por estado
         seccionales[seccional][estado] += 1
       })
 
@@ -32,21 +32,28 @@ const RevenueBarChart = ({ afiliadosSinPaginar, height = 400 }) => {
       const seriesData = Object.keys(seccionales).map(seccional => ({
         name: seccional,
         data: [
-          {
-            x: 'ACTIVO',
-            y: seccionales[seccional].ACTIVO
-          },
-          {
-            x: 'INACTIVO',
-            y: seccionales[seccional].INACTIVO
-          }
+          { x: 'ACTIVO', y: seccionales[seccional].ACTIVO },
+          { x: 'INACTIVO', y: seccionales[seccional].INACTIVO }
         ]
       }))
 
       setSeries(seriesData)
       setTotalData(totalAfiliados)
+
+      const initialActiveSeries = {}
+      seriesData.forEach((serie) => {
+        initialActiveSeries[serie.name] = false
+      })
+      setActiveSeries(initialActiveSeries)
     }
   }, [afiliadosSinPaginar])
+
+  const handleSeriesToggle = (seccional) => {
+    setActiveSeries(prevState => ({
+      ...prevState,
+      [seccional]: !prevState[seccional]
+    }))
+  }
 
   const options = {
     chart: {
@@ -120,6 +127,10 @@ const RevenueBarChart = ({ afiliadosSinPaginar, height = 400 }) => {
     legend: {
       labels: {
         colors: isDark ? '#ffffff' : '#000000'
+      },
+      itemMargin: {
+        horizontal: 10,
+        vertical: 10
       }
     },
     colors: [
@@ -155,6 +166,8 @@ const RevenueBarChart = ({ afiliadosSinPaginar, height = 400 }) => {
     ]
   }
 
+  const filteredSeries = series.filter(serie => activeSeries[serie.name])
+
   const downloadChart = () => {
     if (chartRef.current) {
       htmlToImage.toPng(chartRef.current)
@@ -173,8 +186,21 @@ const RevenueBarChart = ({ afiliadosSinPaginar, height = 400 }) => {
         <button className={`btn ${isDark ? 'btn-dark' : 'btn-light'}`} onClick={downloadChart}>Descargar</button>
       </div>
       <div ref={chartRef}>
-        <Chart options={options} series={series} type='bar' height={height} />
+        <Chart options={options} series={filteredSeries} type='bar' height={height} />
         <div className={`btn ${isDark ? 'btn-dark' : 'btn-light'}`} style={{ textAlign: 'center', marginTop: '10px' }}>Total de Afiliados: {totalData}</div>
+      </div>
+      <div style={{ textAlign: 'center', marginTop: '20px' }}>
+        {series.map(serie => (
+          <button
+            key={serie.name}
+            className={`btn px-6 py-2 mx-2 my-2 rounded-lg transition duration-300 ease-in-out
+              ${activeSeries[serie.name] ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-700'}
+              hover:bg-blue-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
+            onClick={() => handleSeriesToggle(serie.name)}
+          >
+            {activeSeries[serie.name]} {serie.name}
+          </button>
+        ))}
       </div>
     </Card>
   )

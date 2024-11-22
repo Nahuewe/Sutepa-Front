@@ -51,7 +51,7 @@ const Navmenu = ({ menus }) => {
           >
             {/* single menu with no childred */}
             {!item.child && !item.isHeadr && (
-              <NavLink className='menu-link' to={item.link}>
+              <NavLink className='menu-link' to={item.link} target={item.target} rel={item.target === '_blank' ? 'noopener noreferrer' : undefined}>
                 <span className='menu-icon flex-grow-0'>
                   <Icon icon={item.icon} />
                 </span>
@@ -61,7 +61,9 @@ const Navmenu = ({ menus }) => {
             )}
             {/* only for menulabel */}
             {item.isHeadr && !item.child && (
-              <div className='menulabel'>{item.title}</div>
+              <div className='menulabel text-sm uppercase font-bold text-gray-500 mb-2 mt-4 border-b border-gray-300 dark:text-gray-300'>
+                {item.title}
+              </div>
             )}
             {/*    !!sub menu parent   */}
             {item.child && (
