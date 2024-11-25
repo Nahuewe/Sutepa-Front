@@ -82,7 +82,16 @@ const RevenueBarChart = ({ afiliadosSinPaginar, height = 400 }) => {
       }
     },
     dataLabels: {
-      enabled: false
+      enabled: true,
+      style: {
+        fontSize: '12px',
+        colors: [isDark ? '#fefefe' : '#fefefe']
+      },
+      formatter: function (val, opts) {
+        return `${val}`
+      },
+      offsetX: 0,
+      offsetY: 0
     },
     stroke: {
       show: true,
@@ -126,7 +135,7 @@ const RevenueBarChart = ({ afiliadosSinPaginar, height = 400 }) => {
     },
     legend: {
       labels: {
-        colors: isDark ? '#ffffff' : '#000000'
+        colors: isDark ? '#ffffff' : '#808080'
       },
       itemMargin: {
         horizontal: 10,
@@ -158,7 +167,9 @@ const RevenueBarChart = ({ afiliadosSinPaginar, height = 400 }) => {
           },
           plotOptions: {
             bar: {
-              columnWidth: '80%'
+              dataLabels: {
+                position: 'center'
+              }
             }
           }
         }
