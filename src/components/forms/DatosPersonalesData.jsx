@@ -9,7 +9,6 @@ import DatePicker from '../ui/DatePicker'
 import moment from 'moment'
 import useFetchData from '@/helpers/useFetchData'
 import Loading from '@/components/Loading'
-import sutepaApi from '../../api/sutepaApi'
 
 const tipoDocumento = [
   { id: 'DNI', nombre: 'DNI' },
@@ -34,12 +33,11 @@ function DatosPersonalesData ({ register, setValue, errors, watch }) {
   const [dniError, setDniError] = useState(null)
   const [legajo, setLegajo] = useState('')
   const [legajoError, setLegajoError] = useState(null)
-  const [legajos, setLegajos] = useState([])
   const [, setFormData] = useState(initialForm)
   const [correoElectronico, setCorreoElectronico] = useState('')
   const [correoError, setCorreoError] = useState(null)
   const [telefono, setTelefono] = useState('')
-  const { estadoCivil, nacionalidad, sexo } = useFetchData()
+  const { estadoCivil, nacionalidad, sexo, legajos } = useFetchData()
   const [isLoading, setIsLoading] = useState(true)
 
   const handleDateChange = (date, field) => {
@@ -99,7 +97,8 @@ function DatosPersonalesData ({ register, setValue, errors, watch }) {
     setDni(formattedDni)
     setValue('dni', formattedDni)
 
-    const dniExists = legajos.some((item) => item.dni === formattedDni)
+    const dniExists = legajos?.length > 0 && legajos.some((item) => item.dni === formattedDni)
+
     if (dniExists) {
       setDniError('El DNI ya existe')
     } else {
@@ -117,27 +116,14 @@ function DatosPersonalesData ({ register, setValue, errors, watch }) {
     setLegajo(legajoLimited)
     setValue('legajo', legajoLimited)
 
-    const legajoExists = legajos.some((item) => item.legajo === legajoLimited)
+    const legajoExists = legajos?.length > 0 && legajos.some((item) => item.legajo === legajoLimited)
+
     if (legajoExists) {
       setLegajoError('El legajo ya existe')
     } else {
       setLegajoError(null)
     }
   }
-
-  useEffect(() => {
-    const fetchLegajos = async () => {
-      try {
-        const response = await sutepaApi.get('legajos')
-        const legajos = response.data
-        setLegajos(legajos)
-      } catch (error) {
-        console.error('Error al obtener los legajos:', error)
-      }
-    }
-
-    fetchLegajos()
-  }, [])
 
   const handleSelectChange = (field, e) => {
     const { value } = e.target
@@ -225,10 +211,10 @@ function DatosPersonalesData ({ register, setValue, errors, watch }) {
   }, [picker, picker2, legajo, dni, cuil, correoElectronico, telefono, watch, dispatch, user.id])
 
   useEffect(() => {
-    if (estadoCivil.length && nacionalidad.length && sexo.length) {
+    if (estadoCivil.length && nacionalidad.length && sexo.length && legajos.length) {
       setIsLoading(false)
     }
-  }, [estadoCivil, nacionalidad, sexo])
+  }, [estadoCivil, nacionalidad, sexo, legajos])
 
   return (
     <>

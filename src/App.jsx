@@ -1,7 +1,7 @@
 import React, { lazy, useEffect } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { useAuthStore } from './helpers/useAuthStore'
-import { Seccionales, Users, Localidades, Agencias } from './pages'
+import { Seccionales, Users, Localidades, Agencias, Credencial } from './pages'
 import { Create, Afiliado, ShowAfiliado } from './pages/afiliados'
 import Layout from './layout/Layout'
 import Login from './pages/auth/Login'
@@ -25,6 +25,8 @@ function App () {
   return (
     <main className='App relative'>
       <Routes>
+        <Route path='credencial' element={<Credencial />} />
+
         {
           (status === 'not-authenticated')
             ? (

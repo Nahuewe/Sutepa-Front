@@ -17,15 +17,11 @@ export const menuItems = [
   },
 
   {
-    isHeadr: true,
-    title: 'Pre-Carga'
-  },
-
-  {
     title: 'Usuarios',
     icon: 'heroicons-outline:users',
     link: 'usuarios'
   },
+
   {
     title: 'Seccionales',
     icon: 'heroicons-outline:building-office',

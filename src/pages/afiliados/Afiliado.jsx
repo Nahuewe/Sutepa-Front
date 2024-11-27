@@ -148,7 +148,18 @@ export const Afiliado = () => {
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search)
     const page = searchParams.get('page') || 1
-    loadingAfiliado(page)
+
+    // Cargar afiliados paginados y luego sin paginar
+    const fetchAfiliados = async () => {
+      setIsLoading(true)
+      await startLoadingAfiliado(page) // Cargar datos paginados
+      setIsLoading(false)
+
+      // Cargar datos sin paginar en segundo plano
+      await startGetAfiliadosSinPaginar()
+    }
+
+    fetchAfiliados()
   }, [])
 
   async function handlePersonalista () {

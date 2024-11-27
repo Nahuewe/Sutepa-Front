@@ -5,11 +5,12 @@ import { handleAfiliado, handleAfiliadosSinPaginar, onUpdateAfiliado, setErrorMe
 import { sutepaApi } from '../api'
 import { useNavigate } from 'react-router-dom'
 import sendEmail from '../components/EmailJs'
+import { handleEstadisticas } from '../store/afiliado'
 
 export const useAfiliadoStore = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const { afiliados, afiliadosSinPaginar, paginate, activeAfiliado, persona, domicilio, datos_laborales, obra_social, documentacion, familiares, subsidios } = useSelector(state => state.afiliado)
+  const { afiliados, afiliadosSinPaginar, estadisticas, paginate, activeAfiliado, persona, domicilio, datos_laborales, obra_social, documentacion, familiares, subsidios } = useSelector(state => state.afiliado)
 
   const startLoadingAfiliado = async (page) => {
     try {
@@ -26,6 +27,16 @@ export const useAfiliadoStore = () => {
       const response = await sutepaApi.get('/personaAll')
       const { data } = response.data
       dispatch(handleAfiliadosSinPaginar(data))
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const startGetEstadisticas = async () => {
+    try {
+      const response = await sutepaApi.get('/estadisticas')
+      const { data } = response
+      dispatch(handleEstadisticas(data))
     } catch (error) {
       console.log(error)
     }
@@ -182,12 +193,14 @@ export const useAfiliadoStore = () => {
     // Propiedades
     afiliados,
     afiliadosSinPaginar,
+    estadisticas,
     paginate,
     activeAfiliado,
 
     // Métodos
     startLoadingAfiliado,
     startGetAfiliadosSinPaginar,
+    startGetEstadisticas,
     startEditAfiliado,
     startSavingAfiliado,
     startUpdateAfiliado,

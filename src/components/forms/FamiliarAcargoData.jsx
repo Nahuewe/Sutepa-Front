@@ -5,7 +5,6 @@ import { onAddOrUpdateFamiliar, onDeleteFamiliar } from '../../store/afiliado'
 import { SelectForm } from '@/components/sutepa/forms'
 import Tooltip from '@/components/ui/Tooltip'
 import { Icon } from '@iconify/react'
-import { sutepaApi } from '../../api'
 import { formatDate } from '@/constant/datos-id'
 import Numberinput from '@/components/ui/Numberinput'
 import Card from '@/components/ui/Card'
@@ -13,6 +12,7 @@ import Textinput from '@/components/ui/Textinput'
 import DatePicker from '../ui/DatePicker'
 import moment from 'moment'
 import Loading from '@/components/Loading'
+import useFetchData from '../../helpers/useFetchData'
 
 const initialForm = {
   id: null,
@@ -40,17 +40,11 @@ function FamiliaresaCargo () {
   const [isEditing, setIsEditing] = useState(false)
   const [idCounter, setIdCounter] = useState(0)
   const [dni, setDni] = useState('')
-  const [parentesco, setParentesco] = useState([])
   const { user } = useSelector(state => state.auth)
   const { activeAfiliado } = useSelector(state => state.afiliado)
   const [isLoading, setIsLoading] = useState(true)
   const [loadingFamiliares, setLoadingFamiliares] = useState(false)
-
-  async function handleParentescos () {
-    const response = await sutepaApi.get('familia')
-    const { data } = response.data
-    setParentesco(data)
-  }
+  const { familia } = useFetchData()
 
   const onReset = () => {
     if (formRef.current) {
@@ -105,8 +99,9 @@ function FamiliaresaCargo () {
   }
 
   const getParentescoNombre = id => {
-    const parentescoObj = parentesco.find(item => item.id === id)
-    return parentescoObj ? parentescoObj.nombre : ''
+    if (!id || !familia.length) return ''
+    const parentescoObj = familia.find(item => item.id === id)
+    return parentescoObj ? parentescoObj.nombre : 'No definido'
   }
 
   function addOrUpdateFamiliar (newFamiliar) {
@@ -188,10 +183,6 @@ function FamiliaresaCargo () {
   }, [activeAfiliado])
 
   useEffect(() => {
-    loadingAfiliado()
-  }, [])
-
-  useEffect(() => {
     if (!loadingFamiliares) {
       familiares.forEach(familiar => {
         dispatch(onAddOrUpdateFamiliar(familiar))
@@ -200,10 +191,19 @@ function FamiliaresaCargo () {
   }, [familiares, loadingFamiliares, dispatch])
 
   async function loadingAfiliado () {
-    setIsLoading(true)
-    await handleParentescos()
+    !isLoading && setIsLoading(true)
     setIsLoading(false)
   }
+
+  useEffect(() => {
+    loadingAfiliado()
+  }, [])
+
+  useEffect(() => {
+    if (familia.length) {
+      setIsLoading(false)
+    }
+  }, [familia])
 
   return (
     <>
@@ -270,7 +270,7 @@ function FamiliaresaCargo () {
                   <SelectForm
                     register={register('parentesco_id')}
                     title='Parentesco'
-                    options={parentesco}
+                    options={familia}
                     value={formData.parentesco_id}
                     onChange={e => handleInputChange(e)}
                   />

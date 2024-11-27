@@ -10,6 +10,7 @@ import { formatDate } from '@/constant/datos-id'
 import Card from '@/components/ui/Card'
 import Tooltip from '@/components/ui/Tooltip'
 import Loading from '@/components/Loading'
+import useFetchData from '../../helpers/useFetchData'
 
 const initialForm = {
   tipo_documento_id: '',
@@ -23,18 +24,13 @@ function DocumentacionAdicionalData ({ register }) {
   const { user } = useSelector((state) => state.auth)
   const [formData, setFormData] = useState(initialForm)
   const formRef = useRef()
-  const [archivoOptions, setArchivoOptions] = useState([])
+  const [archivoOptions] = useState([])
   const { activeAfiliado } = useSelector((state) => state.afiliado)
   const [isLoading, setIsLoading] = useState(true)
   const [idCounter, setIdCounter] = useState(0)
   const [loadingDocumentos, setLoadingDocumentos] = useState(false)
-  const [isSubmitting, setIsSubmitting] = useState(false) // Nuevo estado para el loading
-
-  const handleArchivo = async () => {
-    const response = await sutepaApi.get('documentacion')
-    const { data } = response.data
-    setArchivoOptions(data)
-  }
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const { documentacion } = useFetchData()
 
   const handleInputChange = (e) => {
     const { name, value, files } = e.target
@@ -205,8 +201,6 @@ function DocumentacionAdicionalData ({ register }) {
 
   async function loadingAfiliado () {
     !isLoading && setIsLoading(true)
-
-    await handleArchivo()
     setIsLoading(false)
   }
 
@@ -221,6 +215,12 @@ function DocumentacionAdicionalData ({ register }) {
       })
     }
   }, [documentos, loadingDocumentos, dispatch])
+
+  useEffect(() => {
+    if (documentacion.length) {
+      setIsLoading(false)
+    }
+  }, [documentacion])
 
   return (
     <>
@@ -240,7 +240,7 @@ function DocumentacionAdicionalData ({ register }) {
                   <SelectForm
                     register={register('tipo_documento_id')}
                     title='Tipo de Archivo'
-                    options={archivoOptions}
+                    options={documentacion}
                     onChange={handleInputChange}
                   />
                   <div>

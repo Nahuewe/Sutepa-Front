@@ -5,7 +5,7 @@ import useRtl from '@/hooks/useRtl'
 import Card from '@/components/ui/Card'
 import * as htmlToImage from 'html-to-image'
 
-const RevenueBarChart = ({ afiliadosSinPaginar, height = 400 }) => {
+const RevenueBarChart = ({ estadisticas, height = 400 }) => {
   const chartRef = useRef(null)
   const [isDark] = useDarkMode()
   const [isRtl] = useRtl()
@@ -14,10 +14,10 @@ const RevenueBarChart = ({ afiliadosSinPaginar, height = 400 }) => {
   const [activeSeries, setActiveSeries] = useState({})
 
   useEffect(() => {
-    if (afiliadosSinPaginar) {
+    if (estadisticas) {
       const seccionales = {}
 
-      afiliadosSinPaginar.forEach(afiliado => {
+      estadisticas.forEach(afiliado => {
         const seccional = afiliado.seccional || 'Seccional no Asignada'
         const estado = afiliado.estado || 'INACTIVO'
 
@@ -28,7 +28,7 @@ const RevenueBarChart = ({ afiliadosSinPaginar, height = 400 }) => {
         seccionales[seccional][estado] += 1
       })
 
-      const totalAfiliados = afiliadosSinPaginar.length
+      const totalAfiliados = estadisticas.length
       const seriesData = Object.keys(seccionales).map(seccional => ({
         name: seccional,
         data: [
@@ -46,7 +46,7 @@ const RevenueBarChart = ({ afiliadosSinPaginar, height = 400 }) => {
       })
       setActiveSeries(initialActiveSeries)
     }
-  }, [afiliadosSinPaginar])
+  }, [estadisticas])
 
   const handleSeriesToggle = (seccional) => {
     setActiveSeries(prevState => ({
@@ -82,7 +82,16 @@ const RevenueBarChart = ({ afiliadosSinPaginar, height = 400 }) => {
       }
     },
     dataLabels: {
-      enabled: false
+      enabled: true,
+      style: {
+        fontSize: '12px',
+        colors: [isDark ? '#fefefe' : '#fefefe']
+      },
+      formatter: function (val, opts) {
+        return `${val}`
+      },
+      offsetX: 0,
+      offsetY: 0
     },
     stroke: {
       show: true,
@@ -126,7 +135,7 @@ const RevenueBarChart = ({ afiliadosSinPaginar, height = 400 }) => {
     },
     legend: {
       labels: {
-        colors: isDark ? '#ffffff' : '#000000'
+        colors: isDark ? '#ffffff' : '#808080'
       },
       itemMargin: {
         horizontal: 10,
@@ -158,7 +167,9 @@ const RevenueBarChart = ({ afiliadosSinPaginar, height = 400 }) => {
           },
           plotOptions: {
             bar: {
-              columnWidth: '80%'
+              dataLabels: {
+                position: 'center'
+              }
             }
           }
         }

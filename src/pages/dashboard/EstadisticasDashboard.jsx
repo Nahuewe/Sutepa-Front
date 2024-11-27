@@ -1,8 +1,16 @@
 import React, { useMemo } from 'react'
 import Icon from '@/components/ui/Icon'
 
-const EstadisticasDashboard = ({ afiliadosSinPaginar, totalUsers, seccionalesSinPaginar }) => {
+const EstadisticasDashboard = ({ estadisticas, userAll, seccionalAll }) => {
   const countAfiliadosPorEstado = (data) => {
+    if (!Array.isArray(data)) {
+      return {
+        totales: 0,
+        activos: 0,
+        inactivos: 0
+      }
+    }
+
     const totals = {
       totales: data.length,
       activos: data.filter(a => a.estado === 'ACTIVO').length,
@@ -12,7 +20,7 @@ const EstadisticasDashboard = ({ afiliadosSinPaginar, totalUsers, seccionalesSin
     return totals
   }
 
-  const totalsByEstado = useMemo(() => countAfiliadosPorEstado(afiliadosSinPaginar), [afiliadosSinPaginar])
+  const totalsByEstado = useMemo(() => countAfiliadosPorEstado(estadisticas || []), [estadisticas])
 
   const statistics = [
     {
@@ -24,14 +32,14 @@ const EstadisticasDashboard = ({ afiliadosSinPaginar, totalUsers, seccionalesSin
     },
     {
       title: 'Total de Usuarios',
-      count: totalUsers || 0,
+      count: userAll.length || 0,
       bg: 'bg-success-500',
       text: 'text-success-500',
       icon: 'heroicons-solid:users'
     },
     {
       title: 'Total de Seccionales',
-      count: seccionalesSinPaginar.length || 0,
+      count: seccionalAll.length || 0,
       bg: 'bg-warning-500',
       text: 'text-warning-500',
       icon: 'heroicons-solid:office-building'

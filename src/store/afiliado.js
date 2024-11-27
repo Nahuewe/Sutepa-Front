@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 const initialState = {
   afiliados: [],
   afiliadosSinPaginar: [],
+  estadisticas: [],
   persona: {},
   domicilio: {},
   datos_laborales: {},
@@ -26,6 +27,9 @@ export const afiliadoSlice = createSlice({
     },
     handleAfiliadosSinPaginar: (state, { payload }) => {
       state.afiliadosSinPaginar = payload
+    },
+    handleEstadisticas: (state, { payload }) => {
+      state.estadisticas = payload
     },
     setActiveAfiliado: (state, { payload }) => {
       if (!payload) {
@@ -114,6 +118,7 @@ export const afiliadoSlice = createSlice({
 export const {
   handleAfiliado,
   handleAfiliadosSinPaginar,
+  handleEstadisticas,
   setActiveAfiliado,
   onUpdateAfiliado,
   onDeleteAfiliado,

@@ -5,6 +5,8 @@ import afiliado from './afiliado'
 import seccional from './seccional'
 import localidad from './localidad'
 import agencia from './agencia'
+import dataAfiliado from './dataAfiliado'
+import dataEstadisticas from './dataEstadisticas'
 
 const rootReducer = {
   layout,
@@ -13,6 +15,8 @@ const rootReducer = {
   seccional,
   localidad,
   agencia,
-  afiliado
+  afiliado,
+  dataAfiliado,
+  dataEstadisticas
 }
 export default rootReducer

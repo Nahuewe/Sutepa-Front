@@ -6,12 +6,12 @@ import { SelectForm } from '@/components/sutepa/forms'
 import Tooltip from '@/components/ui/Tooltip'
 import { Icon } from '@iconify/react'
 import { formatDate } from '@/constant/datos-id'
-import { sutepaApi } from '../../api'
 import Card from '@/components/ui/Card'
 import Textarea from '@/components/ui/Textarea'
 import DatePicker from '../ui/DatePicker'
 import moment from 'moment'
 import Loading from '@/components/Loading'
+import useFetchData from '../../helpers/useFetchData'
 
 const initialForm = {
   tipo_subsidio_id: null,
@@ -33,10 +33,10 @@ function SubsidioData () {
   const [isEditing, setIsEditing] = useState(false)
   const { user } = useSelector(state => state.auth)
   const formRef = useRef()
-  const [subsidio, setSubsidio] = useState([])
   const [idCounter, setIdCounter] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
   const [loadingSubsidios, setLoadingSubsidios] = useState(false)
+  const { subsidio } = useFetchData()
 
   function onChange ({ target }) {
     const { name, value } = target
@@ -44,12 +44,6 @@ function SubsidioData () {
       ...prevState,
       [name]: value
     }))
-  }
-
-  async function handleSubsidio () {
-    const response = await sutepaApi.get('subsidio')
-    const { data } = response.data
-    setSubsidio(data)
   }
 
   const handleDateChange = (date, field) => {
@@ -170,8 +164,6 @@ function SubsidioData () {
 
   async function loadingAfiliado () {
     !isLoading && setIsLoading(true)
-
-    await handleSubsidio()
     setIsLoading(false)
   }
 
@@ -186,6 +178,12 @@ function SubsidioData () {
       })
     }
   }, [subsidios, loadingSubsidios, dispatch])
+
+  useEffect(() => {
+    if (subsidio.length) {
+      setIsLoading(false)
+    }
+  }, [subsidio])
 
   return (
     <>

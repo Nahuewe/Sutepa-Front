@@ -1,45 +1,20 @@
 import React, { useEffect, useState } from 'react'
-import { useAfiliadoStore, useSeccionalStore } from '@/helpers'
-import { sutepaApi } from '@/api'
 import Card from '@/components/ui/Card'
 import Loading from '@/components/Loading'
 import EstadisticasDashboard from './EstadisticasDashboard'
 import RevenueBarChart from './RevenueBarChart'
 import DonutChart from './DonutChart'
+import useEstadisticasData from '../../helpers/useEstadisticasData'
 
 const Dashboard = () => {
-  const { afiliadosSinPaginar, startLoadingAfiliado, startGetAfiliadosSinPaginar } = useAfiliadoStore()
-  const { seccionalesSinPaginar, startLoadingSeccional, startGetSeccionalesSinPaginar } = useSeccionalStore()
+  const { userAll, seccionalAll, estadisticas } = useEstadisticasData()
   const [isLoading, setIsLoading] = useState(true)
-  const [totalUsers, setTotalUsers] = useState(0)
-
-  const formatObject = (data) => {
-    return data
-  }
-
-  const startSelectUsers = async () => {
-    try {
-      const response = await sutepaApi.get('/user')
-      const { data } = response.data
-      return formatObject(data)
-    } catch (error) {
-      console.log(error)
-    }
-  }
 
   useEffect(() => {
-    const fetchData = async () => {
-      const usersData = await startSelectUsers()
-      setTotalUsers(usersData.length)
-      await startLoadingAfiliado()
-      await startLoadingSeccional()
-      await startGetAfiliadosSinPaginar()
-      await startGetSeccionalesSinPaginar()
+    if (userAll.length && seccionalAll.length && estadisticas.length) {
       setIsLoading(false)
     }
-
-    fetchData()
-  }, [])
+  }, [userAll, seccionalAll, estadisticas])
 
   return (
     <>
@@ -57,15 +32,15 @@ const Dashboard = () => {
 
             <div className='mt-4 grid sm:grid-cols-2 md:grid-cols-3 grid-cols-1 gap-4'>
               <EstadisticasDashboard
-                afiliadosSinPaginar={afiliadosSinPaginar}
-                totalUsers={totalUsers}
-                seccionalesSinPaginar={seccionalesSinPaginar}
+                estadisticas={estadisticas}
+                userAll={userAll}
+                seccionalAll={seccionalAll}
               />
             </div>
 
             <div className='mt-4 grid sm:grid-cols-2 grid-cols-1 gap-4'>
-              <DonutChart afiliadosSinPaginar={afiliadosSinPaginar} />
-              <RevenueBarChart afiliadosSinPaginar={afiliadosSinPaginar} />
+              <DonutChart estadisticas={estadisticas} />
+              <RevenueBarChart estadisticas={estadisticas} />
             </div>
           </div>
           )}

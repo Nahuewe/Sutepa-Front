@@ -36,6 +36,7 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
   const dispatch = useDispatch()
   const { activeAfiliado } = useSelector(state => state.afiliado)
   const [isLoading, setIsLoading] = useState(true)
+  const [reloadKey, setReloadKey] = useState(0)
 
   const handleDateChange = (date) => {
     setPicker(date)
@@ -176,8 +177,16 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
     }
   }, [agrupamiento, seccional, ugl, tramo])
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setReloadKey(prevKey => prevKey + 1)
+    }, 1200)
+
+    return () => clearTimeout(timer)
+  }, [])
+
   return (
-    <>
+    <div key={reloadKey}>
       {isLoading
         ? (
           <Loading className='mt-28 md:mt-64' />
@@ -308,7 +317,7 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
             </Card>
           </div>
           )}
-    </>
+    </div>
   )
 }
 
