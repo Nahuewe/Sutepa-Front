@@ -281,6 +281,9 @@ export const Afiliado = () => {
           'Fecha de Afiliación': formatDate(activeAfiliado.persona.fecha_afiliacion),
           'Estado Civil': activeAfiliado.persona.estado_civil,
           Nacionalidad: activeAfiliado.persona.nacionalidad,
+          UGL: activeAfiliado.datos_laborales?.ugl,
+          Agencia: activeAfiliado.datos_laborales?.agencia,
+          Seccional: activeAfiliado.datos_laborales?.seccional,
           Estado: activeAfiliado.persona.estados
         })
       }

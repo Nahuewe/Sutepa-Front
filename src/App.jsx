@@ -7,6 +7,7 @@ import Layout from './layout/Layout'
 import Login from './pages/auth/Login'
 import Error from './pages/404'
 import Loading from '@/components/Loading'
+import 'react-toastify/dist/ReactToastify.css'
 const Dashboard = lazy(() => import('./pages/dashboard'))
 
 function App () {
