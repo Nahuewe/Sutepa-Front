@@ -4,7 +4,7 @@ import Loading from '@/components/Loading'
 import EstadisticasDashboard from './EstadisticasDashboard'
 import RevenueBarChart from './RevenueBarChart'
 import DonutChart from './DonutChart'
-import useEstadisticasData from '../../helpers/useEstadisticasData'
+import useEstadisticasData from '@/helpers/useEstadisticasData'
 
 const Dashboard = () => {
   const { userAll, seccionalAll, estadisticas } = useEstadisticasData()

@@ -6,7 +6,7 @@ import Textinput from '@/components/ui/Textinput'
 import Button from '@/components/ui/Button'
 import Loading from '@/components/Loading'
 import { SelectForm } from '@/components/sutepa/forms'
-import { sutepaApi } from '../../../api'
+import { sutepaApi } from '@/api'
 
 const FormValidationSaving = yup
   .object({

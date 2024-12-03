@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useSelector, useDispatch } from 'react-redux'
-import { onAddOrUpdateFamiliar, onDeleteFamiliar } from '../../store/afiliado'
+import { onAddOrUpdateFamiliar, onDeleteFamiliar } from '@/store/afiliado'
 import { SelectForm } from '@/components/sutepa/forms'
 import Tooltip from '@/components/ui/Tooltip'
 import { Icon } from '@iconify/react'
@@ -12,7 +12,7 @@ import Textinput from '@/components/ui/Textinput'
 import DatePicker from '../ui/DatePicker'
 import moment from 'moment'
 import Loading from '@/components/Loading'
-import useFetchData from '../../helpers/useFetchData'
+import useFetchData from '@/helpers/useFetchData'
 
 const initialForm = {
   id: null,

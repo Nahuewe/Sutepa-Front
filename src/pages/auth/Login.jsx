@@ -1,6 +1,5 @@
 import React from 'react'
 import LoginForm from '@/components/sutepa/auth/login-form'
-import { ToastContainer } from 'react-toastify'
 import Illustration from '@/assets/images/auth/portada-sutepa.jpg'
 import LogoSutepa from '@/assets/images/logo/logo.png'
 import iconosSutepa from '@/assets/images/auth/iconos.png'
@@ -8,7 +7,6 @@ import iconosSutepa from '@/assets/images/auth/iconos.png'
 const Login = () => {
   return (
     <>
-      <ToastContainer />
       <div className='loginwrapper'>
         <div className='lg-inner-column'>
           <div className='left-column relative z-[1]'>

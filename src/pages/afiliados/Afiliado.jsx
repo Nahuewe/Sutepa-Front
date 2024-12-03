@@ -7,6 +7,7 @@ import { sutepaApi } from '@/api'
 import { formatDate, getTipoContrato } from '@/constant/datos-id'
 import { DeleteModal } from '@/components/ui/DeleteModal'
 import { handleShowDelete } from '@/store/layout'
+import { TextInput } from 'flowbite-react'
 import * as XLSX from 'xlsx'
 import Card from '@/components/ui/Card'
 import Pagination from '@/components/ui/Pagination'
@@ -16,7 +17,6 @@ import EditButton from '@/components/buttons/EditButton'
 import ViewButton from '@/components/buttons/ViewButton'
 import AfiliadoButton from '@/components/buttons/AfiliadoButton'
 import Tooltip from '@/components/ui/Tooltip'
-import { TextInput } from 'flowbite-react'
 
 const columns = [
   {

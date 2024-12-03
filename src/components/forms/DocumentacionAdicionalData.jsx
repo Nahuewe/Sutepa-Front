@@ -7,10 +7,12 @@ import { SelectForm } from '@/components/sutepa/forms'
 import { Icon } from '@iconify/react/dist/iconify.js'
 import { onAddDocumento, onDeleteDocumento } from '@/store/afiliado'
 import { formatDate } from '@/constant/datos-id'
+import { DeleteModal } from '@/components/ui/DeleteModal'
+import { handleShowDelete } from '@/store/layout'
 import Card from '@/components/ui/Card'
 import Tooltip from '@/components/ui/Tooltip'
 import Loading from '@/components/Loading'
-import useFetchData from '../../helpers/useFetchData'
+import useFetchData from '@/helpers/useFetchData'
 
 const initialForm = {
   tipo_documento_id: '',
@@ -24,13 +26,13 @@ function DocumentacionAdicionalData ({ register }) {
   const { user } = useSelector((state) => state.auth)
   const [formData, setFormData] = useState(initialForm)
   const formRef = useRef()
-  const [archivoOptions] = useState([])
   const { activeAfiliado } = useSelector((state) => state.afiliado)
   const [isLoading, setIsLoading] = useState(true)
   const [idCounter, setIdCounter] = useState(0)
   const [loadingDocumentos, setLoadingDocumentos] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const { documentacion } = useFetchData()
+  const [documentoAEliminarIndex, setDocumentoAEliminarIndex] = useState(null)
 
   const handleInputChange = (e) => {
     const { name, value, files } = e.target
@@ -58,11 +60,6 @@ function DocumentacionAdicionalData ({ register }) {
   const onReset = () => {
     formRef.current.reset()
     setFormData(initialForm)
-  }
-
-  const getDocumentoByName = (id) => {
-    const documentoObj = archivoOptions.find((item) => item.id === id)
-    return documentoObj ? documentoObj.nombre : ''
   }
 
   const enviarArchivo = async (documento) => {
@@ -95,7 +92,6 @@ function DocumentacionAdicionalData ({ register }) {
     try {
       await sutepaApi.delete(`/personas/${activeAfiliado.persona.id}`, { estado })
 
-      // Cambiar el color del estado a rojo en el mensaje del toast
       toast.success(
         <>
           Afiliado cambiado a <span style={{ color: 'red' }}>{estado}</span> correctamente
@@ -107,7 +103,7 @@ function DocumentacionAdicionalData ({ register }) {
   }
 
   const agregarDocumento = async () => {
-    const tipoArchivoOption = archivoOptions.find(
+    const tipoArchivoOption = documentacion.find(
       (option) => option.id === parseInt(formData.tipo_documento_id)
     )
 
@@ -118,6 +114,7 @@ function DocumentacionAdicionalData ({ register }) {
         ...formData,
         id: idCounter,
         tipo_documento_id: tipoArchivoOption.id,
+        tipo_documento: tipoArchivoOption.nombre,
         archivo: formData.archivo,
         fecha_carga: new Date(),
         users_id: user.id,
@@ -127,7 +124,6 @@ function DocumentacionAdicionalData ({ register }) {
 
       if (!documentos.some((doc) => doc.archivo === nuevoDocumento.archivo)) {
         try {
-          // Subir el archivo al servidor, enviando el temp_id
           const response = await enviarArchivo(nuevoDocumento)
           const documentoId = response.ids[0]
 
@@ -136,7 +132,6 @@ function DocumentacionAdicionalData ({ register }) {
           setDocumentos([...documentos, nuevoDocumento])
           setIdCounter(idCounter + 1)
 
-          // Si el tipo de archivo es "TELEGRAMA DE BAJA, JUBILADACION, ACTA DEFUNCION", cambiar el estado del afiliado a "INACTIVO"
           if (nuevoDocumento.tipo_documento_id === 1 || nuevoDocumento.tipo_documento_id === 7 || nuevoDocumento.tipo_documento_id === 8) {
             await cambiarEstadoAfiliado('INACTIVO')
           }
@@ -160,10 +155,8 @@ function DocumentacionAdicionalData ({ register }) {
     const documentoAEliminar = documentos[index]
 
     try {
-      // Hacer la solicitud DELETE al backend
       await sutepaApi.delete(`file/${documentoAEliminar.id}`)
 
-      // Si la eliminación es exitosa, eliminar el documento del estado
       const newDocumentos = documentos.filter((_, i) => i !== index)
       setDocumentos(newDocumentos)
 
@@ -171,6 +164,18 @@ function DocumentacionAdicionalData ({ register }) {
       toast.success('Documento eliminado correctamente')
     } catch (error) {
       toast.error('Error al eliminar el documento')
+    }
+  }
+
+  const openDeleteModal = (index) => {
+    setDocumentoAEliminarIndex(index)
+    dispatch(handleShowDelete())
+  }
+
+  const confirmDelete = async () => {
+    if (documentoAEliminarIndex !== null) {
+      await onDelete(documentoAEliminarIndex)
+      setDocumentoAEliminarIndex(null)
     }
   }
 
@@ -233,6 +238,15 @@ function DocumentacionAdicionalData ({ register }) {
             <h4 className='card-title text-center bg-red-500 dark:bg-gray-700 text-white rounded-md p-2'>
               Documentación Adicional
             </h4>
+
+            <DeleteModal
+              themeClass='bg-slate-900 dark:bg-slate-800 dark:border-b dark:border-slate-700'
+              centered
+              title='Eliminar Documentación'
+              message='¿Estás seguro de que deseas eliminar este documento?'
+              labelBtn='Aceptar'
+              btnFunction={confirmDelete}
+            />
 
             <Card>
               <form ref={formRef}>
@@ -305,9 +319,9 @@ function DocumentacionAdicionalData ({ register }) {
                           </td>
                         )}
                         <td className='px-4 py-2 whitespace-nowrap font-medium text-gray-900 dark:text-white text-center'>
-                          {documento.tipo_documento ||
-                          getDocumentoByName(documento.tipo_documento_id)}
+                          {documento.tipo_documento}
                         </td>
+
                         <td className='px-4 py-2 text-center'>
                           <a
                             href={documento.blobURL || documento.archivo_url}
@@ -322,8 +336,8 @@ function DocumentacionAdicionalData ({ register }) {
                           <Tooltip content='Eliminar'>
                             <button
                               type='button'
-                              onClick={() => onDelete(index)}
-                              className=' text-red-600 hover:text-red-900'
+                              onClick={() => openDeleteModal(index)}
+                              className='text-red-600 hover:text-red-900'
                             >
                               <Icon
                                 icon='heroicons:trash'
@@ -331,6 +345,7 @@ function DocumentacionAdicionalData ({ register }) {
                                 height='24'
                               />
                             </button>
+
                           </Tooltip>
                         </td>
                       </tr>

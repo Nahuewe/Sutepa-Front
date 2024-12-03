@@ -5,7 +5,7 @@ import * as yup from 'yup'
 import Textinput from '@/components/ui/Textinput'
 import Button from '@/components/ui/Button'
 import Loading from '@/components/Loading'
-import { sutepaApi } from '../../../api'
+import { sutepaApi } from '@/api'
 import { Label, Select } from 'flowbite-react'
 
 const FormValidationSaving = yup

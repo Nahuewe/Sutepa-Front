@@ -11,7 +11,7 @@ import Textarea from '@/components/ui/Textarea'
 import DatePicker from '../ui/DatePicker'
 import moment from 'moment'
 import Loading from '@/components/Loading'
-import useFetchData from '../../helpers/useFetchData'
+import useFetchData from '@/helpers/useFetchData'
 
 const initialForm = {
   tipo_subsidio_id: null,

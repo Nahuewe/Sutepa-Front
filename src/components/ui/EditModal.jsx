@@ -3,7 +3,6 @@ import React, { Fragment } from 'react'
 import Icon from '@/components/ui/Icon'
 import { useDispatch, useSelector } from 'react-redux'
 import { handleShowEdit } from '@/store/layout'
-import { ToastContainer } from 'react-toastify'
 
 const EditModal = ({
   noFade,
@@ -45,7 +44,6 @@ const EditModal = ({
             )}
           </Transition.Child>
 
-          <ToastContainer />
           <div className='fixed inset-0 overflow-y-auto'>
             <div
               className={`flex min-h-full justify-center text-center p-6 ${

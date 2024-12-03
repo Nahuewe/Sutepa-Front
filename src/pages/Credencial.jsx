@@ -7,7 +7,7 @@ import Logo from '@/assets/images/logo/logo-sutepa.png'
 export const Credencial = () => {
   const [, setImage] = useState(null)
   const [preview, setPreview] = useState(null)
-  const [identifier, setIdentifier] = useState('') // Un solo campo para DNI o Legajo
+  const [identifier, setIdentifier] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [isPersonFound, setIsPersonFound] = useState(false)
   const [personData, setPersonData] = useState({
@@ -68,7 +68,7 @@ export const Credencial = () => {
         }
 
         setPersonData({
-          nombre: `${person.nombre} ${person.apellido}`.toUpperCase(),
+          nombre: `${person.apellido} ${person.nombre} `.toUpperCase(),
           legajo: person.legajo,
           dni: person.dni,
           estado: person.estado
@@ -107,26 +107,12 @@ export const Credencial = () => {
       canvas.height = 300 * scaleFactor
       ctx.scale(scaleFactor, scaleFactor)
 
-      // Fondo gris claro con bordes redondeados (todas las esquinas)
-      const cornerRadius = 15
+      // Fondo gris claro sin bordes redondeados
       const width = canvas.width / scaleFactor // Ancho ajustado al factor de escala
       const height = canvas.height / scaleFactor // Altura ajustada al factor de escala
 
       ctx.fillStyle = '#f3f4f6'
-      ctx.beginPath()
-
-      // Esquinas redondeadas usando `arcTo`
-      ctx.moveTo(cornerRadius, 0) // Punto inicial (superior izquierda)
-      ctx.lineTo(width - cornerRadius, 0) // Línea superior
-      ctx.arcTo(width, 0, width, cornerRadius, cornerRadius) // Esquina superior derecha
-      ctx.lineTo(width, height - cornerRadius) // Línea derecha
-      ctx.arcTo(width, height, width - cornerRadius, height, cornerRadius) // Esquina inferior derecha
-      ctx.lineTo(cornerRadius, height) // Línea inferior
-      ctx.arcTo(0, height, 0, height - cornerRadius, cornerRadius) // Esquina inferior izquierda
-      ctx.lineTo(0, cornerRadius) // Línea izquierda
-      ctx.arcTo(0, 0, cornerRadius, 0, cornerRadius) // Esquina superior izquierda
-      ctx.closePath()
-      ctx.fill()
+      ctx.fillRect(0, 0, width, height)
 
       // El resto del código sigue igual
       const dividerGradient = ctx.createLinearGradient(0, 0, width, 0)
@@ -168,7 +154,7 @@ export const Credencial = () => {
         ctx.font = 'bold 18px Arial'
         ctx.fillText(personData.nombre.toUpperCase(), 20, 140)
         ctx.font = '16px Arial'
-        ctx.fillText(`Afiliado: ${personData.legajo}`, 20, 170)
+        ctx.fillText(`Legajo: ${personData.legajo}`, 20, 170)
         ctx.fillText(`Documento Nº: ${personData.dni}`, 20, 200)
         ctx.fillText(`Estado: ${personData.estado}`, 20, 230)
 
@@ -177,7 +163,9 @@ export const Credencial = () => {
         validUntil.setMonth(currentDate.getMonth() + 1)
 
         const day = validUntil.getDate()
-        const monthYear = validUntil.toLocaleString('es-ES', { month: 'long', year: 'numeric' }).toUpperCase()
+        const monthYear = validUntil
+          .toLocaleString('es-ES', { month: 'long', year: 'numeric' })
+          .toUpperCase()
         const validUntilDate = `${day} de ${monthYear}`
         ctx.fillText(`Válido hasta: ${validUntilDate}`, 20, 260)
 
@@ -215,95 +203,97 @@ export const Credencial = () => {
   }, [personData, preview])
 
   return (
-    <div className='max-w-4xl mx-auto p-8 bg-white shadow-lg rounded-lg'>
-      <h1 className='text-3xl font-semibold text-gray-800 mb-6 text-center'>Generar Credencial</h1>
+    <div className='md:min-h-screen md:flex md:items-center md:justify-center bg-gray-100'>
+      <div className='max-w-4xl w-full p-8 bg-white shadow-lg rounded-lg'>
+        <h1 className='text-3xl font-semibold text-gray-800 mb-6 text-center'>Generar Credencial</h1>
 
-      <span className='text-sm text-gray-500'>Escribe tu legajo o DNI y luego haz clic en "Buscar".</span>
-      <div className='flex flex-col sm:flex-row gap-4 mb-6 mt-2'>
-        <input
-          type='text'
-          placeholder='Ingresá tu DNI o Legajo y luego buscá'
-          value={identifier}
-          onChange={handleIdentifierChange}
-          className='p-3 w-full sm:w-2/3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
-        />
-        <button
-          onClick={handleSearch}
-          className={`w-full md:w-96 px-6 py-3 rounded-md text-white font-semibold transition ${isLoading ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700'
-            }`}
-          disabled={isLoading}
-        >
-          {isLoading
-            ? (
-              <span className='flex items-center gap-2'>
-                <svg
-                  className='w-4 h-4 animate-spin'
-                  xmlns='http://www.w3.org/2000/svg'
-                  fill='none'
-                  viewBox='0 0 24 24'
-                >
-                  <circle
-                    className='opacity-25'
-                    cx='12'
-                    cy='12'
-                    r='10'
-                    stroke='currentColor'
-                    strokeWidth='4'
-                  />
-                  <path
-                    className='opacity-75'
-                    fill='currentColor'
-                    d='M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z'
-                  />
-                </svg>
-                Buscando...
-              </span>
-              )
-            : (
-                'Buscar'
-              )}
-        </button>
-      </div>
-
-      {isPersonFound && personData.estado.toUpperCase() !== 'INACTIVO' && (
-        <div>
-          <span className='text-sm text-gray-500'>Sube tu foto para la credencial.</span>
-          <FileInput
-            type='file'
-            accept='image/*'
-            onChange={handleImageUpload}
-            className='w-full sm:w-auto mb-6 mt-2 rounded-md'
+        <span className='text-sm text-gray-500'>Escribe tu legajo o DNI y luego haz clic en "Buscar".</span>
+        <div className='flex flex-col sm:flex-row gap-4 mb-6 mt-2'>
+          <input
+            type='text'
+            placeholder='Ingresá tu DNI o Legajo y luego buscá'
+            value={identifier}
+            onChange={handleIdentifierChange}
+            className='p-3 w-full sm:w-2/3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
           />
+          <button
+            onClick={handleSearch}
+            className={`w-full md:w-96 px-6 py-3 rounded-md text-white font-semibold transition ${isLoading ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700'
+              }`}
+            disabled={isLoading}
+          >
+            {isLoading
+              ? (
+                <span className='flex items-center gap-2'>
+                  <svg
+                    className='w-4 h-4 animate-spin'
+                    xmlns='http://www.w3.org/2000/svg'
+                    fill='none'
+                    viewBox='0 0 24 24'
+                  >
+                    <circle
+                      className='opacity-25'
+                      cx='12'
+                      cy='12'
+                      r='10'
+                      stroke='currentColor'
+                      strokeWidth='4'
+                    />
+                    <path
+                      className='opacity-75'
+                      fill='currentColor'
+                      d='M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z'
+                    />
+                  </svg>
+                  Buscando...
+                </span>
+                )
+              : (
+                  'Buscar'
+                )}
+          </button>
         </div>
-      )}
 
-      {isPersonFound && personData.estado.toUpperCase() !== 'INACTIVO' && (
-        <div>
-          <span className='text-sm text-gray-500 flex justify-center mb-2'>Vista previa.</span>
-          <div className='w-full sm:w-96 mx-auto bg-gray-50 border border-gray-300 rounded-lg p-4 flex flex-col items-center'>
-            <canvas ref={canvasRef} className='w-full h-auto rounded-md' />
+        {isPersonFound && personData.estado.toUpperCase() !== 'INACTIVO' && (
+          <div>
+            <span className='text-sm text-gray-500'>Sube tu foto para la credencial.</span>
+            <FileInput
+              type='file'
+              accept='image/*'
+              onChange={handleImageUpload}
+              className='w-full sm:w-auto mb-6 mt-2 rounded-md'
+            />
           </div>
-        </div>
-      )}
+        )}
 
-      {isPersonFound && personData.estado.toUpperCase() !== 'INACTIVO' && (
-        <button
-          onClick={() => {
-            if (personData.estado === 'INACTIVO') {
-              toast.error('No se puede descargar la credencial para un afiliado INACTIVO.')
-              return
-            }
-            handleDownload()
-          }}
-          className={`mt-6 px-6 py-3 w-full text-white rounded-md transition ${!isPersonFound || personData.estado === 'INACTIVO'
-            ? 'bg-gray-400 hover:bg-gray-500 cursor-not-allowed'
-            : 'bg-blue-600 hover:bg-blue-700'
-          }`}
-          disabled={!isPersonFound || personData.estado === 'INACTIVO'}
-        >
-          Descargar Credencial
-        </button>
-      )}
+        {isPersonFound && personData.estado.toUpperCase() !== 'INACTIVO' && (
+          <div>
+            <span className='text-sm text-gray-500 flex justify-center mb-2'>Vista previa.</span>
+            <div className='w-full sm:w-96 mx-auto bg-gray-50 border border-gray-300 rounded-lg p-4 flex flex-col items-center'>
+              <canvas ref={canvasRef} className='w-full h-auto rounded-md' />
+            </div>
+          </div>
+        )}
+
+        {isPersonFound && personData.estado.toUpperCase() !== 'INACTIVO' && (
+          <button
+            onClick={() => {
+              if (personData.estado === 'INACTIVO') {
+                toast.error('No se puede descargar la credencial para un afiliado INACTIVO.')
+                return
+              }
+              handleDownload()
+            }}
+            className={`mt-6 px-6 py-3 w-full text-white rounded-md transition ${!isPersonFound || personData.estado === 'INACTIVO'
+              ? 'bg-gray-400 hover:bg-gray-500 cursor-not-allowed'
+              : 'bg-blue-600 hover:bg-blue-700'
+            }`}
+            disabled={!isPersonFound || personData.estado === 'INACTIVO'}
+          >
+            Descargar Credencial
+          </button>
+        )}
+      </div>
     </div>
   )
 }

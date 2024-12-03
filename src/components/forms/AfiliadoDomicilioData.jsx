@@ -8,7 +8,7 @@ import Card from '@/components/ui/Card'
 import Textinput from '@/components/ui/Textinput'
 import Numberinput from '@/components/ui/Numberinput'
 import Loading from '@/components/Loading'
-import useFetchData from '../../helpers/useFetchData'
+import useFetchData from '@/helpers/useFetchData'
 
 function AfiliadoDomicilioData ({ register, disabled, setValue }) {
   const dispatch = useDispatch()
