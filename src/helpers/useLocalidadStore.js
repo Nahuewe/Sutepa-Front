@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
 import { handleLocalidades, setErrorMessage } from '@/store/localidad'
 import { handleShowEdit, handleShowModal } from '@/store/layout'
-import { sutepaApi } from '../api'
+import { sutepaApi } from '@/api'
 
 export const useLocalidadStore = () => {
   const { localidades = [], paginate, activeLocalidad } = useSelector((state) => state.localidad)
@@ -50,7 +50,7 @@ export const useLocalidadStore = () => {
       startLoadingLocalidad()
       dispatch(handleShowEdit())
 
-      toast.success('Localidad actualizada con exito')
+      toast.info('Localidad actualizada con exito')
     } catch (error) {
       let errorMessage = 'Error desconocido'
       if (error.response && error.response.data && error.response.data.errors) {

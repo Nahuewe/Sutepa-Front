@@ -1,0 +1,35 @@
+[
+    {
+      "label": "Nombre",
+      "field": "nombre"
+    },
+    {
+      "label": "Apellido",
+      "field": "apellido"
+    },
+    {
+      "label": "Usuario",
+      "field": "username"
+    },
+    {
+      "label": "Correo",
+      "field": "correo"
+    },
+    {
+      "label": "Seccional",
+      "field": "seccional"
+    },
+    {
+      "label": "Rol",
+      "field": "roles"
+    },
+    {
+      "label": "Estado",
+      "field": "estado"
+    },
+    {
+      "label": "Acciones",
+      "field": "acciones"
+    }
+  ]
+  

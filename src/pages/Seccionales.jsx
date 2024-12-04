@@ -1,37 +1,19 @@
 /* eslint-disable react/no-children-prop */
 import { useEffect, useState } from 'react'
-import Card from '@/components/ui/Card'
-import Modal from '@/components/ui/Modal'
-import EditModal from '@/components/ui/EditModal'
 import { DeleteModal } from '@/components/ui/DeleteModal'
 import { useDispatch } from 'react-redux'
 import { handleShowDelete, handleShowEdit } from '@/store/layout'
+import { useSeccionalStore } from '@/helpers'
+import { setActiveSeccional } from '@/store/seccional'
+import { SeccionalForm } from '@/components/sutepa/forms/'
+import { TextInput } from 'flowbite-react'
+import Card from '@/components/ui/Card'
+import Modal from '@/components/ui/Modal'
+import EditModal from '@/components/ui/EditModal'
 import Pagination from '@/components/ui/Pagination'
 import Loading from '@/components/Loading'
 import Tooltip from '@/components/ui/Tooltip'
-import { useSeccionalStore } from '@/helpers'
-import { setActiveSeccional } from '../store/seccional'
-import { SeccionalForm } from '../components/sutepa/forms/'
-import { TextInput } from 'flowbite-react'
-
-const columns = [
-  {
-    label: 'Seccional',
-    field: 'nombre'
-  },
-  {
-    label: '',
-    field: ''
-  },
-  {
-    label: '',
-    field: ''
-  },
-  {
-    label: 'Acciones',
-    field: 'acciones'
-  }
-]
+import seccionalColumn from '@/json/seccionalColumn'
 
 export const Seccionales = () => {
   const { seccionales, paginate, activeSeccional, startLoadingSeccional, startSavingSeccional, startDeleteSeccional, startUpdateSeccional, startSearchSeccional } = useSeccionalStore()
@@ -152,7 +134,7 @@ export const Seccionales = () => {
                       <table className='min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700'>
                         <thead className='bg-slate-200 dark:bg-slate-700'>
                           <tr>
-                            {columns.map((column, i) => (
+                            {seccionalColumn.map((column, i) => (
                               <th key={i} scope='col' className='table-th'>
                                 {column.label}
                               </th>

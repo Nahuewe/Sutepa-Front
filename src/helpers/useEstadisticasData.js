@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
-import { sutepaApi } from '../api'
-import { handleData, setErrorMessage } from '../store/dataEstadisticas'
+import { sutepaApi } from '@/api'
+import { handleData, setErrorMessage } from '@/store/dataEstadisticas'
 
 const useEstadisticasData = () => {
   const dispatch = useDispatch()

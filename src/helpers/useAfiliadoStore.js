@@ -1,11 +1,10 @@
 /* eslint-disable camelcase */
 import { useSelector, useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
-import { handleAfiliado, handleAfiliadosSinPaginar, onUpdateAfiliado, setErrorMessage, onShowAfiliado, cleanAfiliado } from '@/store/afiliado'
-import { sutepaApi } from '../api'
+import { handleAfiliado, handleAfiliadosSinPaginar, onUpdateAfiliado, setErrorMessage, onShowAfiliado, cleanAfiliado, handleEstadisticas } from '@/store/afiliado'
+import { sutepaApi } from '@/api'
 import { useNavigate } from 'react-router-dom'
-import sendEmail from '../components/EmailJs'
-import { handleEstadisticas } from '../store/afiliado'
+import sendEmail from '@/components/EmailJs'
 
 export const useAfiliadoStore = () => {
   const dispatch = useDispatch()
@@ -133,7 +132,7 @@ export const useAfiliadoStore = () => {
       navigate(`/afiliados?page=${page}`)
       dispatch(cleanAfiliado())
 
-      toast.success('Afiliado editado con éxito')
+      toast.info('Afiliado editado con éxito')
     } catch (error) {
       let errorMessage = 'Error desconocido'
       if (error.response && error.response.data && error.response.data.errors) {

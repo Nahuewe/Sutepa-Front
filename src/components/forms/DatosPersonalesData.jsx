@@ -5,7 +5,7 @@ import { updatePersona } from '@/store/afiliado'
 import Card from '@/components/ui/Card'
 import Textinput from '@/components/ui/Textinput'
 import Numberinput from '@/components/ui/Numberinput'
-import DatePicker from '../ui/DatePicker'
+import DatePicker from '@/components/ui/DatePicker'
 import moment from 'moment'
 import useFetchData from '@/helpers/useFetchData'
 import Loading from '@/components/Loading'
@@ -216,6 +216,22 @@ function DatosPersonalesData ({ isLoadingParent, register, setValue, errors, wat
       setIsLoading(false)
     }
   }, [estadoCivil, nacionalidad, sexo, legajos])
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setReloadKey(prevKey => prevKey + 1)
+    }, 2000)
+
+    return () => clearTimeout(timer)
+  }, [])
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setReloadKey(prevKey => prevKey + 1)
+    }, 5000)
+
+    return () => clearTimeout(timer)
+  }, [])
 
   useEffect(() => {
     const timer = setTimeout(() => {

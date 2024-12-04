@@ -10,8 +10,8 @@ import Pagination from '@/components/ui/Pagination'
 import Loading from '@/components/Loading'
 import Tooltip from '@/components/ui/Tooltip'
 import { useLocalidadStore } from '@/helpers'
-import { setActiveLocalidad } from '../store/localidad'
-import { LocalidadForm } from '../components/sutepa/forms/'
+import { setActiveLocalidad } from '@/store/localidad'
+import { LocalidadForm } from '@/components/sutepa/forms/'
 import { TextInput } from 'flowbite-react'
 
 const columns = [

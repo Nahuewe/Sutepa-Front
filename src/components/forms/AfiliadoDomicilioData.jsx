@@ -139,6 +139,14 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
   useEffect(() => {
     const timer = setTimeout(() => {
       setReloadKey(prevKey => prevKey + 1)
+    }, 5000)
+
+    return () => clearTimeout(timer)
+  }, [])
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setReloadKey(prevKey => prevKey + 1)
     }, 10000)
 
     return () => clearTimeout(timer)

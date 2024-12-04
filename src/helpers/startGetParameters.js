@@ -1,4 +1,4 @@
-import { sutepaApi } from '../api'
+import { sutepaApi } from '@/api'
 
 export const useGetParameters = () => {
   const formatObject = (data) => {

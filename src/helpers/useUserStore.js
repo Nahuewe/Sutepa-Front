@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
 import { handleUser, setErrorMessage } from '@/store/user'
 import { handleShowEdit, handleShowModal } from '@/store/layout'
-import { sutepaApi } from '../api'
+import { sutepaApi } from '@/api'
 
 export const useUserStore = () => {
   const { users, paginate, activeUser } = useSelector(state => state.user)
@@ -50,7 +50,7 @@ export const useUserStore = () => {
       startLoadingUsers()
       dispatch(handleShowEdit())
 
-      toast.success('Usuario actualizado con exito')
+      toast.info('Usuario actualizado con exito')
     } catch (error) {
       let errorMessage = 'Error desconocido'
       if (error.response && error.response.data && error.response.data.errors) {

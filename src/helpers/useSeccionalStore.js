@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
 import { handleSeccional, handleSeccionalSinpaginar, setErrorMessage } from '@/store/seccional'
 import { handleShowEdit, handleShowModal } from '@/store/layout'
-import { sutepaApi } from '../api'
+import { sutepaApi } from '@/api'
 
 export const useSeccionalStore = () => {
   const { seccionales, seccionalesSinPaginar, paginate, activeSeccional } = useSelector(state => state.seccional)
@@ -60,7 +60,7 @@ export const useSeccionalStore = () => {
       startLoadingSeccional()
       dispatch(handleShowEdit())
 
-      toast.success('Seccional actualizada con exito')
+      toast.info('Seccional actualizada con exito')
     } catch (error) {
       let errorMessage = 'Error desconocido'
       if (error.response && error.response.data && error.response.data.errors) {

@@ -1,52 +1,18 @@
 /* eslint-disable react/no-children-prop */
 import { useEffect, useState } from 'react'
-import Card from '@/components/ui/Card'
-import Modal from '@/components/ui/Modal'
-import EditModal from '@/components/ui/EditModal'
 import { DeleteModal } from '@/components/ui/DeleteModal'
 import { useDispatch, useSelector } from 'react-redux'
 import { handleShowDelete, handleShowEdit } from '@/store/layout'
 import { useUserStore } from '@/helpers'
 import { setActiveUser } from '@/store/user'
+import { UserForm } from '@/components/sutepa/forms/'
+import Card from '@/components/ui/Card'
+import Modal from '@/components/ui/Modal'
+import EditModal from '@/components/ui/EditModal'
 import Pagination from '@/components/ui/Pagination'
 import Loading from '@/components/Loading'
 import Tooltip from '@/components/ui/Tooltip'
-import { UserForm } from '../components/sutepa/forms/'
-
-const columns = [
-  {
-    label: 'Nombre',
-    field: 'nombre'
-  },
-  {
-    label: 'Apellido',
-    field: 'apellido'
-  },
-  {
-    label: 'Usuario',
-    field: 'username'
-  },
-  {
-    label: 'Correo',
-    field: 'correo'
-  },
-  {
-    label: 'Seccional',
-    field: 'seccional'
-  },
-  {
-    label: 'Rol',
-    field: 'roles'
-  },
-  {
-    label: 'Estado',
-    field: 'estado'
-  },
-  {
-    label: 'Acciones',
-    field: 'acciones'
-  }
-]
+import userColumn from '@/json/userColumn'
 
 export const Users = () => {
   const { users, paginate, activeUser, startLoadingUsers, startSavingUser, startDeleteUser, startUpdateUser } = useUserStore()
@@ -130,7 +96,7 @@ export const Users = () => {
                     <table className='min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700'>
                       <thead className='bg-slate-200 dark:bg-slate-700'>
                         <tr>
-                          {columns.map((column, i) => (
+                          {userColumn.map((column, i) => (
                             <th key={i} scope='col' className='table-th'>
                               {column.label}
                             </th>

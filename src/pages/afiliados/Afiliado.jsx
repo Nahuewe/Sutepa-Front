@@ -17,55 +17,7 @@ import EditButton from '@/components/buttons/EditButton'
 import ViewButton from '@/components/buttons/ViewButton'
 import AfiliadoButton from '@/components/buttons/AfiliadoButton'
 import Tooltip from '@/components/ui/Tooltip'
-
-const columns = [
-  {
-    label: 'Legajo',
-    field: 'legajo'
-  },
-  {
-    label: 'Nombre',
-    field: 'nombre'
-  },
-  {
-    label: 'Apellido',
-    field: 'apellido'
-  },
-  {
-    label: 'DNI',
-    field: 'dni'
-  },
-  {
-    label: 'UGL/Nivel Central',
-    field: 'ugl'
-  },
-  {
-    label: 'Seccional',
-    field: 'seccional'
-  },
-  {
-    label: 'Estado',
-    field: 'estado',
-    Cell: ({ cell }) => (
-      <span className='block w-full'>
-        <span
-          className={`inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-[999px] bg-opacity-25 text-black ${cell.value === 'PENDIENTE'
-            ? 'text-warning-500 bg-warning-500 dark:text-warning-500 dark:bg-warning-500'
-            : cell.value === 'ACTIVO'
-              ? 'text-success-500 bg-success-500 dark:text-success-500 dark:bg-success-500'
-              : 'text-red-500 bg-red-500 dark:text-red-500 dark:bg-red-500'
-            }`}
-        >
-          {cell.value}
-        </span>
-      </span>
-    )
-  },
-  {
-    label: 'Acciones',
-    field: 'acciones'
-  }
-]
+import afiliadoColumn from '@/json/afiliadoColumn'
 
 export const Afiliado = () => {
   const navigate = useNavigate()
@@ -87,8 +39,6 @@ export const Afiliado = () => {
     startSearchAfiliado
   } = useAfiliadoStore()
 
-  // const filteredAfiliados = (user.roles_id === 1 || user.roles_id === 2 || user.roles_id === 3) ? afiliados : afiliados.filter(afiliado => afiliado.seccional_id === user.seccional_id)
-
   const filteredAfiliados = (user.roles_id === 1 || user.roles_id === 2 || user.roles_id === 3)
     ? (filterPendiente ? afiliadosSinPaginar.filter(afiliado => afiliado.estado === 'PENDIENTE') : afiliados)
     : (filterPendiente ? afiliados.filter(afiliado => afiliado.estado === 'PENDIENTE' && afiliado.seccional_id === user.seccional_id) : afiliados.filter(afiliado => afiliado.seccional_id === user.seccional_id))
@@ -102,14 +52,12 @@ export const Afiliado = () => {
     const currentPage = paginate?.current_page
     await startEditAfiliado(id)
     navigate(`/afiliados/ver/${id}?page=${currentPage}`)
-    dispatch(cleanAfiliado())
   }
 
-  function onEdit (id) {
+  async function onEdit (id) {
     const currentPage = paginate?.current_page || 1
-    startEditAfiliado(id)
+    await startEditAfiliado(id)
     navigate(`/afiliados/editar/${id}?page=${currentPage}`)
-    dispatch(cleanAfiliado())
   }
 
   function onDelete (id) {
@@ -149,13 +97,10 @@ export const Afiliado = () => {
     const searchParams = new URLSearchParams(window.location.search)
     const page = searchParams.get('page') || 1
 
-    // Cargar afiliados paginados y luego sin paginar
     const fetchAfiliados = async () => {
       setIsLoading(true)
-      await startLoadingAfiliado(page) // Cargar datos paginados
+      await startLoadingAfiliado(page)
       setIsLoading(false)
-
-      // Cargar datos sin paginar en segundo plano
       await startGetAfiliadosSinPaginar()
     }
 
@@ -184,7 +129,6 @@ export const Afiliado = () => {
       return
     }
 
-    const datosCompletosData = []
     const personasData = []
     const domiciliosData = []
     const datosLaboralesData = []
@@ -192,6 +136,7 @@ export const Afiliado = () => {
     const documentacionesData = []
     const familiaresData = []
     const subsidiosData = []
+    const datosCompletosData = []
 
     afiliados.forEach((activeAfiliado) => {
       if (activeAfiliado) {
@@ -363,7 +308,6 @@ export const Afiliado = () => {
     })
 
     const wb = XLSX.utils.book_new()
-    const datosCompletosSheet = XLSX.utils.json_to_sheet(datosCompletosData)
     const personasSheet = XLSX.utils.json_to_sheet(personasData)
     const domiciliosSheet = XLSX.utils.json_to_sheet(domiciliosData)
     const datosLaboralesSheet = XLSX.utils.json_to_sheet(datosLaboralesData)
@@ -371,8 +315,8 @@ export const Afiliado = () => {
     const documentacionesSheet = XLSX.utils.json_to_sheet(documentacionesData)
     const familiaresSheet = XLSX.utils.json_to_sheet(familiaresData)
     const subsidiosSheet = XLSX.utils.json_to_sheet(subsidiosData)
+    const datosCompletosSheet = XLSX.utils.json_to_sheet(datosCompletosData)
 
-    XLSX.utils.book_append_sheet(wb, datosCompletosSheet, 'Datos Completos')
     XLSX.utils.book_append_sheet(wb, personasSheet, 'Personas')
     XLSX.utils.book_append_sheet(wb, domiciliosSheet, 'Domicilios')
     XLSX.utils.book_append_sheet(wb, datosLaboralesSheet, 'Datos Laborales')
@@ -380,6 +324,7 @@ export const Afiliado = () => {
     XLSX.utils.book_append_sheet(wb, documentacionesSheet, 'Documentaciones')
     XLSX.utils.book_append_sheet(wb, familiaresSheet, 'Familiares')
     XLSX.utils.book_append_sheet(wb, subsidiosSheet, 'Subsidios')
+    XLSX.utils.book_append_sheet(wb, datosCompletosSheet, 'Datos Completos')
 
     XLSX.writeFile(wb, 'afiliados.xlsx')
     setIsExporting(false)
@@ -437,25 +382,33 @@ export const Afiliado = () => {
                     )}
 
                     {(user.roles_id === 1) && (
-                      <button
-                        type='button'
-                        onClick={() => setFilterPendiente(!filterPendiente)}
-                        className={`bg-yellow-500 ${filterPendiente ? 'bg-yellow-700' : 'hover:bg-yellow-700'} text-white items-center text-center py-2 px-6 rounded-lg`}
-                      >
-                        {filterPendiente ? 'Todos' : 'Pendientes'}
-                      </button>
+                      <div>
+                        <Tooltip content={filterPendiente ? 'Ocultar pendientes' : 'Mostrar pendientes'}>
+                          <button
+                            type='button'
+                            onClick={() => setFilterPendiente(!filterPendiente)}
+                            className={`bg-yellow-500 ${filterPendiente ? 'bg-yellow-700' : 'hover:bg-yellow-700'} text-white items-center text-center py-2 px-6 rounded-lg`}
+                          >
+                            {filterPendiente ? 'Pendientes' : 'Pendientes'}
+                          </button>
+                        </Tooltip>
+                      </div>
                     )}
 
                     <div className='flex gap-4'>
                       {(user.roles_id === 1 || user.roles_id === 2 || user.roles_id === 3) && (
-                        <button
-                          type='button'
-                          onClick={exportToExcel}
-                          className={`bg-green-500 ${isExporting ? 'cursor-not-allowed opacity-50' : 'hover:bg-green-700'} text-white items-center text-center py-2 px-6 rounded-lg`}
-                          disabled={isExporting}
-                        >
-                          {isExporting ? 'Exportando...' : 'Exportar'}
-                        </button>
+                        <div>
+                          <Tooltip content={isExporting ? 'Exportando Excel...' : 'Exportar a Excel'}>
+                            <button
+                              type='button'
+                              onClick={exportToExcel}
+                              className={`bg-green-500 ${isExporting ? 'cursor-not-allowed opacity-50' : 'hover:bg-green-700'} text-white items-center text-center py-2 px-6 rounded-lg`}
+                              disabled={isExporting}
+                            >
+                              {isExporting ? 'Exportando...' : 'Exportar'}
+                            </button>
+                          </Tooltip>
+                        </div>
                       )}
 
                       {(user.roles_id === 1 || user.roles_id === 2 || user.roles_id === 3) && (
@@ -483,7 +436,7 @@ export const Afiliado = () => {
                       <table className='min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700'>
                         <thead className='bg-slate-200 dark:bg-slate-700'>
                           <tr>
-                            {columns.map((column, i) => (
+                            {afiliadoColumn.map((column, i) => (
                               <th key={i} scope='col' className='table-th'>
                                 {column.label}
                               </th>

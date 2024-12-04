@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
 import { handleAgencia, handleAgenciaSinpaginar, setErrorMessage } from '@/store/agencia'
 import { handleShowEdit, handleShowModal } from '@/store/layout'
-import { sutepaApi } from '../api'
+import { sutepaApi } from '@/api'
 import { useState } from 'react'
 
 export const useAgenciaStore = () => {
@@ -63,7 +63,7 @@ export const useAgenciaStore = () => {
       await startLoadingAgencia(currentPage)
       dispatch(handleShowEdit())
 
-      toast.success('Agencia actualizada con exito')
+      toast.info('Agencia actualizada con exito')
     } catch (error) {
       let errorMessage = 'Error desconocido'
       if (error.response && error.response.data && error.response.data.errors) {

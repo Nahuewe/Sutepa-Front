@@ -1,0 +1,23 @@
+[
+    {
+      "label": "UGL",
+      "field": "ugl"
+    },
+    {
+      "label": "Agencia",
+      "field": "agencia"
+    },
+    {
+      "label": "Domicilio Laboral",
+      "field": "domicilio_trabajo"
+    },
+    {
+      "label": "Teléfono Laboral",
+      "field": "telefono_laboral"
+    },
+    {
+      "label": "Acciones",
+      "field": "acciones"
+    }
+  ]
+  

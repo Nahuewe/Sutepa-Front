@@ -1,41 +1,19 @@
 /* eslint-disable react/no-children-prop */
 import { useEffect, useState } from 'react'
-import Card from '@/components/ui/Card'
-import Modal from '@/components/ui/Modal'
-import EditModal from '@/components/ui/EditModal'
 import { DeleteModal } from '@/components/ui/DeleteModal'
 import { useDispatch } from 'react-redux'
 import { handleShowDelete, handleShowEdit } from '@/store/layout'
+import { useAgenciaStore } from '@/helpers'
+import { setActiveAgencia } from '@/store/agencia'
+import { AgenciaForm } from '@/components/sutepa/forms/'
+import { TextInput } from 'flowbite-react'
+import Card from '@/components/ui/Card'
+import Modal from '@/components/ui/Modal'
+import EditModal from '@/components/ui/EditModal'
 import Pagination from '@/components/ui/Pagination'
 import Loading from '@/components/Loading'
 import Tooltip from '@/components/ui/Tooltip'
-import { useAgenciaStore } from '@/helpers'
-import { setActiveAgencia } from '../store/agencia'
-import { AgenciaForm } from '../components/sutepa/forms/'
-import { TextInput } from 'flowbite-react'
-
-const columns = [
-  {
-    label: 'UGL',
-    field: 'ugl'
-  },
-  {
-    label: 'Agencia',
-    field: 'agencia'
-  },
-  {
-    label: 'Domicilio Laboral',
-    field: 'domicilio_trabajo'
-  },
-  {
-    label: 'Teléfono Laboral',
-    field: 'telefono_laboral'
-  },
-  {
-    label: 'Acciones',
-    field: 'acciones'
-  }
-]
+import agenciaColumn from '@/json/agenciaColumn'
 
 export const Agencias = () => {
   const { agencias, paginate, activeAgencia, startLoadingAgencia, startSavingAgencia, startDeleteAgencia, startUpdateAgencia, startSearchAgencia } = useAgenciaStore()
@@ -155,7 +133,7 @@ export const Agencias = () => {
                       <table className='min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700'>
                         <thead className='bg-slate-200 dark:bg-slate-700'>
                           <tr>
-                            {columns.map((column, i) => (
+                            {agenciaColumn.map((column, i) => (
                               <th key={i} scope='col' className='table-th'>
                                 {column.label}
                               </th>

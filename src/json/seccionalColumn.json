@@ -1,0 +1,19 @@
+[
+    {
+      "label": "Seccional",
+      "field": "nombre"
+    },
+    {
+      "label": "",
+      "field": ""
+    },
+    {
+      "label": "",
+      "field": ""
+    },
+    {
+      "label": "Acciones",
+      "field": "acciones"
+    }
+  ]
+  

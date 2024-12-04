@@ -7,7 +7,7 @@ import { SelectForm } from '@/components/sutepa/forms'
 import Card from '@/components/ui/Card'
 import Textinput from '@/components/ui/Textinput'
 import Numberinput from '@/components/ui/Numberinput'
-import DatePicker from '../ui/DatePicker'
+import DatePicker from '@/components/ui/DatePicker'
 import moment from 'moment'
 import useFetchData from '@/helpers/useFetchData'
 import Loading from '@/components/Loading'
@@ -186,6 +186,14 @@ function InformacionLaboralData ({ isLoadingParent, register, setValue, watch, d
     const timer = setTimeout(() => {
       setReloadKey(prevKey => prevKey + 1)
     }, 2000)
+
+    return () => clearTimeout(timer)
+  }, [])
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setReloadKey(prevKey => prevKey + 1)
+    }, 5000)
 
     return () => clearTimeout(timer)
   }, [])

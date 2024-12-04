@@ -19,8 +19,8 @@ export const Create = () => {
   const { id } = useParams()
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(true)
-  const [isParamsLoading, setIsParamsLoading] = useState(true)
-  const { activeAfiliado, startSavingAfiliado, startUpdateAfiliado, startLoadingAfiliado, startEditAfiliado } = useAfiliadoStore()
+  const [isParamsLoading] = useState(true)
+  const { activeAfiliado, startSavingAfiliado, startUpdateAfiliado, startEditAfiliado } = useAfiliadoStore()
   const { user } = useSelector((state) => state.auth)
 
   const FormValidationSchema = yup.object().shape({
@@ -50,17 +50,6 @@ export const Create = () => {
     }
   }
 
-  async function loadingAfiliado (page = 1) {
-    !isLoading && setIsLoading(true)
-
-    await startLoadingAfiliado(page)
-    setIsLoading(false)
-  }
-
-  const startGetInitial = async () => {
-    setIsParamsLoading(false)
-  }
-
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true)
@@ -69,10 +58,8 @@ export const Create = () => {
         if (id) {
           await startEditAfiliado(id)
         }
-        await startGetInitial()
-        await loadingAfiliado()
       } catch (error) {
-        console.error('Error al cargar los datos:', error)
+        console.error('Error al cargar los datos del afiliado:', error)
       } finally {
         setIsLoading(false)
       }
@@ -94,7 +81,7 @@ export const Create = () => {
         setValue(key, value)
       })
     }
-  }, [activeAfiliado])
+  }, [activeAfiliado, setValue])
 
   return (
     <>
