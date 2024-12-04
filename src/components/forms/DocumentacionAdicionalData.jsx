@@ -308,16 +308,9 @@ function DocumentacionAdicionalData ({ register }) {
                         key={index}
                         className='bg-white dark:bg-gray-800 dark:border-gray-700'
                       >
-                        {activeAfiliado && (
-                          <td className='px-4 py-2 text-center dark:text-white'>
-                            {formatDate(documento.created_at || documento.fecha_carga)}
-                          </td>
-                        )}
-                        {!activeAfiliado && (
-                          <td className='px-4 py-2 text-center dark:text-white'>
-                            {formatDate(documento.fecha_carga)}
-                          </td>
-                        )}
+                        <td className='px-4 py-2 text-center dark:text-white'>
+                          {formatDate(documento.created_at || documento.fecha_carga)}
+                        </td>
                         <td className='px-4 py-2 whitespace-nowrap font-medium text-gray-900 dark:text-white text-center'>
                           {documento.tipo_documento}
                         </td>

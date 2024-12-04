@@ -436,17 +436,17 @@ export const Afiliado = () => {
                       </Tooltip>
                     )}
 
-                    <div className='flex gap-4'>
-                      {(user.roles_id === 1) && (
-                        <button
-                          type='button'
-                          onClick={() => setFilterPendiente(!filterPendiente)}
-                          className={`bg-yellow-500 ${filterPendiente ? 'bg-yellow-700' : 'hover:bg-yellow-700'} text-white items-center text-center py-2 px-6 rounded-lg`}
-                        >
-                          {filterPendiente ? 'Todos' : 'Pendientes'}
-                        </button>
-                      )}
+                    {(user.roles_id === 1) && (
+                      <button
+                        type='button'
+                        onClick={() => setFilterPendiente(!filterPendiente)}
+                        className={`bg-yellow-500 ${filterPendiente ? 'bg-yellow-700' : 'hover:bg-yellow-700'} text-white items-center text-center py-2 px-6 rounded-lg`}
+                      >
+                        {filterPendiente ? 'Todos' : 'Pendientes'}
+                      </button>
+                    )}
 
+                    <div className='flex gap-4'>
                       {(user.roles_id === 1 || user.roles_id === 2 || user.roles_id === 3) && (
                         <button
                           type='button'

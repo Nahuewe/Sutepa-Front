@@ -22,7 +22,7 @@ const initialForm = {
   users_id: null
 }
 
-function DatosPersonalesData ({ register, setValue, errors, watch }) {
+function DatosPersonalesData ({ isLoadingParent, register, setValue, errors, watch }) {
   const dispatch = useDispatch()
   const { user } = useSelector(state => state.auth)
   const { activeAfiliado } = useSelector(state => state.afiliado)
@@ -38,7 +38,8 @@ function DatosPersonalesData ({ register, setValue, errors, watch }) {
   const [correoError, setCorreoError] = useState(null)
   const [telefono, setTelefono] = useState('')
   const { estadoCivil, nacionalidad, sexo, legajos } = useFetchData()
-  const [isLoading, setIsLoading] = useState(true)
+  const [, setIsLoading] = useState(true)
+  const [reloadKey, setReloadKey] = useState(0)
 
   const handleDateChange = (date, field) => {
     if (field === 'fecha_afiliacion') {
@@ -216,9 +217,17 @@ function DatosPersonalesData ({ register, setValue, errors, watch }) {
     }
   }, [estadoCivil, nacionalidad, sexo, legajos])
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setReloadKey(prevKey => prevKey + 1)
+    }, 10000)
+
+    return () => clearTimeout(timer)
+  }, [])
+
   return (
-    <>
-      {isLoading
+    <div key={reloadKey}>
+      {isLoadingParent
         ? (
           <Loading className='mt-28 md:mt-64' />
           )
@@ -394,7 +403,7 @@ function DatosPersonalesData ({ register, setValue, errors, watch }) {
             </Card>
           </div>
           )}
-    </>
+    </div>
   )
 }
 

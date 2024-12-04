@@ -277,23 +277,13 @@ function SubsidioData () {
                   <tbody className='divide-y dark:divide-gray-700'>
                     {subsidios.map((subsidio) => (
                       <tr key={subsidio.id} className='bg-white dark:bg-gray-800 dark:border-gray-700'>
-                        {activeAfiliado && (
-                          <td className='px-4 py-2 text-center dark:text-white'>{formatDate(subsidio.created_at || subsidio.fecha_carga)}</td>
-                        )}
-                        {!activeAfiliado && (
-                          <td className='px-4 py-2 text-center dark:text-white'>{formatDate(subsidio.fecha_carga)}</td>
-                        )}
+                        <td className='px-4 py-2 text-center dark:text-white'>
+                          {formatDate(subsidio.created_at || subsidio.fecha_carga)}
+                        </td>
                         <td className='px-4 py-2 text-center dark:text-white'>{subsidio.tipo_subsidio || getTipoSubsidioNombre(subsidio.tipo_subsidio_id)}</td>
                         <td className='px-4 py-2 text-center dark:text-white'>{formatDate(subsidio.fecha_solicitud)}</td>
                         <td className='px-4 py-2 text-center dark:text-white'>{formatDate(subsidio.fecha_otorgamiento)}</td>
                         <td className='px-4 py-2 text-center dark:text-white mayuscula'>{subsidio.observaciones}</td>
-                        {/* {activeAfiliado
-                          ? (
-                            <td className='px-4 py-2 text-center dark:text-white'>{subsidio.users_nombre}</td>
-                            )
-                          : (
-                            <td className='px-4 py-2 text-center dark:text-white'>{user.username}</td>
-                            )} */}
                         <td className='text-center py-2 gap-4 flex justify-center'>
                           <Tooltip content='Editar'>
                             <button

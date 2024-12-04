@@ -310,12 +310,9 @@ function FamiliaresaCargo () {
                   <tbody className='divide-y dark:divide-gray-700'>
                     {familiares.map(fam => (
                       <tr key={fam.id} className='bg-white dark:bg-gray-800 dark:border-gray-700'>
-                        {activeAfiliado && (
-                          <td className='px-4 py-2 text-center dark:text-white'>{formatDate(fam.created_at || fam.fecha_carga)}</td>
-                        )}
-                        {!activeAfiliado && (
-                          <td className='px-4 py-2 text-center dark:text-white'>{formatDate(fam.fecha_carga)}</td>
-                        )}
+                        <td className='px-4 py-2 text-center dark:text-white'>
+                          {formatDate(fam.created_at || fam.fecha_carga)}
+                        </td>
                         <td className='px-4 py-2 text-center dark:text-white mayuscula'>{fam.nombre_familiar}</td>
                         <td className='px-4 py-2 text-center dark:text-white'>{formatDate(fam.fecha_nacimiento_familiar)}</td>
                         <td className='px-4 py-2 text-center dark:text-white'>{fam.tipo_documento_familiar}</td>

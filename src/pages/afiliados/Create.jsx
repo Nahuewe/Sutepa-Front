@@ -62,9 +62,24 @@ export const Create = () => {
   }
 
   useEffect(() => {
-    loadingAfiliado()
-    startGetInitial()
-  }, [])
+    const fetchData = async () => {
+      setIsLoading(true)
+
+      try {
+        if (id) {
+          await startEditAfiliado(id)
+        }
+        await startGetInitial()
+        await loadingAfiliado()
+      } catch (error) {
+        console.error('Error al cargar los datos:', error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchData()
+  }, [id])
 
   useEffect(() => {
     if (!id) return setIsLoading(false)
@@ -91,27 +106,23 @@ export const Create = () => {
           <form onSubmit={handleSubmit(onSubmit)}>
             {(user.roles_id === 1 || user.roles_id === 2 || user.roles_id === 3) && (
               <div>
-                <DatosPersonalesData register={register} errors={errors} setValue={setValue} watch={watch} />
-
-                <AfiliadoDomicilioData register={register} setValue={setValue} />
-
-                <InformacionLaboralData register={register} setValue={setValue} watch={watch} />
-
-                <ObraSocialAfiliadoData register={register} setValue={setValue} />
-
-                <FamiliarAcargoData register={register} setValue={setValue} watch={watch} reset={reset} />
-
-                <DocumentacionAdicionalData register={register} setValue={setValue} reset={reset} />
+                <DatosPersonalesData register={register} errors={errors} setValue={setValue} watch={watch} isLoadingParent={isLoading} />
+                <AfiliadoDomicilioData register={register} setValue={setValue} isLoadingParent={isLoading} />
+                <InformacionLaboralData register={register} setValue={setValue} watch={watch} isLoadingParent={isLoading} />
+                <ObraSocialAfiliadoData register={register} setValue={setValue} isLoadingParent={isLoading} />
+                <FamiliarAcargoData register={register} setValue={setValue} watch={watch} reset={reset} isLoadingParent={isLoading} />
+                <DocumentacionAdicionalData register={register} setValue={setValue} reset={reset} isLoadingParent={isLoading} />
               </div>
             )}
-
             {(user.roles_id === 1 || user.roles_id === 2 || user.roles_id === 4) && (
               <SubsidioData register={register} setValue={setValue} reset={reset} />
             )}
-
             <div className='flex justify-end gap-4 mt-8'>
               <div className='ltr:text-right rtl:text-left'>
-                <button className='btn-danger items-center text-center py-2 px-6 rounded-lg' onClick={() => navigate('/afiliados')}>
+                <button
+                  className='btn-danger items-center text-center py-2 px-6 rounded-lg'
+                  onClick={() => navigate('/afiliados')}
+                >
                   Volver
                 </button>
               </div>

@@ -24,7 +24,7 @@ const tramoHoras = {
   4: '35'
 }
 
-function InformacionLaboralData ({ register, setValue, watch, disabled }) {
+function InformacionLaboralData ({ isLoadingParent, register, setValue, watch, disabled }) {
   const [picker, setPicker] = useState(null)
   const [cargaHoraria, setCargaHoraria] = useState('')
   const [correoElectronicoLaboral, setCorreoElectronicoLaboral] = useState('')
@@ -35,7 +35,7 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
   const { agrupamiento, seccional, ugl, tramo } = useFetchData()
   const dispatch = useDispatch()
   const { activeAfiliado } = useSelector(state => state.afiliado)
-  const [isLoading, setIsLoading] = useState(true)
+  const [, setIsLoading] = useState(true)
   const [reloadKey, setReloadKey] = useState(0)
 
   const handleDateChange = (date) => {
@@ -63,8 +63,13 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
   const handleTramoChange = (e) => {
     const selectedTramo = e.target.value
     const horas = tramoHoras[selectedTramo] || ''
-    setCargaHoraria(horas)
+
+    // Actualiza el valor de 'tramo_id' y 'carga_horaria'
+    handleInputChange('tramo_id', selectedTramo)
     handleInputChange('carga_horaria', horas)
+
+    // Actualiza el estado local
+    setCargaHoraria(horas)
   }
 
   async function handleAgencia (ugl_id) {
@@ -132,7 +137,7 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
 
   useEffect(() => {
     handleDatosLaboralesUpdate()
-  }, [picker, cargaHoraria, correoElectronicoLaboral, telefonoLaboral, domicilioTrabajo, watch])
+  }, [picker, cargaHoraria, correoElectronicoLaboral, telefonoLaboral, domicilioTrabajo, watch('tramo_id'), watch])
 
   useEffect(() => {
     if (activeAfiliado?.datos_laborales) {
@@ -180,14 +185,22 @@ function InformacionLaboralData ({ register, setValue, watch, disabled }) {
   useEffect(() => {
     const timer = setTimeout(() => {
       setReloadKey(prevKey => prevKey + 1)
-    }, 1200)
+    }, 2000)
+
+    return () => clearTimeout(timer)
+  }, [])
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setReloadKey(prevKey => prevKey + 1)
+    }, 10000)
 
     return () => clearTimeout(timer)
   }, [])
 
   return (
     <div key={reloadKey}>
-      {isLoading
+      {isLoadingParent
         ? (
           <Loading className='mt-28 md:mt-64' />
           )

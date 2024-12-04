@@ -214,6 +214,11 @@ export const Credencial = () => {
             placeholder='Ingresá tu DNI o Legajo y luego buscá'
             value={identifier}
             onChange={handleIdentifierChange}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                handleSearch()
+              }
+            }}
             className='p-3 w-full sm:w-2/3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
           />
           <button
