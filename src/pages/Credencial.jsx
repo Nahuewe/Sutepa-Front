@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react'
 import { sutepaApi } from '@/api'
 import { toast } from 'react-toastify'
 import { FileInput } from 'flowbite-react'
-import Logo from '@/assets/images/logo/logo-sutepa.png'
 
 export const Credencial = () => {
   const [, setImage] = useState(null)
@@ -52,7 +51,6 @@ export const Credencial = () => {
         throw new Error('La respuesta no contiene una lista válida de personas.')
       }
 
-      // Determinar si el valor ingresado es un DNI o un Legajo
       const isDni = identifier.length === 10
       const person = personas.find((p) => {
         const cleanedIdentifier = identifier.replace(/\./g, '')
@@ -99,84 +97,70 @@ export const Credencial = () => {
 
   const drawCanvas = (canvas) => {
     return new Promise((resolve) => {
-      const scaleFactor = 2
+      const scaleFactor = 3
       const ctx = canvas.getContext('2d')
 
-      // Configurar tamaño y resolución
       canvas.width = 500 * scaleFactor
       canvas.height = 300 * scaleFactor
       ctx.scale(scaleFactor, scaleFactor)
 
-      // Fondo gris claro sin bordes redondeados
-      const width = canvas.width / scaleFactor // Ancho ajustado al factor de escala
-      const height = canvas.height / scaleFactor // Altura ajustada al factor de escala
+      // Habilitar suavizado
+      ctx.imageSmoothingEnabled = true
+      ctx.imageSmoothingQuality = 'high'
 
-      ctx.fillStyle = '#f3f4f6'
-      ctx.fillRect(0, 0, width, height)
+      // Cargar la imagen de fondo
+      const background = new Image()
+      background.src = '/public/carnet-sutepa.jpg'
+      background.onload = () => {
+        ctx.drawImage(
+          background,
+          0,
+          0,
+          canvas.width / scaleFactor,
+          canvas.height / scaleFactor
+        )
 
-      // El resto del código sigue igual
-      const dividerGradient = ctx.createLinearGradient(0, 0, width, 0)
-      dividerGradient.addColorStop(0, '#e02424')
-      dividerGradient.addColorStop(1, '#004d73')
-      ctx.fillStyle = dividerGradient
-      ctx.fillRect(0, 0, width, 20)
+        // Configuración del texto
+        ctx.fillStyle = '#FFFFFF' // Blanco para contraste
+        ctx.font = 'bold 14px Arial' // Tamaño proporcional al scaleFactor
 
-      const headerGradient = ctx.createLinearGradient(0, 20, width, 20)
-      headerGradient.addColorStop(0, '#fff')
-      headerGradient.addColorStop(1, '#fff')
-      ctx.fillStyle = headerGradient
-      ctx.fillRect(0, 20, width, 80)
+        // Posicionamiento del texto
+        const textX = 300
+        let currentY = 128
 
-      const logo = new Image()
-      logo.src = Logo
-      logo.onload = () => {
-        const logoWidth = 150
-        const logoHeight = 50
-        const logoX = 20
-        const logoY = 35
-        ctx.drawImage(logo, logoX, logoY, logoWidth, logoHeight)
+        // Dibujar valores
+        ctx.fillText(personData.nombre.toUpperCase(), textX, currentY)
+        currentY += 27
+        ctx.fillText(personData.legajo, textX, currentY)
+        currentY += 27
+        ctx.fillText(personData.dni, textX, currentY)
+        currentY += 27
+        ctx.fillText(personData.estado, textX, currentY)
+        currentY += 27
 
-        // Leyenda al lado del logo
-        ctx.fillStyle = '#000'
-        ctx.font = 'bold 16px Arial'
-
-        const textoParte1 = 'Sindicato Unido de Trabajadores'
-        const textoParte2 = 'y Empleados de PAMI'
-
-        ctx.fillText(textoParte1, logoX + logoWidth + 40, logoY + 20)
-        ctx.fillText(textoParte2, logoX + logoWidth + 40, logoY + 40)
-
-        const lineY = logoY + logoHeight + 15
-        ctx.fillStyle = dividerGradient
-        ctx.fillRect(0, lineY, width, 2)
-
-        ctx.fillStyle = '#000'
-        ctx.font = 'bold 18px Arial'
-        ctx.fillText(personData.nombre.toUpperCase(), 20, 140)
-        ctx.font = '16px Arial'
-        ctx.fillText(`Legajo: ${personData.legajo}`, 20, 170)
-        ctx.fillText(`Documento Nº: ${personData.dni}`, 20, 200)
-        ctx.fillText(`Estado: ${personData.estado}`, 20, 230)
-
+        // Fecha de vencimiento
         const currentDate = new Date()
         const validUntil = new Date(currentDate)
-        validUntil.setMonth(currentDate.getMonth() + 1)
+        validUntil.setFullYear(currentDate.getFullYear() + 1)
 
-        const day = validUntil.getDate()
-        const monthYear = validUntil
-          .toLocaleString('es-ES', { month: 'long', year: 'numeric' })
-          .toUpperCase()
-        const validUntilDate = `${day} de ${monthYear}`
-        ctx.fillText(`Válido hasta: ${validUntilDate}`, 20, 260)
+        const day = String(validUntil.getDate()).padStart(2, '0')
+        const month = String(validUntil.getMonth() + 1).padStart(2, '0')
+        const year = validUntil.getFullYear()
+        const validUntilDate = `${day}/${month}/${year}`
 
+        ctx.fillText(validUntilDate, textX, currentY)
+
+        // Dibujar imagen de perfil si está disponible
         if (preview) {
           const img = new Image()
           img.src = preview
           img.onload = () => {
-            const imageWidth = 130
-            const imageHeight = 130
-            const imageX = width - imageWidth - 30
-            const imageY = 130
+            const imageWidth = 120
+            const imageHeight = 120
+
+            const imageX = 25
+            const imageY = 115
+
             ctx.drawImage(img, imageX, imageY, imageWidth, imageHeight)
             resolve()
           }
@@ -190,6 +174,7 @@ export const Credencial = () => {
   const handleDownload = async () => {
     const canvas = document.createElement('canvas')
     await drawCanvas(canvas)
+
     const link = document.createElement('a')
     link.download = 'credencial-SUTEPA.png'
     link.href = canvas.toDataURL('image/png', 1.0)
@@ -231,23 +216,13 @@ export const Credencial = () => {
               ? (
                 <span className='flex items-center gap-2'>
                   <svg
-                    className='w-4 h-4 animate-spin'
-                    xmlns='http://www.w3.org/2000/svg'
-                    fill='none'
-                    viewBox='0 0 24 24'
+                    className='w-4 h-4 animate-spin' xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24'
                   >
                     <circle
-                      className='opacity-25'
-                      cx='12'
-                      cy='12'
-                      r='10'
-                      stroke='currentColor'
-                      strokeWidth='4'
+                      className='opacity-25' cx='12' cy='12' r='10' stroke='currentColor' strokeWidth='4'
                     />
                     <path
-                      className='opacity-75'
-                      fill='currentColor'
-                      d='M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z'
+                      className='opacity-75' fill='currentColor' d='M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z'
                     />
                   </svg>
                   Buscando...
