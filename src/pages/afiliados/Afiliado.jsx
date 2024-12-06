@@ -79,7 +79,7 @@ export const Afiliado = () => {
     searchTimeout = setTimeout(async () => {
       if (value.length === 0) {
         await loadingAfiliado()
-      } else if (value.length > 3) {
+      } else if (value.length > 2) {
         await startSearchAfiliado(value)
       }
     }, 1000)

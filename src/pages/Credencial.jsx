@@ -110,7 +110,7 @@ export const Credencial = () => {
 
       // Cargar la imagen de fondo
       const background = new Image()
-      background.src = '/public/carnet-sutepa.jpg'
+      background.src = '/carnet-sutepa.jpg'
       background.onload = () => {
         ctx.drawImage(
           background,

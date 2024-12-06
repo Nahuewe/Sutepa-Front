@@ -36,38 +36,25 @@ const DonutChart = ({ estadisticas, height = 350 }) => {
       chartType === 'inactive' ? inactiveColor : colorOpacity(inactiveColor, 0.10),
       chartType === 'pending' ? pendingColor : colorOpacity(pendingColor, 0.10)
     ],
-    legend: {
-      position: 'bottom',
-      fontSize: '12px',
-      fontFamily: 'Inter',
-      fontWeight: 400,
-      show: false
-    },
+    legend: { position: 'bottom', fontSize: '12px', show: false },
     plotOptions: {
       pie: {
         donut: {
           size: '40%',
           labels: {
             show: true,
-            name: {
-              show: false,
-              fontSize: '14px',
-              fontWeight: 'bold',
-              fontFamily: 'Inter',
-              color: isDark ? '#cbd5e1' : '#aa7'
-            },
             value: {
               show: true,
-              fontSize: '16px',
-              fontFamily: 'Inter',
+              fontSize: '18px',
+              fontWeight: 'bold',
               color: isDark ? '#ffffff' : '#000000',
-              formatter (val) {
-                return `${parseInt(val)}`
-              }
+              formatter (val) { return `${parseInt(val)}` }
             },
             total: {
               show: true,
-              fontSize: '10px',
+              label: 'Total',
+              fontSize: '16px',
+              fontWeight: 'bold',
               color: isDark ? '#cbd5e1' : '#475569'
             }
           }
@@ -100,17 +87,36 @@ const DonutChart = ({ estadisticas, height = 350 }) => {
 
   return (
     <Card>
-      <div className={`flex justify-end ${isDark ? 'dark' : ''}`}>
-        <button className={`btn ${isDark ? 'btn-dark' : 'btn-light'}`} onClick={downloadChart}>Descargar</button>
-      </div>
-      <h4>Total de afiliados</h4>
-      <p className='mt-2'>Cantidad: {totalAfiliados}</p>
-      <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', marginBottom: '8px', marginTop: '8px' }}>
+      <div ref={chartRef} className='p-4'>
+        <div className={`flex justify-end ${isDark ? 'dark' : ''}`}>
+          <button className={`btn ${isDark ? 'btn-dark' : 'btn-light'}`} onClick={downloadChart}>Descargar</button>
+        </div>
+        <h4 className='text-lg font-semibold'>{`Total de Alumnos: ${totalAfiliados}`}</h4>
+        <div className='flex justify-center mt-4 mb-4 space-x-4'>
+          <button
+            className={`px-4 py-2 rounded-md transition ${chartType === 'active' ? 'bg-blue-600 text-white' : 'bg-gray-300 text-gray-800'}`}
+            onClick={() => setChartType('active')}
+          >
+            Afiliados activos
+          </button>
+          <button
+            className={`px-4 py-2 rounded-md transition ${chartType === 'inactive' ? 'bg-red-600 text-white' : 'bg-gray-300 text-gray-800'}`}
+            onClick={() => setChartType('inactive')}
+          >
+            Afiliados dados de baja
+          </button>
+          <button
+            className={`px-4 py-2 rounded-md transition ${chartType === 'pending' ? 'bg-yellow-500 text-white' : 'bg-gray-300 text-gray-800'}`}
+            onClick={() => setChartType('pending')}
+          >
+            Afiliados pendientes
+          </button>
+        </div>
+        {/* <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', marginBottom: '8px', marginTop: '8px' }}>
         <button className={`btn ${chartType === 'active' ? 'btn-primary' : ''}`} style={{ backgroundColor: activeColor, padding: '8px' }} onClick={() => setChartType('active')}>Afiliados activos</button>
         <button className={`btn ${chartType === 'inactive' ? 'btn-danger' : ''}`} style={{ backgroundColor: inactiveColor, padding: '8px' }} onClick={() => setChartType('inactive')}>Afiliados dados de baja</button>
         <button className={`btn ${chartType === 'pending' ? 'btn-warning' : ''}`} style={{ backgroundColor: pendingColor, padding: '8px' }} onClick={() => setChartType('pending')}>Afiliados pendientes</button>
-      </div>
-      <div ref={chartRef}>
+        </div> */}
         <Chart options={options} series={series} type='pie' height={height} />
       </div>
     </Card>
