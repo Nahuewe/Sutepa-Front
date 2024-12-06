@@ -97,7 +97,7 @@ export const Credencial = () => {
 
   const drawCanvas = (canvas) => {
     return new Promise((resolve) => {
-      const scaleFactor = 3
+      const scaleFactor = 4
       const ctx = canvas.getContext('2d')
 
       canvas.width = 500 * scaleFactor
@@ -122,21 +122,21 @@ export const Credencial = () => {
 
         // Configuración del texto
         ctx.fillStyle = '#FFFFFF' // Blanco para contraste
-        ctx.font = 'bold 14px Arial' // Tamaño proporcional al scaleFactor
+        ctx.font = 'bold 12px Arial' // Tamaño proporcional al scaleFactor
 
         // Posicionamiento del texto
-        const textX = 300
-        let currentY = 128
+        const textX = 285
+        let currentY = 127
 
         // Dibujar valores
         ctx.fillText(personData.nombre.toUpperCase(), textX, currentY)
-        currentY += 27
+        currentY += 27.2
         ctx.fillText(personData.legajo, textX, currentY)
-        currentY += 27
+        currentY += 27.2
         ctx.fillText(personData.dni, textX, currentY)
-        currentY += 27
+        currentY += 27.2
         ctx.fillText(personData.estado, textX, currentY)
-        currentY += 27
+        currentY += 27.2
 
         // Fecha de vencimiento
         const currentDate = new Date()
