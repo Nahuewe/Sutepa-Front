@@ -218,28 +218,22 @@ function DatosPersonalesData ({ isLoadingParent, register, setValue, errors, wat
   }, [estadoCivil, nacionalidad, sexo, legajos])
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setReloadKey(prevKey => prevKey + 1)
-    }, 2000)
+    if (activeAfiliado) {
+      const timers = [
+        setTimeout(() => {
+          setReloadKey((prevKey) => prevKey + 1)
+        }, 2000),
+        setTimeout(() => {
+          setReloadKey((prevKey) => prevKey + 1)
+        }, 5000),
+        setTimeout(() => {
+          setReloadKey((prevKey) => prevKey + 1)
+        }, 10000)
+      ]
 
-    return () => clearTimeout(timer)
-  }, [])
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setReloadKey(prevKey => prevKey + 1)
-    }, 5000)
-
-    return () => clearTimeout(timer)
-  }, [])
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setReloadKey(prevKey => prevKey + 1)
-    }, 10000)
-
-    return () => clearTimeout(timer)
-  }, [])
+      return () => timers.forEach((timer) => clearTimeout(timer))
+    }
+  }, [activeAfiliado])
 
   return (
     <div key={reloadKey}>

@@ -39,7 +39,7 @@ export const Afiliado = () => {
     startSearchAfiliado
   } = useAfiliadoStore()
 
-  const filteredAfiliados = (user.roles_id === 1 || user.roles_id === 2 || user.roles_id === 3)
+  const filteredAfiliados = (user.roles_id === 1 || user.roles_id === 2 || user.roles_id === 3 || user.roles_id === 4)
     ? (filterPendiente ? afiliadosSinPaginar.filter(afiliado => afiliado.estado === 'PENDIENTE') : afiliados)
     : (filterPendiente ? afiliados.filter(afiliado => afiliado.estado === 'PENDIENTE' && afiliado.seccional_id === user.seccional_id) : afiliados.filter(afiliado => afiliado.seccional_id === user.seccional_id))
 
@@ -78,19 +78,11 @@ export const Afiliado = () => {
 
     searchTimeout = setTimeout(async () => {
       if (value.length === 0) {
-        await loadingAfiliado()
+        await startLoadingAfiliado()
       } else if (value.length > 2) {
         await startSearchAfiliado(value)
       }
     }, 1000)
-  }
-
-  async function loadingAfiliado (page = 1) {
-    !isLoading && setIsLoading(true)
-
-    await startGetAfiliadosSinPaginar()
-    await startLoadingAfiliado(page)
-    setIsLoading(false)
   }
 
   useEffect(() => {
@@ -370,30 +362,32 @@ export const Afiliado = () => {
                       btnFunction={startDeleteAfiliado}
                     />
 
-                    {(user.roles_id === 1 || user.roles_id === 2 || user.roles_id === 3) && (
-                      <Tooltip content={showEstadisticas ? 'Ocultar estadísticas' : 'Mostrar estadísticas'}>
-                        <button
-                          onClick={() => setShowEstadisticas(!showEstadisticas)}
-                          className='bg-blue-500 hover:bg-blue-700 text-white items-center text-center py-2 px-6 rounded-lg'
-                        >
-                          {showEstadisticas ? 'Estadísticas' : 'Estadísticas'}
-                        </button>
-                      </Tooltip>
-                    )}
-
-                    {(user.roles_id === 1) && (
-                      <div>
-                        <Tooltip content={filterPendiente ? 'Ocultar pendientes' : 'Mostrar pendientes'}>
+                    <div className='flex gap-4'>
+                      {(user.roles_id === 1 || user.roles_id === 2 || user.roles_id === 3) && (
+                        <Tooltip content={showEstadisticas ? 'Ocultar estadísticas' : 'Mostrar estadísticas'}>
                           <button
-                            type='button'
-                            onClick={() => setFilterPendiente(!filterPendiente)}
-                            className={`bg-yellow-500 ${filterPendiente ? 'bg-yellow-700' : 'hover:bg-yellow-700'} text-white items-center text-center py-2 px-6 rounded-lg`}
+                            onClick={() => setShowEstadisticas(!showEstadisticas)}
+                            className='bg-blue-500 hover:bg-blue-700 text-white items-center text-center py-2 px-6 rounded-lg'
                           >
-                            {filterPendiente ? 'Pendientes' : 'Pendientes'}
+                            {showEstadisticas ? 'Estadísticas' : 'Estadísticas'}
                           </button>
                         </Tooltip>
-                      </div>
-                    )}
+                      )}
+
+                      {(user.roles_id === 1) && (
+                        <div>
+                          <Tooltip content={filterPendiente ? 'Ocultar pendientes' : 'Mostrar pendientes'}>
+                            <button
+                              type='button'
+                              onClick={() => setFilterPendiente(!filterPendiente)}
+                              className={`bg-yellow-500 ${filterPendiente ? 'bg-yellow-700' : 'hover:bg-yellow-700'} text-white items-center text-center py-2 px-6 rounded-lg`}
+                            >
+                              {filterPendiente ? 'Pendientes' : 'Pendientes'}
+                            </button>
+                          </Tooltip>
+                        </div>
+                      )}
+                    </div>
 
                     <div className='flex gap-4'>
                       {(user.roles_id === 1 || user.roles_id === 2 || user.roles_id === 3) && (
@@ -412,13 +406,17 @@ export const Afiliado = () => {
                       )}
 
                       {(user.roles_id === 1 || user.roles_id === 2 || user.roles_id === 3) && (
-                        <button
-                          type='button'
-                          onClick={addAfiliado}
-                          className='bg-red-600 hover:bg-red-800 text-white items-center text-center py-2 px-6 rounded-lg'
-                        >
-                          Agregar
-                        </button>
+                        <div>
+                          <Tooltip content='Crear Afiliado'>
+                            <button
+                              type='button'
+                              onClick={addAfiliado}
+                              className='bg-red-600 hover:bg-red-800 text-white items-center text-center py-2 px-6 rounded-lg'
+                            >
+                              Agregar
+                            </button>
+                          </Tooltip>
+                        </div>
                       )}
                     </div>
                   </div>

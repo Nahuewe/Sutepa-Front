@@ -3,7 +3,7 @@ import Chart from 'react-apexcharts'
 import useDarkMode from '@/hooks/useDarkMode'
 import useRtl from '@/hooks/useRtl'
 import Card from '@/components/ui/Card'
-import * as htmlToImage from 'html-to-image'
+// import * as htmlToImage from 'html-to-image'
 
 const RevenueBarChart = ({ estadisticas, height = 400 }) => {
   const chartRef = useRef(null)
@@ -179,23 +179,23 @@ const RevenueBarChart = ({ estadisticas, height = 400 }) => {
 
   const filteredSeries = series.filter(serie => activeSeries[serie.name])
 
-  const downloadChart = () => {
-    if (chartRef.current) {
-      htmlToImage.toPng(chartRef.current)
-        .then(function (dataUrl) {
-          const link = document.createElement('a')
-          link.download = 'AfiliadosActivosInactivosPorSeccional.png'
-          link.href = dataUrl
-          link.click()
-        })
-    }
-  }
+  // const downloadChart = () => {
+  //   if (chartRef.current) {
+  //     htmlToImage.toPng(chartRef.current)
+  //       .then(function (dataUrl) {
+  //         const link = document.createElement('a')
+  //         link.download = 'AfiliadosActivosInactivosPorSeccional.png'
+  //         link.href = dataUrl
+  //         link.click()
+  //       })
+  //   }
+  // }
 
   return (
     <Card>
-      <div className={`flex justify-end ${isDark ? 'dark' : ''}`}>
+      {/* <div className={`flex justify-end ${isDark ? 'dark' : ''}`}>
         <button className={`btn ${isDark ? 'btn-dark' : 'btn-light'}`} onClick={downloadChart}>Descargar</button>
-      </div>
+      </div> */}
       <div ref={chartRef}>
         <Chart options={options} series={filteredSeries} type='bar' height={height} />
         <div className={`btn ${isDark ? 'btn-dark' : 'btn-light'}`} style={{ textAlign: 'center', marginTop: '10px' }}>Total de Afiliados: {totalData}</div>

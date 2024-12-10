@@ -183,28 +183,22 @@ function InformacionLaboralData ({ isLoadingParent, register, setValue, watch, d
   }, [agrupamiento, seccional, ugl, tramo])
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setReloadKey(prevKey => prevKey + 1)
-    }, 2000)
+    if (activeAfiliado) {
+      const timers = [
+        setTimeout(() => {
+          setReloadKey((prevKey) => prevKey + 1)
+        }, 2000),
+        setTimeout(() => {
+          setReloadKey((prevKey) => prevKey + 1)
+        }, 5000),
+        setTimeout(() => {
+          setReloadKey((prevKey) => prevKey + 1)
+        }, 10000)
+      ]
 
-    return () => clearTimeout(timer)
-  }, [])
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setReloadKey(prevKey => prevKey + 1)
-    }, 5000)
-
-    return () => clearTimeout(timer)
-  }, [])
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setReloadKey(prevKey => prevKey + 1)
-    }, 10000)
-
-    return () => clearTimeout(timer)
-  }, [])
+      return () => timers.forEach((timer) => clearTimeout(timer))
+    }
+  }, [activeAfiliado])
 
   return (
     <div key={reloadKey}>
