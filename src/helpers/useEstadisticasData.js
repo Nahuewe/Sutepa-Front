@@ -10,6 +10,7 @@ const useEstadisticasData = () => {
   const {
     userAll,
     seccionalAll,
+    personaAll,
     estadisticas
   } = useSelector(state => state.dataEstadisticas)
 
@@ -21,6 +22,7 @@ const useEstadisticasData = () => {
         // Agrega las peticiones necesarias
         if (!userAll.length) fetches.push(sutepaApi.get('userAll').then(res => ({ type: 'userAll', data: res.data.data })))
         if (!seccionalAll.length) fetches.push(sutepaApi.get('seccionalAll').then(res => ({ type: 'seccionalAll', data: res.data.data })))
+        if (!personaAll.length) fetches.push(sutepaApi.get('personaAll').then(res => ({ type: 'personaAll', data: res.data.data })))
         if (!estadisticas.length) fetches.push(sutepaApi.get('estadisticas').then(res => ({ type: 'estadisticas', data: res.data })))
 
         // Ejecuta las peticiones
@@ -42,6 +44,7 @@ const useEstadisticasData = () => {
   return {
     userAll,
     seccionalAll,
+    personaAll,
     estadisticas
   }
 }

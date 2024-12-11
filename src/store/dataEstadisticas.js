@@ -5,6 +5,7 @@ export const dataEstadisticasSlice = createSlice({
   initialState: {
     userAll: [],
     seccionalAll: [],
+    personaAll: [],
     estadisticas: [],
     errorMessage: ''
   },

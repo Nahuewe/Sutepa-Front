@@ -218,7 +218,7 @@ function FamiliaresaCargo () {
             </h4>
 
             <Card>
-              <form ref={formRef}>
+              <fieldset ref={formRef}>
                 <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                   <div>
                     <label htmlFor='nombre' className='form-label'>
@@ -285,7 +285,7 @@ function FamiliaresaCargo () {
                     {isEditing ? 'Terminar Edición' : 'Agregar Familiar'}
                   </button>
                 </div>
-              </form>
+              </fieldset>
             </Card>
 
             {loadingFamiliares && (

@@ -33,8 +33,6 @@ export const Users = () => {
   }
 
   async function loadingUsers (page = 1) {
-    !isLoading && setIsLoading(true)
-
     await startLoadingUsers(page)
     setIsLoading(false)
   }

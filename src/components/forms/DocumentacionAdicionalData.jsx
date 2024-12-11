@@ -250,7 +250,7 @@ function DocumentacionAdicionalData ({ register }) {
             />
 
             <Card>
-              <form ref={formRef}>
+              <fieldset ref={formRef}>
                 <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                   <SelectForm
                     register={register('tipo_documento_id')}
@@ -281,7 +281,7 @@ function DocumentacionAdicionalData ({ register }) {
                     {isSubmitting ? 'Subiendo...' : 'Agregar Documento'}
                   </button>
                 </div>
-              </form>
+              </fieldset>
             </Card>
 
             {documentos.length > 0 && (
