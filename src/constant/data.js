@@ -36,6 +36,11 @@ export const menuItems = [
     title: 'Agencias',
     icon: 'heroicons-outline:building-office-2',
     link: 'agencias'
+  },
+  {
+    title: 'Credencial',
+    icon: 'heroicons-outline:credit-card',
+    link: 'credencial'
   }
 ]
 
