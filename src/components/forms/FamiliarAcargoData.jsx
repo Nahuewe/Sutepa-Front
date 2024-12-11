@@ -1,11 +1,11 @@
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useSelector, useDispatch } from 'react-redux'
 import { onAddOrUpdateFamiliar, onDeleteFamiliar } from '@/store/afiliado'
 import { SelectForm } from '@/components/sutepa/forms'
-import Tooltip from '@/components/ui/Tooltip'
 import { Icon } from '@iconify/react'
 import { formatDate } from '@/constant/datos-id'
+import Tooltip from '@/components/ui/Tooltip'
 import Numberinput from '@/components/ui/Numberinput'
 import Card from '@/components/ui/Card'
 import Textinput from '@/components/ui/Textinput'
@@ -31,8 +31,7 @@ const tipoDocumento = [
 
 function FamiliaresaCargo () {
   const dispatch = useDispatch()
-  const formRef = useRef()
-  const { register, setValue, reset, watch } = useForm()
+  const { register, setValue, watch } = useForm()
   const [picker, setPicker] = useState(null)
   const [formData, setFormData] = useState(initialForm)
   const [familiares, setFamiliares] = useState([])
@@ -47,15 +46,16 @@ function FamiliaresaCargo () {
   const { familia } = useFetchData()
 
   const onReset = () => {
-    if (formRef.current) {
-      formRef.current.reset()
-    }
     setPicker(null)
     setFormData(initialForm)
     setIsEditing(false)
     setEditingFamiliarId(null)
     setDni('')
-    reset()
+    setValue('nombre_familiar', '')
+    setValue('tipo_documento_familiar', '')
+    setValue('documento', '')
+    setValue('parentesco_id', '')
+    setValue('fecha_nacimiento_familiar', null)
   }
 
   const handleDateChange = (date) => {
@@ -218,7 +218,7 @@ function FamiliaresaCargo () {
             </h4>
 
             <Card>
-              <fieldset ref={formRef}>
+              <fieldset>
                 <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                   <div>
                     <label htmlFor='nombre' className='form-label'>

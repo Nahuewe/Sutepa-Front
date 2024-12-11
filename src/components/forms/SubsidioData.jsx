@@ -1,11 +1,11 @@
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useSelector, useDispatch } from 'react-redux'
 import { onAddOrUpdateSubsidio, onDeleteSubsidio } from '@/store/afiliado'
 import { SelectForm } from '@/components/sutepa/forms'
-import Tooltip from '@/components/ui/Tooltip'
 import { Icon } from '@iconify/react'
 import { formatDate } from '@/constant/datos-id'
+import Tooltip from '@/components/ui/Tooltip'
 import Card from '@/components/ui/Card'
 import Textarea from '@/components/ui/Textarea'
 import DatePicker from '@/components/ui/DatePicker'
@@ -23,7 +23,7 @@ const initialForm = {
 
 function SubsidioData () {
   const dispatch = useDispatch()
-  const { register, setValue, reset } = useForm()
+  const { register, setValue } = useForm()
   const { activeAfiliado } = useSelector(state => state.afiliado)
   const [picker, setPicker] = useState(null)
   const [picker2, setPicker2] = useState(null)
@@ -32,7 +32,6 @@ function SubsidioData () {
   const [editingSubsidioId, setEditingSubsidioId] = useState(null)
   const [isEditing, setIsEditing] = useState(false)
   const { user } = useSelector(state => state.auth)
-  const formRef = useRef()
   const [idCounter, setIdCounter] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
   const [loadingSubsidios, setLoadingSubsidios] = useState(false)
@@ -66,13 +65,15 @@ function SubsidioData () {
   }
 
   const onReset = () => {
-    formRef.current.reset()
     setPicker(null)
     setPicker2(null)
     setFormData(initialForm)
     setIsEditing(false)
     setEditingSubsidioId(null)
-    reset()
+    setValue('tipo_subsidio_id', null)
+    setValue('fecha_solicitud', null)
+    setValue('fecha_otorgamiento', null)
+    setValue('observaciones', '')
   }
 
   function getTipoSubsidioNombre (id) {
@@ -198,7 +199,7 @@ function SubsidioData () {
             </h4>
 
             <Card>
-              <fieldset ref={formRef}>
+              <fieldset>
                 <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
 
                   <SelectForm

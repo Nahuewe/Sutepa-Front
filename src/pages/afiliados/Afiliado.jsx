@@ -29,17 +29,17 @@ export const Afiliado = () => {
   const [filterPendiente, setFilterPendiente] = useState(false)
   const {
     afiliados,
-    // afiliadosSinPaginar,
+    afiliadosSinPaginar,
     paginate,
     startLoadingAfiliado,
-    // startGetAfiliadosSinPaginar,
+    startGetAfiliadosSinPaginar,
     startEditAfiliado,
     startDeleteAfiliado,
     startSearchAfiliado
   } = useAfiliadoStore()
 
   const filteredAfiliados = (user.roles_id === 1 || user.roles_id === 2 || user.roles_id === 3 || user.roles_id === 4)
-    ? (filterPendiente ? personaAll.filter(afiliado => afiliado.estado === 'PENDIENTE') : afiliados)
+    ? (filterPendiente ? afiliadosSinPaginar.filter(afiliado => afiliado.estado === 'PENDIENTE') : afiliados)
     : (filterPendiente ? afiliados.filter(afiliado => afiliado.estado === 'PENDIENTE' && afiliado.seccional_id === user.seccional_id) : afiliados.filter(afiliado => afiliado.seccional_id === user.seccional_id))
 
   function addAfiliado () {
@@ -92,7 +92,7 @@ export const Afiliado = () => {
       setIsLoading(true)
       await startLoadingAfiliado(page)
       setIsLoading(false)
-      // await startGetAfiliadosSinPaginar()
+      await startGetAfiliadosSinPaginar()
     }
 
     fetchAfiliados()
@@ -262,25 +262,6 @@ export const Afiliado = () => {
                           </div>
                         )
                       }
-
-                      {/* Paginado */}
-                      {/* {
-                        paginate && (
-                          <div className='flex justify-center mt-8'>
-                            <Pagination
-                              paginate={{
-                                ...paginate,
-                                total: filterPendiente ? filteredAfiliados.length : paginate.total
-                              }}
-                              onPageChange={(page) =>
-                                search !== ''
-                                  ? startSearchAfiliado(search, page)
-                                  : startLoadingAfiliado(page)}
-                              text
-                            />
-                          </div>
-                        )
-                      } */}
 
                     </div>
                   </div>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { sutepaApi } from '@/api'
 import { toast } from 'react-toastify'
@@ -9,6 +9,7 @@ import { onAddDocumento, onDeleteDocumento } from '@/store/afiliado'
 import { formatDate } from '@/constant/datos-id'
 import { DeleteModal } from '@/components/ui/DeleteModal'
 import { handleShowDelete } from '@/store/layout'
+import { useForm } from 'react-hook-form'
 import Card from '@/components/ui/Card'
 import Tooltip from '@/components/ui/Tooltip'
 import Loading from '@/components/Loading'
@@ -20,12 +21,12 @@ const initialForm = {
   users_id: null
 }
 
-function DocumentacionAdicionalData ({ register }) {
+function DocumentacionAdicionalData () {
   const dispatch = useDispatch()
   const [documentos, setDocumentos] = useState([])
+  const { setValue, register } = useForm()
   const { user } = useSelector((state) => state.auth)
   const [formData, setFormData] = useState(initialForm)
-  const formRef = useRef()
   const { activeAfiliado } = useSelector((state) => state.afiliado)
   const [isLoading, setIsLoading] = useState(true)
   const [idCounter, setIdCounter] = useState(0)
@@ -58,8 +59,9 @@ function DocumentacionAdicionalData ({ register }) {
   }
 
   const onReset = () => {
-    formRef.current.reset()
     setFormData(initialForm)
+    setValue('tipo_documento_id', '')
+    setValue('archivo', '')
   }
 
   const enviarArchivo = async (documento) => {
@@ -250,7 +252,7 @@ function DocumentacionAdicionalData ({ register }) {
             />
 
             <Card>
-              <fieldset ref={formRef}>
+              <fieldset>
                 <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                   <SelectForm
                     register={register('tipo_documento_id')}
