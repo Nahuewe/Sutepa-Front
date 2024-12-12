@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { sutepaApi } from '@/api'
 import { toast } from 'react-toastify'
 import { FileInput } from 'flowbite-react'
+import useEstadisticasData from '@/helpers/useEstadisticasData'
 
 export const Credencial = () => {
   const [, setImage] = useState(null)
@@ -9,6 +9,8 @@ export const Credencial = () => {
   const [identifier, setIdentifier] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [isPersonFound, setIsPersonFound] = useState(false)
+  const { personaAll } = useEstadisticasData()
+  const [isPhotoUploaded, setIsPhotoUploaded] = useState(false)
   const [personData, setPersonData] = useState({
     nombre: 'Nombre y Apellido',
     legajo: '000000',
@@ -45,14 +47,12 @@ export const Credencial = () => {
 
     setIsLoading(true)
     try {
-      const response = await sutepaApi.get('/personaAll')
-      const personas = response.data.data
-      if (!Array.isArray(personas)) {
+      if (!Array.isArray(personaAll)) {
         throw new Error('La respuesta no contiene una lista válida de personas.')
       }
 
       const isDni = identifier.length === 10
-      const person = personas.find((p) => {
+      const person = personaAll.find((p) => {
         const cleanedIdentifier = identifier.replace(/\./g, '')
         const cleanedDni = p.dni.replace(/\./g, '')
         return (isDni && cleanedDni === cleanedIdentifier) || (!isDni && p.legajo === identifier)
@@ -72,10 +72,10 @@ export const Credencial = () => {
           estado: person.estado
         })
         setIsPersonFound(true)
-        toast.success(`Afiliado encontrado: ${person.nombre} ${person.apellido}`)
+        toast.success(`Afiliado encontrado: ${person.nombre.toUpperCase()} ${person.apellido.toUpperCase()}`)
       } else {
         setIsPersonFound(false)
-        toast.error('Afiliado no encontrado.')
+        toast.error('Afiliado no encontrado, intentalo de nuevo.')
       }
     } catch (error) {
       console.error('Error al buscar al afiliado:', error)
@@ -90,10 +90,23 @@ export const Credencial = () => {
     const file = e.target.files[0]
     if (file) {
       setImage(file)
+      setIsPhotoUploaded(true)
       const reader = new FileReader()
       reader.onload = () => setPreview(reader.result)
       reader.readAsDataURL(file)
+    } else {
+      setIsPhotoUploaded(false)
     }
+  }
+
+  const handleDownload = async () => {
+    const canvas = document.createElement('canvas')
+    await drawCanvas(canvas)
+
+    const link = document.createElement('a')
+    link.download = 'credencial-SUTEPA.png'
+    link.href = canvas.toDataURL('image/png', 1.0)
+    link.click()
   }
 
   const drawCanvas = (canvas) => {
@@ -172,16 +185,6 @@ export const Credencial = () => {
     })
   }
 
-  const handleDownload = async () => {
-    const canvas = document.createElement('canvas')
-    await drawCanvas(canvas)
-
-    const link = document.createElement('a')
-    link.download = 'credencial-SUTEPA.png'
-    link.href = canvas.toDataURL('image/png', 1.0)
-    link.click()
-  }
-
   useEffect(() => {
     if (canvasRef.current) {
       drawCanvas(canvasRef.current)
@@ -191,9 +194,9 @@ export const Credencial = () => {
   return (
     <div className='md:min-h-screen md:flex md:items-center md:justify-center bg-gray-100'>
       <div className='max-w-4xl w-full p-8 bg-white shadow-lg rounded-lg'>
-        <h1 className='text-3xl font-semibold text-gray-800 mb-6 text-center'>Generar Credencial</h1>
+        <h1 className='text-3xl font-semibold text-gray-800 mb-6 text-center dark:text-gray-800'>Generar Credencial</h1>
 
-        <span className='text-sm text-gray-500'>Escribe tu legajo o DNI y luego haz clic en "Buscar".</span>
+        <span className='text-sm text-gray-500 dark:text-gray-500'>Escribe tu legajo o DNI y luego haz clic en "Buscar".</span>
         <div className='flex flex-col sm:flex-row gap-4 mb-6 mt-2'>
           <input
             type='text'
@@ -205,7 +208,7 @@ export const Credencial = () => {
                 handleSearch()
               }
             }}
-            className='p-3 w-full sm:w-2/3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+            className='p-3 w-full sm:w-2/3 border border-gray-300 dark:text-black rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
           />
           <button
             onClick={handleSearch}
@@ -256,7 +259,7 @@ export const Credencial = () => {
           </div>
         )}
 
-        {isPersonFound && personData.estado.toUpperCase() !== 'INACTIVO' && (
+        {isPersonFound && personData.estado.toUpperCase() !== 'INACTIVO' && isPhotoUploaded && (
           <button
             onClick={() => {
               if (personData.estado === 'INACTIVO') {
@@ -265,15 +268,12 @@ export const Credencial = () => {
               }
               handleDownload()
             }}
-            className={`mt-6 px-6 py-3 w-full text-white rounded-md transition ${!isPersonFound || personData.estado === 'INACTIVO'
-              ? 'bg-gray-400 hover:bg-gray-500 cursor-not-allowed'
-              : 'bg-blue-600 hover:bg-blue-700'
-            }`}
-            disabled={!isPersonFound || personData.estado === 'INACTIVO'}
+            className='mt-6 px-6 py-3 w-full text-white rounded-md transition bg-blue-600 hover:bg-blue-700'
           >
             Descargar Credencial
           </button>
         )}
+
       </div>
     </div>
   )

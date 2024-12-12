@@ -13,7 +13,7 @@ const Loading = () => {
         alt='Logo Sutepa'
         className='h-16 w-56 mb-4 animate-custom-bounce opacity-75'
       />
-      <span className='inline-block mt-1 font-medium text-sm text-gray-600'>
+      <span className='inline-block mt-1 font-medium text-sm text-gray-600 dark:text-gray-400'>
         Cargando...
       </span>
       <div className='mt-2 flex space-x-2'>

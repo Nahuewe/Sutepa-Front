@@ -23,7 +23,7 @@ const DonutChart = ({ estadisticas, height = 350 }) => {
 
   const activeColor = '#747ffc'
   const inactiveColor = '#FF7F7F'
-  const pendingColor = '#cf8701'
+  const pendingColor = '#f59f00'
 
   const options = {
     labels: ['Activos', 'Inactivos', 'Pendientes'],
@@ -99,7 +99,7 @@ const DonutChart = ({ estadisticas, height = 350 }) => {
               Afiliados dados de baja
             </button>
             <button
-              className={`px-4 py-2 rounded-md transition ${chartType === 'pending' ? 'bg-yellow-500 text-white' : 'bg-gray-300 text-gray-800'}`}
+              className={`px-4 py-2 rounded-md transition ${chartType === 'pending' ? 'bg-yellow-400 text-white' : 'bg-gray-300 text-gray-800'}`}
               onClick={() => setChartType('pending')}
             >
               Afiliados pendientes

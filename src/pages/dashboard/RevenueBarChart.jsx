@@ -201,17 +201,32 @@ const RevenueBarChart = ({ estadisticas, height = 400 }) => {
         <div className={`btn ${isDark ? 'btn-dark' : 'btn-light'}`} style={{ textAlign: 'center', marginTop: '10px' }}>Total de Afiliados: {totalData}</div>
       </div>
       <div style={{ textAlign: 'center', marginTop: '20px' }}>
-        {series.map(serie => (
-          <button
-            key={serie.name}
-            className={`btn px-6 py-2 mx-2 my-2 rounded-lg transition duration-300 ease-in-out
-              ${activeSeries[serie.name] ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-700'}
-              hover:bg-blue-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
-            onClick={() => handleSeriesToggle(serie.name)}
-          >
-            {activeSeries[serie.name]} {serie.name}
-          </button>
-        ))}
+        {series.map((serie, index) => {
+          const serieColor = options.colors[index % options.colors.length]
+          return (
+            <button
+              key={serie.name}
+              className={`btn px-6 py-2 mx-2 my-2 rounded-lg transition duration-300 ease-in-out
+          ${activeSeries[serie.name] ? 'text-white' : 'text-gray-700'}
+          focus:outline-none focus:ring-2 focus:ring-offset-2`}
+              style={{
+                backgroundColor: activeSeries[serie.name] ? serieColor : '#E5E7EB',
+                color: activeSeries[serie.name] ? '#fff' : '#374151'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.backgroundColor = serieColor
+                e.target.style.color = '#fff'
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.backgroundColor = activeSeries[serie.name] ? serieColor : '#E5E7EB'
+                e.target.style.color = activeSeries[serie.name] ? '#fff' : '#374151'
+              }}
+              onClick={() => handleSeriesToggle(serie.name)}
+            >
+              {serie.name}
+            </button>
+          )
+        })}
       </div>
     </Card>
   )
