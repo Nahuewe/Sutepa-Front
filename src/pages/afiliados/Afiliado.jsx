@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { useAfiliadoStore } from '@/helpers'
@@ -27,6 +27,7 @@ export const Afiliado = () => {
   const [showEstadisticas, setShowEstadisticas] = useState(false)
   const [search, setSearch] = useState('')
   const [filterPendiente, setFilterPendiente] = useState(false)
+  const [customPaginate, setCustomPaginate] = useState(null)
   const {
     afiliados,
     afiliadosSinPaginar,
@@ -38,9 +39,20 @@ export const Afiliado = () => {
     startSearchAfiliado
   } = useAfiliadoStore()
 
-  const filteredAfiliados = (user.roles_id === 1 || user.roles_id === 2 || user.roles_id === 3 || user.roles_id === 4)
-    ? (filterPendiente ? afiliadosSinPaginar.filter(afiliado => afiliado.estado === 'PENDIENTE') : afiliados)
-    : (filterPendiente ? afiliados.filter(afiliado => afiliado.estado === 'PENDIENTE' && afiliado.seccional_id === user.seccional_id) : afiliados.filter(afiliado => afiliado.seccional_id === user.seccional_id))
+  const filteredAfiliados = useMemo(() => {
+    if (user.roles_id === 1 || user.roles_id === 2 || user.roles_id === 3 || user.roles_id === 4) {
+      return filterPendiente
+        ? afiliadosSinPaginar.filter(afiliado => afiliado.estado === 'PENDIENTE')
+        : afiliados
+    } else {
+      return filterPendiente
+        ? afiliados.filter(
+          afiliado =>
+            afiliado.estado === 'PENDIENTE' && afiliado.seccional_id === user.seccional_id
+        )
+        : afiliados.filter(afiliado => afiliado.seccional_id === user.seccional_id)
+    }
+  }, [afiliados, afiliadosSinPaginar, filterPendiente, user.roles_id, user.seccional_id])
 
   function addAfiliado () {
     navigate('/afiliados/crear')
@@ -97,6 +109,29 @@ export const Afiliado = () => {
 
     fetchAfiliados()
   }, [])
+
+  useEffect(() => {
+    if (filterPendiente) {
+      const totalItems = filteredAfiliados.length
+      const itemsPerPage = paginate?.per_page || 10
+      const totalPages = Math.ceil(totalItems / itemsPerPage)
+
+      setCustomPaginate({
+        current_page: 1,
+        per_page: itemsPerPage,
+        total: totalItems,
+        last_page: totalPages
+      })
+    } else {
+      setCustomPaginate(null)
+    }
+  }, [filterPendiente, filteredAfiliados.length, paginate?.per_page])
+
+  useEffect(() => {
+    if (!filterPendiente) {
+      startLoadingAfiliado()
+    }
+  }, [filterPendiente])
 
   return (
     <>
@@ -252,11 +287,13 @@ export const Afiliado = () => {
                         paginate && (
                           <div className='flex justify-center mt-8'>
                             <Pagination
-                              paginate={paginate}
+                              paginate={customPaginate || paginate}
                               onPageChange={(page) =>
-                                search !== ''
-                                  ? startSearchAfiliado(search, page)
-                                  : startLoadingAfiliado(page)}
+                                filterPendiente
+                                  ? setCustomPaginate((prev) => ({ ...prev, current_page: page }))
+                                  : (search !== ''
+                                      ? startSearchAfiliado(search, page)
+                                      : startLoadingAfiliado(page))}
                               text
                             />
                           </div>

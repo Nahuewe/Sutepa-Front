@@ -16,10 +16,14 @@ const Footer = ({ className = 'custom-class' }) => {
   return (
     <footer className={className + ' ' + footerclassName()}>
       <div className='site-footer px-6 m-0 bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-300 py-4'>
-        <div className='grid md:grid-cols-2 grid-cols-1 md:gap-5'>
-          <div className='text-center ltr:md:text-start rtl:md:text-right text-sm'>
-            Copyright &copy; <span>{(new Date().getFullYear())} Sindicato Unido de Trabajadores y Empleados de PAMI</span>
-            {/* <a target='_blank' rel='noreferrer' className='animate--text dark:animate--text--dark' href='https://linktr.ee/Nahuel_Soria_Parodi'> → Nahuel Soria Parodi - Todos los derechos reservados ← </a> */}
+        <div className='grid md:grid-cols-2 grid-cols-1 items-center'>
+          <div className='text-sm text-center md:text-start'>
+            Copyright &copy; <span>{new Date().getFullYear()} Sindicato Unido de Trabajadores y Empleados de PAMI</span>
+          </div>
+          <div className='text-sm text-center md:text-end'>
+            <a target='_blank' rel='noreferrer' className='animate--text dark:animate--text--dark' href='https://linktr.ee/Nahuel_Soria_Parodi'>
+              Nahuel Soria Parodi - Todos los derechos reservados
+            </a>
           </div>
         </div>
       </div>
