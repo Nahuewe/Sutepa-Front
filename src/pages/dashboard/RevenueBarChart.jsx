@@ -3,7 +3,6 @@ import Chart from 'react-apexcharts'
 import useDarkMode from '@/hooks/useDarkMode'
 import useRtl from '@/hooks/useRtl'
 import Card from '@/components/ui/Card'
-// import * as htmlToImage from 'html-to-image'
 
 const RevenueBarChart = ({ estadisticas, height = 400 }) => {
   const chartRef = useRef(null)
@@ -12,6 +11,19 @@ const RevenueBarChart = ({ estadisticas, height = 400 }) => {
   const [series, setSeries] = useState([])
   const [totalData, setTotalData] = useState(0)
   const [activeSeries, setActiveSeries] = useState({})
+
+  // Función para generar un color único basado en el nombre de la seccional
+  const generateColor = (str) => {
+    let hash = 0
+    for (let i = 0; i < str.length; i++) {
+      hash = str.charCodeAt(i) + ((hash << 5) - hash)
+    }
+    let color = '#'
+    for (let i = 0; i < 3; i++) {
+      color += ('00' + ((hash >> (i * 8)) & 0xFF).toString(16)).slice(-2)
+    }
+    return color
+  }
 
   useEffect(() => {
     if (estadisticas) {
@@ -34,7 +46,8 @@ const RevenueBarChart = ({ estadisticas, height = 400 }) => {
         data: [
           { x: 'ACTIVO', y: seccionales[seccional].ACTIVO },
           { x: 'INACTIVO', y: seccionales[seccional].INACTIVO }
-        ]
+        ],
+        color: generateColor(seccional) // Asignar color único basado en el nombre de la seccional
       }))
 
       setSeries(seriesData)
@@ -142,14 +155,7 @@ const RevenueBarChart = ({ estadisticas, height = 400 }) => {
         vertical: 10
       }
     },
-    colors: [
-      '#4669FA', '#0CE7FA', '#FA916B', '#51BB25', '#FFD500',
-      '#FF7A00', '#7C3AED', '#34B3EB', '#FF5247', '#33CC33',
-      '#FFA07A', '#00FFFF', '#C0C0C0', '#808080', '#FF0000',
-      '#800000', '#FFFF00', '#808000', '#00FF00', '#008000',
-      '#00FFFF', '#008080', '#0000FF', '#000080', '#FF00FF',
-      '#800080'
-    ],
+    colors: series.map(serie => serie.color), // Usamos el color generado para cada seccional
     grid: {
       show: true,
       borderColor: isDark ? '#334155' : '#E2E8F0',
@@ -179,36 +185,20 @@ const RevenueBarChart = ({ estadisticas, height = 400 }) => {
 
   const filteredSeries = series.filter(serie => activeSeries[serie.name])
 
-  // const downloadChart = () => {
-  //   if (chartRef.current) {
-  //     htmlToImage.toPng(chartRef.current)
-  //       .then(function (dataUrl) {
-  //         const link = document.createElement('a')
-  //         link.download = 'AfiliadosActivosInactivosPorSeccional.png'
-  //         link.href = dataUrl
-  //         link.click()
-  //       })
-  //   }
-  // }
-
   return (
     <Card>
-      {/* <div className={`flex justify-end ${isDark ? 'dark' : ''}`}>
-        <button className={`btn ${isDark ? 'btn-dark' : 'btn-light'}`} onClick={downloadChart}>Descargar</button>
-      </div> */}
       <div ref={chartRef}>
         <Chart options={options} series={filteredSeries} type='bar' height={height} />
         <div className={`btn ${isDark ? 'btn-dark' : 'btn-light'}`} style={{ textAlign: 'center', marginTop: '10px' }}>Total de Afiliados: {totalData}</div>
       </div>
       <div style={{ textAlign: 'center', marginTop: '20px' }}>
         {series.map((serie, index) => {
-          const serieColor = options.colors[index % options.colors.length]
+          const serieColor = serie.color
           return (
             <button
               key={serie.name}
               className={`btn px-6 py-2 mx-2 my-2 rounded-lg transition duration-300 ease-in-out
-          ${activeSeries[serie.name] ? 'text-white' : 'text-gray-700'}
-          focus:outline-none focus:ring-2 focus:ring-offset-2`}
+                ${activeSeries[serie.name] ? 'text-white' : 'text-gray-700'}`}
               style={{
                 backgroundColor: activeSeries[serie.name] ? serieColor : '#E5E7EB',
                 color: activeSeries[serie.name] ? '#fff' : '#374151'
