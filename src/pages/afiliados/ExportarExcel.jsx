@@ -41,19 +41,19 @@ export const ExportarExcel = () => {
       if (activeAfiliado) {
         // Datos principales
         const afiliadoBase = {
-          Legajo: activeAfiliado.persona.legajo,
-          Nombre: activeAfiliado.persona.nombre?.toUpperCase() || '',
-          Apellido: activeAfiliado.persona.apellido?.toUpperCase() || '',
-          'Correo Electrónico': activeAfiliado.persona.email ? activeAfiliado.persona.email.toLowerCase() : '',
-          'Tipo de Documento': activeAfiliado.persona.tipo_documento || '',
-          DNI: activeAfiliado.persona.dni,
-          CUIL: activeAfiliado.persona.cuil,
-          Teléfono: activeAfiliado.persona.telefono,
-          Sexo: activeAfiliado.persona.sexo,
-          'Fecha de Nacimiento': formatDate(activeAfiliado.persona.fecha_nacimiento),
-          'Fecha de Afiliación': formatDate(activeAfiliado.persona.fecha_afiliacion),
-          'Estado Civil': activeAfiliado.persona.estado_civil,
-          Nacionalidad: activeAfiliado.persona.nacionalidad,
+          Legajo: activeAfiliado.persona?.legajo,
+          Nombre: activeAfiliado.persona?.nombre?.toUpperCase() || '',
+          Apellido: activeAfiliado.persona?.apellido?.toUpperCase() || '',
+          'Correo Electrónico': activeAfiliado.persona?.email ? activeAfiliado.persona?.email.toLowerCase() : '',
+          'Tipo de Documento': activeAfiliado.persona?.tipo_documento || '',
+          DNI: activeAfiliado.persona?.dni,
+          CUIL: activeAfiliado.persona?.cuil,
+          Teléfono: activeAfiliado.persona?.telefono,
+          Sexo: activeAfiliado.persona?.sexo,
+          'Fecha de Nacimiento': formatDate(activeAfiliado.persona?.fecha_nacimiento),
+          'Fecha de Afiliación': formatDate(activeAfiliado.persona?.fecha_afiliacion),
+          'Estado Civil': activeAfiliado.persona?.estado_civil,
+          Nacionalidad: activeAfiliado.persona?.nacionalidad,
           Domicilio: activeAfiliado.domicilios?.domicilio?.toUpperCase() || '',
           Provincia: activeAfiliado.domicilios?.provincia,
           Localidad: activeAfiliado.domicilios?.localidad,
@@ -77,131 +77,131 @@ export const ExportarExcel = () => {
         activeAfiliado.familiares.forEach(fam => {
           datosCompletosData.push({
             ...afiliadoBase,
-            'Nombre y Apellido Familiar': fam.nombre_familiar?.toUpperCase() || '',
-            'Fecha de Nacimiento del Familiar': formatDate(fam.fecha_nacimiento_familiar),
-            'Tipo de Documento del Familiar': fam.tipo_documento_familiar || '',
-            Documento: fam.documento,
-            Parentesco: fam.parentesco
+            'Nombre y Apellido Familiar': fam?.nombre_familiar?.toUpperCase() || '',
+            'Fecha de Nacimiento del Familiar': formatDate(fam?.fecha_nacimiento_familiar),
+            'Tipo de Documento del Familiar': fam?.tipo_documento_familiar || '',
+            Documento: fam?.documento,
+            Parentesco: fam?.parentesco
           })
         })
 
         activeAfiliado.documentaciones.forEach(doc => {
           datosCompletosData.push({
             ...afiliadoBase,
-            'Tipo de Archivo': doc.tipo_documento || '',
-            'Nombre de Archivo': `https://sistema.sutepa.com.ar/uploads/${doc.archivo}`
+            'Tipo de Archivo': doc?.tipo_documento || '',
+            'Nombre de Archivo': `https://sistema.sutepa.com.ar/uploads/${doc?.archivo}`
           })
         })
 
         activeAfiliado.subsidios.forEach(subsidio => {
           datosCompletosData.push({
             ...afiliadoBase,
-            'Tipo de Subsidio': subsidio.tipo_subsidio,
-            'Fecha de Solicitud': formatDate(subsidio.fecha_solicitud),
-            'Fecha de Otorgamiento': formatDate(subsidio.fecha_otorgamiento),
-            Observaciones: subsidio.observaciones?.toUpperCase() || ''
+            'Tipo de Subsidio': subsidio?.tipo_subsidio,
+            'Fecha de Solicitud': formatDate(subsidio?.fecha_solicitud),
+            'Fecha de Otorgamiento': formatDate(subsidio?.fecha_otorgamiento),
+            Observaciones: subsidio?.observaciones?.toUpperCase() || ''
           })
         })
 
-        if (activeAfiliado.documentaciones.length === 0 &&
-                activeAfiliado.familiares.length === 0 &&
-                activeAfiliado.subsidios.length === 0) {
+        if (activeAfiliado?.documentaciones?.length === 0 &&
+                activeAfiliado?.familiares?.length === 0 &&
+                activeAfiliado?.subsidios?.length === 0) {
           datosCompletosData.push(afiliadoBase)
         }
       }
 
       if (activeAfiliado.persona) {
         personasData.push({
-          Legajo: activeAfiliado.persona.legajo,
-          Nombre: activeAfiliado.persona.nombre?.toUpperCase() || '',
-          Apellido: activeAfiliado.persona.apellido?.toUpperCase() || '',
-          'Correo Electrónico': activeAfiliado.persona.email ? activeAfiliado.persona.email.toLowerCase() : '',
-          'Tipo de Documento': activeAfiliado.persona.tipo_documento || '',
-          DNI: activeAfiliado.persona.dni,
-          CUIL: activeAfiliado.persona.cuil,
-          Teléfono: activeAfiliado.persona.telefono,
-          Sexo: activeAfiliado.persona.sexo,
-          'Fecha de Nacimiento': formatDate(activeAfiliado.persona.fecha_nacimiento),
-          'Fecha de Afiliación': formatDate(activeAfiliado.persona.fecha_afiliacion),
-          'Estado Civil': activeAfiliado.persona.estado_civil,
-          Nacionalidad: activeAfiliado.persona.nacionalidad,
+          Legajo: activeAfiliado.persona?.legajo,
+          Nombre: activeAfiliado.persona?.nombre?.toUpperCase() || '',
+          Apellido: activeAfiliado.persona?.apellido?.toUpperCase() || '',
+          'Correo Electrónico': activeAfiliado.persona?.email ? activeAfiliado.persona?.email.toLowerCase() : '',
+          'Tipo de Documento': activeAfiliado.persona?.tipo_documento || '',
+          DNI: activeAfiliado.persona?.dni,
+          CUIL: activeAfiliado.persona?.cuil,
+          Teléfono: activeAfiliado.persona?.telefono,
+          Sexo: activeAfiliado.persona?.sexo,
+          'Fecha de Nacimiento': formatDate(activeAfiliado.persona?.fecha_nacimiento),
+          'Fecha de Afiliación': formatDate(activeAfiliado.persona?.fecha_afiliacion),
+          'Estado Civil': activeAfiliado.persona?.estado_civil,
+          Nacionalidad: activeAfiliado.persona?.nacionalidad,
           UGL: activeAfiliado.datos_laborales?.ugl,
           Agencia: activeAfiliado.datos_laborales?.agencia,
           Seccional: activeAfiliado.datos_laborales?.seccional,
-          Estado: activeAfiliado.persona.estados
+          Estado: activeAfiliado.persona?.estados
         })
       }
 
       if (activeAfiliado.domicilios) {
         domiciliosData.push({
-          Legajo: activeAfiliado.persona.legajo,
-          Nombre: activeAfiliado.persona.nombre?.toUpperCase() || '',
-          Apellido: activeAfiliado.persona.apellido?.toUpperCase() || '',
-          Domicilio: activeAfiliado.domicilios.domicilio?.toUpperCase() || '',
-          Provincia: activeAfiliado.domicilios.provincia,
-          Localidad: activeAfiliado.domicilios.localidad,
-          'Código Postal': activeAfiliado.domicilios.codigo_postal
+          Legajo: activeAfiliado.persona?.legajo,
+          Nombre: activeAfiliado.persona?.nombre?.toUpperCase() || '',
+          Apellido: activeAfiliado.persona?.apellido?.toUpperCase() || '',
+          Domicilio: activeAfiliado.domicilios?.domicilio?.toUpperCase() || '',
+          Provincia: activeAfiliado.domicilios?.provincia,
+          Localidad: activeAfiliado.domicilios?.localidad,
+          'Código Postal': activeAfiliado.domicilios?.codigo_postal
         })
       }
 
       if (activeAfiliado.datos_laborales) {
         datosLaboralesData.push({
-          Legajo: activeAfiliado.persona.legajo,
-          Nombre: activeAfiliado.persona.nombre?.toUpperCase() || '',
-          Apellido: activeAfiliado.persona.apellido?.toUpperCase() || '',
-          'Tipo de Contrato': getTipoContrato(activeAfiliado.datos_laborales.tipo_contrato_id),
-          UGL: activeAfiliado.datos_laborales.ugl,
-          Agencia: activeAfiliado.datos_laborales.agencia,
-          'Domicilio de Trabajo': activeAfiliado.datos_laborales.domicilio,
-          Seccional: activeAfiliado.datos_laborales.seccional,
-          Agrupamiento: activeAfiliado.datos_laborales.agrupamiento,
-          Tramo: activeAfiliado.datos_laborales.tramo,
-          'Carga Horaria': activeAfiliado.datos_laborales.carga_horaria,
-          'Fecha de Ingreso': formatDate(activeAfiliado.datos_laborales.fecha_ingreso),
-          'Correo Electrónico Laboral': activeAfiliado.datos_laborales.email_laboral ? activeAfiliado.datos_laborales.email_laboral.toLowerCase() : '',
-          Teléfono: activeAfiliado.datos_laborales.telefono_laboral,
-          Estado: activeAfiliado.persona.estados
+          Legajo: activeAfiliado.persona?.legajo,
+          Nombre: activeAfiliado.persona?.nombre?.toUpperCase() || '',
+          Apellido: activeAfiliado.persona?.apellido?.toUpperCase() || '',
+          'Tipo de Contrato': getTipoContrato(activeAfiliado.datos_laborales?.tipo_contrato_id),
+          UGL: activeAfiliado.datos_laborales?.ugl,
+          Agencia: activeAfiliado.datos_laborales?.agencia,
+          'Domicilio de Trabajo': activeAfiliado.datos_laborales?.domicilio,
+          Seccional: activeAfiliado.datos_laborales?.seccional,
+          Agrupamiento: activeAfiliado.datos_laborales?.agrupamiento,
+          Tramo: activeAfiliado.datos_laborales?.tramo,
+          'Carga Horaria': activeAfiliado.datos_laborales?.carga_horaria,
+          'Fecha de Ingreso': formatDate(activeAfiliado.datos_laborales?.fecha_ingreso),
+          'Correo Electrónico Laboral': activeAfiliado.datos_laborales?.email_laboral ? activeAfiliado.datos_laborales?.email_laboral.toLowerCase() : '',
+          Teléfono: activeAfiliado.datos_laborales?.telefono_laboral,
+          Estado: activeAfiliado.persona?.estados
         })
       }
 
       if (activeAfiliado.obraSociales) {
         obraSocialData.push({
-          Legajo: activeAfiliado.persona.legajo,
-          Nombre: activeAfiliado.persona.nombre?.toUpperCase() || '',
-          Apellido: activeAfiliado.persona.apellido?.toUpperCase() || '',
-          'Tipo de Obra Social': activeAfiliado.obraSociales.tipo_obra,
-          'Obra Social': activeAfiliado.obraSociales.obra_social?.toUpperCase() || ''
+          Legajo: activeAfiliado.persona?.legajo,
+          Nombre: activeAfiliado.persona?.nombre?.toUpperCase() || '',
+          Apellido: activeAfiliado.persona?.apellido?.toUpperCase() || '',
+          'Tipo de Obra Social': activeAfiliado.obraSociales?.tipo_obra,
+          'Obra Social': activeAfiliado.obraSociales?.obra_social?.toUpperCase() || ''
         })
       }
 
       documentacionesData.push(...activeAfiliado.documentaciones.map(doc => ({
-        Legajo: activeAfiliado.persona.legajo,
-        Nombre: activeAfiliado.persona.nombre?.toUpperCase() || '',
-        Apellido: activeAfiliado.persona.apellido?.toUpperCase() || '',
-        'Tipo de Archivo': doc.tipo_documento || '',
-        'Nombre de Archivo': `https://sistema.sutepa.com.ar/uploads/${doc.archivo}`
+        Legajo: activeAfiliado.persona?.legajo,
+        Nombre: activeAfiliado.persona?.nombre?.toUpperCase() || '',
+        Apellido: activeAfiliado.persona?.apellido?.toUpperCase() || '',
+        'Tipo de Archivo': doc?.tipo_documento || '',
+        'Nombre de Archivo': `https://sistema.sutepa.com.ar/uploads/${doc?.archivo}`
       })))
 
       familiaresData.push(...activeAfiliado.familiares.map(fam => ({
-        Legajo: activeAfiliado.persona.legajo,
-        Nombre: activeAfiliado.persona.nombre?.toUpperCase() || '',
-        Apellido: activeAfiliado.persona.apellido?.toUpperCase() || '',
-        'Nombre y Apellido': fam.nombre_familiar?.toUpperCase() || '',
-        'Fecha de Nacimiento': formatDate(fam.fecha_nacimiento_familiar),
-        'Tipo de Documento': fam.tipo_documento_familiar || '',
-        Documento: fam.documento,
-        Parentesco: fam.parentesco
+        Legajo: activeAfiliado.persona?.legajo,
+        Nombre: activeAfiliado.persona?.nombre?.toUpperCase() || '',
+        Apellido: activeAfiliado.persona?.apellido?.toUpperCase() || '',
+        'Nombre y Apellido': fam?.nombre_familiar?.toUpperCase() || '',
+        'Fecha de Nacimiento': formatDate(fam?.fecha_nacimiento_familiar),
+        'Tipo de Documento': fam?.tipo_documento_familiar || '',
+        Documento: fam?.documento,
+        Parentesco: fam?.parentesco
       })))
 
       if (activeAfiliado.subsidios) {
         subsidiosData.push(...activeAfiliado.subsidios.map(subsidio => ({
-          Legajo: activeAfiliado.persona.legajo,
-          Nombre: activeAfiliado.persona.nombre?.toUpperCase() || '',
-          Apellido: activeAfiliado.persona.apellido?.toUpperCase() || '',
-          'Tipo de Subsidio': subsidio.tipo_subsidio,
-          'Fecha de Solicitud': formatDate(subsidio.fecha_solicitud),
-          'Fecha de Otorgamiento': formatDate(subsidio.fecha_otorgamiento),
-          Observaciones: subsidio.observaciones?.toUpperCase() || ''
+          Legajo: activeAfiliado.persona?.legajo,
+          Nombre: activeAfiliado.persona?.nombre?.toUpperCase() || '',
+          Apellido: activeAfiliado.persona?.apellido?.toUpperCase() || '',
+          'Tipo de Subsidio': subsidio?.tipo_subsidio,
+          'Fecha de Solicitud': formatDate(subsidio?.fecha_solicitud),
+          'Fecha de Otorgamiento': formatDate(subsidio?.fecha_otorgamiento),
+          Observaciones: subsidio?.observaciones?.toUpperCase() || ''
         })))
       }
     })

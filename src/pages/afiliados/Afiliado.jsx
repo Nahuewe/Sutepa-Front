@@ -60,7 +60,7 @@ export const Afiliado = () => {
   }
 
   async function showAfiliado (id) {
-    const currentPage = paginate?.current_page
+    const currentPage = paginate?.current_page || 1
     await startEditAfiliado(id)
     navigate(`/afiliados/ver/${id}?page=${currentPage}`)
   }
@@ -98,11 +98,11 @@ export const Afiliado = () => {
 
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search)
-    const page = searchParams.get('page') || 1
+    const page = parseInt(searchParams.get('page'), 10) || 1 // Validación de página
 
     const fetchAfiliados = async () => {
       setIsLoading(true)
-      await startLoadingAfiliado(page)
+      await startLoadingAfiliado(page) // Asegúrate de que este método maneje correctamente un valor "undefined"
       setIsLoading(false)
       await startGetAfiliadosSinPaginar()
     }
