@@ -3,22 +3,22 @@ import { createSlice } from '@reduxjs/toolkit'
 export const dataEstadisticasSlice = createSlice({
   name: 'dataEstadisticas',
   initialState: {
-    userAll: JSON.parse(localStorage.getItem('userAll')) || [],
-    seccionalAll: JSON.parse(localStorage.getItem('seccionalAll')) || [],
-    personaAll: JSON.parse(localStorage.getItem('personaAll')) || [],
-    estadisticas: JSON.parse(localStorage.getItem('estadisticas')) || [],
+    userAll: [],
+    seccionalAll: [],
+    personaAll: [],
+    estadisticas: [],
     errorMessage: ''
   },
   reducers: {
     handleData: (state, { payload }) => {
       const { type, data } = payload
-      if (Array.isArray(data)) {
+      if (Array.isArray(data) && data.length > 0) {
         state[type] = data
-        localStorage.setItem(type, JSON.stringify(data))
       } else {
-        state[type] = []
+        console.warn(`Invalid or empty data received for ${type}`)
       }
     },
+
     setErrorMessage: (state, { payload }) => {
       state.errorMessage = payload
     }

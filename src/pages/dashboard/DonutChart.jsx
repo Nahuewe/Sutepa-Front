@@ -2,7 +2,6 @@ import React, { useEffect, useState, useRef } from 'react'
 import Chart from 'react-apexcharts'
 import useDarkMode from '@/hooks/useDarkMode'
 import Card from '@/components/ui/Card'
-// import * as htmlToImage from 'html-to-image'
 
 const DonutChart = ({ estadisticas, height = 350 }) => {
   const [isDark] = useDarkMode()
@@ -66,23 +65,9 @@ const DonutChart = ({ estadisticas, height = 350 }) => {
     return color + _opacity.toString(16).toUpperCase()
   }
 
-  // const downloadChart = () => {
-  //   if (chartRef.current) {
-  //     htmlToImage.toPng(chartRef.current).then(function (dataUrl) {
-  //       const link = document.createElement('a')
-  //       link.download = 'afiliadosTotales.png'
-  //       link.href = dataUrl
-  //       link.click()
-  //     })
-  //   }
-  // }
-
   return (
     <div className='p-y4'>
       <Card>
-        {/* <div className={`flex justify-end ${isDark ? 'dark' : ''}`}>
-          <button className={`btn ${isDark ? 'btn-dark' : 'btn-light'}`} onClick={downloadChart}>Descargar</button>
-        </div> */}
         <div ref={chartRef}>
           <h4 className='text-lg font-semibold'>{`Afiliados Totales: ${totalAfiliados}`}</h4>
           <div className='flex justify-center mt-4 mb-4 space-x-4'>

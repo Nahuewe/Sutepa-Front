@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { useGetParameters } from '@/helpers'
+import { useSelector } from 'react-redux'
 import * as yup from 'yup'
 import Textinput from '@/components/ui/Textinput'
 import Select from '@/components/ui/Select'
 import Button from '@/components/ui/Button'
 import Loading from '@/components/Loading'
-import { useGetParameters } from '@/helpers'
-import { useSelector } from 'react-redux'
 
 const FormValidationSaving = yup
   .object({
@@ -166,7 +166,7 @@ export const UserForm = ({ fnAction, activeUser = null }) => {
                 />
                 <button
                   type='button'
-                  className='absolute top-1/2 right-4 mb-1'
+                  className='absolute top-[46%] right-4 mb-1'
                   onClick={togglePasswordVisibility}
                 >
                   {showPassword

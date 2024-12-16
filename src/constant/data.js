@@ -57,11 +57,6 @@ export const menuNormal = [
   },
 
   {
-    isHeadr: true,
-    title: 'Pre-Carga'
-  },
-
-  {
     title: 'Agencias',
     icon: 'heroicons-outline:building-office-2',
     link: 'agencias'

@@ -105,24 +105,27 @@ function FamiliaresaCargo () {
   }
 
   function addOrUpdateFamiliar (newFamiliar) {
-    const existingFamiliar = familiares.find(familiar => familiar.id === newFamiliar.id)
+    const parentescoNombre = getParentescoNombre(newFamiliar.parentesco_id)
+
+    const familiarConParentesco = {
+      ...newFamiliar,
+      parentesco: parentescoNombre
+    }
 
     if (isEditing) {
       setFamiliares(prevFamiliares =>
         prevFamiliares.map(familiar =>
-          familiar.id === editingFamiliarId ? newFamiliar : familiar
+          familiar.id === editingFamiliarId ? familiarConParentesco : familiar
         )
       )
       setIsEditing(false)
       setEditingFamiliarId(null)
     } else {
-      if (!existingFamiliar) {
-        setFamiliares(prevFamiliares => [...prevFamiliares, newFamiliar])
-        setIdCounter(idCounter + 1)
-      }
+      setFamiliares(prevFamiliares => [...prevFamiliares, familiarConParentesco])
+      setIdCounter(idCounter + 1)
     }
 
-    dispatch(onAddOrUpdateFamiliar(newFamiliar))
+    dispatch(onAddOrUpdateFamiliar(familiarConParentesco))
     onReset()
   }
 

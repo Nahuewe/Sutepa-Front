@@ -16,13 +16,11 @@ import ViewButton from '@/components/buttons/ViewButton'
 import AfiliadoButton from '@/components/buttons/AfiliadoButton'
 import Tooltip from '@/components/ui/Tooltip'
 import afiliadoColumn from '@/json/afiliadoColumn'
-import useEstadisticasData from '@/helpers/useEstadisticasData'
 
 export const Afiliado = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const { user } = useSelector((state) => state.auth)
-  const { personaAll } = useEstadisticasData()
   const [isLoading, setIsLoading] = useState(true)
   const [showEstadisticas, setShowEstadisticas] = useState(false)
   const [search, setSearch] = useState('')
@@ -223,7 +221,7 @@ export const Afiliado = () => {
                 </div>
 
                 <div className='mt-4 grid sm:grid-cols-2 md:grid-cols-4 grid-cols-1 gap-4'>
-                  {showEstadisticas && <EstadisticasAfiliados personaAll={personaAll} />}
+                  {showEstadisticas && <EstadisticasAfiliados afiliadosSinPaginar={afiliadosSinPaginar} />}
                 </div>
               </Card>
 

@@ -14,49 +14,41 @@ const useEstadisticasData = () => {
     estadisticas
   } = useSelector(state => state.dataEstadisticas)
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const fetches = []
+  // Función para obtener datos de los endpoints
+  const fetchData = async () => {
+    try {
+      const fetches = []
 
-        // Función para manejar caché
-        const fetchOrCache = (key, url) => {
-          const cachedData = localStorage.getItem(key) // Verificar en caché
-          if (cachedData) {
-            dispatch(handleData({ type: key, data: JSON.parse(cachedData) })) // Cargar desde caché
-          } else {
-            fetches.push(
-              sutepaApi.get(url)
-                .then(res => {
-                  const data = res.data.data || res.data
-                  localStorage.setItem(key, JSON.stringify(data)) // Guardar en caché
-                  return { type: key, data }
-                })
-            )
-          }
-        }
+      // Agrega las peticiones necesarias
+      if (!userAll.length) fetches.push(sutepaApi.get('userAll').then(res => ({ type: 'userAll', data: res.data.data })))
+      if (!seccionalAll.length) fetches.push(sutepaApi.get('seccionalAll').then(res => ({ type: 'seccionalAll', data: res.data.data })))
+      if (!personaAll.length) fetches.push(sutepaApi.get('personaAll').then(res => ({ type: 'personaAll', data: res.data.data })))
+      if (!estadisticas.length) fetches.push(sutepaApi.get('estadisticas').then(res => ({ type: 'estadisticas', data: res.data })))
 
-        // Cargar datos desde la caché o API
-        if (!userAll.length) fetchOrCache('userAll', 'userAll')
-        if (!seccionalAll.length) fetchOrCache('seccionalAll', 'seccionalAll')
-        if (!personaAll.length) fetchOrCache('personaAll', 'personaAll')
-        if (!estadisticas.length) fetchOrCache('estadisticas', 'estadisticas')
+      // Ejecuta las peticiones
+      const results = await Promise.all(fetches)
 
-        // Ejecuta las peticiones restantes
-        const results = await Promise.all(fetches)
-
-        // Actualiza el estado con los datos obtenidos
-        results.forEach(({ type, data }) => {
-          dispatch(handleData({ type, data }))
-        })
-      } catch (error) {
-        dispatch(setErrorMessage('Error fetching data'))
-        console.error('Error fetching data:', error)
-      }
+      // Actualiza el estado
+      results.forEach(({ type, data }) => {
+        dispatch(handleData({ type, data }))
+      })
+    } catch (error) {
+      dispatch(setErrorMessage('Error fetching data'))
+      console.error('Error fetching data:', error)
     }
+  }
 
+  useEffect(() => {
+    // Llama a fetchData al cargar el componente
     fetchData()
-  }, [dispatch, userAll.length, seccionalAll.length, personaAll.length, estadisticas.length])
+
+    // Configura un intervalo para actualizar los datos periódicamente
+    const intervalId = setInterval(() => {
+      fetchData()
+    }, 30000) // Cada 30 segundos
+
+    return () => clearInterval(intervalId) // Limpia el intervalo al desmontar
+  }, [dispatch])
 
   return {
     userAll,

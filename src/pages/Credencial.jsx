@@ -11,6 +11,7 @@ export const Credencial = () => {
   const [isPersonFound, setIsPersonFound] = useState(false)
   const { personaAll } = useEstadisticasData()
   const [isPhotoUploaded, setIsPhotoUploaded] = useState(false)
+  const [showDownloadButton, setShowDownloadButton] = useState(false)
   const [personData, setPersonData] = useState({
     nombre: 'Nombre y Apellido',
     legajo: '000000',
@@ -94,8 +95,10 @@ export const Credencial = () => {
       const reader = new FileReader()
       reader.onload = () => setPreview(reader.result)
       reader.readAsDataURL(file)
+      setTimeout(() => setShowDownloadButton(true), 300)
     } else {
       setIsPhotoUploaded(false)
+      setShowDownloadButton(false)
     }
   }
 
@@ -192,7 +195,7 @@ export const Credencial = () => {
   }, [personData, preview])
 
   return (
-    <div className='md:min-h-screen md:flex md:items-center md:justify-center bg-gray-100'>
+    <div className='md:min-h-screen md:flex md:items-center md:justify-center bg-gray-200'>
       <div className='max-w-4xl w-full p-8 bg-white shadow-lg rounded-lg'>
         <h1 className='text-3xl font-semibold text-gray-800 mb-6 text-center dark:text-gray-800'>Generar Credencial</h1>
 
@@ -268,7 +271,9 @@ export const Credencial = () => {
               }
               handleDownload()
             }}
-            className='mt-6 px-6 py-3 w-full text-white rounded-md transition bg-blue-600 hover:bg-blue-700'
+            className={`mt-6 px-6 py-3 w-full text-white rounded-md transition transform ${
+              showDownloadButton ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+            } bg-blue-600 hover:bg-blue-700`}
           >
             Descargar Credencial
           </button>

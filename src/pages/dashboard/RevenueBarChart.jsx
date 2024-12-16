@@ -11,8 +11,6 @@ const RevenueBarChart = ({ estadisticas, height = 400 }) => {
   const [series, setSeries] = useState([])
   const [totalData, setTotalData] = useState(0)
   const [activeSeries, setActiveSeries] = useState({})
-
-  // Función para generar un color único basado en el nombre de la seccional
   const generateColor = (str) => {
     let hash = 0
     for (let i = 0; i < str.length; i++) {
@@ -23,6 +21,18 @@ const RevenueBarChart = ({ estadisticas, height = 400 }) => {
       color += ('00' + ((hash >> (i * 8)) & 0xFF).toString(16)).slice(-2)
     }
     return color
+  }
+
+  const getBrightness = (hex) => {
+    const rgb = parseInt(hex.slice(1), 16)
+    const r = (rgb >> 16) & 0xff
+    const g = (rgb >> 8) & 0xff
+    const b = rgb & 0xff
+    return (r * 299 + g * 587 + b * 114) / 1000
+  }
+
+  const getTextColor = (backgroundColor) => {
+    return getBrightness(backgroundColor) > 128 ? '#000000' : '#FFFFFF'
   }
 
   useEffect(() => {
@@ -47,7 +57,7 @@ const RevenueBarChart = ({ estadisticas, height = 400 }) => {
           { x: 'ACTIVO', y: seccionales[seccional].ACTIVO },
           { x: 'INACTIVO', y: seccionales[seccional].INACTIVO }
         ],
-        color: generateColor(seccional) // Asignar color único basado en el nombre de la seccional
+        color: generateColor(seccional)
       }))
 
       setSeries(seriesData)
@@ -85,7 +95,7 @@ const RevenueBarChart = ({ estadisticas, height = 400 }) => {
       text: 'Afiliados Activos e Inactivos por Seccional',
       align: 'left',
       offsetX: isRtl ? '0%' : 0,
-      offsetY: 13,
+      offsetY: 0,
       floating: false,
       style: {
         fontSize: '20px',
@@ -155,7 +165,7 @@ const RevenueBarChart = ({ estadisticas, height = 400 }) => {
         vertical: 10
       }
     },
-    colors: series.map(serie => serie.color), // Usamos el color generado para cada seccional
+    colors: series.map(serie => serie.color),
     grid: {
       show: true,
       borderColor: isDark ? '#334155' : '#E2E8F0',
@@ -189,19 +199,19 @@ const RevenueBarChart = ({ estadisticas, height = 400 }) => {
     <Card>
       <div ref={chartRef}>
         <Chart options={options} series={filteredSeries} type='bar' height={height} />
-        <div className={`btn ${isDark ? 'btn-dark' : 'btn-light'}`} style={{ textAlign: 'center', marginTop: '10px' }}>Total de Afiliados: {totalData}</div>
+        <div className={`btn ${isDark ? 'btn-dark' : 'btn-light'}`} style={{ textAlign: 'center' }}>Total de Afiliados: {totalData}</div>
       </div>
       <div style={{ textAlign: 'center', marginTop: '20px' }}>
         {series.map((serie, index) => {
           const serieColor = serie.color
+          const textColor = getTextColor(serieColor)
           return (
             <button
               key={serie.name}
-              className={`btn px-6 py-2 mx-2 my-2 rounded-lg transition duration-300 ease-in-out
-                ${activeSeries[serie.name] ? 'text-white' : 'text-gray-700'}`}
+              className='btn px-6 py-2 mx-2 my-2 rounded-lg transition duration-300 ease-in-out'
               style={{
                 backgroundColor: activeSeries[serie.name] ? serieColor : '#E5E7EB',
-                color: activeSeries[serie.name] ? '#fff' : '#374151'
+                color: activeSeries[serie.name] ? textColor : '#374151'
               }}
               onMouseEnter={(e) => {
                 e.target.style.backgroundColor = serieColor
@@ -209,7 +219,7 @@ const RevenueBarChart = ({ estadisticas, height = 400 }) => {
               }}
               onMouseLeave={(e) => {
                 e.target.style.backgroundColor = activeSeries[serie.name] ? serieColor : '#E5E7EB'
-                e.target.style.color = activeSeries[serie.name] ? '#fff' : '#374151'
+                e.target.style.color = activeSeries[serie.name] ? textColor : '#374151'
               }}
               onClick={() => handleSeriesToggle(serie.name)}
             >
