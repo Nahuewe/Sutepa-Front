@@ -282,7 +282,7 @@ function InformacionLaboralData ({ isLoadingParent, register, setValue, watch, d
                     placeholder='Ingrese la carga horaria'
                     value={cargaHoraria}
                     onChange={handleCargaHorarioChange}
-                    readOnly
+                    disabled
                   />
                 </div>
 

@@ -1,5 +1,5 @@
 import React from 'react'
-import LogoSutepa from '@/assets/images/logo/logo-sutepa.png'
+import LogoSutepa from '@/assets/images/logo/logo-sutepa.webp'
 
 const Loading = () => {
   return (
@@ -28,7 +28,7 @@ const Loading = () => {
 export default Loading
 
 // import React from 'react'
-// import LogoSutepa from '@/assets/images/logo/logo-sutepa.png'
+// import LogoSutepa from '@/assets/images/logo/logo-sutepa.webp'
 
 // const Loading = () => {
 //   return (
