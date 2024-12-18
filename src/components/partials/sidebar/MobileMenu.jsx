@@ -7,7 +7,7 @@ import useDarkMode from '@/hooks/useDarkMode'
 import { Link } from 'react-router-dom'
 import useMobileMenu from '@/hooks/useMobileMenu'
 import Icon from '@/components/ui/Icon'
-import LogoSutepa from '@/assets/images/logo/logo-sutepa.png'
+import LogoSutepa from '@/assets/images/logo/logo-sutepa.webp'
 
 const MobileMenu = ({ className = 'custom-class', user }) => {
   const scrollableNodeRef = useRef()

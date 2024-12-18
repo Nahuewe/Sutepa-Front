@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import useWidth from '@/hooks/useWidth'
 
-import LogoSutepa from '@/assets/images/logo/logo-sutepa.png'
+import LogoSutepa from '@/assets/images/logo/logo-sutepa.webp'
 const Logo = () => {
   const { width, breakpoints } = useWidth()
 

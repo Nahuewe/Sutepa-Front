@@ -28,18 +28,18 @@ export const menuItems = [
     link: 'seccionales'
   },
   {
-    title: 'Localidades',
-    icon: 'heroicons-outline:identification',
-    link: 'localidades'
-  },
-  {
     title: 'Agencias',
     icon: 'heroicons-outline:building-office-2',
     link: 'agencias'
   },
   {
+    title: 'Localidades',
+    icon: 'heroicons-outline:home',
+    link: 'localidades'
+  },
+  {
     title: 'Credencial',
-    icon: 'heroicons-outline:credit-card',
+    icon: 'heroicons-outline:identification',
     link: 'credencial'
   }
 ]
