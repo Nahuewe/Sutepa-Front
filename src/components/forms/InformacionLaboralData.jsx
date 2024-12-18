@@ -120,15 +120,15 @@ function InformacionLaboralData ({ isLoadingParent, register, setValue, watch, d
 
   const handleDatosLaboralesUpdate = () => {
     const datosLaborales = {
-      tipo_contrato_id: parseInt(watch('tipo_contrato_id')) || 1,
+      tipo_contrato_id: parseInt(watch('tipo_contrato_id')) || null,
       ugl_id: parseInt(watch('ugl_id')) || null,
       agencia_id: parseInt(watch('agencia_id')) || null,
       domicilio_trabajo: watch('domicilio_trabajo') || null,
       seccional_id: parseInt(watch('seccional_id')) || null,
-      agrupamiento_id: parseInt(watch('agrupamiento_id')) || 1,
-      tramo_id: parseInt(watch('tramo_id')) || 1,
+      agrupamiento_id: parseInt(watch('agrupamiento_id')) || null,
+      tramo_id: parseInt(watch('tramo_id')) || null,
       carga_horaria: watch('carga_horaria') || null,
-      fecha_ingreso: picker ? moment(picker[0]).format('YYYY-MM-DD') : moment(new Date()).format('YYYY-MM-DD'),
+      fecha_ingreso: picker ? moment(picker[0]).format('YYYY-MM-DD') : null,
       email_laboral: watch('email_laboral') || null,
       telefono_laboral: watch('telefono_laboral') || null
     }

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { toast } from 'react-toastify'
 import { FileInput } from 'flowbite-react'
 import useEstadisticasData from '@/helpers/useEstadisticasData'
+import ReCAPTCHA from 'react-google-recaptcha'
 
 export const Credencial = () => {
   const [, setImage] = useState(null)
@@ -12,6 +13,7 @@ export const Credencial = () => {
   const { personaAll } = useEstadisticasData()
   const [isPhotoUploaded, setIsPhotoUploaded] = useState(false)
   const [showDownloadButton, setShowDownloadButton] = useState(false)
+  const [captchaVerified, setCaptchaVerified] = useState(false)
   const [personData, setPersonData] = useState({
     nombre: 'Nombre y Apellido',
     legajo: '000000',
@@ -19,6 +21,16 @@ export const Credencial = () => {
   })
 
   const canvasRef = useRef(null)
+
+  const handleCaptchaChange = (value) => {
+    if (value) {
+      setCaptchaVerified(true)
+      toast.success('CAPTCHA verificado correctamente.')
+    } else {
+      setCaptchaVerified(false)
+      toast.error('Por favor, completa el CAPTCHA.')
+    }
+  }
 
   const handleIdentifierChange = (e) => {
     const value = e.target.value
@@ -121,11 +133,9 @@ export const Credencial = () => {
       canvas.height = 300 * scaleFactor
       ctx.scale(scaleFactor, scaleFactor)
 
-      // Habilitar suavizado
       ctx.imageSmoothingEnabled = true
       ctx.imageSmoothingQuality = 'high'
 
-      // Cargar la imagen de fondo
       const background = new Image()
       background.src = '/carnet-sutepa.jpg'
       background.onload = () => {
@@ -137,15 +147,12 @@ export const Credencial = () => {
           canvas.height / scaleFactor
         )
 
-        // Configuración del texto
-        ctx.fillStyle = '#FFFFFF' // Blanco para contraste
-        ctx.font = 'bold 12px Arial' // Tamaño proporcional al scaleFactor
+        ctx.fillStyle = '#FFFFFF'
+        ctx.font = 'bold 12px Arial'
 
-        // Posicionamiento del texto
         const textX = 285
         let currentY = 127
 
-        // Dibujar valores
         ctx.fillText(personData.nombre.toUpperCase(), textX, currentY)
         currentY += 27.2
         ctx.fillText(personData.legajo, textX, currentY)
@@ -155,7 +162,6 @@ export const Credencial = () => {
         ctx.fillText(personData.estado, textX, currentY)
         currentY += 27.2
 
-        // Fecha de vencimiento
         const currentDate = new Date()
         const validUntil = new Date(currentDate)
         validUntil.setFullYear(currentDate.getFullYear() + 1)
@@ -167,7 +173,6 @@ export const Credencial = () => {
 
         ctx.fillText(validUntilDate, textX, currentY)
 
-        // Dibujar imagen de perfil si está disponible
         if (preview) {
           const img = new Image()
           img.src = preview
@@ -199,47 +204,60 @@ export const Credencial = () => {
       <div className='max-w-4xl w-full p-8 bg-white shadow-lg rounded-lg'>
         <h1 className='text-3xl font-semibold text-gray-800 mb-6 text-center dark:text-gray-800'>Generar Credencial</h1>
 
-        <span className='text-sm text-gray-500 dark:text-gray-500'>Escribe tu legajo o DNI y luego haz clic en "Buscar".</span>
-        <div className='flex flex-col sm:flex-row gap-4 mb-6 mt-2'>
-          <input
-            type='text'
-            placeholder='Ingresá tu DNI o Legajo y luego buscá'
-            value={identifier}
-            onChange={handleIdentifierChange}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                handleSearch()
-              }
-            }}
-            className='p-3 w-full sm:w-2/3 border border-gray-300 dark:text-black rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
-          />
-          <button
-            onClick={handleSearch}
-            className={`w-full md:w-96 px-6 py-3 rounded-md text-white font-semibold transition ${isLoading ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700'
-              }`}
-            disabled={isLoading}
-          >
-            {isLoading
-              ? (
-                <span className='flex items-center gap-2'>
-                  <svg
-                    className='w-4 h-4 animate-spin' xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24'
-                  >
-                    <circle
-                      className='opacity-25' cx='12' cy='12' r='10' stroke='currentColor' strokeWidth='4'
-                    />
-                    <path
-                      className='opacity-75' fill='currentColor' d='M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z'
-                    />
-                  </svg>
-                  Buscando...
-                </span>
-                )
-              : (
-                  'Buscar'
-                )}
-          </button>
-        </div>
+        {!captchaVerified && (
+          <div className='flex justify-center mb-6'>
+            <ReCAPTCHA
+              sitekey='6LdxEZ8qAAAAAHyzsxo2jRLT5GIh4u7e06X3Q5zP'
+              onChange={handleCaptchaChange}
+            />
+          </div>
+        )}
+
+        {captchaVerified && (
+          <>
+            <span className='text-sm text-gray-500 dark:text-gray-500'>Escribe tu legajo o DNI y luego haz clic en "Buscar".</span>
+            <div className='flex flex-col sm:flex-row gap-4 mb-6 mt-2'>
+              <input
+                type='text'
+                placeholder='Ingresá tu DNI o Legajo y luego buscá'
+                value={identifier}
+                onChange={handleIdentifierChange}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    handleSearch()
+                  }
+                }}
+                className='p-3 w-full sm:w-2/3 border border-gray-300 dark:text-black rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+              />
+              <button
+                onClick={handleSearch}
+                className={`w-full md:w-96 px-6 py-3 rounded-md text-white font-semibold transition ${isLoading ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700'
+                  }`}
+                disabled={isLoading}
+              >
+                {isLoading
+                  ? (
+                    <span className='flex items-center gap-2'>
+                      <svg
+                        className='w-4 h-4 animate-spin' xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24'
+                      >
+                        <circle
+                          className='opacity-25' cx='12' cy='12' r='10' stroke='currentColor' strokeWidth='4'
+                        />
+                        <path
+                          className='opacity-75' fill='currentColor' d='M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z'
+                        />
+                      </svg>
+                      Buscando...
+                    </span>
+                    )
+                  : (
+                      'Buscar'
+                    )}
+              </button>
+            </div>
+          </>
+        )}
 
         {isPersonFound && personData.estado.toUpperCase() !== 'INACTIVO' && (
           <div>
@@ -253,7 +271,7 @@ export const Credencial = () => {
           </div>
         )}
 
-        {isPersonFound && personData.estado.toUpperCase() !== 'INACTIVO' && (
+        {isPersonFound && personData.estado.toUpperCase() !== 'INACTIVO' && captchaVerified && (
           <div>
             <span className='text-sm text-gray-500 flex justify-center mb-2'>Vista previa.</span>
             <div className='w-full sm:w-96 mx-auto bg-gray-50 border border-gray-300 rounded-lg p-4 flex flex-col items-center'>
@@ -262,7 +280,7 @@ export const Credencial = () => {
           </div>
         )}
 
-        {isPersonFound && personData.estado.toUpperCase() !== 'INACTIVO' && isPhotoUploaded && (
+        {isPersonFound && personData.estado.toUpperCase() !== 'INACTIVO' && isPhotoUploaded && captchaVerified && (
           <button
             onClick={() => {
               if (personData.estado === 'INACTIVO') {
@@ -271,14 +289,11 @@ export const Credencial = () => {
               }
               handleDownload()
             }}
-            className={`mt-6 px-6 py-3 w-full text-white rounded-md transition transform ${
-              showDownloadButton ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
-            } bg-blue-600 hover:bg-blue-700`}
+            className={`mt-6 px-6 py-3 w-full text-white rounded-md transition transform ${showDownloadButton ? 'opacity-100 scale-100' : 'opacity-0 scale-95'} bg-blue-600 hover:bg-blue-700`}
           >
             Descargar Credencial
           </button>
         )}
-
       </div>
     </div>
   )
