@@ -24,8 +24,10 @@ export const Credencial = () => {
 
   const handleCaptchaChange = (value) => {
     if (value) {
-      setCaptchaVerified(true)
       toast.success('CAPTCHA verificado correctamente.')
+      setTimeout(() => {
+        setCaptchaVerified(true)
+      }, 2000)
     } else {
       setCaptchaVerified(false)
       toast.error('Por favor, completa el CAPTCHA.')
@@ -207,7 +209,7 @@ export const Credencial = () => {
         {!captchaVerified && (
           <div className='flex justify-center mb-6'>
             <ReCAPTCHA
-              sitekey='6LdxEZ8qAAAAAHyzsxo2jRLT5GIh4u7e06X3Q5zP'
+              sitekey='6LdlEZ8qAAAAAP4O152j9LdigI0b04S4nWlwpUEF'
               onChange={handleCaptchaChange}
             />
           </div>
