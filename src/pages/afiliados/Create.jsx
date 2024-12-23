@@ -91,7 +91,7 @@ export const Create = () => {
           )
         : (
           <form onSubmit={handleSubmit(onSubmit)}>
-            {(user.roles_id === 1 || user.roles_id === 2 || user.roles_id === 3) && (
+            {[1, 2, 3].includes(user.roles_id) && (
               <div>
                 <DatosPersonalesData register={register} errors={errors} setValue={setValue} watch={watch} isLoadingParent={isLoading} />
                 <AfiliadoDomicilioData register={register} setValue={setValue} isLoadingParent={isLoading} />
@@ -101,7 +101,7 @@ export const Create = () => {
                 <DocumentacionAdicionalData register={register} setValue={setValue} reset={reset} isLoadingParent={isLoading} />
               </div>
             )}
-            {(user.roles_id === 1 || user.roles_id === 2 || user.roles_id === 4) && (
+            {[1, 2, 4].includes(user.roles_id) && (
               <SubsidioData register={register} setValue={setValue} reset={reset} />
             )}
             <div className='flex justify-end gap-4 mt-8'>

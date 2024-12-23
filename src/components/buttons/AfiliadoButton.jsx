@@ -56,7 +56,7 @@ const AfiliadoButton = ({ afiliado, onDelete }) => {
       )
     } else {
       return (
-        <Tooltip content='Eliminar' placement='top' arrow animation='shift-away'>
+        <Tooltip content='Dar de Baja' placement='top' arrow animation='shift-away'>
           <button
             className='bg-red-500 text-white p-2 rounded-lg hover:bg-red-700'
             onClick={() => onDelete(afiliado.id)}
