@@ -7,6 +7,7 @@ export const userSlice = createSlice({
   name: 'user',
   initialState: {
     users: [],
+    usersSinPaginar: [],
     paginate: null,
     activeUser: null,
     errorMessage: ''
@@ -16,6 +17,9 @@ export const userSlice = createSlice({
       state.users = payload.data
       state.paginate = payload.meta
       state.activeUser = null
+    },
+    handleUserSinPaginar: (state, { payload }) => {
+      state.usersSinPaginar = payload
     },
     onAddNewUser: (state, { payload }) => {
       state.users.push(payload)
@@ -48,6 +52,7 @@ export const userSlice = createSlice({
 
 export const {
   handleUser,
+  handleUserSinPaginar,
   onAddNewUser,
   setActiveUser,
   onDeleteUser,

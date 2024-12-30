@@ -4,7 +4,7 @@ import useDarkMode from '@/hooks/useDarkMode'
 import useRtl from '@/hooks/useRtl'
 import Card from '@/components/ui/Card'
 
-const RevenueBarChart = ({ estadisticas, height = 400 }) => {
+const RevenueBarChart = ({ afiliadosSinPaginar, height = 400 }) => {
   const chartRef = useRef(null)
   const [isDark] = useDarkMode()
   const [isRtl] = useRtl()
@@ -36,10 +36,10 @@ const RevenueBarChart = ({ estadisticas, height = 400 }) => {
   }
 
   useEffect(() => {
-    if (estadisticas) {
+    if (afiliadosSinPaginar) {
       const seccionales = {}
 
-      estadisticas.forEach(afiliado => {
+      afiliadosSinPaginar.forEach(afiliado => {
         const seccional = afiliado.seccional || 'Seccional no Asignada'
         const estado = afiliado.estado || 'INACTIVO'
 
@@ -50,7 +50,7 @@ const RevenueBarChart = ({ estadisticas, height = 400 }) => {
         seccionales[seccional][estado] += 1
       })
 
-      const totalAfiliados = estadisticas.length
+      const totalAfiliados = afiliadosSinPaginar.length
       const seriesData = Object.keys(seccionales).map(seccional => ({
         name: seccional,
         data: [
@@ -69,7 +69,7 @@ const RevenueBarChart = ({ estadisticas, height = 400 }) => {
       })
       setActiveSeries(initialActiveSeries)
     }
-  }, [estadisticas])
+  }, [afiliadosSinPaginar])
 
   const handleSeriesToggle = (seccional) => {
     setActiveSeries(prevState => ({

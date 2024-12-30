@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { toast } from 'react-toastify'
 import { FileInput } from 'flowbite-react'
-import useEstadisticasData from '@/helpers/useEstadisticasData'
 import ReCAPTCHA from 'react-google-recaptcha'
+import sutepaApi from '../api/sutepaApi'
 
 export const Credencial = () => {
   const [, setImage] = useState(null)
@@ -10,9 +10,9 @@ export const Credencial = () => {
   const [identifier, setIdentifier] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [isPersonFound, setIsPersonFound] = useState(false)
-  const { personaAll } = useEstadisticasData()
   const [isPhotoUploaded, setIsPhotoUploaded] = useState(false)
   const [showDownloadButton, setShowDownloadButton] = useState(false)
+  const [credencial, setCredencial] = useState([])
   const [captchaVerified, setCaptchaVerified] = useState(false)
   const [personData, setPersonData] = useState({
     nombre: 'Nombre y Apellido',
@@ -22,12 +22,23 @@ export const Credencial = () => {
 
   const canvasRef = useRef(null)
 
+  async function handleCredencial () {
+    try {
+      const response = await sutepaApi.get('credencial')
+      const { data } = response
+      console.log(data)
+      setCredencial(data)
+    } catch (error) {
+      console.error('Error al obtener credenciales:', error)
+      toast.error('Hubo un problema al cargar los datos. Intenta nuevamente más tarde.')
+    }
+  }
+
   const handleCaptchaChange = (value) => {
     if (value) {
-      toast.success('CAPTCHA verificado correctamente.')
       setTimeout(() => {
         setCaptchaVerified(true)
-      }, 2000)
+      }, 0)
     } else {
       setCaptchaVerified(false)
       toast.error('Por favor, completa el CAPTCHA.')
@@ -60,17 +71,20 @@ export const Credencial = () => {
       return
     }
 
+    if (credencial.length === 0) {
+      toast.error('No se han cargado los datos de afiliados. Intenta de nuevo.')
+      return
+    }
+
     setIsLoading(true)
     try {
-      if (!Array.isArray(personaAll)) {
-        throw new Error('La respuesta no contiene una lista válida de personas.')
-      }
-
       const isDni = identifier.length === 10
-      const person = personaAll.find((p) => {
-        const cleanedIdentifier = identifier.replace(/\./g, '')
+      const cleanedIdentifier = identifier.replace(/\./g, '')
+
+      const person = credencial.find((p) => {
         const cleanedDni = p.dni.replace(/\./g, '')
-        return (isDni && cleanedDni === cleanedIdentifier) || (!isDni && p.legajo === identifier)
+        const cleanedLegajo = p.legajo
+        return (isDni && cleanedDni === cleanedIdentifier) || (!isDni && cleanedLegajo === identifier)
       })
 
       if (person) {
@@ -81,7 +95,7 @@ export const Credencial = () => {
         }
 
         setPersonData({
-          nombre: `${person.apellido} ${person.nombre} `.toUpperCase(),
+          nombre: `${person.apellido} ${person.nombre}`.toUpperCase(),
           legajo: person.legajo,
           dni: person.dni,
           estado: person.estado
@@ -201,6 +215,10 @@ export const Credencial = () => {
     }
   }, [personData, preview])
 
+  useEffect(() => {
+    handleCredencial()
+  }, [])
+
   return (
     <div className='md:min-h-screen md:flex md:items-center md:justify-center bg-gray-200'>
       <div className='max-w-4xl w-full p-8 bg-white shadow-lg rounded-lg'>
@@ -209,7 +227,10 @@ export const Credencial = () => {
         {!captchaVerified && (
           <div className='flex justify-center mb-6'>
             <ReCAPTCHA
+              // Produccion
               sitekey='6LdlEZ8qAAAAAP4O152j9LdigI0b04S4nWlwpUEF'
+              // LocalHost
+              // sitekey='6LeAwp8qAAAAABhAYn5FDw_uIzk8bskuHIP_sBIw'
               onChange={handleCaptchaChange}
             />
           </div>
@@ -233,8 +254,7 @@ export const Credencial = () => {
               />
               <button
                 onClick={handleSearch}
-                className={`w-full md:w-96 px-6 py-3 rounded-md text-white font-semibold transition ${isLoading ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700'
-                  }`}
+                className={`w-full md:w-96 px-6 py-3 rounded-md text-white font-semibold transition ${isLoading ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700'}`}
                 disabled={isLoading}
               >
                 {isLoading
@@ -250,13 +270,14 @@ export const Credencial = () => {
                           className='opacity-75' fill='currentColor' d='M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z'
                         />
                       </svg>
-                      Buscando...
+                      {isLoading ? 'Cargando...' : 'Buscando...'}
                     </span>
                     )
                   : (
                       'Buscar'
                     )}
               </button>
+
             </div>
           </>
         )}
@@ -267,6 +288,7 @@ export const Credencial = () => {
             <FileInput
               type='file'
               accept='image/*'
+              capture='user'
               onChange={handleImageUpload}
               className='w-full sm:w-auto mb-6 mt-2 rounded-md'
             />

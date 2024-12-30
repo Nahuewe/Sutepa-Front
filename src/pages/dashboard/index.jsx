@@ -1,20 +1,31 @@
 import React, { useEffect, useState } from 'react'
+import { useAfiliadoStore, useSeccionalStore, useUserStore } from '@/helpers'
 import Card from '@/components/ui/Card'
 import Loading from '@/components/Loading'
 import EstadisticasDashboard from './EstadisticasDashboard'
 import RevenueBarChart from './RevenueBarChart'
 import DonutChart from './DonutChart'
-import useEstadisticasData from '@/helpers/useEstadisticasData'
 
 const Dashboard = () => {
-  const { userAll, seccionalAll, estadisticas } = useEstadisticasData()
   const [isLoading, setIsLoading] = useState(true)
+  const { afiliadosSinPaginar, startGetAfiliadosSinPaginar } = useAfiliadoStore()
+  const { seccionalesSinPaginar, startGetSeccionalesSinPaginar } = useSeccionalStore()
+  const { usersSinPaginar, startGerUsersSinPaginar } = useUserStore()
 
   useEffect(() => {
-    if (userAll.length && seccionalAll.length && estadisticas.length) {
+    const fetchData = async () => {
+      await startGetAfiliadosSinPaginar()
+      await startGetSeccionalesSinPaginar()
+      await startGerUsersSinPaginar()
       setIsLoading(false)
     }
-  }, [userAll, seccionalAll, estadisticas])
+
+    fetchData()
+  }, [])
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
 
   return (
     <>
@@ -32,15 +43,15 @@ const Dashboard = () => {
 
             <div className='mt-4 grid sm:grid-cols-2 md:grid-cols-3 grid-cols-1 gap-4'>
               <EstadisticasDashboard
-                estadisticas={estadisticas}
-                userAll={userAll}
-                seccionalAll={seccionalAll}
+                afiliadosSinPaginar={afiliadosSinPaginar}
+                usersSinPaginar={usersSinPaginar}
+                seccionalesSinPaginar={seccionalesSinPaginar}
               />
             </div>
 
             <div className='mt-4 grid sm:grid-cols-2 grid-cols-1 gap-4'>
-              <DonutChart estadisticas={estadisticas} />
-              <RevenueBarChart estadisticas={estadisticas} />
+              <DonutChart afiliadosSinPaginar={afiliadosSinPaginar} />
+              <RevenueBarChart afiliadosSinPaginar={afiliadosSinPaginar} />
             </div>
           </div>
           )}

@@ -36,11 +36,6 @@ export const menuItems = [
     title: 'Localidades',
     icon: 'heroicons-outline:home',
     link: 'localidades'
-  },
-  {
-    title: 'Credencial',
-    icon: 'heroicons-outline:identification',
-    link: 'credencial'
   }
 ]
 

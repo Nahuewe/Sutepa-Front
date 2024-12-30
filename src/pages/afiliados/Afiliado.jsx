@@ -67,6 +67,7 @@ export const Afiliado = () => {
   const onEdit = async (id) => {
     const currentPage = paginate?.current_page || 1
     await startEditAfiliado(id)
+    dispatch(cleanAfiliado())
     navigate(`/afiliados/editar/${id}?page=${currentPage}`)
   }
 
@@ -129,8 +130,14 @@ export const Afiliado = () => {
   useEffect(() => {
     if (!filterPendiente) {
       startLoadingAfiliado()
+    } else {
+      startLoadingAfiliado()
     }
   }, [filterPendiente])
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
 
   return (
     <>
@@ -242,12 +249,12 @@ export const Afiliado = () => {
                           ? (
                               filteredAfiliados.map((afiliado) => (
                                 <tr key={afiliado.id}>
-                                  <td className='table-td'>{afiliado.legajo}</td>
-                                  <td className='table-td mayuscula'>{afiliado.nombre}</td>
-                                  <td className='table-td mayuscula'>{afiliado.apellido}</td>
-                                  <td className='table-td'>{afiliado.dni}</td>
-                                  <td className='table-td'>{afiliado.ugl}</td>
-                                  <td className='table-td'>{afiliado.seccional}</td>
+                                  <td className='table-td'>{afiliado.legajo || '-'}</td>
+                                  <td className='table-td mayuscula'>{afiliado.nombre || '-'}</td>
+                                  <td className='table-td mayuscula'>{afiliado.apellido || '-'}</td>
+                                  <td className='table-td'>{afiliado.dni || '-'}</td>
+                                  <td className='table-td'>{afiliado.ugl || '-'}</td>
+                                  <td className='table-td'>{afiliado.seccional || '-'}</td>
                                   <td className='table-td'>
                                     <span
                                       className={`inline-block text-black px-3 min-w-[90px] text-center py-1 rounded-full bg-opacity-25 ${afiliado.estado === 'ACTIVO'

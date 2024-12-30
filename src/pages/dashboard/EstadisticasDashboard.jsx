@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import Icon from '@/components/ui/Icon'
 
-const EstadisticasDashboard = ({ estadisticas, userAll, seccionalAll }) => {
+const EstadisticasDashboard = ({ afiliadosSinPaginar, usersSinPaginar, seccionalesSinPaginar }) => {
   const countAfiliadosPorEstado = (data) => {
     if (!Array.isArray(data)) {
       return {
@@ -20,7 +20,7 @@ const EstadisticasDashboard = ({ estadisticas, userAll, seccionalAll }) => {
     return totals
   }
 
-  const totalsByEstado = useMemo(() => countAfiliadosPorEstado(estadisticas || []), [estadisticas])
+  const totalsByEstado = useMemo(() => countAfiliadosPorEstado(afiliadosSinPaginar || []), [afiliadosSinPaginar])
 
   const statistics = [
     {
@@ -32,14 +32,14 @@ const EstadisticasDashboard = ({ estadisticas, userAll, seccionalAll }) => {
     },
     {
       title: 'Total de Usuarios',
-      count: userAll.length || 0,
+      count: usersSinPaginar.length || 0,
       bg: 'bg-success-500',
       text: 'text-success-500',
       icon: 'heroicons-solid:users'
     },
     {
       title: 'Total de Seccionales',
-      count: seccionalAll.length || 0,
+      count: seccionalesSinPaginar.length || 0,
       bg: 'bg-warning-500',
       text: 'text-warning-500',
       icon: 'heroicons-solid:office-building'

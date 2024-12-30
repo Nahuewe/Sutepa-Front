@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useAfiliadoStore } from '@/helpers'
 import { Card } from 'flowbite-react'
 import { useNavigate } from 'react-router-dom'
@@ -8,6 +8,10 @@ export const ShowAfiliado = () => {
   const { activeAfiliado, paginate } = useAfiliadoStore()
   const navigate = useNavigate()
   const currentPage = paginate?.current_page || 1
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
 
   return (
     activeAfiliado && (

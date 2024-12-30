@@ -1,12 +1,12 @@
 /* eslint-disable no-unused-vars */
 import { useSelector, useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
-import { handleUser, setErrorMessage } from '@/store/user'
+import { handleUser, handleUserSinPaginar, setErrorMessage } from '@/store/user'
 import { handleShowEdit, handleShowModal } from '@/store/layout'
 import { sutepaApi } from '@/api'
 
 export const useUserStore = () => {
-  const { users, paginate, activeUser } = useSelector(state => state.user)
+  const { users, usersSinPaginar, paginate, activeUser } = useSelector(state => state.user)
   const dispatch = useDispatch()
 
   const startLoadingUsers = async (page) => {
@@ -14,6 +14,16 @@ export const useUserStore = () => {
       const response = await sutepaApi.get(`/user?page=${page}`)
       const { data, meta } = response.data
       dispatch(handleUser({ data, meta }))
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const startGerUsersSinPaginar = async () => {
+    try {
+      const response = await sutepaApi.get('/userAll')
+      const { data } = response.data
+      dispatch(handleUserSinPaginar(data))
     } catch (error) {
       console.log(error)
     }
@@ -83,11 +93,13 @@ export const useUserStore = () => {
   return {
     //* Propiedades
     users,
+    usersSinPaginar,
     paginate,
     activeUser,
 
     //* Metodos
     startLoadingUsers,
+    startGerUsersSinPaginar,
     startSavingUser,
     startDeleteUser,
     startUpdateUser

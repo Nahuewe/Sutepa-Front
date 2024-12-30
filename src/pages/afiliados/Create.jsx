@@ -83,6 +83,10 @@ export const Create = () => {
     }
   }, [activeAfiliado, setValue])
 
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
+
   return (
     <>
       {isLoading

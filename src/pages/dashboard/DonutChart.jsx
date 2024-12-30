@@ -3,7 +3,7 @@ import Chart from 'react-apexcharts'
 import useDarkMode from '@/hooks/useDarkMode'
 import Card from '@/components/ui/Card'
 
-const DonutChart = ({ estadisticas, height = 350 }) => {
+const DonutChart = ({ afiliadosSinPaginar, height = 350 }) => {
   const [isDark] = useDarkMode()
   const [chartType, setChartType] = useState('active')
   const [series, setSeries] = useState([0, 0])
@@ -11,14 +11,14 @@ const DonutChart = ({ estadisticas, height = 350 }) => {
   const chartRef = useRef(null)
 
   useEffect(() => {
-    if (estadisticas) {
-      const activeCount = estadisticas.filter(a => a.estado === 'ACTIVO').length
-      const inactiveCount = estadisticas.filter(a => a.estado === 'INACTIVO').length
-      const pendingCount = estadisticas.filter(a => a.estado === 'PENDIENTE').length
+    if (afiliadosSinPaginar) {
+      const activeCount = afiliadosSinPaginar.filter(a => a.estado === 'ACTIVO').length
+      const inactiveCount = afiliadosSinPaginar.filter(a => a.estado === 'INACTIVO').length
+      const pendingCount = afiliadosSinPaginar.filter(a => a.estado === 'PENDIENTE').length
       setSeries([activeCount, inactiveCount, pendingCount])
       setTotalAfiliados(activeCount + inactiveCount + pendingCount)
     }
-  }, [estadisticas])
+  }, [afiliadosSinPaginar])
 
   const activeColor = '#747ffc'
   const inactiveColor = '#FF7F7F'
