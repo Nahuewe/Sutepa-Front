@@ -39,7 +39,6 @@ export const ExportarExcel = () => {
 
     afiliados.forEach((activeAfiliado) => {
       if (activeAfiliado) {
-        // Datos principales
         const afiliadoBase = {
           Legajo: activeAfiliado.persona?.legajo,
           Nombre: activeAfiliado.persona?.nombre?.toUpperCase() || '',
@@ -74,40 +73,7 @@ export const ExportarExcel = () => {
           Estado: activeAfiliado.persona.estados
         }
 
-        activeAfiliado.familiares.forEach(fam => {
-          datosCompletosData.push({
-            ...afiliadoBase,
-            'Nombre y Apellido Familiar': fam?.nombre_familiar?.toUpperCase() || '',
-            'Fecha de Nacimiento del Familiar': formatDate(fam?.fecha_nacimiento_familiar),
-            'Tipo de Documento del Familiar': fam?.tipo_documento_familiar || '',
-            Documento: fam?.documento,
-            Parentesco: fam?.parentesco
-          })
-        })
-
-        activeAfiliado.documentaciones.forEach(doc => {
-          datosCompletosData.push({
-            ...afiliadoBase,
-            'Tipo de Archivo': doc?.tipo_documento || '',
-            'Nombre de Archivo': `https://sistema.sutepa.com.ar/uploads/${doc?.archivo}`
-          })
-        })
-
-        activeAfiliado.subsidios.forEach(subsidio => {
-          datosCompletosData.push({
-            ...afiliadoBase,
-            'Tipo de Subsidio': subsidio?.tipo_subsidio,
-            'Fecha de Solicitud': formatDate(subsidio?.fecha_solicitud),
-            'Fecha de Otorgamiento': formatDate(subsidio?.fecha_otorgamiento),
-            Observaciones: subsidio?.observaciones?.toUpperCase() || ''
-          })
-        })
-
-        if (activeAfiliado?.documentaciones?.length === 0 &&
-                activeAfiliado?.familiares?.length === 0 &&
-                activeAfiliado?.subsidios?.length === 0) {
-          datosCompletosData.push(afiliadoBase)
-        }
+        datosCompletosData.push(afiliadoBase)
       }
 
       if (activeAfiliado.persona) {
