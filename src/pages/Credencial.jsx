@@ -179,7 +179,7 @@ export const Credencial = () => {
 
         const currentDate = new Date()
         const validUntil = new Date(currentDate)
-        validUntil.setFullYear(currentDate.getFullYear() + 1)
+        validUntil.setMonth(currentDate.getMonth() + 1)
 
         const day = String(validUntil.getDate()).padStart(2, '0')
         const month = String(validUntil.getMonth() + 1).padStart(2, '0')
@@ -196,23 +196,23 @@ export const Credencial = () => {
             const imgHeight = img.height
 
             // Determinar la región central de la imagen
-            const cropSize = Math.min(imgWidth, imgHeight) // Escoger un cuadrado basado en el lado más pequeño
-            const cropX = (imgWidth - cropSize) / 2 // Calcular el inicio del recorte en el eje X
-            const cropY = (imgHeight - cropSize) / 2 // Calcular el inicio del recorte en el eje Y
+            const cropSize = Math.min(imgWidth, imgHeight)
+            const cropX = (imgWidth - cropSize) / 2
+            const cropY = (imgHeight - cropSize) / 2
 
             // Ajustar las dimensiones donde la imagen será renderizada en el canvas
-            const imageWidth = 120 // Ancho deseado en el canvas
-            const imageHeight = 120 // Alto deseado en el canvas
-            const imageX = 25 // Coordenada X en el canvas
-            const imageY = 115 // Coordenada Y en el canvas
+            const imageWidth = 120
+            const imageHeight = 120
+            const imageX = 25
+            const imageY = 115
 
             // Dibujar la imagen recortada en el canvas
             ctx.drawImage(
-              img, // Imagen original
-              cropX, cropY, // Coordenadas de inicio del recorte
-              cropSize, cropSize, // Dimensiones del recorte
-              imageX, imageY, // Posición en el canvas
-              imageWidth, imageHeight // Dimensiones en el canvas
+              img,
+              cropX, cropY,
+              cropSize, cropSize,
+              imageX, imageY,
+              imageWidth, imageHeight
             )
             resolve()
           }
