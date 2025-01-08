@@ -12,7 +12,7 @@ import Textinput from '@/components/ui/Textinput'
 import DatePicker from '@/components/ui/DatePicker'
 import moment from 'moment'
 import Loading from '@/components/Loading'
-import useFetchData from '@/helpers/useFetchData'
+import useFetchFamilia from '@/fetches/useFetchFamilia'
 
 const initialForm = {
   id: null,
@@ -43,7 +43,7 @@ function FamiliaresaCargo () {
   const { activeAfiliado } = useSelector(state => state.afiliado)
   const [isLoading, setIsLoading] = useState(true)
   const [loadingFamiliares, setLoadingFamiliares] = useState(false)
-  const { familia } = useFetchData()
+  const { familia } = useFetchFamilia()
 
   const onReset = () => {
     setPicker(null)

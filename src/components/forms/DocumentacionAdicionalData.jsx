@@ -13,7 +13,7 @@ import { useForm } from 'react-hook-form'
 import Card from '@/components/ui/Card'
 import Tooltip from '@/components/ui/Tooltip'
 import Loading from '@/components/Loading'
-import useFetchData from '@/helpers/useFetchData'
+import useFetchDocumentacion from '@/fetches/useFetchDocumentacion'
 
 const initialForm = {
   tipo_documento_id: '',
@@ -32,7 +32,7 @@ function DocumentacionAdicionalData () {
   const [idCounter, setIdCounter] = useState(0)
   const [loadingDocumentos, setLoadingDocumentos] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const { documentacion } = useFetchData()
+  const { documentacion } = useFetchDocumentacion()
   const [documentoAEliminarIndex, setDocumentoAEliminarIndex] = useState(null)
 
   const handleInputChange = (e) => {

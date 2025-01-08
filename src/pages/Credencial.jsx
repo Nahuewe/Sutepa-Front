@@ -26,7 +26,6 @@ export const Credencial = () => {
     try {
       const response = await sutepaApi.get('credencial')
       const { data } = response
-      console.log(data)
       setCredencial(data)
     } catch (error) {
       console.error('Error al obtener credenciales:', error)
@@ -193,13 +192,28 @@ export const Credencial = () => {
           const img = new Image()
           img.src = preview
           img.onload = () => {
-            const imageWidth = 120
-            const imageHeight = 120
+            const imgWidth = img.width
+            const imgHeight = img.height
 
-            const imageX = 25
-            const imageY = 115
+            // Determinar la región central de la imagen
+            const cropSize = Math.min(imgWidth, imgHeight) // Escoger un cuadrado basado en el lado más pequeño
+            const cropX = (imgWidth - cropSize) / 2 // Calcular el inicio del recorte en el eje X
+            const cropY = (imgHeight - cropSize) / 2 // Calcular el inicio del recorte en el eje Y
 
-            ctx.drawImage(img, imageX, imageY, imageWidth, imageHeight)
+            // Ajustar las dimensiones donde la imagen será renderizada en el canvas
+            const imageWidth = 120 // Ancho deseado en el canvas
+            const imageHeight = 120 // Alto deseado en el canvas
+            const imageX = 25 // Coordenada X en el canvas
+            const imageY = 115 // Coordenada Y en el canvas
+
+            // Dibujar la imagen recortada en el canvas
+            ctx.drawImage(
+              img, // Imagen original
+              cropX, cropY, // Coordenadas de inicio del recorte
+              cropSize, cropSize, // Dimensiones del recorte
+              imageX, imageY, // Posición en el canvas
+              imageWidth, imageHeight // Dimensiones en el canvas
+            )
             resolve()
           }
         } else {

@@ -7,8 +7,8 @@ import Textinput from '@/components/ui/Textinput'
 import Numberinput from '@/components/ui/Numberinput'
 import DatePicker from '@/components/ui/DatePicker'
 import moment from 'moment'
-import useFetchData from '@/helpers/useFetchData'
 import Loading from '@/components/Loading'
+import useFetchDatosPersonales from '@/fetches/useFetchDatosPersonales'
 
 const tipoDocumento = [
   { id: 'DNI', nombre: 'DNI' },
@@ -37,7 +37,7 @@ function DatosPersonalesData ({ isLoadingParent, register, setValue, errors, wat
   const [correoElectronico, setCorreoElectronico] = useState('')
   const [correoError, setCorreoError] = useState(null)
   const [telefono, setTelefono] = useState('')
-  const { estadoCivil, nacionalidad, sexo, legajos } = useFetchData()
+  const { estadoCivil, nacionalidad, sexo, legajos } = useFetchDatosPersonales()
   const [, setIsLoading] = useState(true)
   const [reloadKey, setReloadKey] = useState(0)
 
@@ -219,19 +219,14 @@ function DatosPersonalesData ({ isLoadingParent, register, setValue, errors, wat
 
   useEffect(() => {
     if (activeAfiliado) {
-      const timers = [
+      const intervals = [10000, 15000, 20000]
+      const timers = intervals.map((interval) =>
         setTimeout(() => {
           setReloadKey((prevKey) => prevKey + 1)
-        }, 2000),
-        setTimeout(() => {
-          setReloadKey((prevKey) => prevKey + 1)
-        }, 5000),
-        setTimeout(() => {
-          setReloadKey((prevKey) => prevKey + 1)
-        }, 10000)
-      ]
+        }, interval)
+      )
 
-      return () => timers.forEach((timer) => clearTimeout(timer))
+      return () => timers.forEach(clearTimeout)
     }
   }, [activeAfiliado])
 

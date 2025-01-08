@@ -9,8 +9,8 @@ import Textinput from '@/components/ui/Textinput'
 import Numberinput from '@/components/ui/Numberinput'
 import DatePicker from '@/components/ui/DatePicker'
 import moment from 'moment'
-import useFetchData from '@/helpers/useFetchData'
 import Loading from '@/components/Loading'
+import useFetchDatosLaborales from '@/fetches/useFetchDatosLaborales'
 
 const tipoContrato = [
   { id: 1, nombre: 'PLANTA PERMANENTE' },
@@ -32,7 +32,7 @@ function InformacionLaboralData ({ isLoadingParent, register, setValue, watch, d
   const [domicilioTrabajo, setDomicilioTrabajo] = useState('')
   const [filteredAgencias, setFilteredAgencias] = useState([])
   const [agenciaDisabled, setAgenciaDisabled] = useState(true)
-  const { agrupamiento, seccional, ugl, tramo } = useFetchData()
+  const { agrupamiento, seccional, ugl, tramo } = useFetchDatosLaborales()
   const dispatch = useDispatch()
   const { activeAfiliado } = useSelector(state => state.afiliado)
   const [, setIsLoading] = useState(true)
@@ -184,19 +184,14 @@ function InformacionLaboralData ({ isLoadingParent, register, setValue, watch, d
 
   useEffect(() => {
     if (activeAfiliado) {
-      const timers = [
+      const intervals = [10000, 15000, 20000]
+      const timers = intervals.map((interval) =>
         setTimeout(() => {
           setReloadKey((prevKey) => prevKey + 1)
-        }, 2000),
-        setTimeout(() => {
-          setReloadKey((prevKey) => prevKey + 1)
-        }, 5000),
-        setTimeout(() => {
-          setReloadKey((prevKey) => prevKey + 1)
-        }, 10000)
-      ]
+        }, interval)
+      )
 
-      return () => timers.forEach((timer) => clearTimeout(timer))
+      return () => timers.forEach(clearTimeout)
     }
   }, [activeAfiliado])
 

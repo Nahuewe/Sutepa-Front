@@ -11,7 +11,7 @@ import Textarea from '@/components/ui/Textarea'
 import DatePicker from '@/components/ui/DatePicker'
 import moment from 'moment'
 import Loading from '@/components/Loading'
-import useFetchData from '@/helpers/useFetchData'
+import useFetchSubsidio from '@/fetches/useFetchSubsidio'
 
 const initialForm = {
   tipo_subsidio_id: null,
@@ -35,7 +35,7 @@ function SubsidioData () {
   const [idCounter, setIdCounter] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
   const [loadingSubsidios, setLoadingSubsidios] = useState(false)
-  const { subsidio } = useFetchData()
+  const { subsidio } = useFetchSubsidio()
 
   function onChange ({ target }) {
     const { name, value } = target

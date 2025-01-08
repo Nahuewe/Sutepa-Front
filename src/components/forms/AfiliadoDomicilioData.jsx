@@ -8,7 +8,7 @@ import Card from '@/components/ui/Card'
 import Textinput from '@/components/ui/Textinput'
 import Numberinput from '@/components/ui/Numberinput'
 import Loading from '@/components/Loading'
-import useFetchData from '@/helpers/useFetchData'
+import useFetchDomicilio from '@/fetches/useFetchDomicilio'
 
 function AfiliadoDomicilioData ({ register, disabled, setValue }) {
   const dispatch = useDispatch()
@@ -18,7 +18,7 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
   const [selectedProvincia, setSelectedProvincia] = useState('')
   const [selectedLocalidad, setSelectedLocalidad] = useState('')
   const [isLoading, setIsLoading] = useState(true)
-  const { provincia } = useFetchData()
+  const { provincia } = useFetchDomicilio()
   const { activeAfiliado } = useSelector(state => state.afiliado)
   const [reloadKey, setReloadKey] = useState(0)
 
@@ -130,19 +130,14 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
 
   useEffect(() => {
     if (activeAfiliado) {
-      const timers = [
+      const intervals = [10000, 15000, 20000]
+      const timers = intervals.map((interval) =>
         setTimeout(() => {
           setReloadKey((prevKey) => prevKey + 1)
-        }, 2000),
-        setTimeout(() => {
-          setReloadKey((prevKey) => prevKey + 1)
-        }, 5000),
-        setTimeout(() => {
-          setReloadKey((prevKey) => prevKey + 1)
-        }, 10000)
-      ]
+        }, interval)
+      )
 
-      return () => timers.forEach((timer) => clearTimeout(timer))
+      return () => timers.forEach(clearTimeout)
     }
   }, [activeAfiliado])
 
