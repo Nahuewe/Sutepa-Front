@@ -6,7 +6,8 @@ import Textinput from '@/components/ui/Textinput'
 import Button from '@/components/ui/Button'
 import Loading from '@/components/Loading'
 import { sutepaApi } from '@/api'
-import { Label, Select } from 'flowbite-react'
+import { Label } from 'flowbite-react'
+import { SelectForm } from '@/components/sutepa/forms'
 
 const FormValidationSaving = yup
   .object({
@@ -81,23 +82,15 @@ export const LocalidadForm = ({ fnAction, activeLocalidad = null }) => {
         : (
           <form onSubmit={handleSubmit(onSubmit)} className='space-y-4 relative'>
             <div>
-              <div className='mb-2 block dark:text-white'>
-                <Label color='gray' htmlFor='provincia_id' value='Provincia' />
+              <label htmlFor='provincia_id' className='form-label space-y-2'>
+                Provincia
                 <strong className='obligatorio'>(*)</strong>
-              </div>
-              <Select
-                id='provincia_id'
-                {...register('provincia_id')}
-                className={`form-select ${errors.provincia_id ? 'border-red-500' : ''}`}
-              >
-                <option value='' hidden>Seleccione una provincia</option>
-                {provincias.map((provincia) => (
-                  <option key={provincia.id} value={provincia.id}>
-                    {provincia.nombre}
-                  </option>
-                ))}
-              </Select>
-              {errors.provincia_id && <p className='text-red-500'>{errors.provincia_id.message}</p>}
+                <SelectForm
+                  register={register('provincia_id')}
+                  options={provincias}
+                />
+                {errors.provincia_id && <p className='text-red-500 mt-2'>{errors.provincia_id.message}</p>}
+              </label>
             </div>
 
             <div className='mb-4'>

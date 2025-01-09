@@ -114,24 +114,27 @@ export const Afiliado = () => {
     if (filterPendiente && filteredAfiliados) {
       const totalItems = filteredAfiliados.length || 0
       const itemsPerPage = paginate?.per_page || 10
+      const currentPage = paginate?.current_page || 1
       const totalPages = Math.ceil(totalItems / itemsPerPage)
 
       setCustomPaginate({
-        current_page: 1,
+        current_page: currentPage,
         per_page: itemsPerPage,
         total: totalItems,
         last_page: totalPages
       })
     } else {
-      setCustomPaginate(null)
+      setCustomPaginate()
     }
   }, [filterPendiente, filteredAfiliados, paginate?.per_page])
 
   useEffect(() => {
     if (!filterPendiente) {
-      startLoadingAfiliado()
+      const searchParams = new URLSearchParams(window.location.search)
+      const page = parseInt(searchParams.get('page'), 10) || 1
+      startLoadingAfiliado(page)
     } else {
-      startLoadingAfiliado()
+      startSearchAfiliado()
     }
   }, [filterPendiente])
 
@@ -287,12 +290,19 @@ export const Afiliado = () => {
                       <div className='flex justify-center mt-8'>
                         <Pagination
                           paginate={customPaginate || paginate}
-                          onPageChange={(page) =>
-                            filterPendiente
-                              ? setCustomPaginate((prev) => ({ ...prev, current_page: page }))
-                              : search !== ''
+                          onPageChange={(page) => {
+                            const searchParams = new URLSearchParams(window.location.search)
+                            searchParams.set('page', page)
+                            navigate(`${window.location.pathname}?${searchParams.toString()}`)
+
+                            if (filterPendiente) {
+                              setCustomPaginate((prev) => ({ ...prev, current_page: page }))
+                            } else {
+                              search !== ''
                                 ? startSearchAfiliado(search, page)
-                                : startLoadingAfiliado(page)}
+                                : startLoadingAfiliado(page)
+                            }
+                          }}
                           text
                         />
                       </div>

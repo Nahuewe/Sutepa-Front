@@ -10,14 +10,14 @@ import { sutepaApi } from '@/api'
 
 const FormValidationSaving = yup
   .object({
-    ugl_id: yup.string().notOneOf([''], 'Debe seleccionar una ugl'),
+    ugl_id: yup.string().required('La ugl es requerida'),
     nombre: yup.string().required('La agencia es requerida')
   })
   .required()
 
 const FormValidationUpdate = yup
   .object({
-    ugl_id: yup.string().notOneOf([''], 'Debe seleccionar una ugl'),
+    ugl_id: yup.string().required('La ugl es requerida'),
     nombre: yup.string().required('La agencia es requerida')
   })
   .required()
@@ -88,6 +88,7 @@ export const AgenciaForm = ({ fnAction, activeAgencia = null }) => {
                   register={register('ugl_id')}
                   options={ugl}
                 />
+                {errors.ugl_id && <p className='text-red-500 mt-2'>{errors.ugl_id.message}</p>}
               </label>
             </div>
 
