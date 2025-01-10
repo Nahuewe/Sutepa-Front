@@ -83,6 +83,9 @@ export const Create = () => {
     }
   }, [activeAfiliado, setValue])
 
+  const isAdmin = [1, 2, 3].includes(user.roles_id)
+  const isSubsidio = user.roles_id === 4
+
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
@@ -95,19 +98,19 @@ export const Create = () => {
           )
         : (
           <form onSubmit={handleSubmit(onSubmit)}>
-            {[1, 2, 3].includes(user.roles_id) && (
-              <div>
-                <DatosPersonalesData register={register} errors={errors} setValue={setValue} watch={watch} isLoadingParent={isLoading} />
-                <AfiliadoDomicilioData register={register} setValue={setValue} isLoadingParent={isLoading} />
-                <InformacionLaboralData register={register} setValue={setValue} watch={watch} isLoadingParent={isLoading} />
-                <ObraSocialAfiliadoData register={register} setValue={setValue} isLoadingParent={isLoading} />
-                <FamiliarAcargoData register={register} setValue={setValue} watch={watch} reset={reset} isLoadingParent={isLoading} />
-                <DocumentacionAdicionalData register={register} setValue={setValue} reset={reset} isLoadingParent={isLoading} />
-              </div>
-            )}
-            {[1, 2, 4].includes(user.roles_id) && (
+            <div style={{ display: isAdmin ? 'block' : 'none' }}>
+              <DatosPersonalesData register={register} errors={errors} setValue={setValue} watch={watch} isLoadingParent={isLoading} />
+              <AfiliadoDomicilioData register={register} setValue={setValue} isLoadingParent={isLoading} />
+              <InformacionLaboralData register={register} setValue={setValue} watch={watch} isLoadingParent={isLoading} />
+              <ObraSocialAfiliadoData register={register} setValue={setValue} isLoadingParent={isLoading} />
+              <FamiliarAcargoData register={register} setValue={setValue} watch={watch} reset={reset} isLoadingParent={isLoading} />
+              <DocumentacionAdicionalData register={register} setValue={setValue} reset={reset} isLoadingParent={isLoading} />
+            </div>
+
+            <div style={{ display: isSubsidio ? 'block' : 'none' }}>
               <SubsidioData register={register} setValue={setValue} reset={reset} />
-            )}
+            </div>
+
             <div className='flex justify-end gap-4 mt-8'>
               <div className='ltr:text-right rtl:text-left'>
                 <button
@@ -121,7 +124,11 @@ export const Create = () => {
                 <Button
                   type='submit'
                   text={isSubmitting ? 'Guardando' : 'Guardar'}
-                  className={`bg-green-500 ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'hover:bg-green-700'} text-white items-center text-center py-2 px-6 rounded-lg`}
+                  className={`bg-green-500 ${
+                  isSubmitting
+                    ? 'cursor-not-allowed opacity-50'
+                    : 'hover:bg-green-700'
+                } text-white items-center text-center py-2 px-6 rounded-lg`}
                   disabled={isSubmitting}
                   onClick={isSubmitting ? undefined : handleSubmit}
                 />
