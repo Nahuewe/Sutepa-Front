@@ -84,7 +84,7 @@ export const Create = () => {
   }, [activeAfiliado, setValue])
 
   const isAdmin = [1, 2, 3].includes(user.roles_id)
-  const isSubsidio = user.roles_id === 4
+  const isSubsidio = [1, 4].includes(user.roles_id)
 
   useEffect(() => {
     window.scrollTo(0, 0)
