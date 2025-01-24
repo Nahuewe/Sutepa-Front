@@ -22,7 +22,7 @@ export const ExportarExcel = () => {
     'Tipo de Contrato', 'UGL', 'Agencia', 'Domicilio de Trabajo', 'Seccional', 'Agrupamiento',
     'Tramo', 'Carga Horaria', 'Fecha de Ingreso', 'Correo Electrónico Laboral', 'Teléfono Laboral',
     'Tipo de Obra Social', 'Obra Social',
-    'Estado del Afiliado (Activo/Inactivo)'
+    'Estado del Afiliado'
   ]
   const documentacionColumns = ['Tipo de Archivo', 'Link del Archivo']
   const familiaresColumns = ['Nombre y Apellido del Familiar', 'Fecha de Nacimiento del Familiar', 'Documento del Familiar', 'Parentesco del Familiar']
