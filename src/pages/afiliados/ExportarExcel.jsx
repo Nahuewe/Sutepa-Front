@@ -15,14 +15,13 @@ export const ExportarExcel = () => {
   const [statusMessage, setStatusMessage] = useState('')
 
   const baseColumns = [
-    'Legajo', 'Nombre', 'Apellido', 'Correo Electrónico', 'DNI',
+    'Legajo', 'Nombre', 'Apellido', 'Estado del Afiliado', 'Correo Electrónico', 'DNI',
     'CUIL', 'Teléfono', 'Sexo', 'Fecha de Nacimiento',
     'Fecha de Afiliación', 'Estado Civil', 'Nacionalidad',
     'Domicilio', 'Provincia', 'Localidad', 'Código Postal',
     'Tipo de Contrato', 'UGL', 'Agencia', 'Domicilio de Trabajo', 'Seccional', 'Agrupamiento',
     'Tramo', 'Carga Horaria', 'Fecha de Ingreso', 'Correo Electrónico Laboral', 'Teléfono Laboral',
-    'Tipo de Obra Social', 'Obra Social',
-    'Estado del Afiliado'
+    'Tipo de Obra Social', 'Obra Social'
   ]
   const documentacionColumns = ['Tipo de Archivo', 'Link del Archivo']
   const familiaresColumns = ['Nombre y Apellido del Familiar', 'Fecha de Nacimiento del Familiar', 'Documento del Familiar', 'Parentesco del Familiar']
@@ -44,43 +43,43 @@ export const ExportarExcel = () => {
 
       const formattedData = data.flatMap((afiliado) => {
         const baseData = {
-          Legajo: afiliado?.persona?.legajo,
-          Nombre: afiliado?.persona?.nombre?.toUpperCase() || '',
-          Apellido: afiliado?.persona?.apellido?.toUpperCase() || '',
-          'Correo Electrónico': afiliado?.persona?.email || '',
-          DNI: afiliado?.persona?.dni,
-          CUIL: afiliado?.persona?.cuil,
-          Teléfono: afiliado?.persona?.telefono,
-          Sexo: afiliado?.persona?.sexo,
-          'Fecha de Nacimiento': formatDate(afiliado?.persona?.fecha_nacimiento),
-          'Fecha de Afiliación': formatDate(afiliado?.persona?.fecha_afiliacion),
-          'Estado Civil': afiliado?.persona?.estado_civil,
-          Nacionalidad: afiliado?.persona?.nacionalidad,
-          Domicilio: afiliado?.domicilios?.domicilio || '',
-          Provincia: afiliado?.domicilios?.provincia || '',
-          Localidad: afiliado?.domicilios?.localidad || '',
-          'Código Postal': afiliado?.domicilios?.codigo_postal || '',
-          'Tipo de Contrato': getTipoContrato(afiliado?.datos_laborales?.tipo_contrato_id),
-          UGL: afiliado?.datos_laborales?.ugl || '',
-          Agencia: afiliado?.datos_laborales?.agencia || '',
-          'Domicilio de Trabajo': afiliado?.datos_laborales?.domicilio,
-          Seccional: afiliado?.datos_laborales?.seccional || '',
-          Agrupamiento: afiliado?.datos_laborales?.agrupamiento,
-          Tramo: afiliado?.datos_laborales?.tramo,
-          'Carga Horaria': afiliado?.datos_laborales?.carga_horaria || '',
-          'Fecha de Ingreso': formatDate(afiliado?.datos_laborales?.fecha_ingreso),
-          'Correo Electrónico Laboral': afiliado?.datos_laborales?.email_laboral?.toLowerCase() || '',
-          'Teléfono Laboral': afiliado?.datos_laborales?.telefono_laboral,
-          'Tipo de Obra Social': afiliado?.obraSociales?.tipo_obra,
-          'Obra Social': afiliado?.obraSociales?.obra_social?.toUpperCase() || '',
-          'Estado del Afiliado': afiliado?.persona?.estados || ''
+          Legajo: afiliado?.persona?.legajo || '-',
+          Nombre: afiliado?.persona?.nombre?.toUpperCase() || '-',
+          Apellido: afiliado?.persona?.apellido?.toUpperCase() || '-',
+          'Estado del Afiliado': afiliado?.persona?.estados || '-',
+          'Correo Electrónico': afiliado?.persona?.email || '-',
+          DNI: afiliado?.persona?.dni || '-',
+          CUIL: afiliado?.persona?.cuil || '-',
+          Teléfono: afiliado?.persona?.telefono || '-',
+          Sexo: afiliado?.persona?.sexo || '-',
+          'Fecha de Nacimiento': formatDate(afiliado?.persona?.fecha_nacimiento || '-'),
+          'Fecha de Afiliación': formatDate(afiliado?.persona?.fecha_afiliacion || '-'),
+          'Estado Civil': afiliado?.persona?.estado_civil || '-',
+          Nacionalidad: afiliado?.persona?.nacionalidad || '-',
+          Domicilio: afiliado?.domicilios?.domicilio || '-',
+          Provincia: afiliado?.domicilios?.provincia || '-',
+          Localidad: afiliado?.domicilios?.localidad || '-',
+          'Código Postal': afiliado?.domicilios?.codigo_postal || '-',
+          'Tipo de Contrato': getTipoContrato(afiliado?.datos_laborales?.tipo_contrato_id || '-'),
+          UGL: afiliado?.datos_laborales?.ugl || '-',
+          Agencia: afiliado?.datos_laborales?.agencia || '-',
+          'Domicilio de Trabajo': afiliado?.datos_laborales?.domicilio || '-',
+          Seccional: afiliado?.datos_laborales?.seccional || '-',
+          Agrupamiento: afiliado?.datos_laborales?.agrupamiento || '-',
+          Tramo: afiliado?.datos_laborales?.tramo || '-',
+          'Carga Horaria': afiliado?.datos_laborales?.carga_horaria || '-',
+          'Fecha de Ingreso': formatDate(afiliado?.datos_laborales?.fecha_ingreso || '-'),
+          'Correo Electrónico Laboral': afiliado?.datos_laborales?.email_laboral?.toLowerCase() || '-',
+          'Teléfono Laboral': afiliado?.datos_laborales?.telefono_laboral || '-',
+          'Tipo de Obra Social': afiliado?.obraSociales?.tipo_obra || '-',
+          'Obra Social': afiliado?.obraSociales?.obra_social?.toUpperCase() || '-'
         }
 
         const documentaciones = afiliado?.documentaciones?.length
           ? afiliado?.documentaciones?.map((doc) => ({
             ...baseData,
-            'Tipo de Archivo': doc?.tipo_documento || '',
-            'Link del Archivo': `https://sistema.sutepa.com.ar/uploads/${doc?.archivo}` || ''
+            'Tipo de Archivo': doc?.tipo_documento || '-',
+            'Link del Archivo': `https://sistema.sutepa.com.ar/uploads/${doc?.archivo}` || '-'
           }))
           : []
 
@@ -97,10 +96,10 @@ export const ExportarExcel = () => {
         const subsidios = afiliado?.subsidios?.length
           ? afiliado?.subsidios?.map((subsidio) => ({
             ...baseData,
-            'Tipo de Subsidio': subsidio?.tipo_subsidio || '',
-            'Fecha de Solicitud': formatDate(subsidio?.fecha_solicitud),
-            'Fecha de Otorgamiento': formatDate(subsidio?.fecha_otorgamiento),
-            Observaciones: subsidio?.observaciones?.toUpperCase() || ''
+            'Tipo de Subsidio': subsidio?.tipo_subsidio || '-',
+            'Fecha de Solicitud': formatDate(subsidio?.fecha_solicitud || '-'),
+            'Fecha de Otorgamiento': formatDate(subsidio?.fecha_otorgamiento || '-'),
+            Observaciones: subsidio?.observaciones?.toUpperCase() || '-'
           }))
           : []
 
@@ -138,7 +137,7 @@ export const ExportarExcel = () => {
         selectedColumns.includes(col)
       )
 
-      const filteredAfiliados = afiliados.filter((row) => {
+      let filteredAfiliados = afiliados.filter((row) => {
         if (familiaresColumnsSelected && !row['Nombre y Apellido del Familiar']) {
           return false
         }
@@ -150,6 +149,14 @@ export const ExportarExcel = () => {
         }
         return true
       })
+
+      if (selectedColumns.every(col => baseColumns.includes(col))) {
+        filteredAfiliados = filteredAfiliados.filter((value, index, self) =>
+          index === self.findIndex((t) => (
+            t.Legajo === value.Legajo
+          ))
+        )
+      }
 
       const formattedData = filteredAfiliados.map((row) =>
         Object.fromEntries(
