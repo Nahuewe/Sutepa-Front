@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Tooltip } from 'flowbite-react'
 import { sutepaApi } from '@/api'
-import { formatDate, getTipoContrato } from '@/constant/datos-id'
+import { getTipoContrato } from '@/constant/datos-id'
 import Modal from 'react-modal'
 import * as XLSX from 'xlsx'
 
@@ -29,10 +29,30 @@ export const ExportarExcel = () => {
 
   const allColumns = [
     { category: 'Datos del Afiliado', columns: baseColumns },
-    { category: 'Documentaciones', columns: documentacionColumns },
+    { category: 'Documentación', columns: documentacionColumns },
     { category: 'Familiares', columns: familiaresColumns },
     { category: 'Subsidios', columns: subsidiosColumns }
   ]
+
+  const formatDate = (dateString) => {
+    if (!dateString) {
+      return '-'
+    }
+
+    const date = new Date(dateString)
+    if (isNaN(date)) {
+      return '-'
+    }
+
+    const userTimezoneOffset = date.getTimezoneOffset() * 60000
+    const adjustedDate = new Date(date.getTime() + userTimezoneOffset)
+
+    const day = String(adjustedDate.getDate()).padStart(2, '0')
+    const month = String(adjustedDate.getMonth() + 1).padStart(2, '0')
+    const year = adjustedDate.getFullYear()
+
+    return `${day}/${month}/${year}`
+  }
 
   const fetchAfiliados = async () => {
     try {
@@ -41,7 +61,7 @@ export const ExportarExcel = () => {
       const response = await sutepaApi.get('/personalista')
       const { data } = response.data
 
-      const formattedData = data.flatMap((afiliado) => {
+      const formattedData = (Array.isArray(data) ? data : []).flatMap((afiliado) => {
         const baseData = {
           Legajo: afiliado?.persona?.legajo || '-',
           Nombre: afiliado?.persona?.nombre?.toUpperCase() || '-',
@@ -52,15 +72,15 @@ export const ExportarExcel = () => {
           CUIL: afiliado?.persona?.cuil || '-',
           Teléfono: afiliado?.persona?.telefono || '-',
           Sexo: afiliado?.persona?.sexo || '-',
-          'Fecha de Nacimiento': formatDate(afiliado?.persona?.fecha_nacimiento || '-'),
-          'Fecha de Afiliación': formatDate(afiliado?.persona?.fecha_afiliacion || '-'),
+          'Fecha de Nacimiento': formatDate(afiliado?.persona?.fecha_nacimiento || '-') || '-',
+          'Fecha de Afiliación': formatDate(afiliado?.persona?.fecha_afiliacion || '-') || '-',
           'Estado Civil': afiliado?.persona?.estado_civil || '-',
           Nacionalidad: afiliado?.persona?.nacionalidad || '-',
           Domicilio: afiliado?.domicilios?.domicilio || '-',
           Provincia: afiliado?.domicilios?.provincia || '-',
           Localidad: afiliado?.domicilios?.localidad || '-',
           'Código Postal': afiliado?.domicilios?.codigo_postal || '-',
-          'Tipo de Contrato': getTipoContrato(afiliado?.datos_laborales?.tipo_contrato_id || '-'),
+          'Tipo de Contrato': getTipoContrato(afiliado?.datos_laborales?.tipo_contrato_id || '-') || '-',
           UGL: afiliado?.datos_laborales?.ugl || '-',
           Agencia: afiliado?.datos_laborales?.agencia || '-',
           'Domicilio de Trabajo': afiliado?.datos_laborales?.domicilio || '-',
@@ -68,7 +88,7 @@ export const ExportarExcel = () => {
           Agrupamiento: afiliado?.datos_laborales?.agrupamiento || '-',
           Tramo: afiliado?.datos_laborales?.tramo || '-',
           'Carga Horaria': afiliado?.datos_laborales?.carga_horaria || '-',
-          'Fecha de Ingreso': formatDate(afiliado?.datos_laborales?.fecha_ingreso || '-'),
+          'Fecha de Ingreso': formatDate(afiliado?.datos_laborales?.fecha_ingreso || '-') || '-',
           'Correo Electrónico Laboral': afiliado?.datos_laborales?.email_laboral?.toLowerCase() || '-',
           'Teléfono Laboral': afiliado?.datos_laborales?.telefono_laboral || '-',
           'Tipo de Obra Social': afiliado?.obraSociales?.tipo_obra || '-',
@@ -87,7 +107,7 @@ export const ExportarExcel = () => {
           ? afiliado?.familiares?.map((fam) => ({
             ...baseData,
             'Nombre y Apellido del Familiar': fam?.nombre_familiar?.toUpperCase() || '-',
-            'Fecha de Nacimiento del Familiar': formatDate(fam?.fecha_nacimiento_familiar || '-'),
+            'Fecha de Nacimiento del Familiar': formatDate(fam?.fecha_nacimiento_familiar || '-') || '-',
             'Documento del Familiar': fam?.documento || '-',
             'Parentesco del Familiar': fam?.parentesco || '-'
           }))
@@ -97,8 +117,8 @@ export const ExportarExcel = () => {
           ? afiliado?.subsidios?.map((subsidio) => ({
             ...baseData,
             'Tipo de Subsidio': subsidio?.tipo_subsidio || '-',
-            'Fecha de Solicitud': formatDate(subsidio?.fecha_solicitud || '-'),
-            'Fecha de Otorgamiento': formatDate(subsidio?.fecha_otorgamiento || '-'),
+            'Fecha de Solicitud': formatDate(subsidio?.fecha_solicitud || '-') || '-',
+            'Fecha de Otorgamiento': formatDate(subsidio?.fecha_otorgamiento || '-') || '-',
             Observaciones: subsidio?.observaciones?.toUpperCase() || '-'
           }))
           : []
@@ -209,7 +229,7 @@ export const ExportarExcel = () => {
         style={{
           overlay: { backgroundColor: 'rgba(0, 0, 0, 0.75)' },
           content: {
-            maxWidth: '1000px',
+            maxWidth: '870px',
             margin: 'auto',
             borderRadius: '12px',
             padding: '20px',
@@ -261,7 +281,7 @@ export const ExportarExcel = () => {
                   checked={columns.every((col) => selectedColumns.includes(col))}
                   className='form-checkbox text-green-500 focus:ring-green-400'
                 />
-                <span className='font-medium text-red-600'>Seleccionar todo</span>
+                <span className='font-medium text-orange-500'>Seleccionar todo</span>
               </label>
               {columns.map((column) => (
                 <label key={column} className='flex items-center space-x-2 mb-2'>
@@ -297,7 +317,7 @@ export const ExportarExcel = () => {
             onClick={handleExport}
             className={`bg-green-500 ${isExporting || !dataLoaded
                 ? 'opacity-50 cursor-not-allowed'
-                : 'hover:bg-green-600'
+                : 'hover:bg-green-600 cursor-pointer'
               } text-white py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400`}
             disabled={!selectedColumns.length || isExporting || !dataLoaded}
           >
