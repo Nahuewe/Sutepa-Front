@@ -57,7 +57,7 @@ export const ExportarExcel = () => {
   const fetchAfiliados = async () => {
     try {
       setIsLoading(true)
-      setStatusMessage('Cargando datos para filtrar, por favor, espere que este cartel se actualice y luego selecciona qué datos quieres utilizar. Luego baja un poco y dale a "exportar"')
+      setStatusMessage('Cargando datos para filtrar, por favor, seleccione qué datos quiere utilizar y espere que este cartel se actualice para continuar.')
       const response = await sutepaApi.get('/personalista')
       const { data } = response.data
 
@@ -128,7 +128,7 @@ export const ExportarExcel = () => {
 
       setAfiliados(formattedData)
       setDataLoaded(true)
-      setStatusMessage('Datos listos para exportar')
+      setStatusMessage('Datos cargados correctamente, elije los filtros que necesites y dale a "Exportar"')
     } catch (error) {
       console.error('Error al obtener los datos:', error)
       setStatusMessage('Hubo un error al cargar los datos, por favor intente nuevamente.')
@@ -241,7 +241,7 @@ export const ExportarExcel = () => {
         }}
       >
         <div className='flex justify-between items-center border-b pb-3 mb-4 md:mt-8 mt-4'>
-          <h2 className='text-xl font-semibold text-[#0e7490] dark:text-[#0e7490]'>Seleccionar columnas</h2>
+          <h2 className='text-xl font-semibold text-[#0e7490] dark:text-[#0e7490]'>Exportar Datos de los Afiliados</h2>
           <button
             onClick={() => setIsModalOpen(false)}
             className='text-red-700 hover:text-red-800 focus:outline-none'
@@ -262,7 +262,7 @@ export const ExportarExcel = () => {
             </div>
             )}
 
-        <div className='grid grid-cols-1 lg:grid-cols-4 gap-6 mb-6 overflow-y-auto'>
+        <div className='grid grid-cols-1 lg:grid-cols-4 gap-6 mb-6 overflow-y-auto max-h-[35rem]'>
           {allColumns.map(({ category, columns }) => (
             <fieldset key={category} className='border p-4 rounded-md shadow-sm'>
               <legend className='text-lg font-bold text-gray-700 mb-3'>{category}</legend>
