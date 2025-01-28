@@ -250,17 +250,17 @@ export const ExportarExcel = () => {
           </button>
         </div>
 
-        {isLoading
-          ? (
-            <div className='bg-yellow-100 text-yellow-700 p-3 mb-6 rounded-lg'>
-              <p className='font-medium'>{statusMessage}</p>
-            </div>
-            )
-          : (
-            <div className='bg-green-100 text-green-700 p-3 mb-6 rounded-lg'>
-              <p className='font-medium'>{statusMessage}</p>
-            </div>
-            )}
+        <div
+          className={`p-3 mb-6 rounded-lg ${
+            isLoading
+              ? 'bg-yellow-100 text-yellow-700'
+              : statusMessage.includes('error')
+                ? 'bg-red-100 text-red-700'
+                : 'bg-green-100 text-green-700'
+            }`}
+        >
+          <p className='font-medium'>{statusMessage}</p>
+        </div>
 
         <div className='grid grid-cols-1 lg:grid-cols-4 gap-6 mb-6 overflow-y-auto max-h-[35rem]'>
           {allColumns.map(({ category, columns }) => (
