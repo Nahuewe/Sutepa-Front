@@ -13,6 +13,7 @@ export const ExportarExcel = () => {
   const [dataLoaded, setDataLoaded] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [statusMessage, setStatusMessage] = useState('')
+  const [progress, setProgress] = useState(0)
 
   const baseColumns = [
     'Legajo', 'Nombre', 'Apellido', 'Estado del Afiliado', 'Correo Electrónico', 'DNI',
@@ -57,11 +58,41 @@ export const ExportarExcel = () => {
   const fetchAfiliados = async () => {
     try {
       setIsLoading(true)
-      setStatusMessage('Cargando datos para filtrar, por favor, seleccione qué datos quiere utilizar y espere que este cartel se actualice para continuar.')
-      const response = await sutepaApi.get('/personalista')
-      const { data } = response.data
+      setStatusMessage('Iniciando carga de datos...')
+      setProgress(5)
 
-      const formattedData = (Array.isArray(data) ? data : []).flatMap((afiliado) => {
+      let page = 1
+      const pageSize = 100
+      let hasMore = true
+      let allData = []
+      let total = 0
+
+      while (hasMore) {
+        const progressValue = Math.min(90, Math.round((allData.length / total) * 100))
+
+        setStatusMessage(
+          `Cargando datos... | Progreso: ${progressValue || '-'}% (${allData.length || '-'}/${total || '-'} afiliados)`
+        )
+
+        const response = await sutepaApi.get('/personalista', {
+          params: { page, pageSize }
+        })
+
+        const { data, total: totalRecords } = response.data
+
+        if (page === 1) total = totalRecords
+
+        allData = [...allData, ...data]
+
+        hasMore = page * pageSize < total
+        page++
+
+        setProgress(progressValue)
+      }
+
+      setProgress(95)
+
+      const formattedData = allData.flatMap((afiliado) => {
         const baseData = {
           Legajo: afiliado?.persona?.legajo || '-',
           Nombre: afiliado?.persona?.nombre?.toUpperCase() || '-',
@@ -95,45 +126,42 @@ export const ExportarExcel = () => {
           'Obra Social': afiliado?.obraSociales?.obra_social?.toUpperCase() || '-'
         }
 
-        const documentaciones = afiliado?.documentaciones?.length
-          ? afiliado?.documentaciones?.map((doc) => ({
-            ...baseData,
-            'Tipo de Archivo': doc?.tipo_documento || '-',
-            'Link del Archivo': `https://sistema.sutepa.com.ar/uploads/${doc?.archivo}` || '-'
-          }))
-          : []
+        const documentaciones = afiliado?.documentaciones?.map((doc) => ({
+          ...baseData,
+          'Tipo de Archivo': doc?.tipo_documento || '-',
+          'Link del Archivo': `https://sistema.sutepa.com.ar/uploads/${doc?.archivo}` || '-'
+        })) || []
 
-        const familiares = afiliado?.familiares?.length
-          ? afiliado?.familiares?.map((fam) => ({
-            ...baseData,
-            'Nombre y Apellido del Familiar': fam?.nombre_familiar?.toUpperCase() || '-',
-            'Fecha de Nacimiento del Familiar': formatDate(fam?.fecha_nacimiento_familiar || '-') || '-',
-            'Documento del Familiar': fam?.documento || '-',
-            'Parentesco del Familiar': fam?.parentesco || '-'
-          }))
-          : []
+        const familiares = afiliado?.familiares?.map((fam) => ({
+          ...baseData,
+          'Nombre y Apellido del Familiar': fam?.nombre_familiar?.toUpperCase() || '-',
+          'Fecha de Nacimiento del Familiar': formatDate(fam?.fecha_nacimiento_familiar || '-') || '-',
+          'Documento del Familiar': fam?.documento || '-',
+          'Parentesco del Familiar': fam?.parentesco || '-'
+        })) || []
 
-        const subsidios = afiliado?.subsidios?.length
-          ? afiliado?.subsidios?.map((subsidio) => ({
-            ...baseData,
-            'Tipo de Subsidio': subsidio?.tipo_subsidio || '-',
-            'Fecha de Solicitud': formatDate(subsidio?.fecha_solicitud || '-') || '-',
-            'Fecha de Otorgamiento': formatDate(subsidio?.fecha_otorgamiento || '-') || '-',
-            Observaciones: subsidio?.observaciones?.toUpperCase() || '-'
-          }))
-          : []
+        const subsidios = afiliado?.subsidios?.map((subsidio) => ({
+          ...baseData,
+          'Tipo de Subsidio': subsidio?.tipo_subsidio || '-',
+          'Fecha de Solicitud': formatDate(subsidio?.fecha_solicitud || '-') || '-',
+          'Fecha de Otorgamiento': formatDate(subsidio?.fecha_otorgamiento || '-') || '-',
+          Observaciones: subsidio?.observaciones?.toUpperCase() || '-'
+        })) || []
 
         return [baseData, ...documentaciones, ...familiares, ...subsidios]
       })
 
       setAfiliados(formattedData)
       setDataLoaded(true)
-      setStatusMessage('Datos cargados correctamente, elije los filtros que necesites y dale a "Exportar"')
+      setStatusMessage('Datos cargados correctamente, elige los filtros y exporta.')
+      setProgress(100)
     } catch (error) {
       console.error('Error al obtener los datos:', error)
-      setStatusMessage('Hubo un error al cargar los datos, por favor intente nuevamente.')
+      setStatusMessage('Hubo un error al cargar los datos.')
+      setProgress(0)
     } finally {
       setIsLoading(false)
+      setTimeout(() => setProgress(0), 2000)
     }
   }
 
@@ -240,7 +268,7 @@ export const ExportarExcel = () => {
           }
         }}
       >
-        <div className='flex justify-between items-center border-b pb-3 mb-4 md:mt-8 mt-4'>
+        <div className='flex justify-between items-center border-b pb-3 mb-4 md:mt-10 mt-4'>
           <h2 className='text-xl font-semibold text-[#0e7490] dark:text-[#0e7490]'>Exportar Datos de los Afiliados</h2>
           <button
             onClick={() => setIsModalOpen(false)}
@@ -261,6 +289,15 @@ export const ExportarExcel = () => {
         >
           <p className='font-medium'>{statusMessage}</p>
         </div>
+
+        {isLoading && (
+          <div className='w-full bg-gray-200 rounded-full h-2.5 mb-4'>
+            <div
+              className='bg-green-500 h-2.5 rounded-full transition-all'
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+        )}
 
         <div className='grid grid-cols-1 lg:grid-cols-4 gap-6 mb-6 overflow-y-auto max-h-[35rem]'>
           {allColumns.map(({ category, columns }) => (
