@@ -102,16 +102,14 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
   }, [activeAfiliado, setValue])
 
   useEffect(() => {
-    if (codigoPostal && selectedProvincia && selectedLocalidad) {
-      const domicilioData = {
-        domicilio,
-        provincia_id: selectedProvincia,
-        localidad_id: selectedLocalidad,
-        codigo_postal: codigoPostal
-      }
-      dispatch(updateDomicilio(domicilioData))
+    const domicilioData = {
+      domicilio,
+      provincia_id: selectedProvincia,
+      localidad_id: selectedLocalidad,
+      codigo_postal: codigoPostal
     }
-  }, [codigoPostal, selectedProvincia, selectedLocalidad, domicilio, dispatch])
+    dispatch(updateDomicilio(domicilioData))
+  }, [domicilio, selectedProvincia, selectedLocalidad, codigoPostal, dispatch])
 
   async function loadingAfiliado () {
     !isLoading && setIsLoading(true)
@@ -130,7 +128,7 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
 
   useEffect(() => {
     if (activeAfiliado) {
-      const intervals = [2000, 6000, 10000, 15000, 20000]
+      const intervals = [2000]
       const timers = intervals.map((interval) =>
         setTimeout(() => {
           setReloadKey((prevKey) => prevKey + 1)

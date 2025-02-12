@@ -184,7 +184,7 @@ function InformacionLaboralData ({ isLoadingParent, register, setValue, watch, d
 
   useEffect(() => {
     if (activeAfiliado) {
-      const intervals = [2000, 6000, 10000, 15000, 20000]
+      const intervals = [2000]
       const timers = intervals.map((interval) =>
         setTimeout(() => {
           setReloadKey((prevKey) => prevKey + 1)

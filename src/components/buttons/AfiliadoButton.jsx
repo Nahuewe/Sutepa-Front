@@ -1,14 +1,26 @@
-import React from 'react'
-import Tooltip from '@/components/ui/Tooltip' // Ajusta la ruta según tu estructura de archivos
+import React, { useState } from 'react'
+import Tooltip from '@/components/ui/Tooltip'
 
 const AfiliadoButton = ({ afiliado, onDelete }) => {
+  const [isDisabled, setIsDisabled] = useState(false)
+
+  const handleClick = async (id) => {
+    setIsDisabled(true) // Bloquear botón
+    try {
+      await onDelete(id) // Ejecutar acción
+    } finally {
+      setIsDisabled(false) // Desbloquear al cerrar el modal o finalizar acción
+    }
+  }
+
   const renderButton = () => {
     if (afiliado.estado === 'PENDIENTE') {
       return (
         <Tooltip content='Autorizar' placement='top' arrow animation='shift-away'>
           <button
             className='bg-green-500 text-white p-2 rounded-lg hover:bg-green-700'
-            onClick={() => onDelete(afiliado.id)}
+            onClick={() => handleClick(afiliado.id)}
+            disabled={isDisabled}
           >
             <svg
               xmlns='http://www.w3.org/2000/svg'
@@ -33,7 +45,8 @@ const AfiliadoButton = ({ afiliado, onDelete }) => {
         <Tooltip content='Reactivar' placement='top' arrow animation='shift-away'>
           <button
             className='bg-warning-500 text-white p-2 rounded-lg hover:bg-warning-700'
-            onClick={() => onDelete(afiliado.id)}
+            onClick={() => handleClick(afiliado.id)}
+            disabled={isDisabled}
           >
             <svg
               xmlns='http://www.w3.org/2000/svg'
@@ -59,7 +72,8 @@ const AfiliadoButton = ({ afiliado, onDelete }) => {
         <Tooltip content='Dar de Baja' placement='top' arrow animation='shift-away'>
           <button
             className='bg-red-500 text-white p-2 rounded-lg hover:bg-red-700'
-            onClick={() => onDelete(afiliado.id)}
+            onClick={() => handleClick(afiliado.id)}
+            disabled={isDisabled}
           >
             <svg
               xmlns='http://www.w3.org/2000/svg'
