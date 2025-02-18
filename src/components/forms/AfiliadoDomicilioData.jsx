@@ -128,7 +128,7 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
 
   useEffect(() => {
     if (activeAfiliado) {
-      const intervals = [2000]
+      const intervals = [2000, 6000]
       const timers = intervals.map((interval) =>
         setTimeout(() => {
           setReloadKey((prevKey) => prevKey + 1)

@@ -219,7 +219,7 @@ function DatosPersonalesData ({ isLoadingParent, register, setValue, errors, wat
 
   useEffect(() => {
     if (activeAfiliado) {
-      const intervals = [2000]
+      const intervals = [500]
       const timers = intervals.map((interval) =>
         setTimeout(() => {
           setReloadKey((prevKey) => prevKey + 1)
