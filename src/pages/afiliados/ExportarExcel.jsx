@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Tooltip } from 'flowbite-react'
 import { sutepaApi } from '@/api'
-import { getTipoContrato } from '@/constant/datos-id'
+import { getTipoContrato, getTipoDependencias } from '@/constant/datos-id'
 import Modal from 'react-modal'
 import * as XLSX from 'xlsx'
 
@@ -20,7 +20,7 @@ export const ExportarExcel = () => {
     'CUIL', 'Teléfono', 'Sexo', 'Fecha de Nacimiento',
     'Fecha de Afiliación', 'Estado Civil', 'Nacionalidad',
     'Domicilio', 'Provincia', 'Localidad', 'Código Postal',
-    'Tipo de Contrato', 'UGL', 'Agencia', 'Domicilio de Trabajo', 'Seccional', 'Agrupamiento',
+    'Tipo de Contrato', 'UGL', 'Agencia', 'Domicilio de Trabajo', 'Seccional', 'Dependencia', 'Agrupamiento',
     'Tramo', 'Carga Horaria', 'Fecha de Ingreso', 'Correo Electrónico Laboral', 'Teléfono Laboral',
     'Tipo de Obra Social', 'Obra Social'
   ]
@@ -116,6 +116,7 @@ export const ExportarExcel = () => {
           Agencia: afiliado?.datos_laborales?.agencia || '-',
           'Domicilio de Trabajo': afiliado?.datos_laborales?.domicilio || '-',
           Seccional: afiliado?.datos_laborales?.seccional || '-',
+          Dependencia: getTipoDependencias(afiliado?.datos_laborales?.dependencia_id || '-') || '-',
           Agrupamiento: afiliado?.datos_laborales?.agrupamiento || '-',
           Tramo: afiliado?.datos_laborales?.tramo || '-',
           'Carga Horaria': afiliado?.datos_laborales?.carga_horaria || '-',

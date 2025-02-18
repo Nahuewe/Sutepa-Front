@@ -11,6 +11,17 @@ export const tipoRoles = {
   5: 'SOLO LECTURA'
 }
 
+export const tipoDependencias = {
+  11: 'MAR DEL PLATA',
+  17: 'NEUQUEN',
+  20: 'SANTIAGO DEL ESTERO',
+  26: 'LA RIOJA',
+  27: 'SAN LUIS',
+  28: 'RIO NEGRO',
+  29: 'SANTA CRUZ',
+  34: 'TIERRA DEL FUEGO'
+}
+
 export const formatDate = (dateString) => {
   if (!dateString) {
     return ''
@@ -35,4 +46,8 @@ export const getTipoContrato = (id) => {
 
 export const getTipoRoles = (id) => {
   return tipoRoles[id] || ''
+}
+
+export const getTipoDependencias = (id) => {
+  return tipoDependencias[id] || ''
 }

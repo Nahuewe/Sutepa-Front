@@ -3,6 +3,7 @@ import { useAfiliadoStore } from '@/helpers'
 import { Card } from 'flowbite-react'
 import { useNavigate } from 'react-router-dom'
 import { formatDate, getTipoContrato } from '@/constant/datos-id'
+import { getTipoDependencias } from '../../constant/datos-id'
 
 export const ShowAfiliado = () => {
   const { activeAfiliado, paginate } = useAfiliadoStore()
@@ -115,6 +116,11 @@ export const ShowAfiliado = () => {
               <div className='border-b py-2 px-4'>
                 <strong>Seccional:</strong> {activeAfiliado.datos_laborales.seccional}
               </div>
+              {activeAfiliado.datos_laborales.seccional_id === 22 && (
+                <div className='border-b py-2 px-4'>
+                  <strong>Dependencia:</strong> {getTipoDependencias(activeAfiliado.datos_laborales.dependencia_id)}
+                </div>
+              )}
               <div className='border-b py-2 px-4'>
                 <strong>Agrupamiento:</strong> {activeAfiliado.datos_laborales.agrupamiento}
               </div>

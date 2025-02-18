@@ -24,6 +24,17 @@ const tramoHoras = {
   4: '35'
 }
 
+const dependenciaOptions = [
+  { id: 11, nombre: 'MAR DEL PLATA' },
+  { id: 17, nombre: 'NEUQUEN' },
+  { id: 20, nombre: 'SANTIAGO DEL ESTERO' },
+  { id: 26, nombre: 'LA RIOJA' },
+  { id: 27, nombre: 'SAN LUIS' },
+  { id: 28, nombre: 'RIO NEGRO' },
+  { id: 29, nombre: 'SANTA CRUZ' },
+  { id: 34, nombre: 'TIERRA DEL FUEGO' }
+]
+
 function InformacionLaboralData ({ isLoadingParent, register, setValue, watch, disabled }) {
   const [picker, setPicker] = useState(null)
   const [cargaHoraria, setCargaHoraria] = useState('')
@@ -32,6 +43,7 @@ function InformacionLaboralData ({ isLoadingParent, register, setValue, watch, d
   const [domicilioTrabajo, setDomicilioTrabajo] = useState('')
   const [filteredAgencias, setFilteredAgencias] = useState([])
   const [agenciaDisabled, setAgenciaDisabled] = useState(true)
+  const [showDependencia, setShowDependencia] = useState(false)
   const { agrupamiento, seccional, ugl, tramo } = useFetchDatosLaborales()
   const dispatch = useDispatch()
   const { activeAfiliado } = useSelector(state => state.afiliado)
@@ -63,12 +75,8 @@ function InformacionLaboralData ({ isLoadingParent, register, setValue, watch, d
   const handleTramoChange = (e) => {
     const selectedTramo = e.target.value
     const horas = tramoHoras[selectedTramo] || ''
-
-    // Actualiza el valor de 'tramo_id' y 'carga_horaria'
     handleInputChange('tramo_id', selectedTramo)
     handleInputChange('carga_horaria', horas)
-
-    // Actualiza el estado local
     setCargaHoraria(horas)
   }
 
@@ -118,6 +126,20 @@ function InformacionLaboralData ({ isLoadingParent, register, setValue, watch, d
     handleInputChange('ugl_id', selectedUglId)
   }
 
+  const handleSeccionalChange = (e) => {
+    const selectedId = e.target.value
+    setValue('seccional_id', selectedId)
+    setShowDependencia(selectedId === '22')
+
+    if (selectedId === '22') {
+      setValue('dependencia_id', watch('ugl_id'))
+    } else {
+      setValue('dependencia_id', '')
+    }
+
+    handleDatosLaboralesUpdate()
+  }
+
   const handleDatosLaboralesUpdate = () => {
     const datosLaborales = {
       tipo_contrato_id: parseInt(watch('tipo_contrato_id')) || null,
@@ -125,6 +147,7 @@ function InformacionLaboralData ({ isLoadingParent, register, setValue, watch, d
       agencia_id: parseInt(watch('agencia_id')) || null,
       domicilio_trabajo: watch('domicilio_trabajo') || null,
       seccional_id: parseInt(watch('seccional_id')) || null,
+      dependencia_id: parseInt(watch('dependencia_id')) || null,
       agrupamiento_id: parseInt(watch('agrupamiento_id')) || null,
       tramo_id: parseInt(watch('tramo_id')) || null,
       carga_horaria: watch('carga_horaria') || null,
@@ -147,6 +170,7 @@ function InformacionLaboralData ({ isLoadingParent, register, setValue, watch, d
         agencia_id,
         domicilio,
         seccional_id,
+        dependencia_id,
         agrupamiento_id,
         tramo_id,
         carga_horaria,
@@ -160,6 +184,7 @@ function InformacionLaboralData ({ isLoadingParent, register, setValue, watch, d
       setValue('agencia_id', agencia_id)
       setValue('domicilio_trabajo', domicilio)
       setValue('seccional_id', seccional_id)
+      setValue('dependencia_id', dependencia_id)
       setValue('agrupamiento_id', agrupamiento_id)
       setValue('tramo_id', tramo_id)
       setValue('carga_horaria', carga_horaria)
@@ -181,6 +206,13 @@ function InformacionLaboralData ({ isLoadingParent, register, setValue, watch, d
       setIsLoading(false)
     }
   }, [agrupamiento, seccional, ugl, tramo])
+
+  useEffect(() => {
+    if (watch('seccional_id') === '22') {
+      setShowDependencia(true)
+      setValue('dependencia_id', watch('ugl_id'))
+    }
+  }, [watch('seccional_id'), watch('ugl_id'), setValue])
 
   useEffect(() => {
     if (activeAfiliado) {
@@ -250,8 +282,18 @@ function InformacionLaboralData ({ isLoadingParent, register, setValue, watch, d
                   register={register('seccional_id')}
                   title='Seccional SUTEPA'
                   options={seccional}
-                  onChange={(e) => handleInputChange('seccional_id', e.target.value)}
+                  onChange={handleSeccionalChange}
                 />
+
+                {showDependencia && (
+                  <SelectForm
+                    register={register('dependencia_id')}
+                    title='Dependencias'
+                    options={dependenciaOptions}
+                    onChange={(e) => setValue('dependencia_id', e.target.value)}
+                    value={watch('dependencia_id')}
+                  />
+                )}
 
                 <SelectForm
                   register={register('agrupamiento_id')}
