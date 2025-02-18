@@ -25,7 +25,7 @@ const tramoHoras = {
 }
 
 const dependenciaOptions = [
-  { id: 11, nombre: 'MAR DEL PLATA' },
+  { id: 12, nombre: 'MAR DEL PLATA' },
   { id: 17, nombre: 'NEUQUEN' },
   { id: 20, nombre: 'SANTIAGO DEL ESTERO' },
   { id: 26, nombre: 'LA RIOJA' },
