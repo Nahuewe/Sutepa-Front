@@ -12,7 +12,7 @@ const RevenueBarChart = ({ afiliadosSinPaginar, height = 345 }) => {
   const [series, setSeries] = useState([])
   const [totalData, setTotalData] = useState(0)
   const [activeSeries, setActiveSeries] = useState({})
-  const [groupByDependencia, setGroupByDependencia] = useState(false) // Nuevo estado para agrupar por dependencia
+  const [groupByDependencia, setGroupByDependencia] = useState(false)
 
   const generateColor = (str) => {
     let hash = 0
@@ -48,7 +48,7 @@ const RevenueBarChart = ({ afiliadosSinPaginar, height = 345 }) => {
 
         if (afiliado.seccional_id === 22) {
           const dependencia = afiliado.dependencia_id
-          const dependenciaNombre = getTipoDependencias(dependencia) || 'DEPENDENCIAS'
+          const dependenciaNombre = getTipoDependencias(dependencia) || 'NACIONAL SIN DEPENDENCIAS'
 
           if (!seccionales[seccional]) {
             seccionales[seccional] = { ACTIVO: 0, INACTIVO: 0, dependencias: {} }
@@ -120,7 +120,7 @@ const RevenueBarChart = ({ afiliadosSinPaginar, height = 345 }) => {
       })
       setActiveSeries(initialActiveSeries)
     }
-  }, [afiliadosSinPaginar, groupByDependencia]) // Dependemos del estado groupByDependencia
+  }, [afiliadosSinPaginar, groupByDependencia])
 
   const handleSeriesToggle = (serie) => {
     setActiveSeries(prevState => ({
@@ -130,7 +130,7 @@ const RevenueBarChart = ({ afiliadosSinPaginar, height = 345 }) => {
   }
 
   const handleToggleGroup = () => {
-    setGroupByDependencia(prev => !prev) // Alternamos entre agrupar por dependencia y por seccional
+    setGroupByDependencia(prev => !prev)
   }
 
   const options = {
@@ -147,7 +147,7 @@ const RevenueBarChart = ({ afiliadosSinPaginar, height = 345 }) => {
       }
     },
     title: {
-      text: groupByDependencia ? 'Afiliados por Dependencia' : 'Afiliados Activos e Inactivos por Seccional y Dependencia',
+      text: groupByDependencia ? 'Afiliados por Dependencia' : 'Afiliados por Seccional',
       align: 'left',
       offsetX: isRtl ? '0%' : 0,
       offsetY: 0,
@@ -259,12 +259,14 @@ const RevenueBarChart = ({ afiliadosSinPaginar, height = 345 }) => {
         </div>
       </div>
       <div style={{ textAlign: 'center', marginTop: '20px' }}>
-        <button
-          onClick={handleToggleGroup}
-          className='btn px-6 py-2 mx-2 my-2 rounded-lg transition duration-300 ease-in-out text-white bg-[#3a56c6]'
-        >
-          {groupByDependencia ? 'Ver por Seccional' : 'Ver por Dependencia'}
-        </button>
+        {totalData > 0 && (
+          <button
+            onClick={handleToggleGroup}
+            className='btn px-6 py-2 mx-2 my-2 rounded-lg transition duration-300 ease-in-out text-white bg-[#3a56c6] hover:bg-[#435190]'
+          >
+            {groupByDependencia ? 'Ver por Seccional' : 'Ver por Dependencia'}
+          </button>
+        )}
 
         {series.map((serie, index) => {
           const serieColor = serie.color

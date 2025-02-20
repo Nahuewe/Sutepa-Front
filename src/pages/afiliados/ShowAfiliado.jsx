@@ -116,7 +116,7 @@ export const ShowAfiliado = () => {
               <div className='border-b py-2 px-4'>
                 <strong>Seccional:</strong> {activeAfiliado.datos_laborales.seccional}
               </div>
-              {activeAfiliado.datos_laborales.seccional_id === 22 && (
+              {activeAfiliado.datos_laborales.seccional_id === '22' && (
                 <div className='border-b py-2 px-4'>
                   <strong>Dependencia:</strong> {getTipoDependencias(activeAfiliado.datos_laborales.dependencia_id)}
                 </div>

@@ -12,7 +12,7 @@ export const tipoRoles = {
 }
 
 export const tipoDependencias = {
-  11: 'MAR DEL PLATA',
+  12: 'MAR DEL PLATA',
   17: 'NEUQUEN',
   20: 'SANTIAGO DEL ESTERO',
   26: 'LA RIOJA',
@@ -32,7 +32,6 @@ export const formatDate = (dateString) => {
     return ''
   }
 
-  // Ajustar la fecha para evitar problemas de huso horario
   const userTimezoneOffset = date.getTimezoneOffset() * 60000
   const adjustedDate = new Date(date.getTime() + userTimezoneOffset)
 
