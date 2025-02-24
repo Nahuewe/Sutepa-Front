@@ -134,8 +134,10 @@ function DocumentacionAdicionalData () {
           setDocumentos([...documentos, nuevoDocumento])
           setIdCounter(idCounter + 1)
 
-          // Se le da de baja automaticamente cuando es "Acta Defuncion, Telegrama de Baja, Jubilacion y Otros"
-          if (nuevoDocumento.tipo_documento_id === 1 || nuevoDocumento.tipo_documento_id === 7 || nuevoDocumento.tipo_documento_id === 8 || nuevoDocumento.tipo_documento_id === 9) {
+          // Se le da de baja automaticamente cuando es "Acta Defuncion(1), Telegrama de Baja(7), Jubilacion(8), Otros(9) y Despido(10)"
+          const tiposInactivos = [1, 7, 8, 9, 10]
+
+          if (tiposInactivos.includes(nuevoDocumento.tipo_documento_id)) {
             await cambiarEstadoAfiliado('INACTIVO')
           }
         } catch (error) {
