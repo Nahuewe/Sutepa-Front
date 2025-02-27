@@ -117,7 +117,7 @@ export const Credencial = () => {
         setIsSearchFailed(false)
       } else {
         setIsPersonFound(false)
-        toast.error('Afiliado no encontrado, intentalo de nuevo. Si eres contratado, ingresa tus datos manualmente')
+        toast.error('Afiliado no encontrado, intentalo de nuevo. Si eres contratado, ingresa tus datos manualmente pulsando el boton')
         setIsSearchFailed(true)
       }
     } catch (error) {
@@ -254,9 +254,9 @@ export const Credencial = () => {
           <div className='flex justify-center mb-6'>
             <ReCAPTCHA
               // Produccion
-              // sitekey='6Lfc1bMqAAAAABRaXh5tr3qcLOTNLuZZV-qeaVpv'
+              sitekey='6Lfc1bMqAAAAABRaXh5tr3qcLOTNLuZZV-qeaVpv'
               // LocalHost
-              sitekey='6LeAwp8qAAAAABhAYn5FDw_uIzk8bskuHIP_sBIw'
+              // sitekey='6LeAwp8qAAAAABhAYn5FDw_uIzk8bskuHIP_sBIw'
               onChange={handleCaptchaChange}
             />
           </div>
