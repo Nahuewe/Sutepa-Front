@@ -14,10 +14,12 @@ export const Credencial = () => {
   const [showDownloadButton, setShowDownloadButton] = useState(false)
   const [credencial, setCredencial] = useState([])
   const [captchaVerified, setCaptchaVerified] = useState(false)
+  const [isContratado, setIsContratado] = useState(false)
+  const [isSearchFailed, setIsSearchFailed] = useState(false)
   const [personData, setPersonData] = useState({
-    nombre: 'Nombre y Apellido',
-    legajo: '000000',
-    dni: '00.000.000'
+    nombre: '',
+    legajo: '',
+    dni: ''
   })
 
   const canvasRef = useRef(null)
@@ -42,6 +44,17 @@ export const Credencial = () => {
       setCaptchaVerified(false)
       toast.error('Por favor, completa el CAPTCHA.')
     }
+  }
+
+  const handleLegajoChange = (e) => {
+    const value = e.target.value.replace(/\D/g, '').slice(0, 7)
+    setPersonData((prevData) => ({ ...prevData, legajo: value }))
+  }
+
+  const handleDniChange = (e) => {
+    const cleanedValue = e.target.value.replace(/\D/g, '').slice(0, 8)
+    const formattedDNI = cleanedValue.replace(/^(\d{1,2})(\d{3})(\d{3})$/, '$1.$2.$3')
+    setPersonData((prevData) => ({ ...prevData, dni: formattedDNI }))
   }
 
   const handleIdentifierChange = (e) => {
@@ -101,9 +114,11 @@ export const Credencial = () => {
         })
         setIsPersonFound(true)
         toast.success(`Afiliado encontrado: ${person.nombre.toUpperCase()} ${person.apellido.toUpperCase()}`)
+        setIsSearchFailed(false)
       } else {
         setIsPersonFound(false)
-        toast.error('Afiliado no encontrado, intentalo de nuevo.')
+        toast.error('Afiliado no encontrado, intentalo de nuevo. Si eres contratado, ingresa tus datos manualmente')
+        setIsSearchFailed(true)
       }
     } catch (error) {
       console.error('Error al buscar al afiliado:', error)
@@ -195,18 +210,15 @@ export const Credencial = () => {
             const imgWidth = img.width
             const imgHeight = img.height
 
-            // Determinar la región central de la imagen
             const cropSize = Math.min(imgWidth, imgHeight)
             const cropX = (imgWidth - cropSize) / 2
             const cropY = (imgHeight - cropSize) / 2
 
-            // Ajustar las dimensiones donde la imagen será renderizada en el canvas
             const imageWidth = 120
             const imageHeight = 120
             const imageX = 25
             const imageY = 115
 
-            // Dibujar la imagen recortada en el canvas
             ctx.drawImage(
               img,
               cropX, cropY,
@@ -242,15 +254,64 @@ export const Credencial = () => {
           <div className='flex justify-center mb-6'>
             <ReCAPTCHA
               // Produccion
-              sitekey='6Lfc1bMqAAAAABRaXh5tr3qcLOTNLuZZV-qeaVpv'
+              // sitekey='6Lfc1bMqAAAAABRaXh5tr3qcLOTNLuZZV-qeaVpv'
               // LocalHost
-              // sitekey='6LeAwp8qAAAAABhAYn5FDw_uIzk8bskuHIP_sBIw'
+              sitekey='6LeAwp8qAAAAABhAYn5FDw_uIzk8bskuHIP_sBIw'
               onChange={handleCaptchaChange}
             />
           </div>
         )}
 
-        {captchaVerified && (
+        {captchaVerified && isSearchFailed && !isContratado && (
+          <button
+            onClick={() => setIsContratado(true)}
+            className='mt-4 mb-4 px-6 py-3 w-full text-white rounded-md bg-red-700 hover:bg-red-800 transition'
+          >
+            Soy Contratado
+          </button>
+        )}
+
+        {isContratado && (
+          <div className='mt-4'>
+            <span className='text-md text-gray-500'>Ingresa tus datos manualmente.</span>
+            <input
+              type='text'
+              placeholder='Nombre y Apellido'
+              className='w-full p-2 border rounded-md mt-2 uppercase'
+              value={personData.nombre}
+              onChange={(e) => setPersonData({ ...personData, nombre: e.target.value })}
+            />
+            <input
+              type='text'
+              placeholder='N° SAP'
+              className='w-full p-2 border rounded-md mt-2'
+              value={personData.legajo}
+              onChange={handleLegajoChange}
+            />
+            <input
+              type='text'
+              placeholder='DNI'
+              className='w-full p-2 border rounded-md mt-2'
+              value={personData.dni}
+              onChange={handleDniChange}
+            />
+            <button
+              onClick={() => {
+                setPersonData((prevData) => ({
+                  ...prevData,
+                  estado: 'ACTIVO'
+                }))
+                setIsPersonFound(true)
+                toast.success('Datos ingresados correctamente.')
+              }}
+              className='mt-4 mb-4 px-6 py-3 w-full text-white rounded-md bg-green-600 hover:bg-green-700 transition'
+            >
+              Confirmar Datos
+            </button>
+          </div>
+        )}
+
+        {captchaVerified && !isContratado && (
           <>
             <span className='text-sm text-gray-500 dark:text-gray-500'>Escribe tu legajo o DNI y luego haz clic en "Buscar".</span>
             <div className='flex flex-col sm:flex-row gap-4 mb-6 mt-2'>
@@ -277,28 +338,23 @@ export const Credencial = () => {
                       <svg
                         className='w-4 h-4 animate-spin' xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24'
                       >
-                        <circle
-                          className='opacity-25' cx='12' cy='12' r='10' stroke='currentColor' strokeWidth='4'
-                        />
-                        <path
-                          className='opacity-75' fill='currentColor' d='M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z'
-                        />
+                        <circle className='opacity-25' cx='12' cy='12' r='10' stroke='currentColor' strokeWidth='4' />
+                        <path className='opacity-75' fill='currentColor' d='M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z' />
                       </svg>
-                      {isLoading ? 'Cargando...' : 'Buscando...'}
+                      Cargando...
                     </span>
                     )
                   : (
                       'Buscar'
                     )}
               </button>
-
             </div>
           </>
         )}
 
-        {isPersonFound && personData.estado.toUpperCase() !== 'INACTIVO' && (
+        {isPersonFound && personData.estado !== 'INACTIVO' && (
           <div>
-            <span className='text-sm text-gray-500'>Sube tu foto para la credencial.</span>
+            <span className='text-md text-gray-500'>Sube tu foto para poder descargar la credencial.</span>
             <FileInput
               type='file'
               accept='image/*'
@@ -309,7 +365,7 @@ export const Credencial = () => {
           </div>
         )}
 
-        {isPersonFound && personData.estado.toUpperCase() !== 'INACTIVO' && captchaVerified && (
+        {isPersonFound && personData.estado !== 'INACTIVO' && captchaVerified && (
           <div>
             <span className='text-sm text-gray-500 flex justify-center mb-2'>Vista previa.</span>
             <div className='w-full sm:w-96 mx-auto bg-gray-50 border border-gray-300 rounded-lg p-4 flex flex-col items-center'>
@@ -318,7 +374,7 @@ export const Credencial = () => {
           </div>
         )}
 
-        {isPersonFound && personData.estado.toUpperCase() !== 'INACTIVO' && isPhotoUploaded && captchaVerified && (
+        {isPersonFound && personData.estado !== 'INACTIVO' && isPhotoUploaded && captchaVerified && (
           <button
             onClick={() => {
               if (personData.estado === 'INACTIVO') {
