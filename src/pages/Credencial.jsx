@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { toast } from 'react-toastify'
 import { FileInput } from 'flowbite-react'
+import QRCode from 'qrcode'
 import ReCAPTCHA from 'react-google-recaptcha'
 import sutepaApi from '../api/sutepaApi'
 
@@ -168,14 +169,8 @@ export const Credencial = () => {
 
       const background = new Image()
       background.src = '/carnet-sutepa.jpg'
-      background.onload = () => {
-        ctx.drawImage(
-          background,
-          0,
-          0,
-          canvas.width / scaleFactor,
-          canvas.height / scaleFactor
-        )
+      background.onload = async () => {
+        ctx.drawImage(background, 0, 0, canvas.width / scaleFactor, canvas.height / scaleFactor)
 
         ctx.fillStyle = '#FFFFFF'
         ctx.font = 'bold 12px Arial'
@@ -206,7 +201,7 @@ export const Credencial = () => {
         if (preview) {
           const img = new Image()
           img.src = preview
-          img.onload = () => {
+          img.onload = async () => {
             const imgWidth = img.width
             const imgHeight = img.height
 
@@ -219,14 +214,21 @@ export const Credencial = () => {
             const imageX = 25
             const imageY = 115
 
-            ctx.drawImage(
-              img,
-              cropX, cropY,
-              cropSize, cropSize,
-              imageX, imageY,
-              imageWidth, imageHeight
-            )
-            resolve()
+            ctx.drawImage(img, cropX, cropY, cropSize, cropSize, imageX, imageY, imageWidth, imageHeight)
+
+            const qrData = `Nombre: ${personData.nombre}\nDNI: ${personData.dni}`
+            const qrCodeUrl = await QRCode.toDataURL(qrData, { width: 100 })
+
+            const qrImage = new Image()
+            qrImage.src = qrCodeUrl
+            qrImage.onload = () => {
+              const qrSize = 90
+              const qrX = 380
+              const qrY = 150
+
+              ctx.drawImage(qrImage, qrX, qrY, qrSize, qrSize)
+              resolve()
+            }
           }
         } else {
           resolve()
@@ -254,9 +256,9 @@ export const Credencial = () => {
           <div className='flex justify-center mb-6'>
             <ReCAPTCHA
               // Produccion
-              sitekey='6Lfc1bMqAAAAABRaXh5tr3qcLOTNLuZZV-qeaVpv'
+              // sitekey='6Lfc1bMqAAAAABRaXh5tr3qcLOTNLuZZV-qeaVpv'
               // LocalHost
-              // sitekey='6LeAwp8qAAAAABhAYn5FDw_uIzk8bskuHIP_sBIw'
+              sitekey='6LeAwp8qAAAAABhAYn5FDw_uIzk8bskuHIP_sBIw'
               onChange={handleCaptchaChange}
             />
           </div>
