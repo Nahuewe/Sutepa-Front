@@ -19,8 +19,11 @@ export const Credencial = () => {
   const [isSearchFailed, setIsSearchFailed] = useState(false)
   const [personData, setPersonData] = useState({
     nombre: '',
+    apellido: '',
+    dni: '',
     legajo: '',
-    dni: ''
+    seccional: '',
+    seccional_id: ''
   })
 
   const canvasRef = useRef(null)
@@ -108,9 +111,12 @@ export const Credencial = () => {
         }
 
         setPersonData({
-          nombre: `${person.apellido} ${person.nombre}`.toUpperCase(),
-          legajo: person.legajo,
+          nombre: person.nombre.toUpperCase(),
+          apellido: person.apellido.toUpperCase(),
           dni: person.dni,
+          legajo: person.legajo,
+          seccional: person.seccional,
+          seccional_id: person.seccional_id.toString(),
           estado: person.estado
         })
         setIsPersonFound(true)
@@ -216,8 +222,17 @@ export const Credencial = () => {
 
             ctx.drawImage(img, cropX, cropY, cropSize, cropSize, imageX, imageY, imageWidth, imageHeight)
 
-            const qrData = `Nombre: ${personData.nombre}\nDNI: ${personData.dni}`
-            const qrCodeUrl = await QRCode.toDataURL(qrData, { width: 100 })
+            const qrPayload = {
+              nombre: personData.nombre,
+              apellido: personData.apellido,
+              dni: personData.dni,
+              legajo: personData.legajo,
+              seccional: personData.seccional,
+              seccional_id: personData.seccional_id.toString()
+            }
+
+            const qrData = JSON.stringify(qrPayload)
+            const qrCodeUrl = await QRCode.toDataURL(qrData, { width: 100, margin: 1 })
 
             const qrImage = new Image()
             qrImage.src = qrCodeUrl

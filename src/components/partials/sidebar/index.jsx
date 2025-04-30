@@ -2,11 +2,11 @@ import React, { useRef, useEffect, useState } from 'react'
 import SidebarLogo from './Logo'
 import Navmenu from './Navmenu'
 import { menuNormal, menuItems } from '@/constant/data'
+import { useSelector } from 'react-redux'
 import SimpleBar from 'simplebar-react'
 import useSidebar from '@/hooks/useSidebar'
 import useSemiDark from '@/hooks/useSemiDark'
 import useSkin from '@/hooks/useSkin'
-import { useSelector } from 'react-redux'
 
 const Sidebar = () => {
   const scrollableNodeRef = useRef()
