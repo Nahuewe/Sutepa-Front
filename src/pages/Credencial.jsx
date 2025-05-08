@@ -271,9 +271,9 @@ export const Credencial = () => {
           <div className='flex justify-center mb-6'>
             <ReCAPTCHA
               // Produccion
-              // sitekey='6Lfc1bMqAAAAABRaXh5tr3qcLOTNLuZZV-qeaVpv'
+              sitekey='6Lfc1bMqAAAAABRaXh5tr3qcLOTNLuZZV-qeaVpv'
               // LocalHost
-              sitekey='6LeAwp8qAAAAABhAYn5FDw_uIzk8bskuHIP_sBIw'
+              // sitekey='6LeAwp8qAAAAABhAYn5FDw_uIzk8bskuHIP_sBIw'
               onChange={handleCaptchaChange}
             />
           </div>
