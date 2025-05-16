@@ -184,7 +184,7 @@ export const Credencial = () => {
         const textX = 285
         let currentY = 127
 
-        ctx.fillText(personData.nombre.toUpperCase(), textX, currentY)
+        ctx.fillText(`${personData.nombre} ${personData.apellido}`.toUpperCase(), textX, currentY)
         currentY += 27.2
         ctx.fillText(personData.legajo, textX, currentY)
         currentY += 27.2
