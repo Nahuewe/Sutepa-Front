@@ -48,7 +48,8 @@ const RevenueBarChart = ({ afiliadosSinPaginar, height = 345 }) => {
 
         if (afiliado.seccional_id === 22) {
           const dependencia = afiliado.dependencia_id
-          const dependenciaNombre = getTipoDependencias(dependencia) || 'NACIONAL SIN DEPENDENCIAS'
+          const dependenciaNombre = getTipoDependencias(dependencia)
+          if (!dependenciaNombre) return
 
           if (!seccionales[seccional]) {
             seccionales[seccional] = { ACTIVO: 0, INACTIVO: 0, dependencias: {} }
@@ -73,7 +74,6 @@ const RevenueBarChart = ({ afiliadosSinPaginar, height = 345 }) => {
           const seccionalData = seccionales[seccional]
           const dependenciaData = seccionalData.dependencias
             ? Object.keys(seccionalData.dependencias)
-              .filter(dep => dep !== 'NACIONAL SIN DEPENDENCIAS')
               .map(dependencia => ({
                 name: dependencia,
                 data: [
@@ -269,31 +269,38 @@ const RevenueBarChart = ({ afiliadosSinPaginar, height = 345 }) => {
           </button>
         )}
 
-        {series.map((serie, index) => {
-          const serieColor = serie.color
-          const textColor = getTextColor(serieColor)
-          return (
-            <button
-              key={serie.name}
-              className='btn px-6 py-2 mx-2 my-2 rounded-lg transition duration-300 ease-in-out'
-              style={{
-                backgroundColor: activeSeries[serie.name] ? serieColor : '#E5E7EB',
-                color: activeSeries[serie.name] ? textColor : '#374151'
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.backgroundColor = serieColor
-                e.target.style.color = '#fff'
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.backgroundColor = activeSeries[serie.name] ? serieColor : '#E5E7EB'
-                e.target.style.color = activeSeries[serie.name] ? textColor : '#374151'
-              }}
-              onClick={() => handleSeriesToggle(serie)}
-            >
-              {serie.name}
-            </button>
-          )
-        })}
+        {series
+          .filter(serie => {
+            const esDependencia = afiliadosSinPaginar.some(
+              a => a.seccional_id === 22 && getTipoDependencias(a.dependencia_id) === serie.name
+            )
+            return groupByDependencia ? esDependencia : !esDependencia
+          })
+          .map((serie, index) => {
+            const serieColor = serie.color
+            const textColor = getTextColor(serieColor)
+            return (
+              <button
+                key={serie.name}
+                className='btn px-6 py-2 mx-2 my-2 rounded-lg transition duration-300 ease-in-out'
+                style={{
+                  backgroundColor: activeSeries[serie.name] ? serieColor : '#E5E7EB',
+                  color: activeSeries[serie.name] ? textColor : '#374151'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.backgroundColor = serieColor
+                  e.target.style.color = '#fff'
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = activeSeries[serie.name] ? serieColor : '#E5E7EB'
+                  e.target.style.color = activeSeries[serie.name] ? textColor : '#374151'
+                }}
+                onClick={() => handleSeriesToggle(serie)}
+              >
+                {serie.name}
+              </button>
+            )
+          })}
       </div>
     </Card>
   )
