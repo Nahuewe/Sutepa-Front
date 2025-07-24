@@ -68,19 +68,20 @@ const RevenueBarChart = ({ afiliadosSinPaginar, height = 345 }) => {
 
       const totalAfiliados = afiliadosSinPaginar.length
 
-      // Si estamos agrupando por dependencia
       const seriesData = groupByDependencia
         ? Object.keys(seccionales).map(seccional => {
           const seccionalData = seccionales[seccional]
           const dependenciaData = seccionalData.dependencias
-            ? Object.keys(seccionalData.dependencias).map(dependencia => ({
-              name: dependencia,
-              data: [
-                { x: 'ACTIVO', y: seccionalData.dependencias[dependencia].ACTIVO },
-                { x: 'INACTIVO', y: seccionalData.dependencias[dependencia].INACTIVO }
-              ],
-              color: generateColor(dependencia)
-            }))
+            ? Object.keys(seccionalData.dependencias)
+              .filter(dep => dep !== 'NACIONAL SIN DEPENDENCIAS')
+              .map(dependencia => ({
+                name: dependencia,
+                data: [
+                  { x: 'ACTIVO', y: seccionalData.dependencias[dependencia].ACTIVO },
+                  { x: 'INACTIVO', y: seccionalData.dependencias[dependencia].INACTIVO }
+                ],
+                color: generateColor(dependencia)
+              }))
             : []
 
           return dependenciaData

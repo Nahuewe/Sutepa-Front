@@ -28,6 +28,7 @@ const dependenciaOptions = [
   { id: 12, nombre: 'MAR DEL PLATA' },
   { id: 17, nombre: 'NEUQUEN' },
   { id: 20, nombre: 'SANTIAGO DEL ESTERO' },
+  { id: 25, nombre: 'CATAMARCA' },
   { id: 26, nombre: 'LA RIOJA' },
   { id: 27, nombre: 'SAN LUIS' },
   { id: 28, nombre: 'RIO NEGRO' },

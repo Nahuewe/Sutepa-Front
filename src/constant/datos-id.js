@@ -15,6 +15,7 @@ export const tipoDependencias = {
   12: 'MAR DEL PLATA',
   17: 'NEUQUEN',
   20: 'SANTIAGO DEL ESTERO',
+  25: 'CATAMARCA',
   26: 'LA RIOJA',
   27: 'SAN LUIS',
   28: 'RIO NEGRO',
