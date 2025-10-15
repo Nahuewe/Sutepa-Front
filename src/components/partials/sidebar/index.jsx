@@ -1,7 +1,7 @@
-import React, { useRef, useEffect, useState } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import SidebarLogo from './Logo'
 import Navmenu from './Navmenu'
-import { menuNormal, menuItems } from '@/constant/data'
+import { menuNormal, menuItems, menuLectura } from '@/constant/data'
 import { useSelector } from 'react-redux'
 import SimpleBar from 'simplebar-react'
 import useSidebar from '@/hooks/useSidebar'
@@ -26,11 +26,12 @@ const Sidebar = () => {
 
   const [collapsed] = useSidebar()
   const [menuHover, setMenuHover] = useState(false)
-
-  // semi dark option
   const [isSemiDark] = useSemiDark()
-  // skin
   const [skin] = useSkin()
+
+  let selectedMenu = menuNormal
+  if (user.roles_id === 1) selectedMenu = menuItems
+  else if (user.roles_id === 5) selectedMenu = menuLectura
 
   return (
     <div className={isSemiDark ? 'dark' : ''}>
@@ -40,22 +41,17 @@ const Sidebar = () => {
         } ${menuHover ? 'sidebar-hovered' : ''} ${
           skin === 'bordered' ? 'border-r border-slate-200 dark:border-slate-700' : 'shadow-base'
         }`}
-        onMouseEnter={() => {
-          setMenuHover(true)
-        }}
-        onMouseLeave={() => {
-          setMenuHover(false)
-        }}
+        onMouseEnter={() => setMenuHover(true)}
+        onMouseLeave={() => setMenuHover(false)}
       >
         <SidebarLogo menuHover={menuHover} />
         <div
           className={`h-[60px] absolute top-[80px] nav-shadow z-[1] w-full transition-all duration-200 pointer-events-none ${
-            scroll ? ' opacity-100' : ' opacity-0'
+            scroll ? 'opacity-100' : 'opacity-0'
           }`}
         />
         <SimpleBar className='sidebar-menu px-4 h-[calc(100%-80px)]' scrollableNodeProps={{ ref: scrollableNodeRef }}>
-          {/* Opciones de menu */}
-          <Navmenu menus={(user.roles_id === 1) ? menuItems : menuNormal} />
+          <Navmenu menus={selectedMenu} />
         </SimpleBar>
       </div>
     </div>
