@@ -39,7 +39,7 @@ export const Afiliado = () => {
   } = useAfiliadoStore()
 
   const filteredAfiliados = useMemo(() => {
-    const isAdminRole = [1, 2, 3, 4].includes(user.roles_id)
+    const isAdminRole = [1, 2, 3, 4, 5].includes(user.roles_id)
     if (isAdminRole) {
       return filterPendiente
         ? afiliadosSinPaginar.filter(afiliado => afiliado.estado === 'PENDIENTE')
