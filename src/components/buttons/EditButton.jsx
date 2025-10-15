@@ -1,5 +1,5 @@
-import Tooltip from '@/components/ui/Tooltip'
 import React from 'react'
+import Tooltip from '@/components/ui/Tooltip'
 
 const EditButton = ({ afiliado, onEdit }) => {
   const isDisabled = afiliado.estado === 'INACTIVO'

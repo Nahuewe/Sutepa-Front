@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { Collapse } from 'react-collapse'
 import { NavLink } from 'react-router-dom'
-import Icon from '@/components/ui/Icon'
 import Multilevel from './Multi'
+import Icon from '@/components/ui/Icon'
 
 const Submenu = ({ activeSubmenu, item, i }) => {
   const [activeMultiMenu, setMultiMenu] = useState(null)

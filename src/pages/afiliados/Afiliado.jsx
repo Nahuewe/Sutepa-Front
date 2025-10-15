@@ -1,21 +1,21 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import { TextInput } from 'flowbite-react'
+import { useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { useAfiliadoStore } from '@/helpers'
-import { cleanAfiliado, setActiveAfiliado } from '@/store/afiliado'
-import { DeleteModal } from '@/components/ui/DeleteModal'
-import { handleShowDelete } from '@/store/layout'
-import { TextInput } from 'flowbite-react'
-import { ExportarExcel } from './ExportarExcel'
 import EstadisticasAfiliados from './EstadisticasAfiliados'
-import Card from '@/components/ui/Card'
-import Pagination from '@/components/ui/Pagination'
-import Loading from '@/components/Loading'
+import { ExportarExcel } from './ExportarExcel'
+import AfiliadoButton from '@/components/buttons/AfiliadoButton'
 import EditButton from '@/components/buttons/EditButton'
 import ViewButton from '@/components/buttons/ViewButton'
-import AfiliadoButton from '@/components/buttons/AfiliadoButton'
+import Loading from '@/components/Loading'
+import Card from '@/components/ui/Card'
+import { DeleteModal } from '@/components/ui/DeleteModal'
+import Pagination from '@/components/ui/Pagination'
 import Tooltip from '@/components/ui/Tooltip'
+import { useAfiliadoStore } from '@/helpers'
 import afiliadoColumn from '@/json/afiliadoColumn'
+import { cleanAfiliado, setActiveAfiliado } from '@/store/afiliado'
+import { handleShowDelete } from '@/store/layout'
 
 export const Afiliado = () => {
   const navigate = useNavigate()
@@ -39,18 +39,32 @@ export const Afiliado = () => {
   } = useAfiliadoStore()
 
   const filteredAfiliados = useMemo(() => {
-    const isAdminRole = [1, 2, 3, 4, 5].includes(user.roles_id)
+    if (user.roles_id === 5) {
+      return filterPendiente
+        ? afiliados.filter(
+          (afiliado) =>
+            afiliado.estado === 'PENDIENTE' &&
+            afiliado.seccional_id === user.seccional_id
+        )
+        : afiliados.filter(
+          (afiliado) => afiliado.seccional_id === user.seccional_id
+        )
+    }
+
+    const isAdminRole = [1, 2, 3, 4].includes(user.roles_id)
     if (isAdminRole) {
       return filterPendiente
-        ? afiliadosSinPaginar.filter(afiliado => afiliado.estado === 'PENDIENTE')
+        ? afiliadosSinPaginar.filter((afiliado) => afiliado.estado === 'PENDIENTE')
         : afiliados
     }
+
     return filterPendiente
       ? afiliados.filter(
-        afiliado =>
-          afiliado.estado === 'PENDIENTE' && afiliado.seccional_id === user.seccional_id
+        (afiliado) =>
+          afiliado.estado === 'PENDIENTE' &&
+          afiliado.seccional_id === user.seccional_id
       )
-      : afiliados.filter(afiliado => afiliado.seccional_id === user.seccional_id)
+      : afiliados.filter((afiliado) => afiliado.seccional_id === user.seccional_id)
   }, [afiliados, afiliadosSinPaginar, filterPendiente, user.roles_id, user.seccional_id])
 
   const addAfiliado = () => {
@@ -88,10 +102,13 @@ export const Afiliado = () => {
     }
 
     searchTimeout = setTimeout(async () => {
+      const params = {}
+      if (user.roles_id === 5) params.seccional_id = user.seccional_id
+
       if (value.length === 0) {
-        await startLoadingAfiliado()
+        await startLoadingAfiliado(1, params)
       } else if (value.length > 2) {
-        await startSearchAfiliado(value)
+        await startSearchAfiliado(value, 1, params)
       }
     }, 1000)
   }
@@ -102,13 +119,18 @@ export const Afiliado = () => {
 
     const fetchAfiliados = async () => {
       setIsLoading(true)
-      await startLoadingAfiliado(page)
+      const params = {}
+      if (user.roles_id === 5) {
+        params.seccional_id = user.seccional_id
+      }
+
+      await startLoadingAfiliado(page, params)
       setIsLoading(false)
-      await startGetAfiliadosSinPaginar()
+      await startGetAfiliadosSinPaginar(params)
     }
 
     fetchAfiliados()
-  }, [])
+  }, [user.roles_id, user.seccional_id])
 
   useEffect(() => {
     if (filterPendiente && filteredAfiliados) {
@@ -293,15 +315,15 @@ export const Afiliado = () => {
                           onPageChange={(page) => {
                             const searchParams = new URLSearchParams(window.location.search)
                             searchParams.set('page', page)
+
+                            const params = {}
+                            if (user.roles_id === 5) params.seccional_id = user.seccional_id
+
                             navigate(`${window.location.pathname}?${searchParams.toString()}`)
 
-                            if (filterPendiente) {
-                              setCustomPaginate((prev) => ({ ...prev, current_page: page }))
-                            } else {
-                              search !== ''
-                                ? startSearchAfiliado(search, page)
-                                : startLoadingAfiliado(page)
-                            }
+                            search !== ''
+                              ? startSearchAfiliado(search, page, params)
+                              : startLoadingAfiliado(page, params)
                           }}
                           text
                         />

@@ -1,12 +1,12 @@
-import layout from './layout'
-import auth from './auth'
-import user from './user'
 import afiliado from './afiliado'
-import seccional from './seccional'
-import localidad from './localidad'
 import agencia from './agencia'
+import auth from './auth'
 import dataAfiliado from './dataAfiliado'
 import dataEstadisticas from './dataEstadisticas'
+import layout from './layout'
+import localidad from './localidad'
+import seccional from './seccional'
+import user from './user'
 
 const rootReducer = {
   layout,

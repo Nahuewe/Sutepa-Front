@@ -1,9 +1,9 @@
 /* eslint-disable no-unused-vars */
 import { useSelector, useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
-import { handleUser, handleUserSinPaginar, setErrorMessage } from '@/store/user'
-import { handleShowEdit, handleShowModal } from '@/store/layout'
 import { sutepaApi } from '@/api'
+import { handleShowEdit, handleShowModal } from '@/store/layout'
+import { handleUser, handleUserSinPaginar, setErrorMessage } from '@/store/user'
 
 export const useUserStore = () => {
   const { users, usersSinPaginar, paginate, activeUser } = useSelector(state => state.user)

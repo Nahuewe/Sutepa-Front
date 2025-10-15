@@ -1,9 +1,9 @@
 /* eslint-disable no-unused-vars */
 import { useSelector, useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
-import { handleLocalidades, setErrorMessage } from '@/store/localidad'
-import { handleShowEdit, handleShowModal } from '@/store/layout'
 import { sutepaApi } from '@/api'
+import { handleShowEdit, handleShowModal } from '@/store/layout'
+import { handleLocalidades, setErrorMessage } from '@/store/localidad'
 
 export const useLocalidadStore = () => {
   const { localidades = [], paginate, activeLocalidad } = useSelector((state) => state.localidad)

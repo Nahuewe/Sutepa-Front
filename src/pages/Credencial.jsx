@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react'
-import { toast } from 'react-toastify'
 import { FileInput } from 'flowbite-react'
 import QRCode from 'qrcode'
+import React, { useState, useEffect, useRef } from 'react'
 import ReCAPTCHA from 'react-google-recaptcha'
+import { toast } from 'react-toastify'
 import sutepaApi from '../api/sutepaApi'
 
 export const Credencial = () => {

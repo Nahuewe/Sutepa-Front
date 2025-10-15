@@ -1,18 +1,18 @@
 /* eslint-disable react/no-children-prop */
 import { useEffect, useState } from 'react'
-import { DeleteModal } from '@/components/ui/DeleteModal'
 import { useDispatch, useSelector } from 'react-redux'
-import { handleShowDelete, handleShowEdit } from '@/store/layout'
-import { useUserStore } from '@/helpers'
-import { setActiveUser } from '@/store/user'
+import Loading from '@/components/Loading'
 import { UserForm } from '@/components/sutepa/forms/'
 import Card from '@/components/ui/Card'
-import Modal from '@/components/ui/Modal'
+import { DeleteModal } from '@/components/ui/DeleteModal'
 import EditModal from '@/components/ui/EditModal'
+import Modal from '@/components/ui/Modal'
 import Pagination from '@/components/ui/Pagination'
-import Loading from '@/components/Loading'
 import Tooltip from '@/components/ui/Tooltip'
+import { useUserStore } from '@/helpers'
 import userColumn from '@/json/userColumn'
+import { handleShowDelete, handleShowEdit } from '@/store/layout'
+import { setActiveUser } from '@/store/user'
 
 export const Users = () => {
   const { users, paginate, activeUser, startLoadingUsers, startSavingUser, startDeleteUser, startUpdateUser } = useUserStore()

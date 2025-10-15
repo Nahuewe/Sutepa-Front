@@ -1,14 +1,14 @@
+import moment from 'moment'
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { SelectForm } from '@/components/sutepa/forms'
-import { updatePersona } from '@/store/afiliado'
-import Card from '@/components/ui/Card'
-import Textinput from '@/components/ui/Textinput'
-import Numberinput from '@/components/ui/Numberinput'
-import DatePicker from '@/components/ui/DatePicker'
-import moment from 'moment'
 import Loading from '@/components/Loading'
+import { SelectForm } from '@/components/sutepa/forms'
+import Card from '@/components/ui/Card'
+import DatePicker from '@/components/ui/DatePicker'
+import Numberinput from '@/components/ui/Numberinput'
+import Textinput from '@/components/ui/Textinput'
 import useFetchDatosPersonales from '@/fetches/useFetchDatosPersonales'
+import { updatePersona } from '@/store/afiliado'
 
 const tipoDocumento = [
   { id: 'DNI', nombre: 'DNI' },

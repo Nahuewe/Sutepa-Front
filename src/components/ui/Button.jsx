@@ -1,6 +1,6 @@
 import React from 'react'
-import Icon from '@/components/ui/Icon'
 import { Link } from 'react-router-dom'
+import Icon from '@/components/ui/Icon'
 
 function Button ({
   text,
@@ -40,7 +40,7 @@ function Button ({
                   className={`
           ${iconPosition === 'right' ? 'order-1 ltr:ml-2 rtl:mr-2' : ' '}
           ${text && iconPosition === 'left' ? 'ltr:mr-2 rtl:ml-2' : ''}
-          
+
           ${iconClass}
           `}
                 >
@@ -98,7 +98,7 @@ function Button ({
                   className={`
           ${iconPosition === 'right' ? 'order-1 ltr:ml-2 rtl:mr-2' : ' '}
           ${text && iconPosition === 'left' ? 'ltr:mr-2 rtl:ml-2' : ''}
-          
+
           ${iconClass}
           `}
                 >
@@ -156,7 +156,7 @@ function Button ({
                   className={`
           ${iconPosition === 'right' ? 'order-1 ltr:ml-2 rtl:mr-2' : ' '}
           ${text && iconPosition === 'left' ? 'ltr:mr-2 rtl:ml-2' : ''}
-          
+
           ${iconClass}
           `}
                 >

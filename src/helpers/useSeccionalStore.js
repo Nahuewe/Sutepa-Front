@@ -1,9 +1,9 @@
 /* eslint-disable no-unused-vars */
 import { useSelector, useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
-import { handleSeccional, handleSeccionalSinpaginar, setErrorMessage } from '@/store/seccional'
-import { handleShowEdit, handleShowModal } from '@/store/layout'
 import { sutepaApi } from '@/api'
+import { handleShowEdit, handleShowModal } from '@/store/layout'
+import { handleSeccional, handleSeccionalSinpaginar, setErrorMessage } from '@/store/seccional'
 
 export const useSeccionalStore = () => {
   const { seccionales, seccionalesSinPaginar, paginate, activeSeccional } = useSelector(state => state.seccional)

@@ -1,11 +1,11 @@
 import { useRef, useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
+import SimpleBar from 'simplebar-react'
 import SidebarLogo from './Logo'
 import Navmenu from './Navmenu'
 import { menuNormal, menuItems, menuLectura } from '@/constant/data'
-import { useSelector } from 'react-redux'
-import SimpleBar from 'simplebar-react'
-import useSidebar from '@/hooks/useSidebar'
 import useSemiDark from '@/hooks/useSemiDark'
+import useSidebar from '@/hooks/useSidebar'
 import useSkin from '@/hooks/useSkin'
 
 const Sidebar = () => {

@@ -1,16 +1,16 @@
 /* eslint-disable camelcase */
+import moment from 'moment'
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { sutepaApi } from '@/api'
-import { updateDatosLaborales } from '@/store/afiliado'
+import Loading from '@/components/Loading'
 import { SelectForm } from '@/components/sutepa/forms'
 import Card from '@/components/ui/Card'
-import Textinput from '@/components/ui/Textinput'
-import Numberinput from '@/components/ui/Numberinput'
 import DatePicker from '@/components/ui/DatePicker'
-import moment from 'moment'
-import Loading from '@/components/Loading'
+import Numberinput from '@/components/ui/Numberinput'
+import Textinput from '@/components/ui/Textinput'
 import useFetchDatosLaborales from '@/fetches/useFetchDatosLaborales'
+import { updateDatosLaborales } from '@/store/afiliado'
 
 const tipoContrato = [
   { id: 1, nombre: 'PLANTA PERMANENTE' },

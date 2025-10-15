@@ -1,18 +1,18 @@
 /* eslint-disable react/no-children-prop */
+import { TextInput } from 'flowbite-react'
 import { useEffect, useState } from 'react'
-import Card from '@/components/ui/Card'
-import Modal from '@/components/ui/Modal'
-import EditModal from '@/components/ui/EditModal'
-import { DeleteModal } from '@/components/ui/DeleteModal'
 import { useDispatch } from 'react-redux'
-import { handleShowDelete, handleShowEdit } from '@/store/layout'
-import Pagination from '@/components/ui/Pagination'
 import Loading from '@/components/Loading'
+import { LocalidadForm } from '@/components/sutepa/forms/'
+import Card from '@/components/ui/Card'
+import { DeleteModal } from '@/components/ui/DeleteModal'
+import EditModal from '@/components/ui/EditModal'
+import Modal from '@/components/ui/Modal'
+import Pagination from '@/components/ui/Pagination'
 import Tooltip from '@/components/ui/Tooltip'
 import { useLocalidadStore } from '@/helpers'
+import { handleShowDelete, handleShowEdit } from '@/store/layout'
 import { setActiveLocalidad } from '@/store/localidad'
-import { LocalidadForm } from '@/components/sutepa/forms/'
-import { TextInput } from 'flowbite-react'
 
 const columns = [
   {

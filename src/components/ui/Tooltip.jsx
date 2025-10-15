@@ -1,5 +1,5 @@
-import React from 'react'
 import Tippy from '@tippyjs/react'
+import React from 'react'
 import 'tippy.js/dist/tippy.css'
 import 'tippy.js/themes/light.css'
 import 'tippy.js/themes/light-border.css'

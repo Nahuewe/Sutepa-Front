@@ -1,11 +1,11 @@
 /* eslint-disable camelcase */
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import Loading from '@/components/Loading'
 import { SelectForm } from '@/components/sutepa/forms'
-import { updateObraSocial } from '@/store/afiliado'
 import Card from '@/components/ui/Card'
 import Textinput from '@/components/ui/Textinput'
-import Loading from '@/components/Loading'
+import { updateObraSocial } from '@/store/afiliado'
 
 const initialForm = {
   tipo_obra: '',

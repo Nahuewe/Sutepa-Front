@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react'
-import { NavLink, useLocation } from 'react-router-dom'
+/* eslint-disable array-callback-return */
+import { useEffect, useState } from 'react'
 import { Collapse } from 'react-collapse'
+import { NavLink, useLocation } from 'react-router-dom'
 import Icon from '@/components/ui/Icon'
-import { useDispatch } from 'react-redux'
 
 const Navmenu = ({ menus }) => {
   const [activeSubmenu, setActiveSubmenu] = useState(null)
@@ -17,7 +17,7 @@ const Navmenu = ({ menus }) => {
 
   const location = useLocation()
   const locationName = location.pathname.replace('/', '')
-  const dispatch = useDispatch()
+
   useEffect(() => {
     let submenuIndex = null
     menus.map((item, i) => {
@@ -44,7 +44,7 @@ const Navmenu = ({ menus }) => {
         {menus.map((item, i) => (
           <li
             key={i}
-            className={` single-sidebar-menu 
+            className={` single-sidebar-menu
               ${item.child ? 'item-has-children' : ''}
               ${activeSubmenu === i ? 'open' : ''}
               ${locationName === item.link ? 'menu-item-active' : ''}`}

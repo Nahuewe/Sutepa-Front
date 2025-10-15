@@ -1,7 +1,7 @@
 import { Dialog, Transition } from '@headlessui/react'
 import React, { Fragment } from 'react'
-import Icon from '@/components/ui/Icon'
 import { useDispatch, useSelector } from 'react-redux'
+import Icon from '@/components/ui/Icon'
 import { handleShowEdit } from '@/store/layout'
 
 const EditModal = ({

@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react'
 import { Tooltip } from 'flowbite-react'
-import { sutepaApi } from '@/api'
-import { getTipoContrato, getTipoDependencias } from '@/constant/datos-id'
+import React, { useEffect, useState } from 'react'
 import Modal from 'react-modal'
 import * as XLSX from 'xlsx'
+import { sutepaApi } from '@/api'
+import { getTipoContrato, getTipoDependencias } from '@/constant/datos-id'
 
 export const ExportarExcel = () => {
   const [isExporting, setIsExporting] = useState(false)

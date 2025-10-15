@@ -1,8 +1,8 @@
 import React from 'react'
-import LoginForm from '@/components/sutepa/auth/login-form'
+import iconosSutepa from '@/assets/images/auth/iconos.webp'
 import Illustration from '@/assets/images/auth/portada-sutepa.webp'
 import LogoSutepa from '@/assets/images/logo/logo.webp'
-import iconosSutepa from '@/assets/images/auth/iconos.webp'
+import LoginForm from '@/components/sutepa/auth/login-form'
 
 const Login = () => {
   return (

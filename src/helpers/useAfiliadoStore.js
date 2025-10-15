@@ -1,29 +1,27 @@
 /* eslint-disable camelcase */
 import { useSelector, useDispatch } from 'react-redux'
-import { toast } from 'react-toastify'
-import { handleAfiliado, handleAfiliadosSinPaginar, onUpdateAfiliado, setErrorMessage, onShowAfiliado, cleanAfiliado, handleEstadisticas } from '@/store/afiliado'
-import { sutepaApi } from '@/api'
 import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
+import { sutepaApi } from '@/api'
 import sendEmail from '@/components/EmailJs'
+import { handleAfiliado, handleAfiliadosSinPaginar, onUpdateAfiliado, setErrorMessage, onShowAfiliado, cleanAfiliado, handleEstadisticas } from '@/store/afiliado'
 
 export const useAfiliadoStore = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const { afiliados, afiliadosSinPaginar, estadisticas, paginate, activeAfiliado, persona, domicilio, datos_laborales, obra_social, documentacion, familiares, subsidios } = useSelector(state => state.afiliado)
 
-  const startLoadingAfiliado = async (page) => {
-    try {
-      const response = await sutepaApi.get(`/personas?page=${page}`)
-      const { data, meta } = response.data
-      dispatch(handleAfiliado({ data, meta }))
-    } catch (error) {
-      console.log(error)
-    }
+  const startLoadingAfiliado = async (page = 1, params = {}) => {
+    const query = new URLSearchParams({ page, ...params }).toString()
+    const response = await sutepaApi.get(`/personas?${query}`)
+    const { data, meta } = response.data
+    dispatch(handleAfiliado({ data, meta }))
   }
 
-  const startGetAfiliadosSinPaginar = async () => {
+  const startGetAfiliadosSinPaginar = async (params = {}) => {
     try {
-      const response = await sutepaApi.get('/personaAll')
+      const query = new URLSearchParams(params).toString()
+      const response = await sutepaApi.get(`/personaAll?${query}`)
       const { data } = response.data
       dispatch(handleAfiliadosSinPaginar(data))
     } catch (error) {
@@ -178,9 +176,10 @@ export const useAfiliadoStore = () => {
     }
   }
 
-  const startSearchAfiliado = async (search, page = 1) => {
+  const startSearchAfiliado = async (search, page = 1, params = {}) => {
     try {
-      const response = await sutepaApi.get(`/buscar-persona?query=${search}&page=${page}`)
+      const query = new URLSearchParams({ query: search, page, ...params }).toString()
+      const response = await sutepaApi.get(`/buscar-persona?${query}`)
       const { data, meta } = response.data
       dispatch(handleAfiliado({ data, meta }))
     } catch (error) {

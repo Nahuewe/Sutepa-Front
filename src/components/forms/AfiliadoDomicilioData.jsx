@@ -1,14 +1,14 @@
 /* eslint-disable camelcase */
-import { SelectForm } from '@/components/sutepa/forms'
 import { useState, useEffect } from 'react'
-import { updateDomicilio } from '@/store/afiliado'
 import { useDispatch, useSelector } from 'react-redux'
 import { sutepaApi } from '@/api'
-import Card from '@/components/ui/Card'
-import Textinput from '@/components/ui/Textinput'
-import Numberinput from '@/components/ui/Numberinput'
 import Loading from '@/components/Loading'
+import { SelectForm } from '@/components/sutepa/forms'
+import Card from '@/components/ui/Card'
+import Numberinput from '@/components/ui/Numberinput'
+import Textinput from '@/components/ui/Textinput'
 import useFetchDomicilio from '@/fetches/useFetchDomicilio'
+import { updateDomicilio } from '@/store/afiliado'
 
 function AfiliadoDomicilioData ({ register, disabled, setValue }) {
   const dispatch = useDispatch()
