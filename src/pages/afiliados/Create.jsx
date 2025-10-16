@@ -1,5 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import { useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -13,15 +13,30 @@ import ObraSocialAfiliadoData from '@/components/forms/ObraSocialAfiliadoData'
 import SubsidioData from '@/components/forms/SubsidioData'
 import Loading from '@/components/Loading'
 import Button from '@/components/ui/Button'
+import useFetchDatosLaborales from '@/fetches/useFetchDatosLaborales'
+import useFetchDatosPersonales from '@/fetches/useFetchDatosPersonales'
+import useFetchDocumentacion from '@/fetches/useFetchDocumentacion'
+import useFetchDomicilio from '@/fetches/useFetchDomicilio'
+import useFetchFamilia from '@/fetches/useFetchFamilia'
+import useFetchSubsidio from '@/fetches/useFetchSubsidio'
 import { useAfiliadoStore } from '@/helpers'
 
 export const Create = () => {
   const { id } = useParams()
   const navigate = useNavigate()
-  const [isLoading, setIsLoading] = useState(true)
-  const [isParamsLoading] = useState(true)
-  const { activeAfiliado, startSavingAfiliado, startUpdateAfiliado, startEditAfiliado } = useAfiliadoStore()
+  const [isLoadingAfiliado, setIsLoadingAfiliado] = useState(!!id)
+  const { activeAfiliado, startSavingAfiliado, startUpdateAfiliado, startEditAfiliado, paginate } = useAfiliadoStore()
   const { user } = useSelector((state) => state.auth)
+  const currentPage = paginate?.current_page || 1
+
+  const hasLoadedAfiliado = useRef(false)
+
+  const { isLoading: isLoadingDatosPersonales } = useFetchDatosPersonales()
+  const { isLoading: isLoadingDatosLaborales } = useFetchDatosLaborales()
+  const { isLoading: isLoadingDocumentacion } = useFetchDocumentacion()
+  const { isLoading: isLoadingDomicilio } = useFetchDomicilio()
+  const { isLoading: isLoadingFamilia } = useFetchFamilia()
+  const { isLoading: isLoadingSubsidio } = useFetchSubsidio()
 
   const FormValidationSchema = yup.object().shape({
     legajo: yup.string().required('El legajo es requerido'),
@@ -52,16 +67,22 @@ export const Create = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      setIsLoading(true)
+      if (!id || hasLoadedAfiliado.current) {
+        if (!id) {
+          setIsLoadingAfiliado(false)
+        }
+        return
+      }
+
+      hasLoadedAfiliado.current = true
+      setIsLoadingAfiliado(true)
 
       try {
-        if (id) {
-          await startEditAfiliado(id)
-        }
+        await startEditAfiliado(id)
       } catch (error) {
         console.error('Error al cargar los datos del afiliado:', error)
       } finally {
-        setIsLoading(false)
+        setIsLoadingAfiliado(false)
       }
     }
 
@@ -69,19 +90,12 @@ export const Create = () => {
   }, [id])
 
   useEffect(() => {
-    if (!id) return setIsLoading(false)
-    if (id && !isParamsLoading) {
-      startEditAfiliado(id)
-    }
-  }, [isParamsLoading, id])
-
-  useEffect(() => {
-    if (activeAfiliado) {
+    if (activeAfiliado && hasLoadedAfiliado.current) {
       Object.entries(activeAfiliado).forEach(([key, value]) => {
         setValue(key, value)
       })
     }
-  }, [activeAfiliado, setValue])
+  }, [activeAfiliado])
 
   const isAdmin = [1, 2, 3].includes(user.roles_id)
   const isSubsidio = [1, 4].includes(user.roles_id)
@@ -89,6 +103,15 @@ export const Create = () => {
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
+
+  const isLoading =
+    isLoadingAfiliado ||
+    isLoadingDatosPersonales ||
+    isLoadingDatosLaborales ||
+    isLoadingDocumentacion ||
+    isLoadingDomicilio ||
+    isLoadingFamilia ||
+    isLoadingSubsidio
 
   return (
     <>
@@ -99,12 +122,18 @@ export const Create = () => {
         : (
           <form onSubmit={handleSubmit(onSubmit)}>
             <div style={{ display: isAdmin ? 'block' : 'none' }}>
-              <DatosPersonalesData register={register} errors={errors} setValue={setValue} watch={watch} isLoadingParent={isLoading} />
-              <AfiliadoDomicilioData register={register} setValue={setValue} isLoadingParent={isLoading} />
-              <InformacionLaboralData register={register} setValue={setValue} watch={watch} isLoadingParent={isLoading} />
-              <ObraSocialAfiliadoData register={register} setValue={setValue} isLoadingParent={isLoading} />
-              <FamiliarAcargoData register={register} setValue={setValue} watch={watch} reset={reset} isLoadingParent={isLoading} />
-              <DocumentacionAdicionalData register={register} setValue={setValue} reset={reset} isLoadingParent={isLoading} />
+              <DatosPersonalesData
+                register={register}
+                errors={errors}
+                setValue={setValue}
+                watch={watch}
+                isLoadingParent={false}
+              />
+              <AfiliadoDomicilioData register={register} setValue={setValue} isLoadingParent={false} />
+              <InformacionLaboralData register={register} setValue={setValue} watch={watch} isLoadingParent={false} />
+              <ObraSocialAfiliadoData register={register} setValue={setValue} isLoadingParent={false} />
+              <FamiliarAcargoData register={register} setValue={setValue} watch={watch} reset={reset} isLoadingParent={false} />
+              <DocumentacionAdicionalData register={register} setValue={setValue} reset={reset} isLoadingParent={false} />
             </div>
 
             <div style={{ display: isSubsidio ? 'block' : 'none' }}>
@@ -114,8 +143,9 @@ export const Create = () => {
             <div className='flex justify-end gap-4 mt-8'>
               <div className='ltr:text-right rtl:text-left'>
                 <button
+                  type='button'
                   className='btn-danger items-center text-center py-2 px-6 rounded-lg'
-                  onClick={() => navigate('/afiliados')}
+                  onClick={() => navigate(`/afiliados?page=${currentPage}`)}
                 >
                   Volver
                 </button>
@@ -130,7 +160,6 @@ export const Create = () => {
                     : 'hover:bg-green-700'
                 } text-white items-center text-center py-2 px-6 rounded-lg`}
                   disabled={isSubmitting}
-                  onClick={isSubmitting ? undefined : handleSubmit}
                 />
               </div>
             </div>

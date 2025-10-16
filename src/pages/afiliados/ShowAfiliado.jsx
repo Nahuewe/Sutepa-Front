@@ -285,8 +285,6 @@ export const ShowAfiliado = () => {
           </div>
         )}
 
-        {/* Exportar a Excel los datos de la vista */}
-
         <div className='mt-4 flex justify-end gap-4'>
           <button className='btn-danger items-center text-center py-2 px-6 rounded-lg' onClick={() => navigate(`/afiliados?page=${currentPage}`)}>Volver</button>
         </div>

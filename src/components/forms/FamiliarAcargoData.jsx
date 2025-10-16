@@ -1,6 +1,6 @@
 import { Icon } from '@iconify/react'
 import moment from 'moment'
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useSelector, useDispatch } from 'react-redux'
 import Loading from '@/components/Loading'
@@ -41,7 +41,6 @@ function FamiliaresaCargo () {
   const [dni, setDni] = useState('')
   const { user } = useSelector(state => state.auth)
   const { activeAfiliado } = useSelector(state => state.afiliado)
-  const [isLoading, setIsLoading] = useState(true)
   const [loadingFamiliares, setLoadingFamiliares] = useState(false)
   const { familia } = useFetchFamilia()
 
@@ -193,171 +192,150 @@ function FamiliaresaCargo () {
     }
   }, [familiares, loadingFamiliares, dispatch])
 
-  async function loadingAfiliado () {
-    !isLoading && setIsLoading(true)
-    setIsLoading(false)
-  }
-
-  useEffect(() => {
-    loadingAfiliado()
-  }, [])
-
-  useEffect(() => {
-    if (familia.length) {
-      setIsLoading(false)
-    }
-  }, [familia])
-
   return (
     <>
-      {isLoading
-        ? (
+      <div>
+        <h4 className='card-title text-center bg-red-500 dark:bg-gray-700 text-white rounded-md p-2'>
+          Familiares a Cargo
+        </h4>
+
+        <Card>
+          <fieldset>
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+              <div>
+                <label htmlFor='nombre' className='form-label'>
+                  Nombre y Apellido
+                </label>
+                <Textinput
+                  name='nombre_familiar'
+                  type='text'
+                  className='mayuscula'
+                  register={register}
+                  placeholder='Ingrese el nombre y apellido'
+                  value={formData.nombre_familiar}
+                  onChange={handleInputChange}
+                />
+              </div>
+
+              <div>
+                <label htmlFor='fecha_nacimiento_familiar' className='form-label'>
+                  Fecha de Nacimiento
+                </label>
+                <DatePicker
+                  value={picker}
+                  id='fecha_nacimiento_familiar'
+                  className='mayuscula'
+                  onChange={handleDateChange}
+                  placeholder='Ingrese la fecha de nacimiento'
+                />
+                <input type='hidden' {...register('fecha_nacimiento_familiar')} />
+              </div>
+
+              <SelectForm
+                register={register('tipo_documento_familiar')}
+                title='Tipo de Documento'
+                className='mayuscula'
+                options={tipoDocumento}
+                value={formData.tipo_documento_familiar}
+                onChange={e => setFormData({ ...formData, tipo_documento_familiar: e.target.value })}
+              />
+
+              <Numberinput
+                label='Documento'
+                register={register}
+                id='documento'
+                placeholder='Ingrese el documento'
+                value={dni}
+                onChange={handleDniChange}
+              />
+
+              <SelectForm
+                register={register('parentesco_id')}
+                title='Parentesco'
+                options={familia}
+                value={formData.parentesco_id}
+                onChange={e => handleInputChange(e)}
+              />
+
+            </div>
+            <div className='flex justify-end mt-4 gap-4'>
+              <button
+                type='button'
+                className={`btn rounded-lg ${isEditing ? 'btn-purple' : 'btn-primary'}`}
+                onClick={handleAddOrUpdateFamiliar}
+              >
+                {isEditing ? 'Terminar Edición' : 'Agregar Familiar'}
+              </button>
+            </div>
+          </fieldset>
+        </Card>
+
+        {loadingFamiliares && (
           <Loading className='mt-28 md:mt-64' />
-          )
-        : (
-          <div>
-            <h4 className='card-title text-center bg-red-500 dark:bg-gray-700 text-white rounded-md p-2'>
-              Familiares a Cargo
-            </h4>
+        )}
 
-            <Card>
-              <fieldset>
-                <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-                  <div>
-                    <label htmlFor='nombre' className='form-label'>
-                      Nombre y Apellido
-                    </label>
-                    <Textinput
-                      name='nombre_familiar'
-                      type='text'
-                      className='mayuscula'
-                      register={register}
-                      placeholder='Ingrese el nombre y apellido'
-                      value={formData.nombre_familiar}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor='fecha_nacimiento_familiar' className='form-label'>
-                      Fecha de Nacimiento
-                    </label>
-                    <DatePicker
-                      value={picker}
-                      id='fecha_nacimiento_familiar'
-                      className='mayuscula'
-                      onChange={handleDateChange}
-                      placeholder='Ingrese la fecha de nacimiento'
-                    />
-                    <input type='hidden' {...register('fecha_nacimiento_familiar')} />
-                  </div>
-
-                  <SelectForm
-                    register={register('tipo_documento_familiar')}
-                    title='Tipo de Documento'
-                    className='mayuscula'
-                    options={tipoDocumento}
-                    value={formData.tipo_documento_familiar}
-                    onChange={e => setFormData({ ...formData, tipo_documento_familiar: e.target.value })}
-                  />
-
-                  <Numberinput
-                    label='Documento'
-                    register={register}
-                    id='documento'
-                    placeholder='Ingrese el documento'
-                    value={dni}
-                    onChange={handleDniChange}
-                  />
-
-                  <SelectForm
-                    register={register('parentesco_id')}
-                    title='Parentesco'
-                    options={familia}
-                    value={formData.parentesco_id}
-                    onChange={e => handleInputChange(e)}
-                  />
-
-                </div>
-                <div className='flex justify-end mt-4 gap-4'>
-                  <button
-                    type='button'
-                    className={`btn rounded-lg ${isEditing ? 'btn-purple' : 'btn-primary'}`}
-                    onClick={handleAddOrUpdateFamiliar}
-                  >
-                    {isEditing ? 'Terminar Edición' : 'Agregar Familiar'}
-                  </button>
-                </div>
-              </fieldset>
-            </Card>
-
-            {loadingFamiliares && (
-              <Loading className='mt-28 md:mt-64' />
-            )}
-
-            {familiares.length > 0 && (
-              <div className='overflow-x-auto mt-4 mb-4'>
-                <table className='table-auto w-full'>
-                  <thead className='bg-gray-300 dark:bg-gray-700'>
-                    <tr>
-                      <th className='px-4 py-2 text-center dark:text-white'>Fecha de Carga</th>
-                      <th className='px-4 py-2 text-center dark:text-white'>Nombre y Apellido</th>
-                      <th className='px-4 py-2 text-center dark:text-white'>Fecha de Nacimiento</th>
-                      <th className='px-4 py-2 text-center dark:text-white'>Tipo de Documento</th>
-                      <th className='px-4 py-2 text-center dark:text-white'>Documento</th>
-                      <th className='px-4 py-2 text-center dark:text-white'>Parentesco</th>
-                      {/* <th className='px-4 py-2 text-center dark:text-white'>Usuario de Carga</th> */}
-                      <th className='px-4 py-2 text-center dark:text-white'>Acciones</th>
-                    </tr>
-                  </thead>
-                  <tbody className='divide-y dark:divide-gray-700'>
-                    {familiares.map(fam => (
-                      <tr key={fam.id} className='bg-white dark:bg-gray-800 dark:border-gray-700'>
-                        <td className='px-4 py-2 text-center dark:text-white'>
-                          {formatDate(fam.created_at || fam.fecha_carga)}
-                        </td>
-                        <td className='px-4 py-2 text-center dark:text-white mayuscula'>{fam.nombre_familiar}</td>
-                        <td className='px-4 py-2 text-center dark:text-white'>{formatDate(fam.fecha_nacimiento_familiar)}</td>
-                        <td className='px-4 py-2 text-center dark:text-white'>{fam.tipo_documento_familiar}</td>
-                        <td className='px-4 py-2 text-center dark:text-white'>{fam.documento}</td>
-                        <td className='px-4 py-2 text-center dark:text-white'>
-                          {fam.parentesco || getParentescoNombre(fam.parentesco_id)}
-                        </td>
-                        {/* {activeAfiliado
+        {familiares.length > 0 && (
+          <div className='overflow-x-auto mt-4 mb-4'>
+            <table className='table-auto w-full'>
+              <thead className='bg-gray-300 dark:bg-gray-700'>
+                <tr>
+                  <th className='px-4 py-2 text-center dark:text-white'>Fecha de Carga</th>
+                  <th className='px-4 py-2 text-center dark:text-white'>Nombre y Apellido</th>
+                  <th className='px-4 py-2 text-center dark:text-white'>Fecha de Nacimiento</th>
+                  <th className='px-4 py-2 text-center dark:text-white'>Tipo de Documento</th>
+                  <th className='px-4 py-2 text-center dark:text-white'>Documento</th>
+                  <th className='px-4 py-2 text-center dark:text-white'>Parentesco</th>
+                  {/* <th className='px-4 py-2 text-center dark:text-white'>Usuario de Carga</th> */}
+                  <th className='px-4 py-2 text-center dark:text-white'>Acciones</th>
+                </tr>
+              </thead>
+              <tbody className='divide-y dark:divide-gray-700'>
+                {familiares.map(fam => (
+                  <tr key={fam.id} className='bg-white dark:bg-gray-800 dark:border-gray-700'>
+                    <td className='px-4 py-2 text-center dark:text-white'>
+                      {formatDate(fam.created_at || fam.fecha_carga)}
+                    </td>
+                    <td className='px-4 py-2 text-center dark:text-white mayuscula'>{fam.nombre_familiar}</td>
+                    <td className='px-4 py-2 text-center dark:text-white'>{formatDate(fam.fecha_nacimiento_familiar)}</td>
+                    <td className='px-4 py-2 text-center dark:text-white'>{fam.tipo_documento_familiar}</td>
+                    <td className='px-4 py-2 text-center dark:text-white'>{fam.documento}</td>
+                    <td className='px-4 py-2 text-center dark:text-white'>
+                      {fam.parentesco || getParentescoNombre(fam.parentesco_id)}
+                    </td>
+                    {/* {activeAfiliado
                           ? (
                             <td className='px-4 py-2 text-center dark:text-white'>{fam.users_nombre}</td>
                             )
                           : (
                             <td className='px-4 py-2 text-center dark:text-white'>{user.username}</td>
                             )} */}
-                        <td className='text-center py-2 gap-4 flex justify-center'>
-                          <Tooltip content='Editar'>
-                            <button
-                              type='button'
-                              onClick={() => handleEdit(fam)}
-                              className='text-purple-600 hover:text-purple-900'
-                            >
-                              <Icon icon='heroicons:pencil-square' width='24' height='24' />
-                            </button>
-                          </Tooltip>
-                          <Tooltip content='Eliminar'>
-                            <button
-                              type='button'
-                              onClick={() => onDelete(fam.id)}
-                              className='text-red-600 hover:text-red-900'
-                            >
-                              <Icon icon='heroicons:trash' width='24' height='24' />
-                            </button>
-                          </Tooltip>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
+                    <td className='text-center py-2 gap-4 flex justify-center'>
+                      <Tooltip content='Editar'>
+                        <button
+                          type='button'
+                          onClick={() => handleEdit(fam)}
+                          className='text-purple-600 hover:text-purple-900'
+                        >
+                          <Icon icon='heroicons:pencil-square' width='24' height='24' />
+                        </button>
+                      </Tooltip>
+                      <Tooltip content='Eliminar'>
+                        <button
+                          type='button'
+                          onClick={() => onDelete(fam.id)}
+                          className='text-red-600 hover:text-red-900'
+                        >
+                          <Icon icon='heroicons:trash' width='24' height='24' />
+                        </button>
+                      </Tooltip>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-          )}
+        )}
+      </div>
     </>
   )
 }

@@ -2,7 +2,6 @@
 import { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { sutepaApi } from '@/api'
-import Loading from '@/components/Loading'
 import { SelectForm } from '@/components/sutepa/forms'
 import Card from '@/components/ui/Card'
 import Numberinput from '@/components/ui/Numberinput'
@@ -17,7 +16,6 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
   const [domicilio, setDomicilio] = useState('')
   const [selectedProvincia, setSelectedProvincia] = useState('')
   const [selectedLocalidad, setSelectedLocalidad] = useState('')
-  const [isLoading, setIsLoading] = useState(true)
   const { provincia } = useFetchDomicilio()
   const { activeAfiliado } = useSelector(state => state.afiliado)
   const [reloadKey, setReloadKey] = useState(0)
@@ -111,21 +109,6 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
     dispatch(updateDomicilio(domicilioData))
   }, [domicilio, selectedProvincia, selectedLocalidad, codigoPostal, dispatch])
 
-  async function loadingAfiliado () {
-    !isLoading && setIsLoading(true)
-    setIsLoading(false)
-  }
-
-  useEffect(() => {
-    loadingAfiliado()
-  }, [])
-
-  useEffect(() => {
-    if (provincia.length) {
-      setIsLoading(false)
-    }
-  }, [provincia])
-
   useEffect(() => {
     if (activeAfiliado) {
       const intervals = [2000, 6000]
@@ -141,63 +124,57 @@ function AfiliadoDomicilioData ({ register, disabled, setValue }) {
 
   return (
     <div key={reloadKey}>
-      {isLoading
-        ? (
-          <Loading className='mt-28 md:mt-64' />
-          )
-        : (
-          <div>
-            <h4 className='card-title text-center bg-red-500 dark:bg-gray-700 text-white rounded-md p-2'>
-              Datos del Domicilio
-            </h4>
+      <div>
+        <h4 className='card-title text-center bg-red-500 dark:bg-gray-700 text-white rounded-md p-2'>
+          Datos del Domicilio
+        </h4>
 
-            <Card>
-              <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-                <Textinput
-                  name='domicilio'
-                  label='Domicilio'
-                  className='mayuscula'
-                  register={register}
-                  placeholder='Ingrese el domicilio'
-                  value={domicilio}
-                  onChange={handleDomicilioChange}
-                />
+        <Card>
+          <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+            <Textinput
+              name='domicilio'
+              label='Domicilio'
+              className='mayuscula'
+              register={register}
+              placeholder='Ingrese el domicilio'
+              value={domicilio}
+              onChange={handleDomicilioChange}
+            />
 
-                <SelectForm
-                  register={register('provincia_id')}
-                  title='Provincia'
-                  options={provincia}
-                  value={selectedProvincia}
-                  onChange={handleProvinciaChange}
-                />
+            <SelectForm
+              register={register('provincia_id')}
+              title='Provincia'
+              options={provincia}
+              value={selectedProvincia}
+              onChange={handleProvinciaChange}
+            />
 
-                <div>
-                  <SelectForm
-                    register={register('localidad_id')}
-                    title='Localidad'
-                    options={localidades}
-                    value={selectedLocalidad}
-                    onChange={handleLocalidadChange}
-                    disabled={disabled || !selectedProvincia}
-                  />
-                </div>
+            <div>
+              <SelectForm
+                register={register('localidad_id')}
+                title='Localidad'
+                options={localidades}
+                value={selectedLocalidad}
+                onChange={handleLocalidadChange}
+                disabled={disabled || !selectedProvincia}
+              />
+            </div>
 
-                <div>
-                  <label htmlFor='default-picker' className='form-label'>
-                    Código Postal
-                  </label>
-                  <Numberinput
-                    register={register}
-                    id='codigo_postal'
-                    placeholder='Ingrese el código postal'
-                    value={codigoPostal}
-                    onChange={handleCodigoPostalChange}
-                  />
-                </div>
-              </div>
-            </Card>
+            <div>
+              <label htmlFor='default-picker' className='form-label'>
+                Código Postal
+              </label>
+              <Numberinput
+                register={register}
+                id='codigo_postal'
+                placeholder='Ingrese el código postal'
+                value={codigoPostal}
+                onChange={handleCodigoPostalChange}
+              />
+            </div>
           </div>
-          )}
+        </Card>
+      </div>
     </div>
   )
 }

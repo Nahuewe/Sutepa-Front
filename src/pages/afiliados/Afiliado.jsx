@@ -39,7 +39,7 @@ export const Afiliado = () => {
   } = useAfiliadoStore()
 
   const filteredAfiliados = useMemo(() => {
-    if (user.roles_id === 5) {
+    if (user.roles_id === 2) {
       return filterPendiente
         ? afiliados.filter(
           (afiliado) =>
@@ -103,7 +103,7 @@ export const Afiliado = () => {
 
     searchTimeout = setTimeout(async () => {
       const params = {}
-      if (user.roles_id === 5) params.seccional_id = user.seccional_id
+      if (user.roles_id === 2) params.seccional_id = user.seccional_id
 
       if (value.length === 0) {
         await startLoadingAfiliado(1, params)
@@ -117,16 +117,17 @@ export const Afiliado = () => {
     const searchParams = new URLSearchParams(window.location.search)
     const page = parseInt(searchParams.get('page'), 10) || 1
 
+    const params = {}
+    if (user.roles_id === 2) params.seccional_id = user.seccional_id
+
     const fetchAfiliados = async () => {
       setIsLoading(true)
-      const params = {}
-      if (user.roles_id === 5) {
-        params.seccional_id = user.seccional_id
-      }
-
       await startLoadingAfiliado(page, params)
       setIsLoading(false)
-      await startGetAfiliadosSinPaginar(params)
+
+      if ([1, 3, 4].includes(user.roles_id)) {
+        await startGetAfiliadosSinPaginar(params)
+      }
     }
 
     fetchAfiliados()
@@ -151,13 +152,14 @@ export const Afiliado = () => {
   }, [filterPendiente, filteredAfiliados, paginate?.per_page])
 
   useEffect(() => {
-    if (!filterPendiente) {
-      const searchParams = new URLSearchParams(window.location.search)
-      const page = parseInt(searchParams.get('page'), 10) || 1
-      startLoadingAfiliado(page)
-    } else {
-      startSearchAfiliado()
-    }
+    const searchParams = new URLSearchParams(window.location.search)
+    const page = parseInt(searchParams.get('page'), 10) || 1
+    const params = {}
+    if (user.roles_id === 2) params.seccional_id = user.seccional_id
+
+    filterPendiente
+      ? startSearchAfiliado(search, page, params)
+      : startLoadingAfiliado(page, params)
   }, [filterPendiente])
 
   useEffect(() => {
@@ -230,10 +232,10 @@ export const Afiliado = () => {
 
                   <div className='flex gap-4'>
                     {[1, 2, 3].includes(user.roles_id) && (
-                      <ExportarExcel />
+                      <ExportarExcel user={user} />
                     )}
 
-                    {[1, 2, 3].includes(user.roles_id) && (
+                    {[1, 3].includes(user.roles_id) && (
                       <div>
                         <Tooltip content='Crear Afiliado'>
                           <button
@@ -251,7 +253,7 @@ export const Afiliado = () => {
               </div>
 
               <div className='mt-4 grid sm:grid-cols-2 md:grid-cols-4 grid-cols-1 gap-4'>
-                {showEstadisticas && <EstadisticasAfiliados afiliadosSinPaginar={afiliadosSinPaginar} />}
+                {showEstadisticas && <EstadisticasAfiliados afiliadosSinPaginar={afiliadosSinPaginar} user={user} />}
               </div>
             </Card>
 
@@ -294,7 +296,7 @@ export const Afiliado = () => {
                                   </td>
                                   <td className='table-td flex justify-start gap-2'>
                                     <ViewButton afiliado={afiliado} onView={showAfiliado} />
-                                    {user.roles_id !== 5 && <EditButton afiliado={afiliado} onEdit={onEdit} />}
+                                    {user.roles_id !== 2 && <EditButton afiliado={afiliado} onEdit={onEdit} />}
                                     {user.roles_id === 1 && <AfiliadoButton afiliado={afiliado} onDelete={onDelete} />}
                                   </td>
                                 </tr>
@@ -317,7 +319,7 @@ export const Afiliado = () => {
                             searchParams.set('page', page)
 
                             const params = {}
-                            if (user.roles_id === 5) params.seccional_id = user.seccional_id
+                            if (user.roles_id === 2) params.seccional_id = user.seccional_id
 
                             navigate(`${window.location.pathname}?${searchParams.toString()}`)
 

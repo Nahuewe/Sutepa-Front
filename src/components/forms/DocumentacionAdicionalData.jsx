@@ -5,7 +5,6 @@ import { useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 import { sutepaApi } from '@/api'
-import Loading from '@/components/Loading'
 import { SelectForm } from '@/components/sutepa/forms'
 import Card from '@/components/ui/Card'
 import { DeleteModal } from '@/components/ui/DeleteModal'
@@ -28,7 +27,6 @@ function DocumentacionAdicionalData () {
   const { user } = useSelector((state) => state.auth)
   const [formData, setFormData] = useState(initialForm)
   const { activeAfiliado } = useSelector((state) => state.afiliado)
-  const [isLoading, setIsLoading] = useState(true)
   const [idCounter, setIdCounter] = useState(0)
   const [loadingDocumentos, setLoadingDocumentos] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -209,15 +207,6 @@ function DocumentacionAdicionalData () {
     return () => clearTimeout(timer)
   }, [activeAfiliado])
 
-  async function loadingAfiliado () {
-    !isLoading && setIsLoading(true)
-    setIsLoading(false)
-  }
-
-  useEffect(() => {
-    loadingAfiliado()
-  }, [])
-
   useEffect(() => {
     if (!loadingDocumentos) {
       documentos.forEach((documento) => {
@@ -226,134 +215,122 @@ function DocumentacionAdicionalData () {
     }
   }, [documentos, loadingDocumentos, dispatch])
 
-  useEffect(() => {
-    if (documentacion.length) {
-      setIsLoading(false)
-    }
-  }, [documentacion])
-
   return (
     <>
-      {isLoading
-        ? (
-          <Loading className='mt-28 md:mt-64' />
-          )
-        : (
-          <div>
-            <h4 className='card-title text-center bg-red-500 dark:bg-gray-700 text-white rounded-md p-2'>
-              Documentación Adicional
-            </h4>
+      <div>
+        <h4 className='card-title text-center bg-red-500 dark:bg-gray-700 text-white rounded-md p-2'>
+          Documentación Adicional
+        </h4>
 
-            <DeleteModal
-              themeClass='bg-slate-900 dark:bg-slate-800 dark:border-b dark:border-slate-700'
-              centered
-              title='Eliminar Documentación'
-              message='¿Estás seguro de que deseas eliminar este documento?'
-              labelBtn='Aceptar'
-              btnFunction={confirmDelete}
-            />
+        <DeleteModal
+          themeClass='bg-slate-900 dark:bg-slate-800 dark:border-b dark:border-slate-700'
+          centered
+          title='Eliminar Documentación'
+          message='¿Estás seguro de que deseas eliminar este documento?'
+          labelBtn='Aceptar'
+          btnFunction={confirmDelete}
+        />
 
-            <Card>
-              <fieldset>
-                <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-                  <SelectForm
-                    register={register('tipo_documento_id')}
-                    title='Tipo de Archivo'
-                    options={documentacion}
-                    onChange={handleInputChange}
-                  />
-                  <div>
-                    <label htmlFor='archivo' className='form-label'>
-                      Archivo
-                    </label>
-                    <FileInput
-                      type='file'
-                      id='archivo'
-                      name='archivo'
-                      onChange={handleFileChange}
-                      accept='.docx,.doc,.xlsx,.ppt,.pdf,.jpeg,.jpg,.png'
-                    />
-                  </div>
-                </div>
-                <div className='flex justify-end mt-4 gap-4'>
-                  <button
-                    type='button'
-                    className={`btn btn-primary ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'hover:bg-blue-600'} btn btn-primary rounded-lg`}
-                    onClick={agregarDocumento}
-                    disabled={isSubmitting}
-                  >
-                    {isSubmitting ? 'Subiendo...' : 'Agregar Documento'}
-                  </button>
-                </div>
-              </fieldset>
-            </Card>
-
-            {documentos.length > 0 && (
-              <div className='overflow-x-auto mt-4 mb-4'>
-                <table className='table-auto w-full'>
-                  <thead className='bg-gray-300 dark:bg-gray-700'>
-                    <tr>
-                      <th className='px-4 py-2 text-center dark:text-white'>
-                        Fecha de Carga
-                      </th>
-                      <th className='px-4 py-2 text-center dark:text-white'>
-                        Tipo de Archivo
-                      </th>
-                      <th className='px-4 py-2 text-center dark:text-white'>
-                        Vista Previa
-                      </th>
-                      <th className='px-4 py-2 text-center dark:text-white'>
-                        Acciones
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className='divide-y dark:divide-gray-700'>
-                    {documentos.map((documento, index) => (
-                      <tr
-                        key={index}
-                        className='bg-white dark:bg-gray-800 dark:border-gray-700'
-                      >
-                        <td className='px-4 py-2 text-center dark:text-white'>
-                          {formatDate(documento.created_at || documento.fecha_carga)}
-                        </td>
-                        <td className='px-4 py-2 whitespace-nowrap font-medium text-gray-900 dark:text-white text-center'>
-                          {documento.tipo_documento}
-                        </td>
-
-                        <td className='px-4 py-2 text-center'>
-                          <a
-                            href={documento.blobURL || documento.archivo_url}
-                            target='_blank'
-                            rel='noopener noreferrer'
-                            className='text-blue-600 hover:underline dark:text-blue-400'
-                          >
-                            Ver Documento
-                          </a>
-                        </td>
-                        <td className='text-center py-2'>
-                          <Tooltip content='Eliminar'>
-                            <button
-                              type='button'
-                              onClick={() => openDeleteModal(index)}
-                              className='text-red-600 hover:text-red-900'
-                            >
-                              <Icon
-                                icon='heroicons:trash'
-                                width='24'
-                                height='24'
-                              />
-                            </button>
-
-                          </Tooltip>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+        <Card>
+          <fieldset>
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+              <SelectForm
+                register={register('tipo_documento_id')}
+                title='Tipo de Archivo'
+                options={documentacion}
+                onChange={handleInputChange}
+              />
+              <div>
+                <label htmlFor='archivo' className='form-label'>
+                  Archivo
+                </label>
+                <FileInput
+                  type='file'
+                  id='archivo'
+                  name='archivo'
+                  onChange={handleFileChange}
+                  accept='.docx,.doc,.xlsx,.ppt,.pdf,.jpeg,.jpg,.png'
+                />
               </div>
-            )}
+            </div>
+            <div className='flex justify-end mt-4 gap-4'>
+              <button
+                type='button'
+                className={`btn btn-primary ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'hover:bg-blue-600'} btn btn-primary rounded-lg`}
+                onClick={agregarDocumento}
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? 'Subiendo...' : 'Agregar Documento'}
+              </button>
+            </div>
+          </fieldset>
+        </Card>
+
+        {documentos.length > 0 && (
+          <div className='overflow-x-auto mt-4 mb-4'>
+            <table className='table-auto w-full'>
+              <thead className='bg-gray-300 dark:bg-gray-700'>
+                <tr>
+                  <th className='px-4 py-2 text-center dark:text-white'>
+                    Fecha de Carga
+                  </th>
+                  <th className='px-4 py-2 text-center dark:text-white'>
+                    Tipo de Archivo
+                  </th>
+                  <th className='px-4 py-2 text-center dark:text-white'>
+                    Vista Previa
+                  </th>
+                  <th className='px-4 py-2 text-center dark:text-white'>
+                    Acciones
+                  </th>
+                </tr>
+              </thead>
+              <tbody className='divide-y dark:divide-gray-700'>
+                {documentos.map((documento, index) => (
+                  <tr
+                    key={index}
+                    className='bg-white dark:bg-gray-800 dark:border-gray-700'
+                  >
+                    <td className='px-4 py-2 text-center dark:text-white'>
+                      {formatDate(documento.created_at || documento.fecha_carga)}
+                    </td>
+                    <td className='px-4 py-2 whitespace-nowrap font-medium text-gray-900 dark:text-white text-center'>
+                      {documento.tipo_documento}
+                    </td>
+
+                    <td className='px-4 py-2 text-center'>
+                      <a
+                        href={documento.blobURL || documento.archivo_url}
+                        target='_blank'
+                        rel='noopener noreferrer'
+                        className='text-blue-600 hover:underline dark:text-blue-400'
+                      >
+                        Ver Documento
+                      </a>
+                    </td>
+                    <td className='text-center py-2'>
+                      <Tooltip content='Eliminar'>
+                        <button
+                          type='button'
+                          onClick={() => openDeleteModal(index)}
+                          className='text-red-600 hover:text-red-900'
+                        >
+                          <Icon
+                            icon='heroicons:trash'
+                            width='24'
+                            height='24'
+                          />
+                        </button>
+
+                      </Tooltip>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-          )}
+        )}
+      </div>
     </>
   )
 }

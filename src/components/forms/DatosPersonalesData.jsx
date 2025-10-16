@@ -1,7 +1,6 @@
 import moment from 'moment'
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import Loading from '@/components/Loading'
 import { SelectForm } from '@/components/sutepa/forms'
 import Card from '@/components/ui/Card'
 import DatePicker from '@/components/ui/DatePicker'
@@ -22,7 +21,7 @@ const initialForm = {
   users_id: null
 }
 
-function DatosPersonalesData ({ isLoadingParent, register, setValue, errors, watch }) {
+function DatosPersonalesData ({ register, setValue, errors, watch }) {
   const dispatch = useDispatch()
   const { user } = useSelector(state => state.auth)
   const { activeAfiliado } = useSelector(state => state.afiliado)
@@ -38,8 +37,7 @@ function DatosPersonalesData ({ isLoadingParent, register, setValue, errors, wat
   const [correoError, setCorreoError] = useState(null)
   const [telefono, setTelefono] = useState('')
   const { estadoCivil, nacionalidad, sexo, legajos } = useFetchDatosPersonales()
-  const [, setIsLoading] = useState(true)
-  const [reloadKey, setReloadKey] = useState(0)
+  const [reloadKey] = useState(0)
 
   const handleDateChange = (date, field) => {
     if (field === 'fecha_afiliacion') {
@@ -211,203 +209,178 @@ function DatosPersonalesData ({ isLoadingParent, register, setValue, errors, wat
     dispatch(updatePersona(personaData))
   }, [picker, picker2, legajo, dni, cuil, correoElectronico, telefono, watch, dispatch, user.id])
 
-  useEffect(() => {
-    if (estadoCivil.length && nacionalidad.length && sexo.length && legajos.length) {
-      setIsLoading(false)
-    }
-  }, [estadoCivil, nacionalidad, sexo, legajos])
-
-  useEffect(() => {
-    if (activeAfiliado) {
-      const intervals = [2000, 6000]
-      const timers = intervals.map((interval) =>
-        setTimeout(() => {
-          setReloadKey((prevKey) => prevKey + 1)
-        }, interval)
-      )
-
-      return () => timers.forEach(clearTimeout)
-    }
-  }, [activeAfiliado])
-
   return (
     <div key={reloadKey}>
-      {isLoadingParent
-        ? (
-          <Loading className='mt-28 md:mt-64' />
-          )
-        : (
-          <div>
-            <h4 className='card-title text-center bg-red-500 dark:bg-gray-700 text-white rounded-md p-2'>
-              Datos Personales
-            </h4>
+      <div>
+        <h4 className='card-title text-center bg-red-500 dark:bg-gray-700 text-white rounded-md p-2'>
+          Datos Personales
+        </h4>
 
-            <Card>
-              <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-                <div>
-                  <label htmlFor='legajo' className='form-label'>
-                    Legajo
-                    <strong className='obligatorio'>(*)</strong>
-                  </label>
-                  <Numberinput
-                    name='legajo'
-                    type='text'
-                    value={legajo}
-                    onChange={handleLegajoChange}
-                    placeholder='Ingrese el número de legajo'
-                    error={errors.legajo || legajoError}
-                  />
-                  {legajoError && <span className='text-red-500'>{legajoError}</span>}
-                </div>
+        <Card>
+          <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+            <div>
+              <label htmlFor='legajo' className='form-label'>
+                Legajo
+                <strong className='obligatorio'>(*)</strong>
+              </label>
+              <Numberinput
+                name='legajo'
+                type='text'
+                value={legajo}
+                onChange={handleLegajoChange}
+                placeholder='Ingrese el número de legajo'
+                error={errors.legajo || legajoError}
+              />
+              {legajoError && <span className='text-red-500'>{legajoError}</span>}
+            </div>
 
-                <div>
-                  <label htmlFor='default-picker' className='form-label'>
-                    Fecha de Afiliación
-                  </label>
-                  <DatePicker
-                    value={picker}
-                    id='fecha_afiliacion'
-                    className='mayuscula'
-                    placeholder='Seleccione la fecha de afiliación'
-                    onChange={(date) => handleDateChange(date, 'fecha_afiliacion')}
-                  />
-                  <input type='hidden' {...register('fecha_afiliacion')} />
-                </div>
+            <div>
+              <label htmlFor='default-picker' className='form-label'>
+                Fecha de Afiliación
+              </label>
+              <DatePicker
+                value={picker}
+                id='fecha_afiliacion'
+                className='mayuscula'
+                placeholder='Seleccione la fecha de afiliación'
+                onChange={(date) => handleDateChange(date, 'fecha_afiliacion')}
+              />
+              <input type='hidden' {...register('fecha_afiliacion')} />
+            </div>
 
-                <div>
-                  <label htmlFor='default-picker' className='form-label'>
-                    Nombre
-                    <strong className='obligatorio'>(*)</strong>
-                  </label>
-                  <Textinput
-                    name='nombre'
-                    type='text'
-                    className='mayuscula'
-                    register={register}
-                    placeholder='Ingrese el nombre'
-                    error={errors.nombre}
-                    onChange={handleChange(setCorreoElectronico)}
-                  />
-                </div>
+            <div>
+              <label htmlFor='default-picker' className='form-label'>
+                Nombre
+                <strong className='obligatorio'>(*)</strong>
+              </label>
+              <Textinput
+                name='nombre'
+                type='text'
+                className='mayuscula'
+                register={register}
+                placeholder='Ingrese el nombre'
+                error={errors.nombre}
+                onChange={handleChange(setCorreoElectronico)}
+              />
+            </div>
 
-                <div>
-                  <label htmlFor='default-picker' className='form-label'>
-                    Apellido
-                    <strong className='obligatorio'>(*)</strong>
-                  </label>
-                  <Textinput
-                    name='apellido'
-                    type='text'
-                    className='mayuscula'
-                    register={register}
-                    placeholder='Ingrese el apellido'
-                    error={errors.apellido}
-                    onChange={handleChange(setCorreoElectronico)}
-                  />
-                </div>
+            <div>
+              <label htmlFor='default-picker' className='form-label'>
+                Apellido
+                <strong className='obligatorio'>(*)</strong>
+              </label>
+              <Textinput
+                name='apellido'
+                type='text'
+                className='mayuscula'
+                register={register}
+                placeholder='Ingrese el apellido'
+                error={errors.apellido}
+                onChange={handleChange(setCorreoElectronico)}
+              />
+            </div>
 
-                <SelectForm
-                  register={register('sexo_id')}
-                  title='Sexo'
-                  options={sexo}
-                  onChange={(e) => handleSelectChange('sexo_id', e)}
-                />
+            <SelectForm
+              register={register('sexo_id')}
+              title='Sexo'
+              options={sexo}
+              onChange={(e) => handleSelectChange('sexo_id', e)}
+            />
 
-                <div>
-                  <label htmlFor='default-picker' className='form-label'>
-                    Fecha de Nacimiento
-                  </label>
-                  <DatePicker
-                    value={picker2}
-                    id='fecha_nacimiento'
-                    placeholder='Seleccione la fecha de nacimiento'
-                    onChange={(date) => handleDateChange(date, 'fecha_nacimiento')}
-                  />
-                  <input type='hidden' {...register('fecha_nacimiento')} />
-                </div>
+            <div>
+              <label htmlFor='default-picker' className='form-label'>
+                Fecha de Nacimiento
+              </label>
+              <DatePicker
+                value={picker2}
+                id='fecha_nacimiento'
+                placeholder='Seleccione la fecha de nacimiento'
+                onChange={(date) => handleDateChange(date, 'fecha_nacimiento')}
+              />
+              <input type='hidden' {...register('fecha_nacimiento')} />
+            </div>
 
-                <SelectForm
-                  register={register('estado_civil_id')}
-                  title='Estado Civil'
-                  options={estadoCivil}
-                  onChange={(e) => handleSelectChange('estado_civil_id', e)}
-                />
+            <SelectForm
+              register={register('estado_civil_id')}
+              title='Estado Civil'
+              options={estadoCivil}
+              onChange={(e) => handleSelectChange('estado_civil_id', e)}
+            />
 
-                <SelectForm
-                  register={register('nacionalidad_id')}
-                  title='Nacionalidad'
-                  options={nacionalidad}
-                  onChange={(e) => handleSelectChange('nacionalidad_id', e)}
-                />
+            <SelectForm
+              register={register('nacionalidad_id')}
+              title='Nacionalidad'
+              options={nacionalidad}
+              onChange={(e) => handleSelectChange('nacionalidad_id', e)}
+            />
 
-                <div>
-                  <label htmlFor='default-picker' className='form-label'>
-                    Tipo de Documento
-                  </label>
-                  <SelectForm
-                    register={register('tipo_documento')}
-                    options={tipoDocumento}
-                  />
-                </div>
+            <div>
+              <label htmlFor='default-picker' className='form-label'>
+                Tipo de Documento
+              </label>
+              <SelectForm
+                register={register('tipo_documento')}
+                options={tipoDocumento}
+              />
+            </div>
 
-                <div>
-                  <label htmlFor='default-picker' className='form-label'>
-                    Documento
-                    <strong className='obligatorio'>(*)</strong>
-                  </label>
-                  <Numberinput
-                    register={register}
-                    id='dni'
-                    placeholder='Ingrese el número de documento'
-                    value={dni}
-                    error={errors.dni || dniError}
-                    onChange={handleDniChange}
-                  />
-                  {dniError && <span className='text-red-500'>{dniError}</span>}
-                </div>
+            <div>
+              <label htmlFor='default-picker' className='form-label'>
+                Documento
+                <strong className='obligatorio'>(*)</strong>
+              </label>
+              <Numberinput
+                register={register}
+                id='dni'
+                placeholder='Ingrese el número de documento'
+                value={dni}
+                error={errors.dni || dniError}
+                onChange={handleDniChange}
+              />
+              {dniError && <span className='text-red-500'>{dniError}</span>}
+            </div>
 
-                <div>
-                  <label htmlFor='default-picker' className='form-label'>
-                    CUIL
-                    <strong className='obligatorio'>(*)</strong>
-                  </label>
-                  <Numberinput
-                    register={register}
-                    id='cuil'
-                    placeholder='Ingrese el CUIL'
-                    value={cuil}
-                    error={errors.cuil}
-                    onChange={handleCuilChange}
-                  />
-                </div>
+            <div>
+              <label htmlFor='default-picker' className='form-label'>
+                CUIL
+                <strong className='obligatorio'>(*)</strong>
+              </label>
+              <Numberinput
+                register={register}
+                id='cuil'
+                placeholder='Ingrese el CUIL'
+                value={cuil}
+                error={errors.cuil}
+                onChange={handleCuilChange}
+              />
+            </div>
 
-                <Textinput
-                  label='Correo Electrónico'
-                  register={register}
-                  className='minuscula'
-                  type='text'
-                  id='email'
-                  name='email'
-                  placeholder='Ingrese el correo electrónico'
-                  value={correoElectronico}
-                  onChange={handleCorreoElectronicoChange}
-                  error={correoError}
-                />
-                {correoError && <span className='text-red-500'>{correoError}</span>}
+            <Textinput
+              label='Correo Electrónico'
+              register={register}
+              className='minuscula'
+              type='text'
+              id='email'
+              name='email'
+              placeholder='Ingrese el correo electrónico'
+              value={correoElectronico}
+              onChange={handleCorreoElectronicoChange}
+              error={correoError}
+            />
+            {correoError && <span className='text-red-500'>{correoError}</span>}
 
-                <Numberinput
-                  label='Teléfono'
-                  register={register}
-                  id='telefono'
-                  type='number'
-                  placeholder='Ingrese el número de teléfono'
-                  value={telefono}
-                  onChange={handleChange(setTelefono)}
-                />
-              </div>
-            </Card>
+            <Numberinput
+              label='Teléfono'
+              register={register}
+              id='telefono'
+              type='number'
+              placeholder='Ingrese el número de teléfono'
+              value={telefono}
+              onChange={handleChange(setTelefono)}
+            />
           </div>
-          )}
+        </Card>
+      </div>
     </div>
   )
 }

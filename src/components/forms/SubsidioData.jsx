@@ -1,9 +1,8 @@
 import { Icon } from '@iconify/react'
 import moment from 'moment'
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useSelector, useDispatch } from 'react-redux'
-import Loading from '@/components/Loading'
 import { SelectForm } from '@/components/sutepa/forms'
 import Card from '@/components/ui/Card'
 import DatePicker from '@/components/ui/DatePicker'
@@ -33,7 +32,6 @@ function SubsidioData () {
   const [isEditing, setIsEditing] = useState(false)
   const { user } = useSelector(state => state.auth)
   const [idCounter, setIdCounter] = useState(0)
-  const [isLoading, setIsLoading] = useState(true)
   const [loadingSubsidios, setLoadingSubsidios] = useState(false)
   const { subsidio } = useFetchSubsidio()
 
@@ -163,15 +161,6 @@ function SubsidioData () {
     return () => clearTimeout(timer)
   }, [activeAfiliado])
 
-  async function loadingAfiliado () {
-    !isLoading && setIsLoading(true)
-    setIsLoading(false)
-  }
-
-  useEffect(() => {
-    loadingAfiliado()
-  }, [])
-
   useEffect(() => {
     if (!loadingSubsidios) {
       subsidios.forEach(subsidio => {
@@ -180,140 +169,127 @@ function SubsidioData () {
     }
   }, [subsidios, loadingSubsidios, dispatch])
 
-  useEffect(() => {
-    if (subsidio.length) {
-      setIsLoading(false)
-    }
-  }, [subsidio])
-
   return (
     <>
-      {isLoading
-        ? (
-          <Loading className='mt-28 md:mt-64' />
-          )
-        : (
-          <div>
-            <h4 className='card-title text-center bg-red-500 dark:bg-gray-700 text-white rounded-md p-2'>
-              Subsidios
-            </h4>
+      <div>
+        <h4 className='card-title text-center bg-red-500 dark:bg-gray-700 text-white rounded-md p-2'>
+          Subsidios
+        </h4>
 
-            <Card>
-              <fieldset>
-                <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+        <Card>
+          <fieldset>
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
 
-                  <SelectForm
-                    register={register('tipo_subsidio_id')}
-                    title='Tipo de Subsidio'
-                    options={subsidio}
-                    onChange={handleSelectChange}
-                  />
+              <SelectForm
+                register={register('tipo_subsidio_id')}
+                title='Tipo de Subsidio'
+                options={subsidio}
+                onChange={handleSelectChange}
+              />
 
-                  <div>
-                    <label htmlFor='fecha_solicitud' className='form-label'>
-                      Fecha de Solicitud
-                    </label>
-                    <DatePicker
-                      value={picker}
-                      id='fecha_solicitud'
-                      name='fecha_solicitud'
-                      placeholder='Ingrese la fecha de solicitud'
-                      onChange={(date) => handleDateChange(date, 'fecha_solicitud')}
-                    />
-                    <input type='hidden' {...register('fecha_solicitud')} />
-                  </div>
-                  <div>
-                    <label htmlFor='fecha_otorgamiento' className='form-label'>
-                      Fecha de Otorgamiento
-                    </label>
-                    <DatePicker
-                      value={picker2}
-                      id='fecha_otorgamiento'
-                      name='fecha_otorgamiento'
-                      placeholder='Ingrese la fecha de otorgamiento'
-                      onChange={(date) => handleDateChange(date, 'fecha_otorgamiento')}
-                    />
-                    <input type='hidden' {...register('fecha_otorgamiento')} />
-                  </div>
-                  <div>
-                    <label htmlFor='observaciones' className='form-label'>
-                      Observaciones
-                    </label>
-                    <Textarea
-                      name='observaciones'
-                      value={formData.observaciones}
-                      className='mayuscula'
-                      onChange={onChange}
-                      register={register}
-                      placeholder='Ingrese algunas observaciones'
-                    />
-                  </div>
-                </div>
-                <div className='flex justify-end mt-4 gap-4'>
-                  <button
-                    type='button'
-                    className={`btn rounded-lg ${isEditing ? 'btn-purple' : 'btn-primary'}`}
-                    onClick={addSubsidio}
-                  >
-                    {isEditing ? 'Terminar Edición' : 'Agregar Subsidio'}
-                  </button>
-                </div>
-              </fieldset>
-            </Card>
-
-            {subsidios.length > 0 && (
-              <div className='overflow-x-auto mt-4'>
-                <table className='table-auto w-full'>
-                  <thead className='bg-gray-300 dark:bg-gray-700'>
-                    <tr>
-                      <th className='px-4 py-2 text-center dark:text-white'>Fecha de Carga</th>
-                      <th className='px-4 py-2 text-center dark:text-white'>Tipo de Subsidio</th>
-                      <th className='px-4 py-2 text-center dark:text-white'>Fecha de Solicitud</th>
-                      <th className='px-4 py-2 text-center dark:text-white'>Fecha de Otorgamiento</th>
-                      <th className='px-4 py-2 text-center dark:text-white'>Observaciones</th>
-                      {/* <th className='px-4 py-2 text-center dark:text-white'>Usuario de Carga</th> */}
-                      <th className='px-4 py-2 text-center dark:text-white'>Acciones</th>
-                    </tr>
-                  </thead>
-                  <tbody className='divide-y dark:divide-gray-700'>
-                    {subsidios.map((subsidio) => (
-                      <tr key={subsidio.id} className='bg-white dark:bg-gray-800 dark:border-gray-700'>
-                        <td className='px-4 py-2 text-center dark:text-white'>
-                          {formatDate(subsidio.created_at || subsidio.fecha_carga)}
-                        </td>
-                        <td className='px-4 py-2 text-center dark:text-white'>{subsidio.tipo_subsidio || getTipoSubsidioNombre(subsidio.tipo_subsidio_id)}</td>
-                        <td className='px-4 py-2 text-center dark:text-white'>{formatDate(subsidio.fecha_solicitud)}</td>
-                        <td className='px-4 py-2 text-center dark:text-white'>{formatDate(subsidio.fecha_otorgamiento)}</td>
-                        <td className='px-4 py-2 text-center dark:text-white mayuscula'>{subsidio.observaciones}</td>
-                        <td className='text-center py-2 gap-4 flex justify-center'>
-                          <Tooltip content='Editar'>
-                            <button
-                              type='button'
-                              onClick={() => handleEdit(subsidio)}
-                              className='text-purple-600 hover:text-purple-900'
-                            >
-                              <Icon icon='heroicons:pencil-square' width='24' height='24' />
-                            </button>
-                          </Tooltip>
-                          <Tooltip content='Eliminar'>
-                            <button
-                              type='button'
-                              onClick={() => onDelete(subsidio.id)}
-                              className='text-red-600 hover:text-red-900'
-                            >
-                              <Icon icon='heroicons:trash' width='24' height='24' />
-                            </button>
-                          </Tooltip>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              <div>
+                <label htmlFor='fecha_solicitud' className='form-label'>
+                  Fecha de Solicitud
+                </label>
+                <DatePicker
+                  value={picker}
+                  id='fecha_solicitud'
+                  name='fecha_solicitud'
+                  placeholder='Ingrese la fecha de solicitud'
+                  onChange={(date) => handleDateChange(date, 'fecha_solicitud')}
+                />
+                <input type='hidden' {...register('fecha_solicitud')} />
               </div>
-            )}
-          </div>
-          )}
+              <div>
+                <label htmlFor='fecha_otorgamiento' className='form-label'>
+                  Fecha de Otorgamiento
+                </label>
+                <DatePicker
+                  value={picker2}
+                  id='fecha_otorgamiento'
+                  name='fecha_otorgamiento'
+                  placeholder='Ingrese la fecha de otorgamiento'
+                  onChange={(date) => handleDateChange(date, 'fecha_otorgamiento')}
+                />
+                <input type='hidden' {...register('fecha_otorgamiento')} />
+              </div>
+              <div>
+                <label htmlFor='observaciones' className='form-label'>
+                  Observaciones
+                </label>
+                <Textarea
+                  name='observaciones'
+                  value={formData.observaciones}
+                  className='mayuscula'
+                  onChange={onChange}
+                  register={register}
+                  placeholder='Ingrese algunas observaciones'
+                />
+              </div>
+            </div>
+            <div className='flex justify-end mt-4 gap-4'>
+              <button
+                type='button'
+                className={`btn rounded-lg ${isEditing ? 'btn-purple' : 'btn-primary'}`}
+                onClick={addSubsidio}
+              >
+                {isEditing ? 'Terminar Edición' : 'Agregar Subsidio'}
+              </button>
+            </div>
+          </fieldset>
+        </Card>
 
+        {subsidios.length > 0 && (
+          <div className='overflow-x-auto mt-4'>
+            <table className='table-auto w-full'>
+              <thead className='bg-gray-300 dark:bg-gray-700'>
+                <tr>
+                  <th className='px-4 py-2 text-center dark:text-white'>Fecha de Carga</th>
+                  <th className='px-4 py-2 text-center dark:text-white'>Tipo de Subsidio</th>
+                  <th className='px-4 py-2 text-center dark:text-white'>Fecha de Solicitud</th>
+                  <th className='px-4 py-2 text-center dark:text-white'>Fecha de Otorgamiento</th>
+                  <th className='px-4 py-2 text-center dark:text-white'>Observaciones</th>
+                  {/* <th className='px-4 py-2 text-center dark:text-white'>Usuario de Carga</th> */}
+                  <th className='px-4 py-2 text-center dark:text-white'>Acciones</th>
+                </tr>
+              </thead>
+              <tbody className='divide-y dark:divide-gray-700'>
+                {subsidios.map((subsidio) => (
+                  <tr key={subsidio.id} className='bg-white dark:bg-gray-800 dark:border-gray-700'>
+                    <td className='px-4 py-2 text-center dark:text-white'>
+                      {formatDate(subsidio.created_at || subsidio.fecha_carga)}
+                    </td>
+                    <td className='px-4 py-2 text-center dark:text-white'>{subsidio.tipo_subsidio || getTipoSubsidioNombre(subsidio.tipo_subsidio_id)}</td>
+                    <td className='px-4 py-2 text-center dark:text-white'>{formatDate(subsidio.fecha_solicitud)}</td>
+                    <td className='px-4 py-2 text-center dark:text-white'>{formatDate(subsidio.fecha_otorgamiento)}</td>
+                    <td className='px-4 py-2 text-center dark:text-white mayuscula'>{subsidio.observaciones}</td>
+                    <td className='text-center py-2 gap-4 flex justify-center'>
+                      <Tooltip content='Editar'>
+                        <button
+                          type='button'
+                          onClick={() => handleEdit(subsidio)}
+                          className='text-purple-600 hover:text-purple-900'
+                        >
+                          <Icon icon='heroicons:pencil-square' width='24' height='24' />
+                        </button>
+                      </Tooltip>
+                      <Tooltip content='Eliminar'>
+                        <button
+                          type='button'
+                          onClick={() => onDelete(subsidio.id)}
+                          className='text-red-600 hover:text-red-900'
+                        >
+                          <Icon icon='heroicons:trash' width='24' height='24' />
+                        </button>
+                      </Tooltip>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
     </>
   )
 }

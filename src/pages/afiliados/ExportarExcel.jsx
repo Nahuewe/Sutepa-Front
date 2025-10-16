@@ -5,7 +5,7 @@ import * as XLSX from 'xlsx'
 import { sutepaApi } from '@/api'
 import { getTipoContrato, getTipoDependencias } from '@/constant/datos-id'
 
-export const ExportarExcel = () => {
+export const ExportarExcel = ({ user }) => {
   const [isExporting, setIsExporting] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedColumns, setSelectedColumns] = useState([])
@@ -24,6 +24,7 @@ export const ExportarExcel = () => {
     'Tramo', 'Carga Horaria', 'Fecha de Ingreso', 'Correo Electrónico Laboral', 'Teléfono Laboral',
     'Tipo de Obra Social', 'Obra Social'
   ]
+
   const documentacionColumns = ['Tipo de Archivo', 'Link del Archivo']
   const familiaresColumns = ['Nombre y Apellido del Familiar', 'Fecha de Nacimiento del Familiar', 'Documento del Familiar', 'Parentesco del Familiar']
   const subsidiosColumns = ['Tipo de Subsidio', 'Fecha de Solicitud', 'Fecha de Otorgamiento', 'Observaciones']
@@ -66,31 +67,53 @@ export const ExportarExcel = () => {
       let hasMore = true
       let allData = []
       let total = 0
+      let firstFetch = true
 
       while (hasMore) {
-        const progressValue = Math.min(90, Math.round((allData.length / total) * 100))
-
+        const progressValue = total > 0 ? Math.min(90, Math.round((allData.length / total) * 100)) : Math.min(90, Math.round((allData.length / (pageSize || 1)) * 100))
         setStatusMessage(
-          `Cargando datos... | Progreso: ${progressValue || '-'}% (${allData.length || '-'}/${total || '-'} afiliados)`
+        `Cargando datos... | Progreso: ${progressValue || '-'}% (${allData.length || '-'}/${total || '-'} afiliados)`
         )
 
-        const response = await sutepaApi.get('/personalista', {
-          params: { page, pageSize }
-        })
+        const params = { page, pageSize }
 
-        const { data, total: totalRecords } = response.data
+        if ((user?.roles_id === 2) && user?.seccional_id) {
+          params.seccional_id = user.seccional_id
+        }
 
-        if (page === 1) total = totalRecords
+        const response = await sutepaApi.get('/personalista', { params })
 
-        allData = [...allData, ...data]
+        const payload = response?.data ?? {}
+        const pageData = Array.isArray(payload) ? payload : (payload.data ?? [])
+        const totalRecords = payload.total ?? payload.totalRecords ?? (firstFetch ? (pageData.length) : total)
 
-        hasMore = page * pageSize < total
+        if (firstFetch) {
+          total = Number.isFinite(totalRecords) ? parseInt(totalRecords, 10) : pageData.length
+          firstFetch = false
+        }
+
+        allData = [...allData, ...(pageData || [])]
+
+        if (!pageData || pageData.length === 0) {
+          hasMore = false
+          break
+        }
+
+        hasMore = (page * pageSize) < (total || allData.length)
         page++
 
         setProgress(progressValue)
       }
 
       setProgress(95)
+
+      if (!allData.length) {
+        setAfiliados([])
+        setDataLoaded(true)
+        setStatusMessage('No se encontraron afiliados para los filtros seleccionados.')
+        setProgress(100)
+        return
+      }
 
       const formattedData = allData.flatMap((afiliado) => {
         const baseData = {
@@ -103,24 +126,24 @@ export const ExportarExcel = () => {
           CUIL: afiliado?.persona?.cuil || '-',
           Teléfono: afiliado?.persona?.telefono || '-',
           Sexo: afiliado?.persona?.sexo || '-',
-          'Fecha de Nacimiento': formatDate(afiliado?.persona?.fecha_nacimiento || '-') || '-',
-          'Fecha de Afiliación': formatDate(afiliado?.persona?.fecha_afiliacion || '-') || '-',
+          'Fecha de Nacimiento': formatDate(afiliado?.persona?.fecha_nacimiento) || '-',
+          'Fecha de Afiliación': formatDate(afiliado?.persona?.fecha_afiliacion) || '-',
           'Estado Civil': afiliado?.persona?.estado_civil || '-',
           Nacionalidad: afiliado?.persona?.nacionalidad || '-',
           Domicilio: afiliado?.domicilios?.domicilio || '-',
           Provincia: afiliado?.domicilios?.provincia || '-',
           Localidad: afiliado?.domicilios?.localidad || '-',
           'Código Postal': afiliado?.domicilios?.codigo_postal || '-',
-          'Tipo de Contrato': getTipoContrato(afiliado?.datos_laborales?.tipo_contrato_id || '-') || '-',
+          'Tipo de Contrato': getTipoContrato(afiliado?.datos_laborales?.tipo_contrato_id) || '-',
           UGL: afiliado?.datos_laborales?.ugl || '-',
           Agencia: afiliado?.datos_laborales?.agencia || '-',
           'Domicilio de Trabajo': afiliado?.datos_laborales?.domicilio || '-',
           Seccional: afiliado?.datos_laborales?.seccional || '-',
-          Dependencia: getTipoDependencias(afiliado?.datos_laborales?.dependencia_id || '-') || '-',
+          Dependencia: getTipoDependencias(afiliado?.datos_laborales?.dependencia_id) || '-',
           Agrupamiento: afiliado?.datos_laborales?.agrupamiento || '-',
           Tramo: afiliado?.datos_laborales?.tramo || '-',
           'Carga Horaria': afiliado?.datos_laborales?.carga_horaria || '-',
-          'Fecha de Ingreso': formatDate(afiliado?.datos_laborales?.fecha_ingreso || '-') || '-',
+          'Fecha de Ingreso': formatDate(afiliado?.datos_laborales?.fecha_ingreso) || '-',
           'Correo Electrónico Laboral': afiliado?.datos_laborales?.email_laboral?.toLowerCase() || '-',
           'Teléfono Laboral': afiliado?.datos_laborales?.telefono_laboral || '-',
           'Tipo de Obra Social': afiliado?.obraSociales?.tipo_obra || '-',
@@ -130,13 +153,13 @@ export const ExportarExcel = () => {
         const documentaciones = afiliado?.documentaciones?.map((doc) => ({
           ...baseData,
           'Tipo de Archivo': doc?.tipo_documento || '-',
-          'Link del Archivo': `https://sistema.sutepa.com.ar/uploads/${doc?.archivo}` || '-'
+          'Link del Archivo': doc?.archivo ? `https://sistema.sutepa.com.ar/uploads/${doc.archivo}` : '-'
         })) || []
 
         const familiares = afiliado?.familiares?.map((fam) => ({
           ...baseData,
           'Nombre y Apellido del Familiar': fam?.nombre_familiar?.toUpperCase() || '-',
-          'Fecha de Nacimiento del Familiar': formatDate(fam?.fecha_nacimiento_familiar || '-') || '-',
+          'Fecha de Nacimiento del Familiar': formatDate(fam?.fecha_nacimiento_familiar) || '-',
           'Documento del Familiar': fam?.documento || '-',
           'Parentesco del Familiar': fam?.parentesco || '-'
         })) || []
@@ -144,8 +167,8 @@ export const ExportarExcel = () => {
         const subsidios = afiliado?.subsidios?.map((subsidio) => ({
           ...baseData,
           'Tipo de Subsidio': subsidio?.tipo_subsidio || '-',
-          'Fecha de Solicitud': formatDate(subsidio?.fecha_solicitud || '-') || '-',
-          'Fecha de Otorgamiento': formatDate(subsidio?.fecha_otorgamiento || '-') || '-',
+          'Fecha de Solicitud': formatDate(subsidio?.fecha_solicitud) || '-',
+          'Fecha de Otorgamiento': formatDate(subsidio?.fecha_otorgamiento) || '-',
           Observaciones: subsidio?.observaciones?.toUpperCase() || '-'
         })) || []
 
@@ -186,17 +209,28 @@ export const ExportarExcel = () => {
         selectedColumns.includes(col)
       )
 
-      let filteredAfiliados = afiliados.filter((row) => {
-        if (familiaresColumnsSelected && !row['Nombre y Apellido del Familiar']) {
-          return false
+      let filteredAfiliados = afiliados.map((row) => {
+        const newRow = { ...row }
+
+        if (familiaresColumnsSelected) {
+          familiaresColumns.forEach((col) => {
+            if (!(col in newRow)) newRow[col] = '-'
+          })
         }
-        if (documentacionColumnsSelected && !row['Tipo de Archivo']) {
-          return false
+
+        if (documentacionColumnsSelected) {
+          documentacionColumns.forEach((col) => {
+            if (!(col in newRow)) newRow[col] = '-'
+          })
         }
-        if (subsidiosColumnsSelected && !row['Tipo de Subsidio']) {
-          return false
+
+        if (subsidiosColumnsSelected) {
+          subsidiosColumns.forEach((col) => {
+            if (!(col in newRow)) newRow[col] = '-'
+          })
         }
-        return true
+
+        return newRow
       })
 
       if (selectedColumns.every(col => baseColumns.includes(col))) {

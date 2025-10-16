@@ -1,17 +1,30 @@
 import React, { useMemo } from 'react'
 import Icon from '@/components/ui/Icon'
 
-const EstadisticasAfiliados = ({ afiliadosSinPaginar }) => {
-  const countAfiliadosPorEstado = (data) => {
-    return {
-      totales: data.length,
-      activos: data.filter(a => a.estado === 'ACTIVO').length,
-      inactivos: data.filter(a => a.estado === 'INACTIVO').length,
-      pendiente: data.filter(a => a.estado === 'PENDIENTE').length
+const EstadisticasAfiliados = ({ afiliadosSinPaginar = [], user }) => {
+  const afiliadosFiltrados = useMemo(() => {
+    if (user?.roles_id === 5) {
+      return afiliadosSinPaginar.filter(a => a.seccional_id === user.seccional_id)
     }
-  }
 
-  const totalsByEstado = useMemo(() => countAfiliadosPorEstado(afiliadosSinPaginar), [afiliadosSinPaginar])
+    if (user?.roles_id === 2) {
+      return afiliadosSinPaginar.filter(a => a.seccional_id === user.seccional_id)
+    }
+
+    return afiliadosSinPaginar
+  }, [afiliadosSinPaginar, user])
+
+  const countAfiliadosPorEstado = (data) => ({
+    totales: data.length,
+    activos: data.filter(a => a.estado === 'ACTIVO').length,
+    inactivos: data.filter(a => a.estado === 'INACTIVO').length,
+    pendiente: data.filter(a => a.estado === 'PENDIENTE').length
+  })
+
+  const totalsByEstado = useMemo(
+    () => countAfiliadosPorEstado(afiliadosFiltrados),
+    [afiliadosFiltrados]
+  )
 
   const statistics = [
     {
@@ -52,14 +65,14 @@ const EstadisticasAfiliados = ({ afiliadosSinPaginar }) => {
           className={`${item.bg} rounded-md p-4 bg-opacity-[0.15] dark:bg-opacity-50 text-center`}
         >
           <div
-            className={`${item.text} mx-auto h-10 w-10 flex flex-col items-center justify-center rounded-full bg-white text-2xl mb-4 `}
+            className={`${item.text} mx-auto h-10 w-10 flex flex-col items-center justify-center rounded-full bg-white text-2xl mb-4`}
           >
             <Icon icon={item.icon} />
           </div>
           <span className='block text-sm text-slate-600 font-medium dark:text-white mb-1'>
             {item.title}
           </span>
-          <span className='block mb- text-2xl text-slate-900 dark:text-white font-medium'>
+          <span className='block text-2xl text-slate-900 dark:text-white font-medium'>
             {item.count}
           </span>
         </div>

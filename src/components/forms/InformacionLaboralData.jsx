@@ -3,7 +3,6 @@ import moment from 'moment'
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { sutepaApi } from '@/api'
-import Loading from '@/components/Loading'
 import { SelectForm } from '@/components/sutepa/forms'
 import Card from '@/components/ui/Card'
 import DatePicker from '@/components/ui/DatePicker'
@@ -48,7 +47,6 @@ function InformacionLaboralData ({ isLoadingParent, register, setValue, watch, d
   const { agrupamiento, seccional, ugl, tramo } = useFetchDatosLaborales()
   const dispatch = useDispatch()
   const { activeAfiliado } = useSelector(state => state.afiliado)
-  const [, setIsLoading] = useState(true)
   const [reloadKey, setReloadKey] = useState(0)
 
   const handleDateChange = (date) => {
@@ -203,12 +201,6 @@ function InformacionLaboralData ({ isLoadingParent, register, setValue, watch, d
   }, [activeAfiliado, setValue])
 
   useEffect(() => {
-    if (agrupamiento.length && seccional.length && ugl.length && tramo.length) {
-      setIsLoading(false)
-    }
-  }, [agrupamiento, seccional, ugl, tramo])
-
-  useEffect(() => {
     if (watch('seccional_id') === '22') {
       setShowDependencia(true)
       setValue('dependencia_id', watch('ugl_id'))
@@ -230,146 +222,140 @@ function InformacionLaboralData ({ isLoadingParent, register, setValue, watch, d
 
   return (
     <div key={reloadKey}>
-      {isLoadingParent
-        ? (
-          <Loading className='mt-28 md:mt-64' />
-          )
-        : (
-          <div>
-            <h4 className='card-title text-center bg-red-500 dark:bg-gray-700 text-white rounded-md p-2'>
-              Información Laboral
-            </h4>
+      <div>
+        <h4 className='card-title text-center bg-red-500 dark:bg-gray-700 text-white rounded-md p-2'>
+          Información Laboral
+        </h4>
 
-            <Card>
-              <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-                <SelectForm
-                  register={register('tipo_contrato_id')}
-                  title='Tipo de Contrato'
-                  options={tipoContrato}
-                  onChange={(e) => handleInputChange('tipo_contrato_id', e.target.value)}
-                />
+        <Card>
+          <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+            <SelectForm
+              register={register('tipo_contrato_id')}
+              title='Tipo de Contrato'
+              options={tipoContrato}
+              onChange={(e) => handleInputChange('tipo_contrato_id', e.target.value)}
+            />
 
-                <SelectForm
-                  register={register('ugl_id')}
-                  title='UGL'
-                  options={ugl}
-                  onChange={handleUglChange}
-                />
+            <SelectForm
+              register={register('ugl_id')}
+              title='UGL'
+              options={ugl}
+              onChange={handleUglChange}
+            />
 
-                <SelectForm
-                  register={register('agencia_id')}
-                  title='Agencia'
-                  options={filteredAgencias}
-                  onChange={handleAgenciaChange}
-                  disabled={disabled || agenciaDisabled}
-                />
+            <SelectForm
+              register={register('agencia_id')}
+              title='Agencia'
+              options={filteredAgencias}
+              onChange={handleAgenciaChange}
+              disabled={disabled || agenciaDisabled}
+            />
 
-                <div>
-                  <Textinput
-                    label='Domicilio de Trabajo'
-                    name='domicilio_trabajo'
-                    register={register}
-                    placeholder='Ingrese el domicilio de trabajo'
-                    disabled
-                    value={domicilioTrabajo}
-                    onChange={(e) => {
-                      setDomicilioTrabajo(e.target.value)
-                      handleInputChange('domicilio_trabajo', e.target.value)
-                    }}
-                  />
-                </div>
+            <div>
+              <Textinput
+                label='Domicilio de Trabajo'
+                name='domicilio_trabajo'
+                register={register}
+                placeholder='Ingrese el domicilio de trabajo'
+                disabled
+                value={domicilioTrabajo}
+                onChange={(e) => {
+                  setDomicilioTrabajo(e.target.value)
+                  handleInputChange('domicilio_trabajo', e.target.value)
+                }}
+              />
+            </div>
 
-                <SelectForm
-                  register={register('seccional_id')}
-                  title='Seccional SUTEPA'
-                  options={seccional}
-                  onChange={handleSeccionalChange}
-                />
+            <SelectForm
+              register={register('seccional_id')}
+              title='Seccional SUTEPA'
+              options={seccional}
+              onChange={handleSeccionalChange}
+            />
 
-                {showDependencia && (
-                  <SelectForm
-                    register={register('dependencia_id')}
-                    title='Dependencias'
-                    options={dependenciaOptions}
-                    onChange={(e) => setValue('dependencia_id', e.target.value)}
-                    value={watch('dependencia_id')}
-                  />
-                )}
+            {showDependencia && (
+              <SelectForm
+                register={register('dependencia_id')}
+                title='Dependencias'
+                options={dependenciaOptions}
+                onChange={(e) => setValue('dependencia_id', e.target.value)}
+                value={watch('dependencia_id')}
+              />
+            )}
 
-                <SelectForm
-                  register={register('agrupamiento_id')}
-                  title='Agrupamiento'
-                  options={agrupamiento}
-                  onChange={(e) => handleInputChange('agrupamiento_id', e.target.value)}
-                />
+            <SelectForm
+              register={register('agrupamiento_id')}
+              title='Agrupamiento'
+              options={agrupamiento}
+              onChange={(e) => handleInputChange('agrupamiento_id', e.target.value)}
+            />
 
-                <SelectForm
-                  register={register('tramo_id')}
-                  title='Tramo'
-                  options={tramo}
-                  onChange={handleTramoChange}
-                />
+            <SelectForm
+              register={register('tramo_id')}
+              title='Tramo'
+              options={tramo}
+              onChange={handleTramoChange}
+            />
 
-                <div>
-                  <label htmlFor='default-picker' className='form-label'>
-                    Carga Horaria
-                  </label>
-                  <Numberinput
-                    name='carga_horaria'
-                    register={register}
-                    placeholder='Ingrese la carga horaria'
-                    value={cargaHoraria}
-                    onChange={handleCargaHorarioChange}
-                    disabled
-                  />
-                </div>
+            <div>
+              <label htmlFor='default-picker' className='form-label'>
+                Carga Horaria
+              </label>
+              <Numberinput
+                name='carga_horaria'
+                register={register}
+                placeholder='Ingrese la carga horaria'
+                value={cargaHoraria}
+                onChange={handleCargaHorarioChange}
+                disabled
+              />
+            </div>
 
-                <div>
-                  <Textinput
-                    label='Correo Electrónico Laboral'
-                    name='email_laboral'
-                    className='minuscula'
-                    type='text'
-                    register={register}
-                    placeholder='Ingrese el correo electrónico laboral'
-                    value={correoElectronicoLaboral}
-                    onChange={handleCorreoElectronicoChange}
-                  />
-                </div>
+            <div>
+              <Textinput
+                label='Correo Electrónico Laboral'
+                name='email_laboral'
+                className='minuscula'
+                type='text'
+                register={register}
+                placeholder='Ingrese el correo electrónico laboral'
+                value={correoElectronicoLaboral}
+                onChange={handleCorreoElectronicoChange}
+              />
+            </div>
 
-                <div>
-                  <label htmlFor='fecha_ingreso' className='form-label'>
-                    Fecha de Ingreso
-                  </label>
+            <div>
+              <label htmlFor='fecha_ingreso' className='form-label'>
+                Fecha de Ingreso
+              </label>
 
-                  <DatePicker
-                    value={picker}
-                    onChange={handleDateChange}
-                    id='fecha_ingreso'
-                    placeholder='Ingrese la fecha de ingreso'
-                    className='form-control'
-                    clearable
-                  />
-                </div>
+              <DatePicker
+                value={picker}
+                onChange={handleDateChange}
+                id='fecha_ingreso'
+                placeholder='Ingrese la fecha de ingreso'
+                className='form-control'
+                clearable
+              />
+            </div>
 
-                <div>
-                  <Textinput
-                    label='Teléfono de Trabajo'
-                    name='telefono_laboral'
-                    register={register}
-                    placeholder='Ingrese el teléfono de trabajo'
-                    disabled
-                    value={telefonoLaboral}
-                    onChange={(e) => {
-                      setTelefonoLaboral(e.target.value)
-                      handleInputChange('telefono_laboral', e.target.value)
-                    }}
-                  />
-                </div>
-              </div>
-            </Card>
+            <div>
+              <Textinput
+                label='Teléfono de Trabajo'
+                name='telefono_laboral'
+                register={register}
+                placeholder='Ingrese el teléfono de trabajo'
+                disabled
+                value={telefonoLaboral}
+                onChange={(e) => {
+                  setTelefonoLaboral(e.target.value)
+                  handleInputChange('telefono_laboral', e.target.value)
+                }}
+              />
+            </div>
           </div>
-          )}
+        </Card>
+      </div>
     </div>
   )
 }

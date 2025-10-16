@@ -31,7 +31,7 @@ const Sidebar = () => {
 
   let selectedMenu = menuNormal
   if (user.roles_id === 1) selectedMenu = menuItems
-  else if (user.roles_id === 5) selectedMenu = menuLectura
+  else if (user.roles_id === 2 || user.roles_id === 4) selectedMenu = menuLectura
 
   return (
     <div className={isSemiDark ? 'dark' : ''}>
