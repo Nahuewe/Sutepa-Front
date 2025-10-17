@@ -1,11 +1,11 @@
-import React, { useRef, useState, useEffect } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import Chart from 'react-apexcharts'
+import { getTipoDependencias } from '../../constant/datos-id'
+import Card from '@/components/ui/Card'
 import useDarkMode from '@/hooks/useDarkMode'
 import useRtl from '@/hooks/useRtl'
-import Card from '@/components/ui/Card'
-import { getTipoDependencias } from '../../constant/datos-id'
 
-const RevenueBarChart = ({ afiliadosSinPaginar, height = 345 }) => {
+const RevenueBarChart = ({ afiliadosSinPaginar, isLoading, height = 345 }) => {
   const chartRef = useRef(null)
   const [isDark] = useDarkMode()
   const [isRtl] = useRtl()
@@ -16,13 +16,9 @@ const RevenueBarChart = ({ afiliadosSinPaginar, height = 345 }) => {
 
   const generateColor = (str) => {
     let hash = 0
-    for (let i = 0; i < str.length; i++) {
-      hash = str.charCodeAt(i) + ((hash << 5) - hash)
-    }
+    for (let i = 0; i < str.length; i++) hash = str.charCodeAt(i) + ((hash << 5) - hash)
     let color = '#'
-    for (let i = 0; i < 3; i++) {
-      color += ('00' + ((hash >> (i * 8)) & 0xFF).toString(16)).slice(-2)
-    }
+    for (let i = 0; i < 3; i++) color += ('00' + ((hash >> (i * 8)) & 0xFF).toString(16)).slice(-2)
     return color
   }
 
@@ -34,9 +30,7 @@ const RevenueBarChart = ({ afiliadosSinPaginar, height = 345 }) => {
     return (r * 299 + g * 587 + b * 114) / 1000
   }
 
-  const getTextColor = (backgroundColor) => {
-    return getBrightness(backgroundColor) > 128 ? '#000000' : '#FFFFFF'
-  }
+  const getTextColor = (backgroundColor) => getBrightness(backgroundColor) > 128 ? '#000000' : '#FFFFFF'
 
   useEffect(() => {
     if (afiliadosSinPaginar) {
@@ -51,19 +45,12 @@ const RevenueBarChart = ({ afiliadosSinPaginar, height = 345 }) => {
           const dependenciaNombre = getTipoDependencias(dependencia)
           if (!dependenciaNombre) return
 
-          if (!seccionales[seccional]) {
-            seccionales[seccional] = { ACTIVO: 0, INACTIVO: 0, dependencias: {} }
-          }
-
-          if (!seccionales[seccional].dependencias[dependenciaNombre]) {
-            seccionales[seccional].dependencias[dependenciaNombre] = { ACTIVO: 0, INACTIVO: 0 }
-          }
+          if (!seccionales[seccional]) seccionales[seccional] = { ACTIVO: 0, INACTIVO: 0, dependencias: {} }
+          if (!seccionales[seccional].dependencias[dependenciaNombre]) seccionales[seccional].dependencias[dependenciaNombre] = { ACTIVO: 0, INACTIVO: 0 }
           seccionales[seccional].dependencias[dependenciaNombre][estado] += 1
         }
 
-        if (!seccionales[seccional]) {
-          seccionales[seccional] = { ACTIVO: 0, INACTIVO: 0 }
-        }
+        if (!seccionales[seccional]) seccionales[seccional] = { ACTIVO: 0, INACTIVO: 0 }
         seccionales[seccional][estado] += 1
       })
 
@@ -73,17 +60,15 @@ const RevenueBarChart = ({ afiliadosSinPaginar, height = 345 }) => {
         ? Object.keys(seccionales).map(seccional => {
           const seccionalData = seccionales[seccional]
           const dependenciaData = seccionalData.dependencias
-            ? Object.keys(seccionalData.dependencias)
-              .map(dependencia => ({
-                name: dependencia,
-                data: [
-                  { x: 'ACTIVO', y: seccionalData.dependencias[dependencia].ACTIVO },
-                  { x: 'INACTIVO', y: seccionalData.dependencias[dependencia].INACTIVO }
-                ],
-                color: generateColor(dependencia)
-              }))
+            ? Object.keys(seccionalData.dependencias).map(dependencia => ({
+              name: dependencia,
+              data: [
+                { x: 'ACTIVO', y: seccionalData.dependencias[dependencia].ACTIVO },
+                { x: 'INACTIVO', y: seccionalData.dependencias[dependencia].INACTIVO }
+              ],
+              color: generateColor(dependencia)
+            }))
             : []
-
           return dependenciaData
         }).flat()
         : Object.keys(seccionales).map(seccional => {
@@ -100,14 +85,7 @@ const RevenueBarChart = ({ afiliadosSinPaginar, height = 345 }) => {
             : []
 
           return [
-            {
-              name: seccional,
-              data: [
-                { x: 'ACTIVO', y: seccionalData.ACTIVO },
-                { x: 'INACTIVO', y: seccionalData.INACTIVO }
-              ],
-              color: generateColor(seccional)
-            },
+            { name: seccional, data: [{ x: 'ACTIVO', y: seccionalData.ACTIVO }, { x: 'INACTIVO', y: seccionalData.INACTIVO }], color: generateColor(seccional) },
             ...dependenciaData
           ]
         }).flat()
@@ -116,23 +94,16 @@ const RevenueBarChart = ({ afiliadosSinPaginar, height = 345 }) => {
       setTotalData(totalAfiliados)
 
       const initialActiveSeries = {}
-      seriesData.forEach((serie) => {
-        initialActiveSeries[serie.name] = false
-      })
+      seriesData.forEach(serie => { initialActiveSeries[serie.name] = false })
       setActiveSeries(initialActiveSeries)
     }
   }, [afiliadosSinPaginar, groupByDependencia])
 
   const handleSeriesToggle = (serie) => {
-    setActiveSeries(prevState => ({
-      ...prevState,
-      [serie.name]: !prevState[serie.name]
-    }))
+    setActiveSeries(prev => ({ ...prev, [serie.name]: !prev[serie.name] }))
   }
 
-  const handleToggleGroup = () => {
-    setGroupByDependencia(prev => !prev)
-  }
+  const handleToggleGroup = () => setGroupByDependencia(prev => !prev)
 
   const options = {
     chart: {
@@ -142,9 +113,9 @@ const RevenueBarChart = ({ afiliadosSinPaginar, height = 345 }) => {
     },
     plotOptions: {
       bar: {
-        horizontal: true,
+        horizontal: false,
         endingShape: 'rounded',
-        columnWidth: '45%'
+        columnWidth: '90%'
       }
     },
     title: {
@@ -248,8 +219,20 @@ const RevenueBarChart = ({ afiliadosSinPaginar, height = 345 }) => {
       }
     ]
   }
-
   const filteredSeries = series.filter(serie => activeSeries[serie.name])
+
+  if (isLoading) {
+    return (
+      <div>
+        <Card>
+          <div className='animate-pulse flex flex-col items-center justify-center h-[345px]'>
+            <div className='h-6 w-48 bg-slate-500 dark:bg-slate-600 mb-4 rounded' />
+            <div className='h-64 w-full bg-slate-400 dark:bg-slate-700 rounded' />
+          </div>
+        </Card>
+      </div>
+    )
+  }
 
   return (
     <Card>
@@ -261,10 +244,7 @@ const RevenueBarChart = ({ afiliadosSinPaginar, height = 345 }) => {
       </div>
       <div style={{ textAlign: 'center', marginTop: '20px' }}>
         {totalData > 0 && (
-          <button
-            onClick={handleToggleGroup}
-            className='btn px-6 py-2 mx-2 my-2 rounded-lg transition duration-300 ease-in-out text-white bg-[#3a56c6] hover:bg-[#435190]'
-          >
+          <button onClick={handleToggleGroup} className='btn px-6 py-2 mx-2 my-2 rounded-lg transition duration-300 ease-in-out text-white bg-[#3a56c6] hover:bg-[#435190]'>
             {groupByDependencia ? 'Ver por Seccional' : 'Ver por Dependencia'}
           </button>
         )}
@@ -276,7 +256,7 @@ const RevenueBarChart = ({ afiliadosSinPaginar, height = 345 }) => {
             )
             return groupByDependencia ? esDependencia : !esDependencia
           })
-          .map((serie, index) => {
+          .map(serie => {
             const serieColor = serie.color
             const textColor = getTextColor(serieColor)
             return (
@@ -287,14 +267,8 @@ const RevenueBarChart = ({ afiliadosSinPaginar, height = 345 }) => {
                   backgroundColor: activeSeries[serie.name] ? serieColor : '#E5E7EB',
                   color: activeSeries[serie.name] ? textColor : '#374151'
                 }}
-                onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = serieColor
-                  e.target.style.color = '#fff'
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = activeSeries[serie.name] ? serieColor : '#E5E7EB'
-                  e.target.style.color = activeSeries[serie.name] ? textColor : '#374151'
-                }}
+                onMouseEnter={(e) => { e.target.style.backgroundColor = serieColor; e.target.style.color = '#fff' }}
+                onMouseLeave={(e) => { e.target.style.backgroundColor = activeSeries[serie.name] ? serieColor : '#E5E7EB'; e.target.style.color = activeSeries[serie.name] ? textColor : '#374151' }}
                 onClick={() => handleSeriesToggle(serie)}
               >
                 {serie.name}

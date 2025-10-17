@@ -1,20 +1,25 @@
-import React, { useEffect } from 'react'
-import { useAfiliadoStore, useSeccionalStore, useUserStore } from '@/helpers'
-import Card from '@/components/ui/Card'
+import { useEffect, useState } from 'react'
+import DonutChart from './DonutChart'
 import EstadisticasDashboard from './EstadisticasDashboard'
 import RevenueBarChart from './RevenueBarChart'
-import DonutChart from './DonutChart'
+import Card from '@/components/ui/Card'
+import { useAfiliadoStore, useSeccionalStore, useUserStore } from '@/helpers'
 
 const Dashboard = () => {
   const { afiliadosSinPaginar, startGetAfiliadosSinPaginar } = useAfiliadoStore()
   const { seccionalesSinPaginar, startGetSeccionalesSinPaginar } = useSeccionalStore()
   const { usersSinPaginar, startGerUsersSinPaginar } = useUserStore()
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     const fetchData = async () => {
-      await startGetAfiliadosSinPaginar()
-      await startGetSeccionalesSinPaginar()
-      await startGerUsersSinPaginar()
+      setIsLoading(true)
+      await Promise.all([
+        startGetAfiliadosSinPaginar(),
+        startGetSeccionalesSinPaginar(),
+        startGerUsersSinPaginar()
+      ])
+      setIsLoading(false)
     }
 
     fetchData()
@@ -25,28 +30,27 @@ const Dashboard = () => {
   }, [])
 
   return (
-    <>
-      <div>
-        <Card title='SUTEPA'>
-          <div className='flex justify-between'>
-            <p className='text-lg mx-0 my-auto hidden md:flex'>Dashboard</p>
-          </div>
-        </Card>
-
-        <div className='mt-4 grid sm:grid-cols-2 md:grid-cols-3 grid-cols-1 gap-4'>
-          <EstadisticasDashboard
-            afiliadosSinPaginar={afiliadosSinPaginar}
-            usersSinPaginar={usersSinPaginar}
-            seccionalesSinPaginar={seccionalesSinPaginar}
-          />
+    <div>
+      <Card title='SUTEPA'>
+        <div className='flex justify-between'>
+          <p className='text-lg mx-0 my-auto hidden md:flex'>Dashboard</p>
         </div>
+      </Card>
 
-        <div className='mt-4 grid sm:grid-cols-2 grid-cols-1 gap-4'>
-          <DonutChart afiliadosSinPaginar={afiliadosSinPaginar} />
-          <RevenueBarChart afiliadosSinPaginar={afiliadosSinPaginar} />
-        </div>
+      <div className='mt-4 grid sm:grid-cols-2 md:grid-cols-3 grid-cols-1 gap-4'>
+        <EstadisticasDashboard
+          afiliadosSinPaginar={afiliadosSinPaginar}
+          usersSinPaginar={usersSinPaginar}
+          seccionalesSinPaginar={seccionalesSinPaginar}
+          isLoading={isLoading}
+        />
       </div>
-    </>
+
+      <div className='mt-4 grid sm:grid-cols-2 grid-cols-1 gap-4'>
+        <DonutChart afiliadosSinPaginar={afiliadosSinPaginar} isLoading={isLoading} />
+        <RevenueBarChart afiliadosSinPaginar={afiliadosSinPaginar} isLoading={isLoading} />
+      </div>
+    </div>
   )
 }
 

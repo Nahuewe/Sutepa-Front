@@ -1,24 +1,24 @@
-import React, { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import Chart from 'react-apexcharts'
-import useDarkMode from '@/hooks/useDarkMode'
 import Card from '@/components/ui/Card'
+import useDarkMode from '@/hooks/useDarkMode'
 
-const DonutChart = ({ afiliadosSinPaginar, height = 350 }) => {
+const DonutChart = ({ afiliadosSinPaginar, isLoading, height = 350 }) => {
   const [isDark] = useDarkMode()
   const [chartType, setChartType] = useState('active')
-  const [series, setSeries] = useState([0, 0])
+  const [series, setSeries] = useState([0, 0, 0])
   const [totalAfiliados, setTotalAfiliados] = useState(0)
   const chartRef = useRef(null)
 
   useEffect(() => {
-    if (afiliadosSinPaginar) {
+    if (afiliadosSinPaginar && !isLoading) {
       const activeCount = afiliadosSinPaginar.filter(a => a.estado === 'ACTIVO').length
       const inactiveCount = afiliadosSinPaginar.filter(a => a.estado === 'INACTIVO').length
       const pendingCount = afiliadosSinPaginar.filter(a => a.estado === 'PENDIENTE').length
       setSeries([activeCount, inactiveCount, pendingCount])
       setTotalAfiliados(activeCount + inactiveCount + pendingCount)
     }
-  }, [afiliadosSinPaginar])
+  }, [afiliadosSinPaginar, isLoading])
 
   const activeColor = '#747ffc'
   const inactiveColor = '#FF7F7F'
@@ -65,8 +65,21 @@ const DonutChart = ({ afiliadosSinPaginar, height = 350 }) => {
     return color + _opacity.toString(16).toUpperCase()
   }
 
+  if (isLoading) {
+    return (
+      <div>
+        <Card>
+          <div className='animate-pulse flex flex-col items-center justify-center h-[350px]'>
+            <div className='h-6 w-48 bg-slate-500 dark:bg-slate-600 mb-4 rounded' />
+            <div className='h-64 w-full bg-slate-400 dark:bg-slate-700 rounded' />
+          </div>
+        </Card>
+      </div>
+    )
+  }
+
   return (
-    <div className='p-y4'>
+    <div>
       <Card>
         <div ref={chartRef}>
           <h4 className='text-lg font-semibold'>{`Afiliados Totales: ${totalAfiliados}`}</h4>

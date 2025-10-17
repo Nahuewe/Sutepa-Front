@@ -1,4 +1,3 @@
-import React from 'react'
 import iconosSutepa from '@/assets/images/auth/iconos.webp'
 import Illustration from '@/assets/images/auth/portada-sutepa.webp'
 import LogoSutepa from '@/assets/images/logo/logo.webp'

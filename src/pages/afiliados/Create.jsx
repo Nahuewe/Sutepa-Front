@@ -11,7 +11,7 @@ import FamiliarAcargoData from '@/components/forms/FamiliarAcargoData'
 import InformacionLaboralData from '@/components/forms/InformacionLaboralData'
 import ObraSocialAfiliadoData from '@/components/forms/ObraSocialAfiliadoData'
 import SubsidioData from '@/components/forms/SubsidioData'
-import Loading from '@/components/Loading'
+import LoadingData from '@/components/LoadingData'
 import Button from '@/components/ui/Button'
 import useFetchDatosLaborales from '@/fetches/useFetchDatosLaborales'
 import useFetchDatosPersonales from '@/fetches/useFetchDatosPersonales'
@@ -28,7 +28,7 @@ export const Create = () => {
   const { activeAfiliado, startSavingAfiliado, startUpdateAfiliado, startEditAfiliado, paginate } = useAfiliadoStore()
   const { user } = useSelector((state) => state.auth)
   const currentPage = paginate?.current_page || 1
-
+  const [showLoading, setShowLoading] = useState(true)
   const hasLoadedAfiliado = useRef(false)
 
   const { isLoading: isLoadingDatosPersonales } = useFetchDatosPersonales()
@@ -104,20 +104,53 @@ export const Create = () => {
     window.scrollTo(0, 0)
   }, [])
 
-  const isLoading =
-    isLoadingAfiliado ||
-    isLoadingDatosPersonales ||
-    isLoadingDatosLaborales ||
-    isLoadingDocumentacion ||
-    isLoadingDomicilio ||
-    isLoadingFamilia ||
+  useEffect(() => {
+    if (
+      isLoadingAfiliado ||
+      isLoadingDatosPersonales ||
+      isLoadingDatosLaborales ||
+      isLoadingDocumentacion ||
+      isLoadingDomicilio ||
+      isLoadingFamilia ||
+      isLoadingSubsidio
+    ) {
+      setShowLoading(true)
+      return
+    }
+
+    const timeout = setTimeout(() => {
+      setShowLoading(false)
+    }, 600)
+
+    return () => clearTimeout(timeout)
+  }, [
+    isLoadingAfiliado,
+    isLoadingDatosPersonales,
+    isLoadingDatosLaborales,
+    isLoadingDocumentacion,
+    isLoadingDomicilio,
+    isLoadingFamilia,
     isLoadingSubsidio
+  ])
+
+  const totalFetches = 7
+  const completedFetches = [
+    !isLoadingAfiliado,
+    !isLoadingDatosPersonales,
+    !isLoadingDatosLaborales,
+    !isLoadingDocumentacion,
+    !isLoadingDomicilio,
+    !isLoadingFamilia,
+    !isLoadingSubsidio
+  ].filter(Boolean).length
+
+  const realProgress = Math.round((completedFetches / totalFetches) * 100)
 
   return (
     <>
-      {isLoading
+      {showLoading
         ? (
-          <Loading className='mt-28 md:mt-64' />
+          <LoadingData progress={realProgress} className='mt-28 md:mt-64' />
           )
         : (
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -154,11 +187,8 @@ export const Create = () => {
                 <Button
                   type='submit'
                   text={isSubmitting ? 'Guardando' : 'Guardar'}
-                  className={`bg-green-500 ${
-                  isSubmitting
-                    ? 'cursor-not-allowed opacity-50'
-                    : 'hover:bg-green-700'
-                } text-white items-center text-center py-2 px-6 rounded-lg`}
+                  className={`bg-green-500 ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'hover:bg-green-700'
+                    } text-white items-center text-center py-2 px-6 rounded-lg`}
                   disabled={isSubmitting}
                 />
               </div>

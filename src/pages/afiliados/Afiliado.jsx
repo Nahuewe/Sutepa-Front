@@ -253,7 +253,7 @@ export const Afiliado = () => {
               </div>
 
               <div className='mt-4 grid sm:grid-cols-2 md:grid-cols-4 grid-cols-1 gap-4'>
-                {showEstadisticas && <EstadisticasAfiliados afiliadosSinPaginar={afiliadosSinPaginar} user={user} />}
+                {showEstadisticas && <EstadisticasAfiliados afiliadosSinPaginar={afiliadosSinPaginar} user={user} isLoading={isLoading} />}
               </div>
             </Card>
 

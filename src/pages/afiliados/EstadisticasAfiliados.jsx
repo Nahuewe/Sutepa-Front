@@ -1,16 +1,11 @@
 import React, { useMemo } from 'react'
 import Icon from '@/components/ui/Icon'
 
-const EstadisticasAfiliados = ({ afiliadosSinPaginar = [], user }) => {
+const EstadisticasAfiliados = ({ afiliadosSinPaginar = [], user, isLoading = false }) => {
   const afiliadosFiltrados = useMemo(() => {
-    if (user?.roles_id === 5) {
+    if (user?.roles_id === 5 || user?.roles_id === 2) {
       return afiliadosSinPaginar.filter(a => a.seccional_id === user.seccional_id)
     }
-
-    if (user?.roles_id === 2) {
-      return afiliadosSinPaginar.filter(a => a.seccional_id === user.seccional_id)
-    }
-
     return afiliadosSinPaginar
   }, [afiliadosSinPaginar, user])
 
@@ -57,26 +52,39 @@ const EstadisticasAfiliados = ({ afiliadosSinPaginar = [], user }) => {
     }
   ]
 
+  const loadingSkeletons = Array(4).fill(null).map((_, i) => (
+    <div
+      key={i}
+      className='rounded-md p-4 bg-gray-400 dark:bg-gray-700 animate-pulse text-center'
+    >
+      <div className='mx-auto h-10 w-10 rounded-full bg-gray-500 dark:bg-gray-600 mb-4' />
+      <div className='h-4 w-24 bg-gray-500 dark:bg-gray-600 mx-auto mb-2 rounded' />
+      <div className='h-6 w-16 bg-gray-500 dark:bg-gray-600 mx-auto rounded' />
+    </div>
+  ))
+
   return (
     <>
-      {statistics.map((item, i) => (
-        <div
-          key={i}
-          className={`${item.bg} rounded-md p-4 bg-opacity-[0.15] dark:bg-opacity-50 text-center`}
-        >
+      {(isLoading || afiliadosSinPaginar.length === 0)
+        ? loadingSkeletons
+        : statistics.map((item, i) => (
           <div
-            className={`${item.text} mx-auto h-10 w-10 flex flex-col items-center justify-center rounded-full bg-white text-2xl mb-4`}
+            key={i}
+            className={`${item.bg} rounded-md p-4 bg-opacity-[0.15] dark:bg-opacity-50 text-center`}
           >
-            <Icon icon={item.icon} />
+            <div
+              className={`${item.text} mx-auto h-10 w-10 flex flex-col items-center justify-center rounded-full bg-white text-2xl mb-4`}
+            >
+              <Icon icon={item.icon} />
+            </div>
+            <span className='block text-sm text-slate-600 font-medium dark:text-white mb-1'>
+              {item.title}
+            </span>
+            <span className='block text-2xl text-slate-900 dark:text-white font-medium'>
+              {item.count}
+            </span>
           </div>
-          <span className='block text-sm text-slate-600 font-medium dark:text-white mb-1'>
-            {item.title}
-          </span>
-          <span className='block text-2xl text-slate-900 dark:text-white font-medium'>
-            {item.count}
-          </span>
-        </div>
-      ))}
+        ))}
     </>
   )
 }
