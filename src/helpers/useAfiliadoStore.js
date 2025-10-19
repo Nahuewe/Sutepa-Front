@@ -54,7 +54,6 @@ export const useAfiliadoStore = () => {
       const response = await sutepaApi.post('/personas', afiliado)
       console.log(response)
 
-      // Envio de email
       const email = persona.email || ''
       const name = persona.nombre || ''
       const lastName = persona.apellido || ''

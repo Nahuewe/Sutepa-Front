@@ -125,7 +125,7 @@ export const Afiliado = () => {
       await startLoadingAfiliado(page, params)
       setIsLoading(false)
 
-      if ([1, 3, 4].includes(user.roles_id)) {
+      if ([1, 2, 3, 4].includes(user.roles_id)) {
         await startGetAfiliadosSinPaginar(params)
       }
     }

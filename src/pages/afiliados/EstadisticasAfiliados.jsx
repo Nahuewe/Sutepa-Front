@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import Icon from '@/components/ui/Icon'
 
 const EstadisticasAfiliados = ({ afiliadosSinPaginar = [], user, isLoading = false }) => {
