@@ -155,13 +155,7 @@ export const Create = () => {
         : (
           <form onSubmit={handleSubmit(onSubmit)}>
             <div style={{ display: isAdmin ? 'block' : 'none' }}>
-              <DatosPersonalesData
-                register={register}
-                errors={errors}
-                setValue={setValue}
-                watch={watch}
-                isLoadingParent={false}
-              />
+              <DatosPersonalesData register={register} errors={errors} setValue={setValue} watch={watch} isLoadingParent={false} />
               <AfiliadoDomicilioData register={register} setValue={setValue} isLoadingParent={false} />
               <InformacionLaboralData register={register} setValue={setValue} watch={watch} isLoadingParent={false} />
               <ObraSocialAfiliadoData register={register} setValue={setValue} isLoadingParent={false} />

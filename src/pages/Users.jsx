@@ -45,6 +45,17 @@ export const Users = () => {
     window.scrollTo(0, 0)
   }, [])
 
+  if (user?.roles_id !== 1) {
+    return (
+      <div className='flex flex-col items-center justify-center h-[70vh] text-center'>
+        <h1 className='text-3xl font-semibold text-red-600 mb-4'>Acceso Denegado</h1>
+        <p className='text-gray-700 dark:text-gray-300'>
+          No tienes permisos para ver esta sección.
+        </p>
+      </div>
+    )
+  }
+
   return (
     <>
       {

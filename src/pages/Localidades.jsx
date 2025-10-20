@@ -1,7 +1,7 @@
 /* eslint-disable react/no-children-prop */
 import { TextInput } from 'flowbite-react'
 import { useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import Loading from '@/components/Loading'
 import { LocalidadForm } from '@/components/sutepa/forms/'
 import Card from '@/components/ui/Card'
@@ -34,6 +34,7 @@ export const Localidades = () => {
   const dispatch = useDispatch()
   const [search, setSearch] = useState('')
   const [isLoading, setIsLoading] = useState(true)
+  const { user } = useSelector((state) => state.auth)
 
   const onEdit = (id) => {
     dispatch(setActiveLocalidad(id))
@@ -76,6 +77,17 @@ export const Localidades = () => {
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
+
+  if (user?.roles_id !== 1) {
+    return (
+      <div className='flex flex-col items-center justify-center h-[70vh] text-center'>
+        <h1 className='text-3xl font-semibold text-red-600 mb-4'>Acceso Denegado</h1>
+        <p className='text-gray-700 dark:text-gray-300'>
+          No tienes permisos para ver esta sección.
+        </p>
+      </div>
+    )
+  }
 
   return (
     <>

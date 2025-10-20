@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
 import DonutChart from './DonutChart'
 import EstadisticasDashboard from './EstadisticasDashboard'
 import RevenueBarChart from './RevenueBarChart'
@@ -10,6 +11,7 @@ const Dashboard = () => {
   const { seccionalesSinPaginar, startGetSeccionalesSinPaginar } = useSeccionalStore()
   const { usersSinPaginar, startGerUsersSinPaginar } = useUserStore()
   const [isLoading, setIsLoading] = useState(true)
+  const { user } = useSelector((state) => state.auth)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -29,6 +31,17 @@ const Dashboard = () => {
     window.scrollTo(0, 0)
   }, [])
 
+  if (user?.roles_id !== 1) {
+    return (
+      <div className='flex flex-col items-center justify-center h-[70vh] text-center'>
+        <h1 className='text-3xl font-semibold text-red-600 mb-4'>Acceso Denegado</h1>
+        <p className='text-gray-700 dark:text-gray-300'>
+          No tienes permisos para ver esta sección.
+        </p>
+      </div>
+    )
+  }
+
   return (
     <div>
       <Card title='SUTEPA'>
@@ -38,12 +51,7 @@ const Dashboard = () => {
       </Card>
 
       <div className='mt-4 grid sm:grid-cols-2 md:grid-cols-3 grid-cols-1 gap-4'>
-        <EstadisticasDashboard
-          afiliadosSinPaginar={afiliadosSinPaginar}
-          usersSinPaginar={usersSinPaginar}
-          seccionalesSinPaginar={seccionalesSinPaginar}
-          isLoading={isLoading}
-        />
+        <EstadisticasDashboard afiliadosSinPaginar={afiliadosSinPaginar} usersSinPaginar={usersSinPaginar} seccionalesSinPaginar={seccionalesSinPaginar} isLoading={isLoading} />
       </div>
 
       <div className='mt-4 grid sm:grid-cols-2 grid-cols-1 gap-4'>
